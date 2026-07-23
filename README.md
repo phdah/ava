@@ -29,10 +29,12 @@ The goal is not to hide agent behavior inside code or one large prompt. The goal
 
 Ava will expose MCP tools that create, inspect, and maintain an empty but valid agent platform skeleton. Users and agents can then add roles, capabilities, constraints, workflows, policies, and context as separate files.
 
+Each initialized project has a root `AGENTS.md` file that acts as the agent entry point and role router. The agent reads the available role registry, selects the role that best matches the user's request, and loads that role without requiring the user to activate it manually.
+
 The hierarchy should support progressive disclosure:
 
-1. An agent begins at a small root entry point.
-2. The root points to the available roles and shared instructions.
+1. An agent begins at the root `AGENTS.md` entry point.
+2. The router points to the available roles and shared instructions.
 3. A role-level index identifies the files required for that role.
 4. Those files link to more specific context only when it is relevant.
 5. The agent avoids loading unrelated material unless instructed to do so.
@@ -66,7 +68,7 @@ The exact MCP tool names and command structure have not been decided, but Ava is
 2. **Role generation and selection**
    - Create a new agent role from a standard structure.
    - Describe its purpose, responsibilities, capabilities, constraints, and required context.
-   - Identify or update the active role for a project or task.
+   - Automatically select the best matching role for a user request.
 
 3. **File and directory scaffolding**
    - Create instruction, context, policy, workflow, and reference documents in the correct directories.
@@ -107,6 +109,7 @@ A possible future structure could look like this:
 
 ```text
 agent-platform/
+|-- AGENTS.md
 |-- index.md
 |-- log.md
 |-- roles/
@@ -136,14 +139,15 @@ This tree is illustrative, not final. The repository structure should be decided
 
 An initialized platform should provide deterministic guidance for how an agent reads it:
 
-1. Start from the root entry point.
-2. Identify the active role.
-3. Read that role's `index.md`.
-4. Read all documents marked as required for the role.
+1. Automatically load the root `AGENTS.md` file.
+2. Read the role registry referenced by the router.
+3. Select the role whose purpose and activation conditions best match the user's request.
+4. Read that role's `index.md` and all documents marked as required.
 5. Follow links to task-specific context when needed.
 6. Prefer the nearest applicable instruction when scopes overlap.
 7. Consult the relevant `log.md` when change history or recency matters.
-8. Do not infer permission or capability from missing instructions.
+8. Ask the user only when no role clearly matches or competing roles would materially change the result.
+9. Do not infer permission or capability from missing instructions.
 
 The traversal rules themselves should eventually be generated as part of the base platform and exposed through MCP discovery tools.
 
@@ -187,9 +191,9 @@ The first internal role is the [Ava Internal Maintainer](internal/roles/ava-inte
 The following should be resolved before implementing the MCP server:
 
 - What is the exact minimal directory tree created by project initialization?
-- What is the root entry point for an agent?
 - Which files are mandatory for every role?
 - Which YAML frontmatter fields are required?
+- How should role routing metadata and activation conditions be represented?
 - How should role inheritance or composition work?
 - How are shared instructions overridden at narrower scopes?
 - Should indexes and logs be fully generated, partially generated, or manually maintained?
@@ -198,7 +202,7 @@ The following should be resolved before implementing the MCP server:
 - How should deprecated roles and instructions be represented?
 - Which parts of the structure are stable format contracts and which remain user-defined?
 - Which MCP tools should be resources, read operations, or mutating operations?
-- How should Ava determine the active project and role?
+- How should Ava determine the active project?
 - Should the MCP server manage one workspace or multiple workspaces?
 - Which MCP operations should also be exposed through the CLI?
 
