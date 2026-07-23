@@ -1,12 +1,12 @@
 # Ava
 
-Ava is a planned Go CLI for initializing a general-purpose, file-based agent platform.
+Ava is a planned Go MCP server for initializing and maintaining a general-purpose, file-based agent platform.
 
-> **Status:** Design phase. This repository currently defines the intended direction only. No CLI or agent runtime has been implemented.
+> **Status:** Design phase. This repository currently defines the intended direction only. No MCP server, CLI, or agent runtime has been implemented.
 
 ## Purpose
 
-Ava will create a structured starting point for defining agent roles and the knowledge they need to operate. The generated platform should make it clear:
+Ava will provide agents and users with structured tools for defining agent roles and the knowledge they need to operate. The generated platform should make it clear:
 
 - which agent roles exist
 - what each role is responsible for
@@ -19,7 +19,7 @@ The goal is not to hide agent behavior inside code or one large prompt. The goal
 
 ## Core idea
 
-Ava will initialize an empty but valid agent platform skeleton. Users can then add roles, capabilities, constraints, workflows, policies, and context as separate files.
+Ava will expose MCP tools that create, inspect, and maintain an empty but valid agent platform skeleton. Users and agents can then add roles, capabilities, constraints, workflows, policies, and context as separate files.
 
 The hierarchy should support progressive disclosure:
 
@@ -31,30 +31,52 @@ The hierarchy should support progressive disclosure:
 
 This should keep instructions discoverable without forcing every agent to read the entire repository for every task.
 
-## Intended CLI responsibilities
+## Proposed architecture
 
-The exact command structure has not been decided, but Ava is expected to support capabilities such as:
+Ava should be MCP-first.
+
+The MCP server is the primary interface used by agent clients. It should expose explicit tools for operations such as initializing a project, creating or selecting a role, adding instructions, maintaining indexes and logs, and validating the resulting structure.
+
+A CLI may exist as an internal or companion interface. It can call the same underlying application services as the MCP tools, making operations available to humans, scripts, and development workflows without making the CLI the core product.
+
+```text
+Agent client ── MCP ──┐
+                      ├── Ava application services ── File-based agent platform
+Human or script ─ CLI ┘
+```
+
+The MCP and CLI interfaces should remain thin. The hierarchy, format rules, and file operations should be implemented once beneath both interfaces.
+
+## Intended MCP responsibilities
+
+The exact MCP tool names and command structure have not been decided, but Ava is expected to support capabilities such as:
 
 1. **Platform initialization**
    - Create the minimal root structure for a new agent platform.
    - Add the required entry points, indexes, and change logs.
 
-2. **Role generation**
+2. **Role generation and selection**
    - Create a new agent role from a standard structure.
    - Describe its purpose, responsibilities, capabilities, constraints, and required context.
+   - Identify or update the active role for a project or task.
 
 3. **File and directory scaffolding**
    - Create instruction, context, policy, workflow, and reference documents in the correct directories.
    - Keep generated files small and focused.
 
-4. **Index maintenance**
+4. **Knowledge discovery**
+   - List available roles, instructions, policies, workflows, and context.
+   - Resolve which files an agent should read for a role or task.
+   - Return references to relevant files rather than loading the entire platform.
+
+5. **Index maintenance**
    - Generate or update `index.md` files so humans and agents can discover relevant content without scanning the full tree.
 
-5. **Change log maintenance**
+6. **Change log maintenance**
    - Generate or update `log.md` files at appropriate levels of the hierarchy.
    - Record meaningful additions, updates, deprecations, and structural changes.
 
-6. **Validation**
+7. **Validation**
    - Validate required metadata, reserved filenames, links, indexes, and hierarchy rules.
    - Detect missing or ambiguous agent instructions before they are consumed.
 
@@ -100,7 +122,7 @@ agent-platform/
     └── ...
 ```
 
-This tree is illustrative, not final. The repository structure should be decided before it becomes part of the CLI contract.
+This tree is illustrative, not final. The repository structure should be decided before it becomes part of the Ava format contract.
 
 ## Agent traversal model
 
@@ -115,19 +137,21 @@ An initialized platform should provide deterministic guidance for how an agent r
 7. Consult the relevant `log.md` when change history or recency matters.
 8. Do not infer permission or capability from missing instructions.
 
-The traversal rules themselves should eventually be generated as part of the base platform.
+The traversal rules themselves should eventually be generated as part of the base platform and exposed through MCP discovery tools.
 
 ## Design goals
 
 - **Human-readable:** The platform must remain understandable with standard filesystem and Markdown tools.
 - **Agent-readable:** Agents must be able to discover and parse instructions without a proprietary SDK.
+- **MCP-native:** Agent clients should be able to create, inspect, and maintain the platform through explicit MCP tools.
 - **Progressive:** Agents should load the minimum relevant context rather than the complete repository.
 - **Explicit:** Responsibilities, permissions, constraints, and dependencies should be written down.
 - **Strictly structured:** Directories and reserved files should have predictable meanings.
 - **Extensible:** New document and role types should be possible without redesigning the platform.
 - **Diffable:** Changes should be reviewable in Git.
 - **Portable:** The generated structure should not depend on a specific model provider, agent runtime, or editor.
-- **Validatable:** The CLI should be able to detect structural and metadata errors.
+- **Interface-independent:** MCP and CLI operations should use the same underlying rules and services.
+- **Validatable:** Ava should detect structural and metadata errors.
 
 ## Initial non-goals
 
@@ -140,13 +164,13 @@ Ava is not initially intended to provide:
 - a fixed universal taxonomy for every type of agent
 - domain-specific integrations such as databases, APIs, or cloud platforms
 
-Those capabilities may use an Ava-generated platform, but they should not define the core format.
+Those capabilities may use an Ava-managed platform, but they should not define the core format.
 
 ## Open design questions
 
-The following should be resolved before implementing the CLI:
+The following should be resolved before implementing the MCP server:
 
-- What is the exact minimal directory tree created by `init`?
+- What is the exact minimal directory tree created by project initialization?
 - What is the root entry point for an agent?
 - Which files are mandatory for every role?
 - Which YAML frontmatter fields are required?
@@ -157,7 +181,11 @@ The following should be resolved before implementing the CLI:
 - How strict should validation be when links or optional context are missing?
 - How should deprecated roles and instructions be represented?
 - Which parts of the structure are stable format contracts and which remain user-defined?
+- Which MCP tools should be resources, read operations, or mutating operations?
+- How should Ava determine the active project and role?
+- Should the MCP server manage one workspace or multiple workspaces?
+- Which MCP operations should also be exposed through the CLI?
 
 ## Current phase
 
-The current objective is to refine the purpose, terminology, hierarchy, and traversal rules in this README. The base file structure and Go CLI should only be implemented after those concepts are sufficiently clear.
+The current objective is to refine the purpose, terminology, hierarchy, traversal rules, and MCP interface in this README. The base file structure, MCP server, and optional CLI should only be implemented after those concepts are sufficiently clear.
