@@ -9,6 +9,8 @@ tags: [ava, agent-router, roles]
 
 This project uses Ava roles to provide task-specific instructions to agents.
 
+Ava uses an OKF-inspired hierarchy: `index.md` files describe each directory and link to relevant documents; role files separate purpose, instructions, capabilities, constraints, and optional context; `log.md` files record major scoped changes. Follow links progressively instead of scanning the whole project.
+
 Before acting on a user request:
 
 1. Read [`roles/index.md`](roles/index.md) to discover the available roles.
