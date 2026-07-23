@@ -1,2 +1,163 @@
 # Ava
-General AI Agent
+
+Ava is a planned Go CLI for initializing a general-purpose, file-based agent platform.
+
+> **Status:** Design phase. This repository currently defines the intended direction only. No CLI or agent runtime has been implemented.
+
+## Purpose
+
+Ava will create a structured starting point for defining agent roles and the knowledge they need to operate. The generated platform should make it clear:
+
+- which agent roles exist
+- what each role is responsible for
+- what each role may, must, and must not do
+- which instructions and context files a role must read
+- how an agent should discover additional task-specific context
+- how changes to roles, instructions, and context are recorded
+
+The goal is not to hide agent behavior inside code or one large prompt. The goal is to represent it as a navigable, version-controlled hierarchy of small, explicit documents.
+
+## Core idea
+
+Ava will initialize an empty but valid agent platform skeleton. Users can then add roles, capabilities, constraints, workflows, policies, and context as separate files.
+
+The hierarchy should support progressive disclosure:
+
+1. An agent begins at a small root entry point.
+2. The root points to the available roles and shared instructions.
+3. A role-level index identifies the files required for that role.
+4. Those files link to more specific context only when it is relevant.
+5. The agent avoids loading unrelated material unless instructed to do so.
+
+This should keep instructions discoverable without forcing every agent to read the entire repository for every task.
+
+## Intended CLI responsibilities
+
+The exact command structure has not been decided, but Ava is expected to support capabilities such as:
+
+1. **Platform initialization**
+   - Create the minimal root structure for a new agent platform.
+   - Add the required entry points, indexes, and change logs.
+
+2. **Role generation**
+   - Create a new agent role from a standard structure.
+   - Describe its purpose, responsibilities, capabilities, constraints, and required context.
+
+3. **File and directory scaffolding**
+   - Create instruction, context, policy, workflow, and reference documents in the correct directories.
+   - Keep generated files small and focused.
+
+4. **Index maintenance**
+   - Generate or update `index.md` files so humans and agents can discover relevant content without scanning the full tree.
+
+5. **Change log maintenance**
+   - Generate or update `log.md` files at appropriate levels of the hierarchy.
+   - Record meaningful additions, updates, deprecations, and structural changes.
+
+6. **Validation**
+   - Validate required metadata, reserved filenames, links, indexes, and hierarchy rules.
+   - Detect missing or ambiguous agent instructions before they are consumed.
+
+These responsibilities are a working proposal and will be refined before implementation begins.
+
+## OKF-inspired structure
+
+Ava is inspired by Google's [Open Knowledge Format](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md), especially its use of:
+
+- hierarchical Markdown documents
+- YAML frontmatter for machine-readable metadata
+- `index.md` files for progressive disclosure
+- `log.md` files for scoped change history
+- Markdown links for relationships between concepts
+- Git for portability, history, attribution, and review
+
+Ava will adapt these ideas for agent instructions rather than data catalog metadata. It does not need BigQuery-specific concepts, resource identifiers, or a fixed data-oriented taxonomy.
+
+A possible future structure could look like this:
+
+```text
+agent-platform/
+├── index.md
+├── log.md
+├── roles/
+│   ├── index.md
+│   ├── log.md
+│   └── <role>/
+│       ├── index.md
+│       ├── log.md
+│       ├── role.md
+│       ├── instructions.md
+│       ├── capabilities.md
+│       ├── constraints.md
+│       └── context/
+│           ├── index.md
+│           └── ...
+├── shared/
+│   ├── index.md
+│   └── ...
+└── templates/
+    ├── index.md
+    └── ...
+```
+
+This tree is illustrative, not final. The repository structure should be decided before it becomes part of the CLI contract.
+
+## Agent traversal model
+
+An initialized platform should provide deterministic guidance for how an agent reads it:
+
+1. Start from the root entry point.
+2. Identify the active role.
+3. Read that role's `index.md`.
+4. Read all documents marked as required for the role.
+5. Follow links to task-specific context when needed.
+6. Prefer the nearest applicable instruction when scopes overlap.
+7. Consult the relevant `log.md` when change history or recency matters.
+8. Do not infer permission or capability from missing instructions.
+
+The traversal rules themselves should eventually be generated as part of the base platform.
+
+## Design goals
+
+- **Human-readable:** The platform must remain understandable with standard filesystem and Markdown tools.
+- **Agent-readable:** Agents must be able to discover and parse instructions without a proprietary SDK.
+- **Progressive:** Agents should load the minimum relevant context rather than the complete repository.
+- **Explicit:** Responsibilities, permissions, constraints, and dependencies should be written down.
+- **Strictly structured:** Directories and reserved files should have predictable meanings.
+- **Extensible:** New document and role types should be possible without redesigning the platform.
+- **Diffable:** Changes should be reviewable in Git.
+- **Portable:** The generated structure should not depend on a specific model provider, agent runtime, or editor.
+- **Validatable:** The CLI should be able to detect structural and metadata errors.
+
+## Initial non-goals
+
+Ava is not initially intended to provide:
+
+- an agent execution runtime
+- model inference or provider integrations
+- multi-agent orchestration
+- secrets or credential management
+- a fixed universal taxonomy for every type of agent
+- domain-specific integrations such as databases, APIs, or cloud platforms
+
+Those capabilities may use an Ava-generated platform, but they should not define the core format.
+
+## Open design questions
+
+The following should be resolved before implementing the CLI:
+
+- What is the exact minimal directory tree created by `init`?
+- What is the root entry point for an agent?
+- Which files are mandatory for every role?
+- Which YAML frontmatter fields are required?
+- How should role inheritance or composition work?
+- How are shared instructions overridden at narrower scopes?
+- Should indexes and logs be fully generated, partially generated, or manually maintained?
+- Which changes require a `log.md` entry?
+- How strict should validation be when links or optional context are missing?
+- How should deprecated roles and instructions be represented?
+- Which parts of the structure are stable format contracts and which remain user-defined?
+
+## Current phase
+
+The current objective is to refine the purpose, terminology, hierarchy, and traversal rules in this README. The base file structure and Go CLI should only be implemented after those concepts are sufficiently clear.
