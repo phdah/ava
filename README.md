@@ -1,3 +1,11 @@
+---
+type: Project Overview
+title: Ava
+description: Design and purpose of the Ava MCP-based agent platform and repository.
+tags: [ava, mcp, agent-platform, okf]
+timestamp: 2026-07-23T00:00:00Z
+---
+
 # Ava
 
 Ava is a planned Go MCP server for initializing and maintaining a general-purpose, file-based agent platform.
