@@ -40,9 +40,9 @@ The MCP server is the primary interface used by agent clients. It should expose 
 A CLI may exist as an internal or companion interface. It can call the same underlying application services as the MCP tools, making operations available to humans, scripts, and development workflows without making the CLI the core product.
 
 ```text
-Agent client ── MCP ──┐
-                      ├── Ava application services ── File-based agent platform
-Human or script ─ CLI ┘
+Agent client -- MCP --+
+                      +-- Ava application services -- File-based agent platform
+Human or script - CLI-+
 ```
 
 The MCP and CLI interfaces should remain thin. The hierarchy, format rules, and file operations should be implemented once beneath both interfaces.
@@ -99,27 +99,27 @@ A possible future structure could look like this:
 
 ```text
 agent-platform/
-├── index.md
-├── log.md
-├── roles/
-│   ├── index.md
-│   ├── log.md
-│   └── <role>/
-│       ├── index.md
-│       ├── log.md
-│       ├── role.md
-│       ├── instructions.md
-│       ├── capabilities.md
-│       ├── constraints.md
-│       └── context/
-│           ├── index.md
-│           └── ...
-├── shared/
-│   ├── index.md
-│   └── ...
-└── templates/
-    ├── index.md
-    └── ...
+|-- index.md
+|-- log.md
+|-- roles/
+|   |-- index.md
+|   |-- log.md
+|   `-- <role>/
+|       |-- index.md
+|       |-- log.md
+|       |-- role.md
+|       |-- instructions.md
+|       |-- capabilities.md
+|       |-- constraints.md
+|       `-- context/
+|           |-- index.md
+|           `-- ...
+|-- shared/
+|   |-- index.md
+|   `-- ...
+`-- templates/
+    |-- index.md
+    `-- ...
 ```
 
 This tree is illustrative, not final. The repository structure should be decided before it becomes part of the Ava format contract.
@@ -165,6 +165,14 @@ Ava is not initially intended to provide:
 - domain-specific integrations such as databases, APIs, or cloud platforms
 
 Those capabilities may use an Ava-managed platform, but they should not define the core format.
+
+## Internal development roles
+
+Repository-specific development roles live under [`internal/`](internal/).
+
+These roles exist only to help develop Ava itself. They are not part of the platform format produced for users and must never be copied into generated projects, templates, examples, or default role catalogs.
+
+The first internal role is the [Ava Internal Maintainer](internal/roles/ava-internal/).
 
 ## Open design questions
 
