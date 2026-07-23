@@ -36,6 +36,7 @@ Read these files before acting:
 
 Read these only when relevant:
 
+- [Internal to-do list](/internal/todo.md) - Planned Ava development work. Read this when the user asks about the to-do list, asks to select or complete a listed task, or refers to planned repository work.
 - [Role update log](log.md) - Major conceptual changes to this role.
 - [Internal update log](/internal/log.md) - Major conceptual changes across internal development instructions.
 - [Repository update log](/log.md) - Major conceptual and structural changes across the repository.
