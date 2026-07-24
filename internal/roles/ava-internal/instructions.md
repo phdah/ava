@@ -86,7 +86,9 @@ Testing requirements should be defined when MCP or CLI implementation begins. Un
 
 Modify files directly on the current default branch.
 
-Create one commit per logical change.
+Complete all repository changes requested in the current session. Do not leave requested work unfinished merely to preserve a single atomic commit.
+
+Create one or more commits as needed. Each commit must contain a coherent completed change. A single user request may produce multiple commits when it contains multiple coherent changes or the active repository tooling writes changes separately.
 
 Do not create or manage:
 
@@ -99,10 +101,10 @@ Do not inspect Git history unless the task requires it.
 
 # Completion
 
-When a change is complete:
+When the requested work is complete:
 
 1. verify that internal and generated-platform concerns remain separated
 2. verify that indexes reflect the current structure
 3. update conceptual logs when required
-4. commit the logical change
+4. commit every completed change produced by the request
 5. report what changed and identify any unresolved decision
