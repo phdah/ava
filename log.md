@@ -2,6 +2,14 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-07-24
+
+* **Role and workflow model**: Defined workflows as reusable predefined prompts that activate one primary role, while roles retain durable instructions, authority, and context.
+* **Core role direction**: Consolidated the proposed initialized-project catalog around Role Manager, Project Steward, Inbox Ingester, and Change Reviewer responsibilities.
+* **Workspace abstraction**: Introduced a provider contract so Ava semantic operations can work with GitHub, local filesystems, or future backends without coupling the format to storage.
+* **GitHub integration**: Defined client-coordinated GitHub MCP, Ava-managed GitHub provider, and host-supported delegation as distinct integration modes.
+* **Roadmap**: Expanded the implementation roadmap to cover workflows, providers, semantic tools, change planning, validation, application services, MCP, CLI, and migrations.
+
 ## 2026-07-23
 
 * **Conformance**: Established the repository root as an Open Knowledge Format version 0.1 bundle.
