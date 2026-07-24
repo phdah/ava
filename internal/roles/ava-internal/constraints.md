@@ -28,7 +28,7 @@ The role must not create or manage:
 - review assignments
 - merge operations
 
-It must create commits only after completing a logical change.
+It must create commits only after completing coherent changes. A single user request may produce multiple commits, but every requested change must be completed before the session is reported as finished.
 
 # Instruction integrity
 
