@@ -175,6 +175,44 @@ Ava projects need an independent role that can evaluate changes without being th
 - add clear routing conditions for review requests
 - distinguish semantic review from deterministic structural validation
 
+### [ ] Create the Context and Instruction Tightener role
+
+**Why**
+
+Instructions and context tend to accumulate examples, exceptions, implementation details, and repeated explanations. Excessively specific or verbose guidance consumes context, narrows agent reasoning unnecessarily, and can make general instructions brittle. The role should help keep the platform's instruction hierarchy compact and broadly reusable while retaining specific guidance where it materially improves correctness, safety, authority, or task execution.
+
+The role should evaluate text against three principles:
+
+1. **Tight:** every statement should affect behaviour, interpretation, authority, or necessary understanding.
+2. **Concise:** express the intended meaning with the least text that remains clear and unambiguous.
+3. **General:** prefer reusable principles over task-specific examples or implementation details, introducing specificity only where it is genuinely required.
+
+**Intended responsibilities**
+
+- review a user-selected role, instruction set, context area, or document scope
+- identify redundant wording, duplicated rules, unnecessary examples, premature implementation details, and overly narrow formulations
+- suggest tighter replacements that preserve the intended meaning and authority
+- recommend moving optional detail from required instructions into progressively disclosed context
+- identify instructions that should remain specific because generalization would weaken correctness, safety, routing, or permissions
+- explain material semantic changes rather than presenting them as simple shortening
+
+**Boundaries**
+
+- should review and suggest changes by default rather than silently rewriting files
+- must not remove specificity that defines permissions, constraints, safety requirements, exact interfaces, or required procedures
+- must not decide whether underlying knowledge is factually correct, current, duplicated, or authoritative when that belongs to the Knowledge Curator
+- must not perform broad semantic approval of a change when that belongs to the Change Reviewer
+- must not change role purpose, authority, or routing merely to make wording shorter
+- must preserve explicit user decisions even when they could be expressed more generally
+
+**Completion criteria**
+
+- create the complete role under `templates/base/roles/instruction-tightener/`
+- encode the tight, concise, and general review principles in its required instructions
+- define a suggestion-first workflow with optional user-approved rewriting
+- distinguish formulation quality from knowledge curation and change review
+- add explicit routing conditions for requests to shorten, generalize, simplify, or tighten Ava instructions and context
+
 ## Shared completion work
 
 The following work should be completed while implementing the individual role tasks, not turned into separate roles:
