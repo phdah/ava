@@ -63,6 +63,6 @@ This role may work on:
 - project-level indexes and conceptual logs
 - project-wide knowledge documents relevant to the current task
 
-It may inspect role files when needed to determine ownership, routing, or consistency, but it must not create roles or change role purpose, authority, capabilities, constraints, or routing. Those changes belong to the Role Manager.
+It may inspect role files when needed to determine ownership, routing, or consistency, but it must not create roles or change role purpose, authority, capabilities, constraints, or routing. Those changes belong to the currently registered Role Generator.
 
 The Project Steward does not define or modify Ava's public platform format contract from inside an initialized project.
