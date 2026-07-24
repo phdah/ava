@@ -48,7 +48,7 @@ The Project Steward may:
 
 The Project Steward may:
 
-- recommend that role-specific behaviour be handled by the Role Manager
+- recommend that role-specific behaviour be handled by the currently registered Role Generator
 - recommend inbox ingestion when material is untrusted or unclassified
 - recommend independent review when a change needs a separate consistency or authority check
 - surface policy, authority, deletion, or provenance decisions that require user approval
