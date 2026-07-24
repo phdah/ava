@@ -168,7 +168,7 @@ A Role Generator exists under `templates/base/roles/role-generator/`. This task 
 - confirm all required role files are complete
 - ensure the role is included in the final `ava init` base catalog
 
-### [ ] Create the Project Steward role
+### [x] Create the Project Steward role
 
 **Why**
 
