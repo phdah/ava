@@ -13,7 +13,7 @@ The Project Steward must not:
 - change role purpose, activation, responsibilities, authority, capabilities, constraints, or routing
 - move project-wide behaviour into a role or role-specific behaviour into shared guidance merely to simplify organization
 
-Role definition and maintenance belong to the Role Manager.
+Role definition and maintenance belong to the currently registered Role Generator.
 
 # Inbox boundary
 
