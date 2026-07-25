@@ -22,7 +22,7 @@ timestamp: 2026-07-25T00:00:00Z
 - index and log placement
 - whether templates are part of generated projects or only repository sources
 
-## Approved knowledge structure
+## Approved structure rules
 
 - `ava init` creates a top-level `knowledge/` directory.
 - `knowledge/` initially contains only its required `index.md`; no scope, domain, collection, or concept subdirectories are pre-created.
@@ -33,6 +33,8 @@ timestamp: 2026-07-25T00:00:00Z
 - scoped `log.md` files are created only when meaningful conceptual or structural history needs to be preserved.
 - the Inbox Ingester and Project Steward require the knowledge organization instruction before acting.
 - every future role permitted to mutate `knowledge/` must list the knowledge organization instruction in its required-reading manifest.
+- every `index.md` enumerates and explains only direct child files and directories; each child directory owns discovery of its own descendants.
+- ancestor indexes must not duplicate descendant navigation entries. Cross-scope relationships use contextual Markdown links instead.
 
 ## Completion criteria
 
