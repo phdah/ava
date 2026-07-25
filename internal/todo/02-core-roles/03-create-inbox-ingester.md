@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Create the Inbox Ingester Role and Inbox Convention
 description: Define safe ingestion of untrusted or unclassified material from an initialized project's inbox.
 tags: [internal, roadmap, roles, inbox]
-status: pending
+status: complete
 phase: 2
 order: 3
 timestamp: 2026-07-25T00:00:00Z
