@@ -10,7 +10,7 @@ Content under this directory is internal to the Ava repository. It must not be i
 
 # Planning
 
-* [Internal to-do list](todo.md) - Tracks planned Ava repository work that future Ava Internal Maintainer sessions can select and implement.
+* [Internal to-do roadmap](todo.md) - Stable entry point into the ordered roadmap, numbered phase indexes, and individual task files.
 
 # History
 
