@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to Ava's internal development instructions. It does not replace Git history.
 
+## 2026-07-26
+
+* **Index maintenance**: Required Ava Internal Maintainers to keep each `index.md` limited to direct children and delegate descendant discovery to child indexes.
+
 ## 2026-07-25
 
 * **Roadmap hierarchy**: Replaced the monolithic task definitions in `internal/todo.md` with a stable bootstrap, an ordered roadmap index, numbered phase indexes, and one file per task.
