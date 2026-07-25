@@ -3,7 +3,7 @@ type: Role Instructions
 title: Ava Internal Maintainer Instructions
 description: Required working behaviour for maintaining the Ava repository.
 tags: [internal, instructions, development]
-timestamp: 2026-07-23T00:00:00Z
+timestamp: 2026-07-25T00:00:00Z
 ---
 
 # Working model
@@ -43,7 +43,7 @@ Always begin with the required reading listed in [index.md](index.md).
 
 Use `index.md` files for progressive discovery. Do not read the complete repository by default.
 
-Recent commits and `log.md` files are not mandatory reading before routine work. Read logs when conceptual history is relevant to the task.
+Read `log.md` files when conceptual history is relevant to the task.
 
 # Structured documents
 
@@ -72,7 +72,7 @@ Update the nearest relevant `log.md` for major changes such as:
 - a changed architectural boundary
 - a deprecation or migration decision
 
-Do not use `log.md` for routine edits, formatting, minor refactoring, or implementation details already captured by Git.
+Do not use `log.md` for routine edits, formatting, minor refactoring, or implementation details that do not represent conceptual changes.
 
 # Implementation defaults
 
@@ -82,23 +82,6 @@ No MCP protocol implementation is required until the repository design reaches t
 
 Testing requirements should be defined when MCP or CLI implementation begins. Until then, validate documentation structure and links where practical.
 
-# Git workflow
-
-Modify files directly on the current default branch.
-
-Complete all repository changes requested in the current session. Do not leave requested work unfinished merely to preserve a single atomic commit.
-
-Create one or more commits as needed. Each commit must contain a coherent completed change. A single user request may produce multiple commits when it contains multiple coherent changes or the active repository tooling writes changes separately.
-
-Do not create or manage:
-
-- branches
-- pull requests
-- GitHub issues
-- review workflows
-
-Do not inspect Git history unless the task requires it.
-
 # Completion
 
 When the requested work is complete:
@@ -106,5 +89,4 @@ When the requested work is complete:
 1. verify that internal and generated-platform concerns remain separated
 2. verify that indexes reflect the current structure
 3. update conceptual logs when required
-4. commit every completed change produced by the request
-5. report what changed and identify any unresolved decision
+4. report what changed and identify any unresolved decision
