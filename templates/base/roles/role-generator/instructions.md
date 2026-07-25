@@ -66,12 +66,17 @@ Use progressive disclosure:
 - make required and optional context explicit
 - do not instruct agents to scan entire directories without a task-specific reason
 
+Any role permitted to create, update, move, merge, reorganize, or deprecate content under `knowledge/` must list [Knowledge organization](../../shared/instructions/knowledge-organization.md) under **Required reading** in its `index.md`.
+
+Do not rely only on shared or knowledge indexes to discover mandatory behaviour. A role's required-reading manifest must make every instruction necessary for exercising its authority deterministic.
+
 # Completion checks
 
 Before completing role work, verify that:
 
 - the registry can route relevant requests to the role
 - the role's required-reading path is complete and deterministic
+- every role that mutates `knowledge/` requires the knowledge organization instruction
 - responsibilities, capabilities, and constraints do not contradict each other
 - permissions are explicit rather than inferred from missing text
 - optional context is discoverable without being loaded by default
