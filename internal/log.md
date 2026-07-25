@@ -6,6 +6,7 @@ This log records major conceptual and structural changes to Ava's internal devel
 
 * **Roadmap hierarchy**: Replaced the monolithic task definitions in `internal/todo.md` with a stable bootstrap, an ordered roadmap index, numbered phase indexes, and one file per task.
 * **Task execution**: Added explicit phase and task ordering, a current next-task link, and per-task status while preserving the original roadmap scope and completion state.
+* **Git workflow delegation**: Removed Git and GitHub operation rules from the Ava Internal Maintainer role so active repository tooling controls commits, branches, pull requests, issues, reviews, merges, and history inspection.
 
 ## 2026-07-24
 
