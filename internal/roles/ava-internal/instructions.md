@@ -64,6 +64,10 @@ Reserved `index.md` and `log.md` files do not require normal concept frontmatter
 
 Update the relevant `index.md` whenever files or directories are added, removed, renamed, or conceptually reorganized.
 
+Each `index.md` must enumerate and explain only the direct child files and directories of its own directory. Do not flatten descendants into an ancestor index. A child directory owns discovery of its own children through its own `index.md`.
+
+Cross-scope relationships may use normal Markdown links in explanatory prose, but they must not duplicate or bypass the progressive directory navigation.
+
 Update the nearest relevant `log.md` for major changes such as:
 
 - a new role or major role redesign
@@ -87,6 +91,6 @@ Testing requirements should be defined when MCP or CLI implementation begins. Un
 When the requested work is complete:
 
 1. verify that internal and generated-platform concerns remain separated
-2. verify that indexes reflect the current structure
+2. verify that indexes reflect the current structure without listing descendants beyond their direct children
 3. update conceptual logs when required
 4. report what changed and identify any unresolved decision
