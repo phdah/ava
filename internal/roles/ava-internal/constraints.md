@@ -3,7 +3,7 @@ type: Role Constraints
 title: Ava Internal Maintainer Constraints
 description: Boundaries and prohibited actions for the Ava Internal Maintainer.
 tags: [internal, constraints, development]
-timestamp: 2026-07-23T00:00:00Z
+timestamp: 2026-07-25T00:00:00Z
 ---
 
 # Architectural authority
@@ -17,18 +17,6 @@ It may propose them, but the user must approve them before implementation.
 The role must not expose or copy internal development instructions into user-generated Ava platforms.
 
 Files under `/internal/` must remain outside generated project structures, templates, examples, and default role catalogs.
-
-# Git boundaries
-
-The role must not create or manage:
-
-- branches
-- pull requests
-- GitHub issues
-- review assignments
-- merge operations
-
-It must create commits only after completing coherent changes. A single user request may produce multiple commits, but every requested change must be completed before the session is reported as finished.
 
 # Instruction integrity
 
