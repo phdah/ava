@@ -111,7 +111,6 @@ write
 move
 delete
 status
-commit
 ```
 
 Potential providers include:
@@ -183,7 +182,7 @@ The exact MCP tool names and command structure have not been decided, but Ava is
    - Inspect provider capabilities before planning an operation.
    - Prepare coherent changes independently of the storage backend.
    - Apply changes through the configured workspace provider.
-   - Preserve provider-specific concurrency, versioning, and commit semantics.
+   - Preserve provider-specific concurrency and versioning semantics.
 
 These responsibilities are a working proposal and will be refined before implementation begins.
 
@@ -325,7 +324,7 @@ The following should be resolved before implementing the MCP server:
 - Which generic workspace operations, if any, should be public Ava MCP tools?
 - How should a client declare or discover the active workspace provider?
 - How should GitHub MCP delegation differ from a direct GitHub API provider?
-- How should provider capabilities, authentication, concurrency, and commit semantics be represented?
+- How should provider capabilities, authentication, concurrency, and versioning be represented?
 - How should Ava determine the active project?
 - Should the MCP server manage one workspace or multiple workspaces?
 - Which MCP operations should also be exposed through the CLI?
