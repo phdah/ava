@@ -2,6 +2,11 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-07-26
+
+* **Index hierarchy**: Defined `index.md` files as direct-child navigation only. Child directories own discovery of their descendants, preventing ancestor indexes from flattening or duplicating deeper navigation.
+* **Template navigation**: Added `templates/base/index.md` and reduced `templates/index.md` to reference only its direct `base/` child.
+
 ## 2026-07-25
 
 * **Git operation delegation**: Removed role-level Git and GitHub workflow rules and commit-specific workspace-provider semantics. Active repository tooling and providers now determine those operations.
