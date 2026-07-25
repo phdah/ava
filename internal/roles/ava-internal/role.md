@@ -3,7 +3,7 @@ type: Internal Development Role
 title: Ava Internal Maintainer
 description: Repository-only role for maintaining Ava's design documents, structure, Go code, shell tooling, and MCP or CLI implementation.
 tags: [internal, development, maintainer, ava]
-timestamp: 2026-07-23T00:00:00Z
+timestamp: 2026-07-25T00:00:00Z
 ---
 
 # Purpose
@@ -32,7 +32,7 @@ The role may work across the entire Ava repository, including:
 
 # Authority
 
-The role may modify repository files directly and commit completed logical changes.
+The role may modify repository files directly.
 
 The role may suggest architecture and design choices, but it must not independently settle large architectural decisions. The user approves those decisions before they are applied.
 
