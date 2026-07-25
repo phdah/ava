@@ -1,14 +1,16 @@
 ---
 type: Project Overview
 title: Ava
-description: Design and purpose of the Ava MCP-based agent platform and repository.
+description: Design and purpose of Ava's file-based context platform and its management interfaces.
 tags: [ava, mcp, agent-platform, okf]
 timestamp: 2026-07-25T00:00:00Z
 ---
 
 # Ava
 
-Ava is a planned Go MCP server for initializing and maintaining a general-purpose, file-based agent platform.
+Ava is a general-purpose, file-based context platform for AI agents. It structures roles, workflows, instructions, constraints, and knowledge so agents can discover and load the context they need to operate.
+
+A planned Go MCP server will be the primary interface for initializing, inspecting, validating, and maintaining the platform.
 
 > **Status:** Design phase. This repository currently defines the intended direction only. No MCP server, CLI, or agent runtime has been implemented.
 
@@ -18,7 +20,7 @@ The name Ava is inspired by the AI robot Ava in [*Ex Machina*](https://www.imdb.
 
 ## Purpose
 
-Ava will provide agents and users with structured tools for defining agent roles, reusable workflows, and the knowledge they need to operate. The generated platform should make it clear:
+Ava will provide agents and users with a structured, version-controlled context platform for defining agent roles, reusable workflows, and the knowledge they need to operate. The platform should make it clear:
 
 - which agent roles exist
 - what each role is responsible for
@@ -65,7 +67,7 @@ Workflows may be invoked interactively or by external schedulers such as cron, G
 
 ## Core idea
 
-Ava will expose MCP tools that create, inspect, and maintain an empty but valid agent platform skeleton. Users and agents can then add roles, workflows, capabilities, constraints, policies, and context as separate files.
+Ava's core output is an empty but valid agent context platform skeleton represented as files. An MCP interface will create, inspect, validate, and maintain that structure. Users and agents can then add roles, workflows, capabilities, constraints, policies, and context as separate files.
 
 Each initialized project has a root `AGENTS.md` file that acts as the agent entry point and role router. The agent reads the available role registry, selects the role that best matches the user's request or the workflow's declared role, and loads that role without requiring the user to activate it manually.
 
@@ -82,15 +84,15 @@ This should keep instructions discoverable without forcing every agent to read t
 
 ## Proposed architecture
 
-Ava should be MCP-first.
+Ava is a file-based context platform with MCP as its primary management interface.
 
-The MCP server is the primary Ava interface used by agent clients. It should expose semantic tools for operations such as initializing a project, resolving a role or workflow, scaffolding structured documents, validating the platform, and preparing or applying coherent project changes.
+The planned MCP server should expose semantic tools for operations such as initializing a project, resolving a role or workflow, scaffolding structured documents, validating the platform, and preparing or applying coherent project changes.
 
 A CLI may exist as an internal or companion interface. It can call the same underlying application services as the MCP tools, making operations available to humans, scripts, and development workflows without making the CLI the core product.
 
 ```text
 Agent client -- MCP --+
-                      +-- Ava application services -- Workspace provider -- Agent platform
+                      +-- Ava application services -- Workspace provider -- Context platform
 Human or script - CLI-+
 ```
 
