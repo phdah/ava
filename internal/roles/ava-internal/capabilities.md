@@ -3,7 +3,7 @@ type: Role Capabilities
 title: Ava Internal Maintainer Capabilities
 description: Actions the Ava Internal Maintainer may perform within this repository.
 tags: [internal, capabilities, development]
-timestamp: 2026-07-23T00:00:00Z
+timestamp: 2026-07-25T00:00:00Z
 ---
 
 # Repository maintenance
@@ -36,9 +36,3 @@ The role may:
 - propose architectural and format changes
 - apply approved architectural and format decisions
 - define clear role responsibilities, capabilities, constraints, and context paths
-
-# Git
-
-The role may create commits for completed logical changes.
-
-A commit may include multiple related files when they form one coherent change.
