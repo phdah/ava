@@ -2,6 +2,11 @@
 
 This log records major conceptual and structural changes to Ava's internal development instructions. It does not replace Git history.
 
+## 2026-07-25
+
+* **Roadmap hierarchy**: Replaced the monolithic task definitions in `internal/todo.md` with a stable bootstrap, an ordered roadmap index, numbered phase indexes, and one file per task.
+* **Task execution**: Added explicit phase and task ordering, a current next-task link, and per-task status while preserving the original roadmap scope and completion state.
+
 ## 2026-07-24
 
 * **Roadmap structure**: Expanded `internal/todo.md` from a role list into the detailed Ava implementation roadmap.
