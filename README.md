@@ -3,7 +3,7 @@ type: Project Overview
 title: Ava
 description: Design and purpose of the Ava MCP-based agent platform and repository.
 tags: [ava, mcp, agent-platform, okf]
-timestamp: 2026-07-24T00:00:00Z
+timestamp: 2026-07-25T00:00:00Z
 ---
 
 # Ava
@@ -11,6 +11,10 @@ timestamp: 2026-07-24T00:00:00Z
 Ava is a planned Go MCP server for initializing and maintaining a general-purpose, file-based agent platform.
 
 > **Status:** Design phase. This repository currently defines the intended direction only. No MCP server, CLI, or agent runtime has been implemented.
+
+## Name
+
+The name Ava is inspired by the AI robot Ava in [*Ex Machina*](https://www.imdb.com/title/tt0470752/). Ava is exceptionally good at playing different roles to achieve her goals. This mirrors the project's role-based structure, where distinct roles support different workflows and make relevant context easy to collect, organize, and retrieve.
 
 ## Purpose
 
