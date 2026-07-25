@@ -31,6 +31,8 @@ timestamp: 2026-07-25T00:00:00Z
 - every created knowledge directory contains an `index.md` that acts as a local classification and navigation node.
 - canonical concept documents have one primary location and use links for secondary relationships.
 - scoped `log.md` files are created only when meaningful conceptual or structural history needs to be preserved.
+- the Inbox Ingester and Project Steward require the knowledge organization instruction before acting.
+- every future role permitted to mutate `knowledge/` must list the knowledge organization instruction in its required-reading manifest.
 
 ## Completion criteria
 
