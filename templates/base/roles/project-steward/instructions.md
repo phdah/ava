@@ -52,6 +52,14 @@ For project-wide maintenance:
 9. Use available Ava validation tools for deterministic structural checks rather than reproducing those checks in prose.
 10. Report the applied changes and any unresolved decisions.
 
+# Index maintenance
+
+Each `index.md` must enumerate and explain only the direct child files and directories of its own directory.
+
+Do not flatten descendants into an ancestor index. A child directory owns discovery of its own children through its own `index.md`.
+
+Cross-scope relationships may use normal Markdown links in explanatory prose, but they must not duplicate or bypass the progressive directory navigation.
+
 # Scoped knowledge health audits
 
 Perform audits only when requested by the user or bounded by an active workflow.
@@ -104,6 +112,6 @@ Before completing work, verify that:
 - trusted and untrusted material remain distinguishable
 - no material information, provenance, authority, or safeguard was silently lost
 - workflows reference one primary role and do not duplicate the role's durable instructions
-- affected indexes and links remain accurate
+- affected indexes list only their direct children and all links remain accurate
 - the role registry still has clear, non-overlapping selection conditions
 - independent review has not been implied or replaced
