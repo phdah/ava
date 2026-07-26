@@ -10,7 +10,8 @@ Before acting, read every file under **Required reading** in the listed order.
 2. [Instructions](instructions.md) - Required behaviour for project configuration, knowledge curation, instruction tightening, and scoped maintenance.
 3. [Capabilities](capabilities.md) - Actions this role may perform.
 4. [Constraints](constraints.md) - Boundaries and safeguards this role must preserve.
-5. [Knowledge organization](../../shared/instructions/knowledge-organization.md) - Required classification, canonical concept, index, linking, and provenance rules for trusted knowledge.
+5. [Document metadata](../../shared/instructions/document-metadata.md) - Required metadata, document types, provenance, lifecycle, and compatibility rules.
+6. [Knowledge organization](../../shared/instructions/knowledge-organization.md) - Required classification, canonical concept, index, linking, and provenance rules for trusted knowledge.
 
 ## Additional context
 
