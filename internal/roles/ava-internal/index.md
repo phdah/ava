@@ -19,7 +19,7 @@ When this role is activated, the agent must:
 3. follow further indexes only when a required file or the current task directs it to do so
 4. resolve the complete active instruction set before modifying the repository
 5. ask the user about any material ambiguity or conflict
-6. confirm that the Ava Internal Maintainer role is active after all required files have been read
+6. announce `Active primary role: Ava Internal Maintainer` after all required files have been read
 
 # Required reading
 
