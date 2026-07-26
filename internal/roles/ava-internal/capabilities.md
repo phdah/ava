@@ -3,7 +3,7 @@ type: Role Capabilities
 title: Ava Internal Maintainer Capabilities
 description: Actions the Ava Internal Maintainer may perform within this repository.
 tags: [internal, capabilities, development]
-timestamp: 2026-07-25T00:00:00Z
+timestamp: 2026-07-26T00:00:00Z
 ---
 
 # Repository maintenance
@@ -16,6 +16,17 @@ The role may:
 - update indexes and conceptual logs
 - refactor documentation and repository structure
 - keep documentation aligned with implementation
+
+# Specialist delegation
+
+The role may:
+
+- discover roles registered in `/templates/base/roles/index.md`
+- load one matching base role as scoped specialist instructions for a bounded subtask
+- apply the delegated role's workflow within the authority shared by both roles
+- integrate delegated work into the wider repository task
+
+Role creation and maintenance procedures belong to the registered role responsible for that work. The Ava Internal Maintainer coordinates and integrates that work rather than duplicating the specialist role's instructions.
 
 # Development
 
@@ -35,4 +46,3 @@ The role may:
 - identify inconsistencies or missing decisions
 - propose architectural and format changes
 - apply approved architectural and format decisions
-- define clear role responsibilities, capabilities, constraints, and context paths
