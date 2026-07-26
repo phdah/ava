@@ -1,13 +1,3 @@
----
-type: Project Overview
-title: Ava
-description: Design and purpose of Ava's file-based context platform and its management interfaces.
-tags: [ava, mcp, agent-platform, okf]
-generated:
-  by: agent:openai-chatgpt
-  at: 2026-07-26T14:41:00Z
----
-
 # Ava
 
 Ava is a general-purpose, file-based context platform for AI agents. It structures roles, workflows, instructions, constraints, and knowledge so agents can discover and load the context they need to operate.
