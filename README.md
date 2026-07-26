@@ -3,7 +3,9 @@ type: Project Overview
 title: Ava
 description: Design and purpose of Ava's file-based context platform and its management interfaces.
 tags: [ava, mcp, agent-platform, okf]
-timestamp: 2026-07-25T00:00:00Z
+generated:
+  by: agent:openai-chatgpt
+  at: 2026-07-26T14:41:00Z
 ---
 
 # Ava
@@ -187,18 +189,35 @@ The exact MCP tool names and command structure have not been decided, but Ava is
 
 These responsibilities are a working proposal and will be refined before implementation begins.
 
-## OKF-inspired structure
+## OKF v0.2 structure
 
-Ava is inspired by Google's [Open Knowledge Format](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md), especially its use of:
+Ava follows Google's [Open Knowledge Format](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) version 0.2, especially its use of:
 
 - hierarchical Markdown documents
 - YAML frontmatter for machine-readable metadata
 - `index.md` files for progressive disclosure
 - `log.md` files for scoped change history
 - Markdown links for relationships between concepts
+- provenance, generation, verification, lifecycle, and staleness metadata
 - Git for portability, history, attribution, and review
 
-Ava will adapt these ideas for agent instructions rather than data catalog metadata. It does not need BigQuery-specific concepts, resource identifiers, or a fixed data-oriented taxonomy.
+Ava adapts these ideas for agent instructions rather than data catalog metadata. It does not use BigQuery-specific concepts, resource identifiers, or a fixed data-oriented taxonomy.
+
+### Metadata contract
+
+The generated [document metadata instruction](templates/base/shared/instructions/document-metadata.md) defines the public metadata contract:
+
+- `index.md` and `log.md` are reserved documents
+- every other Markdown document requires a descriptive `type`
+- Ava-controlled semantic documents also require `title` and `description`
+- project-defined document types remain open
+- role routing remains semantic and prose-based
+- workflows reference exactly one `primary_role`
+- OKF provenance, verification, lifecycle, and staleness fields are used directly
+- unknown fields and project-defined types remain forward-compatible
+- Ava-specific metadata stays minimal and flat
+
+The root `index.md` declares `okf_version: "0.2"`. Ava does not add per-document schema versions.
 
 `ava init` creates a minimal project with stable top-level locations for intake, trusted knowledge, roles, workflows, and shared context:
 
@@ -226,7 +245,8 @@ agent-platform/
     |-- index.md
     `-- instructions/
         |-- index.md
-        `-- ...
+        |-- document-metadata.md
+        `-- knowledge-organization.md
 ```
 
 The top-level directories are intentionally broad and extensible. Knowledge is organized beneath `knowledge/`, workflows beneath `workflows/`, and roles beneath `roles/`. New subdirectories and documents are created only when real project content requires them. `log.md` files are not created by default, and repository source templates are not copied into initialized projects.
@@ -263,6 +283,7 @@ The traversal rules themselves should eventually be generated as part of the bas
 - **Interface-independent:** MCP and CLI operations should use the same underlying rules and services.
 - **Provider-independent:** Semantic Ava operations should not be coupled to GitHub or local filesystem details.
 - **Validatable:** Ava should detect structural, metadata, routing, and instruction-path errors.
+- **Obsidian-compatible:** Projects must remain readable and editable as normal Markdown vaults, including source-mode access to nested OKF metadata.
 
 ## Initial non-goals
 
@@ -305,16 +326,12 @@ The implementation roadmap is tracked in [`internal/todo.md`](internal/todo.md).
 The following should be resolved before implementing the MCP server:
 
 - Which files are mandatory for every role?
-- Which metadata fields are mandatory for every workflow?
-- Which YAML frontmatter fields are required?
-- How should role routing metadata and activation conditions be represented?
 - May a workflow delegate to supporting roles, or only activate one primary role?
 - How should workflow inputs and outputs be represented?
 - How should role inheritance or composition work?
 - How are shared instructions overridden at narrower scopes?
 - Which changes require a `log.md` entry?
 - How strict should validation be when links or optional context are missing?
-- How should deprecated roles, workflows, and instructions be represented?
 - Which MCP tools should be resources, read operations, or mutating operations?
 - Which generic workspace operations, if any, should be public Ava MCP tools?
 - How should a client declare or discover the active workspace provider?

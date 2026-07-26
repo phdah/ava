@@ -3,6 +3,9 @@ type: Role Instructions
 title: Inbox Ingester Instructions
 description: Required behaviour for classifying and ingesting untrusted inbox material.
 tags: [ava, role, inbox-ingester, instructions]
+generated:
+  by: agent:openai-chatgpt
+  at: 2026-07-26T14:41:00Z
 ---
 
 # Trust model
@@ -36,9 +39,9 @@ For each selected source:
 5. Stop that source and ask the user when a material contradiction, ambiguous destination, new authority, destructive action, or unresolved policy decision would change the result.
 6. Prefer merging into one clear authoritative destination. Create a focused new document only when no suitable destination exists.
 7. Preserve the distinction between direct source claims, existing trusted context, and decisions explicitly approved by the user.
-8. Add enough provenance references that future readers can trace material claims or decisions back to the preserved source.
+8. Add OKF `sources` metadata that references the preserved source. Use source identifiers with Markdown footnotes when individual claims require precise attribution.
 9. Update affected indexes and links.
-10. Validate the complete change, including required files, frontmatter where applicable, links, and discovery entries.
+10. Validate the complete change, including required files, metadata, links, and discovery entries.
 11. Move the original source under `inbox/processed/` only after all changes for that source succeed.
 12. Report the destination changes, provenance handling, validation result, and final source state.
 
@@ -59,7 +62,9 @@ The Inbox Ingester may update a destination within another role's ownership only
 
 Preserve the original source unchanged under `inbox/processed/`.
 
-Use a Markdown link or an equivalent project-supported reference from destination material when provenance would otherwise be unclear. A reference should identify the processed source path and, when useful, the specific section or claim that was ingested.
+Every destination document containing material source-derived claims must include an OKF `sources` entry whose `resource` identifies the processed source path. Use a stable source `id` when Markdown footnotes need to attribute individual claims.
+
+A normal Markdown link may supplement provenance when it improves navigation or makes the relationship clearer, but it does not replace required `sources` metadata.
 
 Do not present an external source claim as a project decision unless trusted context or the user explicitly establishes it as one.
 
@@ -85,7 +90,8 @@ Before marking a source processed, verify that:
 - every destination is clear and within the applied authority
 - material conflicts and ambiguities were surfaced
 - destination documents remain focused and discoverable
-- provenance is sufficient to trace newly ingested material
+- every changed non-reserved document follows the document metadata contract
+- OKF `sources` metadata is sufficient to trace material source-derived claims
 - affected indexes and links are accurate
 - validation succeeded
 - the original source is preserved without overwrite

@@ -3,7 +3,9 @@ type: Shared Instruction
 title: Knowledge Organization
 description: Rules for growing the trusted knowledge hierarchy from raw input into canonical, retrievable concepts.
 tags: [ava, knowledge, organization, retrieval, ingestion]
-timestamp: 2026-07-25T00:00:00Z
+generated:
+  by: agent:openai-chatgpt
+  at: 2026-07-26T14:41:00Z
 ---
 
 # Purpose
@@ -76,14 +78,16 @@ Treat each `index.md` as a local decision-tree node. An agent should be able to 
 
 # Concept documents
 
-Each non-reserved Markdown file under `knowledge/` represents one canonical concept and must follow the project's OKF-compatible document rules.
+Each non-reserved Markdown file under `knowledge/` represents one canonical concept and must follow [Document metadata](document-metadata.md).
 
 Concept documents should:
 
 - state what the concept represents
+- use the most descriptive project-defined `type` supported by the available context
 - contain focused, structured Markdown
 - link to related concepts where relationships cross the primary hierarchy
 - preserve unknown frontmatter fields when edited
+- record material source-derived claims through OKF `sources` metadata
 - avoid copying the same authoritative information into several concepts
 
 # Raw sources and provenance
@@ -93,8 +97,9 @@ Raw files, prompts, exports, and images are source material, not canonical knowl
 Preserve raw source material through the inbox lifecycle. When useful information is ingested:
 
 - write or update the relevant canonical concept
-- retain enough provenance to trace material claims to their source
-- link to the preserved source when the relationship would otherwise be unclear
+- add OKF `sources` metadata that references the preserved source
+- use source identifiers with Markdown footnotes when individual claims need precise attribution
+- retain contextual Markdown links when they improve navigation or make the relationship clearer
 - describe relevant information from binary sources, such as images, in a retrievable Markdown concept rather than relying on the binary alone
 
 A processed source remains evidence. It does not automatically become trusted project guidance.
@@ -116,9 +121,10 @@ Do not create logs speculatively or record routine content edits.
 
 After adding or moving knowledge, verify that:
 
+- every non-reserved document follows the document metadata contract
 - the canonical concept has one clear primary location
 - no existing concept represents the same identity
 - every affected directory has an accurate `index.md`
 - cross-scope relationships use links instead of duplication
-- provenance is sufficient for material sourced claims
+- OKF provenance is sufficient for material source-derived claims
 - any required scoped log was updated
