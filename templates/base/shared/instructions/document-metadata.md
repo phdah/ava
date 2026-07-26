@@ -5,7 +5,7 @@ description: Required metadata, document types, routing references, provenance, 
 tags: [ava, metadata, okf, documents, compatibility]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-26T14:41:00Z
+  at: 2026-07-26T22:20:00Z
 ---
 
 # Purpose
@@ -289,7 +289,7 @@ title: Configure project
 description: Configures the project.
 primary_role:
   - /roles/project-steward/role.md
-  - /roles/role-generator/role.md
+  - /roles/role-manager/role.md
 ---
 ```
 
