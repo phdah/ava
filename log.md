@@ -4,6 +4,7 @@ This log records major conceptual and structural changes across the Ava reposito
 
 ## 2026-07-26
 
+* **OKF v0.2 metadata contract**: Adopted OKF version 0.2 for the repository and initialized projects. Defined open document types, required Ava semantic metadata, prose-based role routing, single-primary-role workflow metadata, OKF provenance and verification, lifecycle and replacement rules, forward-compatible unknown fields, validation severity, and Obsidian-compatible authoring conventions.
 * **Initialized project structure**: Finalized the minimal `ava init` tree with stable top-level locations for the agent router, inbox, knowledge, roles, workflows, and shared context. The structure remains extensible beneath those locations, creates logs only when needed, and requires migration support only when stable initialized paths are changed or repurposed.
 * **Index hierarchy**: Defined `index.md` files as direct-child navigation only. Child directories own discovery of their descendants, preventing ancestor indexes from flattening or duplicating deeper navigation.
 * **Template navigation**: Added `templates/base/index.md` and reduced `templates/index.md` to reference only its direct `base/` child.
@@ -22,7 +23,7 @@ This log records major conceptual and structural changes across the Ava reposito
 * **Inbox ingestion**: Added the initialized-project inbox lifecycle and Inbox Ingester role with untrusted-input handling, provenance preservation, conflict escalation, and post-ingestion source retention.
 * **Workspace abstraction**: Introduced a provider contract so Ava semantic operations can work with GitHub, local filesystems, or future backends without coupling the format to storage.
 * **GitHub integration**: Defined client-coordinated GitHub MCP, Ava-managed GitHub provider, and host-supported delegation as distinct integration modes.
-* **Roadmap**: Expanded the implementation roadmap to cover workflows, providers, semantic tools, change planning, validation, application services, MCP, CLI, and migrations.
+* **Roadmap**: Expanded the implementation roadmap to cover workflows, providers, semantic tools, change planning, validation, application services, MCP, CLI, testing, compatibility, and migration work.
 
 ## 2026-07-23
 
