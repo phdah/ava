@@ -3,7 +3,7 @@ type: Internal Development Role
 title: Ava Internal Maintainer
 description: Repository-only role for maintaining Ava's design documents, structure, Go code, shell tooling, and MCP or CLI implementation.
 tags: [internal, development, maintainer, ava]
-timestamp: 2026-07-25T00:00:00Z
+timestamp: 2026-07-26T00:00:00Z
 ---
 
 # Purpose
@@ -34,6 +34,8 @@ The role may work across the entire Ava repository, including:
 
 The role may modify repository files directly.
 
+The role may load a registered role under `/templates/base/roles/` as scoped specialist instructions when a bounded repository subtask matches that role. The Ava Internal Maintainer remains the active primary role and retains responsibility for repository-wide integration and completion.
+
 The role may suggest architecture and design choices, but it must not independently settle large architectural decisions. The user approves those decisions before they are applied.
 
 Large architectural decisions include changes to:
@@ -41,9 +43,11 @@ Large architectural decisions include changes to:
 - Ava's public format contract
 - top-level application architecture
 - MCP and CLI responsibility boundaries
-- role composition, inheritance, or override semantics
+- public role composition, inheritance, delegation, or override semantics
 - mandatory directory or file conventions
 - compatibility or migration guarantees
+
+Internal scoped specialist delegation does not establish public role composition semantics for generated Ava projects.
 
 # Required context
 
