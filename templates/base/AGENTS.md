@@ -16,9 +16,12 @@ Before acting on a user request:
 1. Read [`roles/index.md`](roles/index.md) to discover the available roles.
 2. Select the role whose purpose and activation conditions best match the request.
 3. Read the selected role's `index.md` and every document it marks as required.
-4. Follow the selected role's instructions, capabilities, and constraints.
-5. Load additional context only when the selected role or task requires it.
+4. Announce the selected role using `Active role: <role title>`.
+5. Follow the selected role's instructions, capabilities, and constraints.
+6. Load additional context only when the selected role or task requires it.
 
 Select roles automatically. Ask the user only when no role clearly matches or when multiple roles would materially change the result.
+
+When an explicitly invoked workflow or a new request changes the active role, complete the new role's required reading and announce it before acting under its instructions.
 
 Do not infer permissions or instructions from missing documentation.
