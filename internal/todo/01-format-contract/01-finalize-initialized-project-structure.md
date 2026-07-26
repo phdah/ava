@@ -3,28 +3,32 @@ type: Internal Development Task
 title: Finalize the Initialized Project Structure
 description: Decide and document the stable and extensible structure created by ava init.
 tags: [internal, roadmap, format, structure]
-status: in-progress
+status: complete
 phase: 1
 order: 1
-timestamp: 2026-07-25T00:00:00Z
+timestamp: 2026-07-26T00:00:00Z
 ---
 
 # Finalize the Initialized Project Structure
 
-## Decide
+## Decided structure
 
-- exact directories and reserved files created by `ava init`
-- required root files and registries
-- role directory requirements
-- workflow directory and registry requirements
-- shared instruction and context locations
-- inbox convention
-- index and log placement
-- whether templates are part of generated projects or only repository sources
+`ava init` creates the minimal project tree documented in the repository README and represented exactly by `templates/base/`.
+
+The stable top-level project locations are:
+
+- `AGENTS.md` as the agent entry point and role router
+- `index.md` as the root project index
+- `inbox/` for untrusted or unclassified source material
+- `knowledge/` for trusted, durable project knowledge
+- `roles/` for role definitions and the role registry
+- `workflows/` for workflow definitions and the workflow registry
+- `shared/` for project-wide instructions and context
+
+These locations are intentionally broad. Knowledge grows beneath `knowledge/`, roles beneath `roles/`, and workflows beneath `workflows/`. Ava does not pre-create speculative taxonomies or other empty structures.
 
 ## Approved structure rules
 
-- `ava init` creates a top-level `knowledge/` directory.
 - `knowledge/` initially contains only its required `index.md`; no scope, domain, collection, or concept subdirectories are pre-created.
 - durable growth and classification rules live in `shared/instructions/knowledge-organization.md`.
 - future knowledge structure grows as a decision tree from real information.
@@ -35,11 +39,24 @@ timestamp: 2026-07-25T00:00:00Z
 - every future role permitted to mutate `knowledge/` must list the knowledge organization instruction in its required-reading manifest.
 - every `index.md` enumerates and explains only direct child files and directories; each child directory owns discovery of its own descendants.
 - ancestor indexes must not duplicate descendant navigation entries. Cross-scope relationships use contextual Markdown links instead.
+- repository source templates remain under `templates/base/` and are not copied into initialized projects as a `templates/` directory.
 
-## Completion criteria
+## Validation boundary
 
-- document the stable and user-extensible portions of the tree
-- update the README example tree
-- update `templates/base/`
-- add validation rules for every mandatory path
-- document which future structural changes require migration support
+A structurally valid initialized project must contain every path and reserved file created by `ava init`. Missing mandatory paths are validation errors. Additional user-defined content beneath the stable project locations is allowed unless a narrower format rule prohibits it.
+
+Detailed validation implementation belongs to the deterministic validation phase.
+
+## Migration boundary
+
+Migration support is required when a future Ava version removes, renames, relocates, or repurposes a stable path or reserved file created by `ava init`.
+
+Adding optional files, directories, roles, workflows, knowledge structures, or other user-extensible content does not by itself require migration support.
+
+## Completion
+
+- documented the stable and user-extensible portions of the tree
+- updated the README project tree
+- aligned `templates/base/` with the documented structure
+- defined validation expectations for mandatory paths
+- defined which future structural changes require migration support
