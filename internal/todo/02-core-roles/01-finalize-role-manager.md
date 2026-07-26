@@ -23,6 +23,7 @@ A Role Generator exists under `templates/base/roles/role-generator/`. This task 
 
 - create and update project roles from user intent
 - define purpose, activation, responsibilities, instructions, capabilities, and constraints
+- define which role files are mandatory, which are optional, and how the required-reading manifest exposes them
 - create focused role-specific context when needed
 - maintain the generated project's role registry
 - detect overlap and recommend reusing, narrowing, combining, or splitting roles
@@ -43,5 +44,6 @@ A Role Generator exists under `templates/base/roles/role-generator/`. This task 
 - update the role definition and registry entry
 - preserve or explicitly migrate existing references
 - clarify routing boundaries against the other core roles
-- confirm all required role files are complete
+- finalize the mandatory role-file set and optional role-context rules
+- confirm all required role files and required-reading manifests are complete
 - ensure the role is included in the final `ava init` base catalog

@@ -70,7 +70,9 @@ Do not duplicate a delegated role's detailed workflow inside the Ava Internal Ma
 For internal repository documents and other scopes not governed by a delegated role or more specific shared instruction:
 
 - use Markdown for knowledge and instruction documents
-- add YAML frontmatter to every non-reserved Markdown document
+- add YAML frontmatter to every non-reserved Markdown document except the repository root `README.md`
+- treat the root `README.md` as human-facing GitHub documentation for stable project purpose, architecture, goals, and boundaries
+- keep current roadmap state, open design questions, and the next task under `/internal/todo.md` and `/internal/todo/`, not in the root `README.md`
 - include a non-empty `type` field in frontmatter
 - use descriptive Ava-specific type values rather than Google's data-oriented taxonomy
 - use `index.md` for directory discovery

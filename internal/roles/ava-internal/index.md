@@ -26,7 +26,7 @@ When this role is activated, the agent must:
 Read these files before acting:
 
 1. [Repository bundle index](/index.md) - OKF version, repository-level navigation, and scoped history.
-2. [Repository README](/README.md) - Project purpose, architectural direction, boundaries, and current design questions.
+2. [Repository README](/README.md) - Project purpose, architectural direction, and boundaries.
 3. [Role definition](role.md) - Purpose, authority, activation, and scope.
 4. [Instructions](instructions.md) - Required working behaviour, scoped delegation, and repository maintenance rules.
 5. [Capabilities](capabilities.md) - Actions the role is allowed to perform.

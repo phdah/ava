@@ -310,27 +310,3 @@ The implementation roadmap is tracked in [`internal/todo.md`](internal/todo.md).
 7. shared application services
 8. MCP and companion CLI implementation
 9. testing, compatibility, and migrations
-
-## Open design questions
-
-The following should be resolved before implementing the MCP server:
-
-- Which files are mandatory for every role?
-- May a workflow delegate to supporting roles, or only activate one primary role?
-- How should workflow inputs and outputs be represented?
-- How should role inheritance or composition work?
-- How are shared instructions overridden at narrower scopes?
-- Which changes require a `log.md` entry?
-- How strict should validation be when links or optional context are missing?
-- Which MCP tools should be resources, read operations, or mutating operations?
-- Which generic workspace operations, if any, should be public Ava MCP tools?
-- How should a client declare or discover the active workspace provider?
-- How should GitHub MCP delegation differ from a direct GitHub API provider?
-- How should provider capabilities, authentication, concurrency, and versioning be represented?
-- How should Ava determine the active project?
-- Should the MCP server manage one workspace or multiple workspaces?
-- Which MCP operations should also be exposed through the CLI?
-
-## Current phase
-
-The current objective is to refine the purpose, terminology, hierarchy, role and workflow model, workspace abstraction, traversal rules, and MCP interface. The base file structure, MCP server, and optional CLI should only be implemented after those concepts are sufficiently clear.

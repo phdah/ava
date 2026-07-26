@@ -1,7 +1,7 @@
 ---
 type: Internal Development Task
 title: Define the Workspace-Provider Contract
-description: Define provider-independent workspace capabilities, safety, concurrency, and errors.
+description: Define provider-independent workspace capabilities, project selection, safety, concurrency, and errors.
 tags: [internal, roadmap, workspace, providers]
 status: pending
 phase: 4
@@ -32,6 +32,9 @@ The contract should describe behavior rather than one provider's API.
 ## Decide
 
 - workspace identity and root selection
+- how Ava discovers or receives the active project
+- whether a server or client session addresses one workspace or multiple named workspaces
+- how operations select their workspace when multiple workspaces are supported
 - path normalization
 - capability discovery
 - read-only versus writable providers
@@ -48,5 +51,6 @@ The contract should describe behavior rather than one provider's API.
 
 - define a Go interface or equivalent contract
 - define required and optional capabilities
+- define active-project and workspace-selection semantics
 - document provider-independent semantics
 - add conformance tests usable by future providers
