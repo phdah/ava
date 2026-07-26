@@ -13,17 +13,21 @@ application service -> operates through a workspace provider
 ```
 
 - Roles contain durable purpose, responsibilities, authority, instructions, capabilities, constraints, and required context.
+- Ava initially supports exactly one active role. Roles do not inherit, compose, activate supporting roles, or delegate authority.
 - Workflows are reusable predefined prompts for a procedure or outcome.
-- A workflow names one primary role and should not duplicate that role's base instructions.
+- A workflow names one primary role and should not duplicate that role's base instructions or delegate to another role.
+- Instruction scope follows explicit activation and references rather than directory depth.
+- Narrower ordinary instructions may refine broader behaviour, but capabilities and constraints remain cumulative and non-expandable at narrower scopes.
 - Workflow triggers may be interactive, scheduled, or event-driven, but Ava is not initially the scheduler or agent runtime.
 - Deterministic structural work should be implemented as Ava application or MCP capabilities rather than encoded as separate agent roles.
 - Generic file and version-control operations should be supplied by a workspace provider rather than hard-coded to one backend.
 - Ava's public MCP tools should primarily expose semantic platform operations rather than duplicate every generic file operation.
+- Scoped logs record major conceptual or structural changes at the nearest owning scope; routine edits remain in Git history only.
 - Internal Ava development roles remain separate from all roles generated into initialized projects.
 
 ## Roadmap order
 
-1. [Format contract and base structure](01-format-contract/) - 2 of 3 complete
+1. [Format contract and base structure](01-format-contract/) - 3 of 3 complete
 2. [Core roles for initialized projects](02-core-roles/) - 2 of 4 complete
 3. [Workflow system](03-workflows/) - 0 of 4 complete
 4. [Workspace access and provider abstraction](04-workspace-provider/) - 0 of 3 complete

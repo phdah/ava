@@ -6,7 +6,7 @@ Finalize the stable format boundaries before implementation establishes public b
 
 1. [x] [Finalize the initialized project structure](01-finalize-initialized-project-structure.md)
 2. [x] [Finalize metadata and document-type rules](02-finalize-metadata-and-document-type-rules.md)
-3. [ ] [Define instruction precedence and composition](03-define-instruction-precedence-and-composition.md)
+3. [x] [Define instruction precedence and composition](03-define-instruction-precedence-and-composition.md)
 
 ## Next phase
 

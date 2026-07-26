@@ -43,6 +43,8 @@ role -> uses Ava semantic tools and workspace capabilities
 
 A workflow should not duplicate the role's durable instructions. It should define the procedure-specific request, inputs, trigger information, operating mode, and expected output. The selected role supplies the stable behavior and authority under which the workflow runs.
 
+Ava initially permits exactly one active role. Roles do not inherit, compose, activate supporting roles, or delegate authority. Workflows may refine ordinary role behaviour for a bounded procedure, but they cannot expand the role's capabilities or weaken active constraints.
+
 Examples:
 
 ```text
@@ -66,11 +68,14 @@ Each initialized project has a root `AGENTS.md` file that acts as the agent entr
 The hierarchy should support progressive disclosure:
 
 1. An agent begins at the root `AGENTS.md` entry point.
-2. The router points to the available roles and shared instructions.
-3. A role-level index identifies the files required for that role.
-4. A workflow provides a focused predefined prompt and names its primary role.
-5. Role and workflow files link to more specific context only when it is relevant.
-6. The agent avoids loading unrelated material unless instructed to do so.
+2. The router loads the shared instruction-resolution contract.
+3. The router points to the available roles and other applicable shared instructions.
+4. A role-level index identifies the files required for that role.
+5. A workflow provides a focused predefined prompt and names its primary role.
+6. Role and workflow files link to more specific context only when it is relevant.
+7. The agent avoids loading unrelated material unless instructed to do so.
+
+Instruction scope follows this explicit activation chain. A file is not narrower or more authoritative merely because it is located deeper in the directory tree.
 
 This should keep instructions discoverable without forcing every agent to read the entire repository for every task.
 
@@ -235,6 +240,8 @@ agent-platform/
     |-- index.md
     `-- instructions/
         |-- index.md
+        |-- instruction-resolution.md
+        |-- scoped-history.md
         |-- document-metadata.md
         `-- knowledge-organization.md
 ```
@@ -246,18 +253,21 @@ The top-level directories are intentionally broad and extensible. Knowledge is o
 An initialized platform should provide deterministic guidance for how an agent reads it:
 
 1. Automatically load the root `AGENTS.md` file.
-2. Determine whether the request invokes a registered workflow or is a free-form request.
-3. For a workflow, resolve its declared primary role.
-4. Otherwise, read the role registry and select the role whose purpose and activation conditions best match the request.
-5. Read that role's `index.md` and all documents marked as required.
+2. Read the shared instruction-resolution contract required by the router.
+3. Determine whether the request invokes a registered workflow or is a free-form request.
+4. For a workflow, resolve its declared primary role. Otherwise, select one role from the role registry by purpose and activation conditions.
+5. Read the active role's `index.md` and all documents marked as required.
 6. Read the workflow prompt and workflow-specific context when a workflow is active.
-7. Follow links to task-specific context when needed.
-8. Prefer the nearest applicable instruction when scopes overlap.
-9. Consult the relevant `log.md` when change history or recency matters.
-10. Ask the user only when no role clearly matches or competing interpretations would materially change the result.
-11. Do not infer permission or capability from missing instructions.
+7. Follow explicit links to task-specific instructions and context only when the active task requires them.
+8. Resolve ordinary instruction overlap by explicit activation scope rather than directory depth.
+9. Keep capabilities and constraints cumulative. Narrower scopes may reduce authority but cannot grant missing capabilities or weaken broader constraints.
+10. Before modifying project files, read the scoped-history contract and determine whether the nearest relevant `log.md` must be created or updated.
+11. Ask the user when routing or instruction conflicts remain unresolved.
+12. Do not infer permission, capability, authority, or instructions from missing documentation.
 
-The traversal rules themselves should eventually be generated as part of the base platform and exposed through MCP discovery tools.
+The current user request supplies the immediate objective and narrowest procedural scope, but it remains bounded by the active role, project constraints, and available workspace capabilities.
+
+The traversal rules themselves should eventually be exposed through MCP discovery and validation tools.
 
 ## Design goals
 
