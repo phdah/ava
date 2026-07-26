@@ -315,7 +315,6 @@ The following should be resolved before implementing the MCP server:
 - Which changes require a `log.md` entry?
 - How strict should validation be when links or optional context are missing?
 - How should deprecated roles, workflows, and instructions be represented?
-- Which parts of the structure are stable format contracts and which remain user-defined?
 - Which MCP tools should be resources, read operations, or mutating operations?
 - Which generic workspace operations, if any, should be public Ava MCP tools?
 - How should a client declare or discover the active workspace provider?
