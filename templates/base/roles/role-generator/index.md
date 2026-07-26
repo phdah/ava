@@ -10,6 +10,7 @@ Before acting, read every file under **Required reading** in the listed order.
 2. [Instructions](instructions.md) - Required workflow for creating or changing a role.
 3. [Capabilities](capabilities.md) - Actions this role may perform.
 4. [Constraints](constraints.md) - Boundaries this role must preserve.
+5. [Document metadata](../../shared/instructions/document-metadata.md) - Required metadata, document types, provenance, lifecycle, and compatibility rules.
 
 ## Additional context
 
