@@ -51,10 +51,13 @@ When a bounded part of the task matches a role registered under `/templates/base
 2. select the role whose routing conditions match the bounded subtask
 3. read the selected role's `index.md` and every document it marks as required
 4. resolve role-relative paths from `/templates/base/` as the delegated role's project root
-5. use the delegated role's workflow and domain instructions only for that bounded subtask
-6. apply only actions permitted by both the Ava Internal Maintainer and delegated role
-7. preserve every constraint from both roles
-8. return control to the Ava Internal Maintainer for repository-wide integration, internal planning state, indexes, logs, and completion reporting
+5. announce `Active primary role: Ava Internal Maintainer` and `Delegated specialist: <role title>` before the specialist instructions affect the work
+6. use the delegated role's workflow and domain instructions only for that bounded subtask
+7. apply only actions permitted by both the Ava Internal Maintainer and delegated role
+8. preserve every constraint from both roles
+9. return control to the Ava Internal Maintainer for repository-wide integration, internal planning state, indexes, logs, and completion reporting
+
+Announce every newly delegated specialist before loading its instructions into the effective working context.
 
 Delegation loads specialist instructions into the current task. It does not activate a second primary role, start another agent, transfer repository authority, or permit the delegated role to delegate again.
 
