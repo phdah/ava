@@ -1,3 +1,7 @@
+---
+okf_version: "0.2"
+---
+
 # Ava Project
 
 This is the root index for an initialized Ava project. Follow the linked indexes progressively instead of scanning the complete project.
