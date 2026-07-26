@@ -1,12 +1,12 @@
-# Base Project Template
+# Ava Project
 
-This directory defines the initial filesystem content copied into a project by `ava init`.
+This is the root index for an initialized Ava project. Follow the linked indexes progressively instead of scanning the complete project.
 
 ## Contents
 
 - [Agent router](AGENTS.md) - Root entry point that selects and loads the role best matching a request.
 - [Inbox](inbox/) - Intake and lifecycle for untrusted or unclassified source material.
-- [Knowledge](knowledge/) - Minimal root for trusted, durable context that grows from real information.
-- [Roles](roles/) - Role registry and built-in project roles.
-- [Workflows](workflows/) - Registry for reusable procedures that activate one primary role.
+- [Knowledge](knowledge/) - Trusted, durable context organized from real project information.
+- [Roles](roles/) - Registry of available agent roles.
+- [Workflows](workflows/) - Registry of reusable procedures that activate one primary role.
 - [Shared context](shared/) - Project-wide instructions and context shared across roles and workflows.
