@@ -3,6 +3,9 @@ type: Role Instructions
 title: Role Generator Instructions
 description: Workflow for creating and maintaining Ava roles.
 tags: [ava, role, role-generator, instructions]
+generated:
+  by: agent:openai-chatgpt
+  at: 2026-07-26T14:41:00Z
 ---
 
 # Working model
@@ -21,7 +24,7 @@ When creating a role:
 2. Determine the role's intended outcome, users, scope, and activation conditions.
 3. Identify material ambiguities or conflicts. Resolve them with the user before writing files.
 4. Choose a short, descriptive, lowercase directory name using hyphens.
-5. Create the required role files:
+5. Create the required role files with metadata that follows the document metadata contract:
    - `index.md`
    - `role.md`
    - `instructions.md`
@@ -29,7 +32,7 @@ When creating a role:
    - `constraints.md`
 6. Add role-specific context only when the role needs information that should not be loaded for every task.
 7. Add or update the role entry in `roles/index.md` with a concise description and explicit selection conditions.
-8. Verify links, required reading, routing clarity, and separation of responsibilities.
+8. Verify links, required reading, routing clarity, document metadata, and separation of responsibilities.
 9. Report what was created and identify any unresolved decisions.
 
 # Role modification workflow
@@ -39,7 +42,7 @@ When modifying an existing role:
 1. Read the role's `index.md` and every required file.
 2. Read relevant role-specific context and nearby registry entries when the change affects routing or overlap.
 3. Preserve existing decisions that the user has not asked to change.
-4. Apply the requested change consistently across all affected files.
+4. Apply the requested change consistently across all affected files while preserving unknown frontmatter fields.
 5. Update `roles/index.md` when the role's purpose or selection conditions changed.
 6. Remove obsolete instructions and links rather than leaving contradictory guidance.
 7. Verify the complete role after the change.
@@ -68,6 +71,8 @@ Use progressive disclosure:
 
 Any role permitted to create, update, move, merge, reorganize, or deprecate content under `knowledge/` must list [Knowledge organization](../../shared/instructions/knowledge-organization.md) under **Required reading** in its `index.md`.
 
+Any role permitted to create or update non-reserved Markdown documents must list [Document metadata](../../shared/instructions/document-metadata.md) under **Required reading** in its `index.md`.
+
 Do not rely only on shared or knowledge indexes to discover mandatory behaviour. A role's required-reading manifest must make every instruction necessary for exercising its authority deterministic.
 
 # Completion checks
@@ -76,7 +81,9 @@ Before completing role work, verify that:
 
 - the registry can route relevant requests to the role
 - the role's required-reading path is complete and deterministic
+- every role that creates or updates non-reserved Markdown requires the document metadata instruction
 - every role that mutates `knowledge/` requires the knowledge organization instruction
+- every non-reserved role document follows the document metadata contract
 - responsibilities, capabilities, and constraints do not contradict each other
 - permissions are explicit rather than inferred from missing text
 - optional context is discoverable without being loaded by default
