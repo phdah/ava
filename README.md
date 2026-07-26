@@ -142,7 +142,8 @@ The exact MCP tool names and command structure have not been decided, but Ava is
 
 1. **Platform initialization**
    - Create the minimal root structure for a new agent platform.
-   - Add the required entry points, indexes, registries, and change logs.
+   - Add the required entry points, indexes, and registries.
+   - Create scoped change logs only when meaningful conceptual or structural history needs to be preserved.
 
 2. **Role generation and selection**
    - Create a new agent role from a standard structure.
@@ -199,39 +200,36 @@ Ava is inspired by Google's [Open Knowledge Format](https://github.com/GoogleClo
 
 Ava will adapt these ideas for agent instructions rather than data catalog metadata. It does not need BigQuery-specific concepts, resource identifiers, or a fixed data-oriented taxonomy.
 
-A possible future structure could look like this:
+`ava init` creates a minimal project with stable top-level locations for intake, trusted knowledge, roles, workflows, and shared context:
 
 ```text
 agent-platform/
 |-- AGENTS.md
 |-- index.md
-|-- log.md
+|-- inbox/
+|   |-- index.md
+|   `-- processed/
+|       `-- index.md
+|-- knowledge/
+|   `-- index.md
 |-- roles/
 |   |-- index.md
-|   |-- log.md
-|   `-- <role>/
+|   `-- <built-in-role>/
 |       |-- index.md
-|       |-- log.md
 |       |-- role.md
 |       |-- instructions.md
 |       |-- capabilities.md
-|       |-- constraints.md
-|       `-- context/
-|           |-- index.md
-|           `-- ...
+|       `-- constraints.md
 |-- workflows/
-|   |-- index.md
-|   |-- log.md
-|   `-- <workflow>.md
-|-- shared/
-|   |-- index.md
-|   `-- ...
-`-- templates/
+|   `-- index.md
+`-- shared/
     |-- index.md
-    `-- ...
+    `-- instructions/
+        |-- index.md
+        `-- ...
 ```
 
-This tree is illustrative, not final. The repository structure should be decided before it becomes part of the Ava format contract.
+The top-level directories are intentionally broad and extensible. Knowledge is organized beneath `knowledge/`, workflows beneath `workflows/`, and roles beneath `roles/`. New subdirectories and documents are created only when real project content requires them. `log.md` files are not created by default, and repository source templates are not copied into initialized projects.
 
 ## Agent traversal model
 
@@ -306,7 +304,6 @@ The implementation roadmap is tracked in [`internal/todo.md`](internal/todo.md).
 
 The following should be resolved before implementing the MCP server:
 
-- What is the exact minimal directory tree created by project initialization?
 - Which files are mandatory for every role?
 - Which metadata fields are mandatory for every workflow?
 - Which YAML frontmatter fields are required?
@@ -315,7 +312,6 @@ The following should be resolved before implementing the MCP server:
 - How should workflow inputs and outputs be represented?
 - How should role inheritance or composition work?
 - How are shared instructions overridden at narrower scopes?
-- Should indexes and logs be fully generated, partially generated, or manually maintained?
 - Which changes require a `log.md` entry?
 - How strict should validation be when links or optional context are missing?
 - How should deprecated roles, workflows, and instructions be represented?
