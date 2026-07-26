@@ -17,6 +17,13 @@ timestamp: 2026-07-25T00:00:00Z
 - warning
 - recommendation
 
+## Decide
+
+- severity for broken mandatory paths and required-reading links
+- severity for broken optional contextual links
+- severity for missing optional context or indexes
+- when a missing reference invalidates a project versus producing a non-blocking finding
+
 ## Candidate output fields
 
 - rule identifier
@@ -25,3 +32,10 @@ timestamp: 2026-07-25T00:00:00Z
 - deterministic fix availability
 - semantic decision requirement
 - related role or workflow
+
+## Completion criteria
+
+- define stable severity semantics
+- distinguish required structure from optional context
+- provide representative findings for broken required and optional references
+- define the machine-readable finding shape

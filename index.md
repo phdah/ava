@@ -4,7 +4,7 @@ okf_version: "0.2"
 
 # Ava Knowledge Bundle
 
-* [Project overview](README.md) - Purpose, architecture, design goals, boundaries, and current design questions for Ava.
+* [Project overview](README.md) - Purpose, architecture, design goals, and boundaries for Ava.
 * [Generated project templates](templates/) - Source files copied into new Ava projects by `ava init`.
 * [Internal development](internal/) - Repository-only roles and instructions used to develop Ava itself.
 
