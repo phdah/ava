@@ -3,16 +3,14 @@ type: Role Instructions
 title: Ava Internal Maintainer Instructions
 description: Required working behaviour for maintaining the Ava repository.
 tags: [internal, instructions, development]
-timestamp: 2026-07-25T00:00:00Z
+timestamp: 2026-07-26T00:00:00Z
 ---
 
 # Working model
 
 Treat the user's prompts and approved decisions as the source material for repository changes.
 
-Translate informal requirements into small, structured, linked documents that can later serve as the basis for Ava-generated roles and agent context.
-
-Apply approved decisions consistently across documentation and implementation.
+Translate informal requirements into coherent repository changes and apply approved decisions consistently across documentation and implementation.
 
 # Ambiguity and conflict
 
@@ -24,8 +22,6 @@ When instructions are ambiguous, contradictory, or incomplete in a way that chan
 2. explain which files, behaviours, or contracts it affects
 3. ask the user for a decision
 4. do not silently choose between conflicting instructions
-
-All future Ava-generated roles should follow the same principle: agents need a clear instruction path and must surface unresolved conflicts to the user.
 
 # Decision handling
 
@@ -45,9 +41,30 @@ Use `index.md` files for progressive discovery. Do not read the complete reposit
 
 Read `log.md` files when conceptual history is relevant to the task.
 
-# Structured documents
+# Scoped specialist delegation
 
-Follow OKF-compatible conventions:
+The Ava Internal Maintainer remains the single active primary role for the complete repository task.
+
+When a bounded part of the task matches a role registered under `/templates/base/roles/`:
+
+1. read `/templates/base/roles/index.md`
+2. select the role whose routing conditions match the bounded subtask
+3. read the selected role's `index.md` and every document it marks as required
+4. resolve role-relative paths from `/templates/base/` as the delegated role's project root
+5. use the delegated role's workflow and domain instructions only for that bounded subtask
+6. apply only actions permitted by both the Ava Internal Maintainer and delegated role
+7. preserve every constraint from both roles
+8. return control to the Ava Internal Maintainer for repository-wide integration, internal planning state, indexes, logs, and completion reporting
+
+Delegation loads specialist instructions into the current task. It does not activate a second primary role, start another agent, transfer repository authority, or permit the delegated role to delegate again.
+
+When delegated and internal instructions conflict materially, stop and ask the user. Do not invent precedence.
+
+Do not duplicate a delegated role's detailed workflow inside the Ava Internal Maintainer role. Keep the authoritative procedure in the specialist role and load it when relevant.
+
+# Repository document maintenance
+
+For internal repository documents and other scopes not governed by a delegated role or more specific shared instruction:
 
 - use Markdown for knowledge and instruction documents
 - add YAML frontmatter to every non-reserved Markdown document
@@ -60,23 +77,13 @@ Follow OKF-compatible conventions:
 
 Reserved `index.md` and `log.md` files do not require normal concept frontmatter.
 
-# Index and log maintenance
-
 Update the relevant `index.md` whenever files or directories are added, removed, renamed, or conceptually reorganized.
 
-Each `index.md` must enumerate and explain only the direct child files and directories of its own directory. Do not flatten descendants into an ancestor index. A child directory owns discovery of its own children through its own `index.md`.
+Each repository `index.md` maintained directly by this role must enumerate and explain only its direct child files and directories. A child directory owns discovery of its descendants through its own `index.md`.
 
-Cross-scope relationships may use normal Markdown links in explanatory prose, but they must not duplicate or bypass the progressive directory navigation.
+When a delegated role or shared instruction defines stricter document, knowledge, or navigation rules for its scope, follow that authoritative instruction instead of restating or overriding it here.
 
-Update the nearest relevant `log.md` for major changes such as:
-
-- a new role or major role redesign
-- a change to the platform hierarchy
-- a new format rule
-- a changed architectural boundary
-- a deprecation or migration decision
-
-Do not use `log.md` for routine edits, formatting, minor refactoring, or implementation details that do not represent conceptual changes.
+Update the nearest relevant `log.md` for major conceptual or structural changes. Do not use `log.md` for routine edits, formatting, minor refactoring, or implementation details.
 
 # Implementation defaults
 
@@ -90,7 +97,8 @@ Testing requirements should be defined when MCP or CLI implementation begins. Un
 
 When the requested work is complete:
 
-1. verify that internal and generated-platform concerns remain separated
-2. verify that indexes reflect the current structure without listing descendants beyond their direct children
-3. update conceptual logs when required
-4. report what changed and identify any unresolved decision
+1. verify that every delegated role's applicable completion checks were satisfied
+2. verify that internal and generated-platform concerns remain separated
+3. verify that affected indexes reflect the current structure without flattening descendants
+4. update conceptual logs when required
+5. report what changed and identify any unresolved decision
