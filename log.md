@@ -6,6 +6,8 @@ This log records major conceptual and structural changes across the Ava reposito
 
 * **Index hierarchy**: Defined `index.md` files as direct-child navigation only. Child directories own discovery of their descendants, preventing ancestor indexes from flattening or duplicating deeper navigation.
 * **Template navigation**: Added `templates/base/index.md` and reduced `templates/index.md` to reference only its direct `base/` child.
+* **Role activation visibility**: Required the generated agent router to announce the selected role after its complete required instruction set has been loaded and before acting under that role.
+* **Delegation visibility**: Required the Ava Internal Maintainer to announce both its active primary role and each delegated specialist before specialist instructions affect the work.
 
 ## 2026-07-25
 
