@@ -3,7 +3,7 @@ type: Internal Development Plan
 title: Ava Internal To-Do List
 description: Stable entry point for Ava's ordered internal development roadmap and individual task files.
 tags: [internal, planning, roadmap, todo]
-timestamp: 2026-07-25T00:00:00Z
+timestamp: 2026-07-26T00:00:00Z
 ---
 
 # Ava Internal To-Do List
@@ -14,7 +14,7 @@ Read the [ordered roadmap](todo/index.md) to discover phases and individual task
 
 ## Current next task
 
-[Finalize the initialized project structure](todo/01-format-contract/01-finalize-initialized-project-structure.md).
+[Finalize metadata and document-type rules](todo/01-format-contract/02-finalize-metadata-and-document-type-rules.md).
 
 ## Working rule
 
