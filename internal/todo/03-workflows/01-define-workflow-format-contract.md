@@ -17,9 +17,8 @@ A workflow is a reusable predefined prompt that activates exactly one primary ro
 
 ## Decide
 
-- mandatory workflow metadata
+- mandatory workflow metadata beyond the established metadata contract
 - workflow identifier and title rules
-- primary role reference
 - prompt body representation
 - required and optional inputs
 - read-only, suggestion, and mutation modes
@@ -29,25 +28,26 @@ A workflow is a reusable predefined prompt that activates exactly one primary ro
 - whether workflows may reference supporting workflows
 - whether workflows may request explicit delegation to another role
 
-## Initial metadata direction
+## Established metadata constraints
+
+The completed metadata task already requires every workflow to use `type: Workflow`, provide `title` and `description`, and reference exactly one registered role through `primary_role`:
 
 ```yaml
 ---
-type: Agent Workflow
+type: Workflow
 title: Daily project maintenance
-role: project-steward
-mode: apply
-trigger:
-  type: schedule
-  expression: daily
+description: Performs a bounded recurring project maintenance procedure.
+primary_role: /roles/project-steward/role.md
+status: draft
 ---
 ```
 
-Trigger metadata is descriptive and portable. Ava should not initially execute schedules itself.
+Inputs, operating mode, expected output, and trigger information remain in structured Markdown until this task decides whether any of them need portable machine-readable fields. Trigger metadata, if introduced, is descriptive and portable. Ava should not initially execute schedules itself.
 
 ## Completion criteria
 
 - document the workflow schema
+- define input and expected-output representation
 - add workflow examples
 - define invalid and ambiguous cases
 - add workflow validation requirements
