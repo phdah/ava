@@ -23,7 +23,7 @@ application service -> operates through a workspace provider
 
 ## Roadmap order
 
-1. [Format contract and base structure](01-format-contract/) - 0 of 3 complete
+1. [Format contract and base structure](01-format-contract/) - 1 of 3 complete
 2. [Core roles for initialized projects](02-core-roles/) - 2 of 4 complete
 3. [Workflow system](03-workflows/) - 0 of 4 complete
 4. [Workspace access and provider abstraction](04-workspace-provider/) - 0 of 3 complete
