@@ -28,9 +28,18 @@ Read these files before acting:
 1. [Repository bundle index](/index.md) - OKF version, repository-level navigation, and scoped history.
 2. [Repository README](/README.md) - Project purpose, architectural direction, boundaries, and current design questions.
 3. [Role definition](role.md) - Purpose, authority, activation, and scope.
-4. [Instructions](instructions.md) - Required working behaviour and repository maintenance rules.
+4. [Instructions](instructions.md) - Required working behaviour, scoped delegation, and repository maintenance rules.
 5. [Capabilities](capabilities.md) - Actions the role is allowed to perform.
 6. [Constraints](constraints.md) - Actions and decisions the role must avoid or escalate.
+
+# Conditional specialist reading
+
+When a bounded part of the task matches a role in the generated base catalog, read:
+
+1. [Base role registry](/templates/base/roles/index.md) - Available specialist roles and their routing conditions.
+2. The selected role's `index.md` and every file it marks as required.
+
+Use the selected base role only as delegated specialist instructions under the procedure defined in [instructions.md](instructions.md). The Ava Internal Maintainer remains the active primary role.
 
 # Optional reading
 
