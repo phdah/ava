@@ -18,7 +18,7 @@ change-reviewer
 1. [x] [Finalize and rename the Role Generator as the Role Manager](01-finalize-role-manager.md)
 2. [x] [Create the Project Steward role](02-create-project-steward.md)
 3. [x] [Create the Inbox Ingester role and inbox convention](03-create-inbox-ingester.md)
-4. [ ] [Create the Change Reviewer role](04-create-change-reviewer.md)
+4. [x] [Create the Change Reviewer role](04-create-change-reviewer.md)
 
 ## Previous phase
 
