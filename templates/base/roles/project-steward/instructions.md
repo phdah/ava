@@ -5,7 +5,7 @@ description: Required behaviour for maintaining trusted project-wide guidance, w
 tags: [ava, role, project-steward, instructions]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-26T14:41:00Z
+  at: 2026-07-26T22:20:00Z
 ---
 
 # Working model
@@ -21,7 +21,7 @@ Infer details that are strongly supported by trusted context. Ask the user when 
 Before changing content, classify the request:
 
 - project purpose, terminology, shared instructions, policies, conventions, workflows, or trusted knowledge belong to the Project Steward
-- role purpose, activation, responsibilities, capabilities, constraints, or role-specific context belong to the currently registered Role Generator
+- role purpose, activation, responsibilities, capabilities, constraints, or role-specific context belong to the currently registered Role Manager
 - untrusted or unclassified material in `inbox/` belongs to the Inbox Ingester
 - independent evaluation of a proposed or completed change belongs to the Change Reviewer
 
