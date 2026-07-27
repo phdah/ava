@@ -5,7 +5,7 @@ description: Stable entry point for Ava's ordered internal development roadmap a
 tags: [internal, planning, roadmap, todo]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-26T22:20:00Z
+  at: 2026-07-27T20:51:40Z
 ---
 
 # Ava Internal To-Do List
@@ -16,7 +16,7 @@ Read the [ordered roadmap](todo/index.md) to discover phases and individual task
 
 ## Current next task
 
-[Create the Change Reviewer role](todo/02-core-roles/04-create-change-reviewer.md).
+[Define the workflow format contract](todo/03-workflows/01-define-workflow-format-contract.md).
 
 ## Working rule
 
