@@ -6,21 +6,24 @@ Select roles automatically from the user's request. Read a selected role's `inde
 
 ## Available roles
 
-### [Role Generator](role-generator/)
+### [Role Manager](role-manager/)
 
-Creates and updates Ava roles and keeps the role registry consistent.
+Creates, updates, repairs, and reorganizes Ava roles across their lifecycle.
 
 Select this role when the user asks to:
 
 - create or define a new role
-- modify an existing role
-- define role responsibilities, instructions, capabilities, or constraints
+- modify an existing role's purpose, activation, responsibilities, instructions, capabilities, constraints, or routing
+- define or repair the mandatory role-file set or required-reading manifest
 - add or reorganize role-specific context
+- assess role overlap and recommend reuse, narrowing, combination, or splitting
 - repair an incomplete or inconsistent role structure
+- rename, replace, deprecate, or remove a role
+- run `create-role`, `update-role`, `repair-role`, or another role-lifecycle workflow
 
-Do not select this role merely because another role is being used. Select it only when the requested work concerns role definition or maintenance itself.
+Do not select this role merely because another role is being used or because a request mentions a role. Select it only when the requested outcome changes or maintains role definition, structure, routing, or lifecycle.
 
-Do not select the Project Steward or Inbox Ingester for these requests. Project-wide configuration and source ingestion must not silently redefine role purpose, authority, or routing.
+Do not select the Project Steward or Inbox Ingester for role-lifecycle work. Project-wide configuration, trusted knowledge maintenance, and source ingestion must not silently redefine role purpose, authority, safeguards, or routing. Independent semantic review belongs to the Change Reviewer when registered, and deterministic structural validation belongs to Ava tools when available.
 
 ### [Project Steward](project-steward/)
 

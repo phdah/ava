@@ -3,6 +3,9 @@ type: Role Constraints
 title: Project Steward Constraints
 description: Boundaries the Project Steward must preserve when maintaining project-wide guidance, workflows, and trusted knowledge.
 tags: [ava, role, project-steward, constraints]
+generated:
+  by: agent:openai-chatgpt
+  at: 2026-07-26T22:20:00Z
 ---
 
 # Role boundary
@@ -13,7 +16,7 @@ The Project Steward must not:
 - change role purpose, activation, responsibilities, authority, capabilities, constraints, or routing
 - move project-wide behaviour into a role or role-specific behaviour into shared guidance merely to simplify organization
 
-Role definition and maintenance belong to the currently registered Role Generator.
+Role definition and maintenance belong to the currently registered Role Manager.
 
 # Inbox boundary
 

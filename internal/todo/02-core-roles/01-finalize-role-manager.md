@@ -3,10 +3,12 @@ type: Internal Development Task
 title: Finalize and Rename the Role Generator as the Role Manager
 description: Rename and broaden the existing role lifecycle role while preserving clear authority boundaries.
 tags: [internal, roadmap, roles, role-manager]
-status: pending
+status: complete
 phase: 2
 order: 1
-timestamp: 2026-07-25T00:00:00Z
+generated:
+  by: agent:openai-chatgpt
+  at: 2026-07-26T22:20:00Z
 ---
 
 # Finalize and Rename the Role Generator as the Role Manager
@@ -15,35 +17,32 @@ timestamp: 2026-07-25T00:00:00Z
 
 The role creates, updates, repairs, and reorganizes roles. "Role Manager" reflects that broader lifecycle more accurately than "Role Generator".
 
-## Current state
+## Applied decisions
 
-A Role Generator exists under `templates/base/roles/role-generator/`. This task includes reviewing it, renaming it, and updating all affected links and registry entries.
+- renamed the generated role from `roles/role-generator/` to `roles/role-manager/`
+- made role creation, updates, repair, reorganization, approved identity changes, deprecation, and removal one explicit lifecycle responsibility
+- retained the five-file mandatory role structure: `index.md`, `role.md`, `instructions.md`, `capabilities.md`, and `constraints.md`
+- required every role index to expose the complete mandatory reading set and any shared instructions needed for all uses of the role
+- made role-specific `context/` optional, indexed when present, and conditionally loaded through explicit links
+- made role-scoped `log.md` optional and governed by the scoped-history contract
+- added overlap decisions for reusing, narrowing, combining, splitting, or creating roles
+- kept project-wide configuration, general trusted knowledge maintenance, inbox ingestion, independent review, and deterministic validation outside Role Manager authority
+- defined the role as the primary authority for role-lifecycle workflows such as `create-role`, `update-role`, and `repair-role` without transferring ownership of general workflow definition
 
-## Intended responsibilities
+## Applied integration
 
-- create and update project roles from user intent
-- define purpose, activation, responsibilities, instructions, capabilities, and constraints
-- define which role files are mandatory, which are optional, and how the required-reading manifest exposes them
-- create focused role-specific context when needed
-- maintain the generated project's role registry
-- detect overlap and recommend reusing, narrowing, combining, or splitting roles
-- repair incomplete role structures within its existing scope
-- support role-related workflows such as `create-role`, `update-role`, and `repair-role`
+- replaced the Role Generator entry in the generated role registry with the Role Manager
+- migrated cross-role ownership references and shared metadata examples to the new role name and path
+- added a role-scoped log for the identity and lifecycle change
+- removed the obsolete `templates/base/roles/role-generator/` directory after migrating references
+- kept the Role Manager inside `templates/base/roles/`, so it remains part of the final `ava init` base catalog
 
-## Boundaries
+## Completion
 
-- must not define or change Ava's public format contract
-- must not silently decide destructive authority, security boundaries, or sensitive access
-- must not perform the normal work of the roles it creates
-- must remain distinct from project-wide configuration and general knowledge maintenance
-- should use deterministic Ava validation tools rather than reproducing link or schema validation in prose
-
-## Completion criteria
-
-- rename `templates/base/roles/role-generator/` to `templates/base/roles/role-manager/`
-- update the role definition and registry entry
-- preserve or explicitly migrate existing references
-- clarify routing boundaries against the other core roles
-- finalize the mandatory role-file set and optional role-context rules
-- confirm all required role files and required-reading manifests are complete
-- ensure the role is included in the final `ava init` base catalog
+- [x] renamed `templates/base/roles/role-generator/` to `templates/base/roles/role-manager/`
+- [x] updated the role definition and registry entry
+- [x] migrated existing references
+- [x] clarified routing boundaries against the other core roles
+- [x] finalized the mandatory role-file set and optional role-context rules
+- [x] confirmed the role's required files and required-reading manifest are complete
+- [x] ensured the role remains included in the final `ava init` base catalog

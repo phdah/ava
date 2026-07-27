@@ -3,6 +3,9 @@ type: Role Capabilities
 title: Project Steward Capabilities
 description: Actions the Project Steward may perform when maintaining project-wide guidance, workflows, and trusted knowledge.
 tags: [ava, role, project-steward, capabilities]
+generated:
+  by: agent:openai-chatgpt
+  at: 2026-07-26T22:20:00Z
 ---
 
 # Project configuration
@@ -48,7 +51,7 @@ The Project Steward may:
 
 The Project Steward may:
 
-- recommend that role-specific behaviour be handled by the currently registered Role Generator
+- recommend that role-specific behaviour be handled by the currently registered Role Manager
 - recommend inbox ingestion when material is untrusted or unclassified
 - recommend independent review when a change needs a separate consistency or authority check
 - surface policy, authority, deletion, or provenance decisions that require user approval
