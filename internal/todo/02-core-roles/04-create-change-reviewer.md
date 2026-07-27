@@ -3,10 +3,12 @@ type: Internal Development Task
 title: Create the Change Reviewer Role
 description: Define an independent semantic review role with read-only authority by default.
 tags: [internal, roadmap, roles, review]
-status: pending
+status: complete
 phase: 2
 order: 4
-timestamp: 2026-07-25T00:00:00Z
+generated:
+  by: agent:openai-chatgpt
+  at: 2026-07-27T20:51:40Z
 ---
 
 # Create the Change Reviewer Role
@@ -47,3 +49,7 @@ Ava projects need an independent role that can evaluate changes without being th
 - define practical independence requirements
 - add clear routing conditions for review requests
 - distinguish semantic review from deterministic structural validation
+
+## Implemented outcome
+
+The role is strictly read-only and reports evidence-based semantic findings without applying remediation. It defines independent, isolated, and reduced-independence review contexts, requires a separate role transition for corrections, and leaves review workflow definitions to the workflow-system phase.
