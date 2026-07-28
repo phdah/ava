@@ -20,7 +20,7 @@ The canonical workflow registry begins at `/workflows/index.md`.
 
 A workflow is registered only when all of these conditions hold:
 
-- it is a Markdown file beneath `/workflows/`
+- it is a non-reserved Markdown document with `type: Workflow` beneath `/workflows/`
 - it is reachable by following workflow discovery links from `/workflows/index.md`
 - every traversed `index.md` lists only its direct child files and directories
 - the workflow follows the shared [workflow format](workflow-format.md)
@@ -68,18 +68,17 @@ When no workflow is explicitly invoked, the router must not guess a workflow. It
 
 # Workflow-driven routing
 
-For an explicitly invoked workflow, the router must perform these steps in order:
+After the root router has loaded the instruction-resolution and workflow-routing contracts, an explicitly invoked workflow must be processed in this order:
 
 1. Resolve the invocation through the workflow registry.
 2. Confirm that the workflow is registered and not deprecated.
 3. Validate the workflow metadata and body against the workflow-format contract.
 4. Resolve `primary_role` to exactly one registered, non-deprecated `role.md` document.
-5. Load the shared instruction-resolution contract.
-6. Read the selected role's `index.md` and every document it marks as required.
-7. Announce `Active role: <role title>` after the role's complete required reading has been loaded.
-8. Load the workflow document and every valid link in its optional `Required context` section.
-9. Resolve the workflow inputs supplied by the invocation.
-10. Execute the workflow within its declared mode, the active role's authority, cumulative constraints, the user's approved scope, and available workspace capabilities.
+5. Read the selected role's `index.md` and every document it marks as required.
+6. Announce `Active role: <role title>` after the role's complete required reading has been loaded.
+7. Load the workflow document and every valid link in its optional `Required context` section.
+8. Resolve the workflow inputs supplied by the invocation.
+9. Execute the workflow within its declared mode, the active role's authority, cumulative constraints, the user's approved scope, and available workspace capabilities.
 
 The workflow remains the active procedural scope for the duration of the invocation. It does not replace the role as the authority boundary.
 
