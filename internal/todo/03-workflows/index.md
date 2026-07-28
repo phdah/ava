@@ -4,7 +4,7 @@ Define workflows as focused predefined prompts that activate exactly one primary
 
 ## Tasks
 
-1. [ ] [Define the workflow format contract](01-define-workflow-format-contract.md)
+1. [x] [Define the workflow format contract](01-define-workflow-format-contract.md)
 2. [ ] [Define the workflow registry and routing contract](02-define-workflow-registry-and-routing.md)
 3. [ ] [Create the initial built-in workflow catalog](03-create-built-in-workflow-catalog.md)
 4. [ ] [Define workflow trigger portability](04-define-workflow-trigger-portability.md)
