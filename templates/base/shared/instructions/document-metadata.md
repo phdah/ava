@@ -5,7 +5,7 @@ description: Required metadata, document types, routing references, provenance, 
 tags: [ava, metadata, okf, documents, compatibility]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-26T22:20:00Z
+  at: 2026-07-28T10:00:00Z
 ---
 
 # Purpose
@@ -132,6 +132,7 @@ type: Workflow
 title: Configure project
 description: Establishes or clarifies project-wide purpose and shared guidance.
 primary_role: /roles/project-steward/role.md
+mode: mutation
 status: stable
 ---
 ```
@@ -139,10 +140,11 @@ status: stable
 Rules:
 
 - `primary_role` is required.
-- It must be a bundle-root-relative path to exactly one registered role document.
+- It must be a bundle-root-relative path to exactly one registered `role.md` document.
+- `mode` is required and must be `read-only`, `suggestion`, or `mutation`.
 - The workflow file path is the workflow identity.
-- Inputs, operating mode, expected output, and trigger information remain in structured Markdown until a later workflow task defines a machine schema.
 - A workflow must not duplicate the primary role's durable instructions.
+- The complete body structure, input representation, mode semantics, expected output, context links, composition boundaries, and validation rules are defined by [Workflow format](workflow-format.md).
 
 # Provenance and trust
 
@@ -210,6 +212,8 @@ Treat these as errors:
 - broken required-reading paths
 - missing `title` or `description` on an Ava-controlled semantic document
 - workflow `primary_role` missing, malformed, unresolved, or referencing more than one role
+- workflow `mode` missing or unsupported
+- workflow body structure or semantics that violate the workflow-format contract
 
 Treat these as warnings or non-blocking notices:
 
@@ -290,6 +294,7 @@ description: Configures the project.
 primary_role:
   - /roles/project-steward/role.md
   - /roles/role-manager/role.md
+mode: mutation
 ---
 ```
 

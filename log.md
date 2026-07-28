@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-07-28
+
+* **Workflow format contract**: Defined workflows as path-identified Markdown prompts with one `primary_role`, a required `read-only`, `suggestion`, or `mutation` mode, structured inputs, optional required-context links, ordered procedure and expected-output sections, explicit composition boundaries, and validation rules. Trigger metadata remains deferred to the dedicated portability task.
+
 ## 2026-07-26
 
 * **Instruction resolution and composition**: Defined instruction scope through explicit activation rather than directory depth. Established one active primary role, prohibited initial role inheritance, composition, supporting-role activation, and delegation, allowed narrower ordinary instructions to refine broader behaviour only within their active scope, and made capabilities and constraints cumulative and non-expandable at narrower scopes.
