@@ -16,7 +16,7 @@ Read the [ordered roadmap](todo/index.md) to discover phases and individual task
 
 ## Current next task
 
-[Define workflow trigger portability](todo/03-workflows/04-define-workflow-trigger-portability.md).
+[Review workflow purpose and built-in catalog](todo/03-workflows/04-review-workflow-purpose-and-built-in-catalog.md).
 
 ## Working rule
 
