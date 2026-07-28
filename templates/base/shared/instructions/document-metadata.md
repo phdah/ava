@@ -5,7 +5,7 @@ description: Required metadata, document types, routing references, provenance, 
 tags: [ava, metadata, okf, documents, compatibility]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-28T10:00:00Z
+  at: 2026-07-28T10:32:00Z
 ---
 
 # Purpose
@@ -35,7 +35,7 @@ An OKF-conformant project is Ava-valid when its Ava-controlled structures are al
 - mandatory initialized paths and reserved files exist
 - known Ava semantic documents contain their required fields
 - role required-reading paths resolve
-- workflows reference exactly one registered primary role
+- workflows are registered and reference exactly one registered, non-deprecated primary role
 - known Ava metadata fields have valid values and shapes
 
 A document may remain a valid generic OKF concept even when Ava does not assign special behaviour to its type.
@@ -116,11 +116,13 @@ Existing `timestamp` fields are legacy metadata. Preserve them until the documen
 
 # Role routing
 
-Role routing remains semantic and prose-based.
+Role routing remains semantic and prose-based for free-form requests.
 
 Do not add keyword lists, regular expressions, numeric priorities, confidence thresholds, or a routing rule language to role metadata.
 
-The root router reads `roles/index.md`, compares the request with each role's stated purpose and activation conditions, and selects the best match. A role's directory path is its stable identity, so a separate `role_id` is not required.
+The root router reads `roles/index.md`, compares a free-form request with each role's stated purpose and activation conditions, and selects the best match. A role's directory path is its stable identity, so a separate `role_id` is not required.
+
+Explicit workflow invocation bypasses free-form role selection and resolves the workflow's declared `primary_role` according to [Workflow registry and routing](workflow-routing.md).
 
 # Workflow metadata
 
@@ -140,11 +142,14 @@ status: stable
 Rules:
 
 - `primary_role` is required.
-- It must be a bundle-root-relative path to exactly one registered `role.md` document.
+- It must be a bundle-root-relative path to exactly one registered, non-deprecated `role.md` document.
 - `mode` is required and must be `read-only`, `suggestion`, or `mutation`.
 - The workflow file path is the workflow identity.
+- The workflow must be reachable through `/workflows/index.md` to be registered and invokable.
 - A workflow must not duplicate the primary role's durable instructions.
+- A deprecated workflow may declare `replaced_by`, but the router must report rather than automatically invoke the replacement.
 - The complete body structure, input representation, mode semantics, expected output, context links, composition boundaries, and validation rules are defined by [Workflow format](workflow-format.md).
+- Registry discovery, invocation identity, routing precedence, primary-role resolution, failure handling, and deprecation are defined by [Workflow registry and routing](workflow-routing.md).
 
 # Provenance and trust
 
@@ -191,6 +196,8 @@ replaced_by: /roles/project-steward/role.md
 
 `replaced_by` must be a bundle-root-relative path. Explain the deprecation rationale in the document body and record major lifecycle changes in the nearest relevant `log.md`.
 
+A replacement reference does not itself activate or authorize the replacement. In particular, workflow and role routing must not automatically follow `replaced_by`; the caller must explicitly select the replacement and the router must resolve it normally.
+
 Do not add `deprecated_at`, removal versions, or nested Ava lifecycle structures until a migration task requires them.
 
 # Forward compatibility
@@ -211,13 +218,17 @@ Treat these as errors:
 - missing mandatory initialized paths or reserved files
 - broken required-reading paths
 - missing `title` or `description` on an Ava-controlled semantic document
-- workflow `primary_role` missing, malformed, unresolved, or referencing more than one role
+- a workflow omitted from its registry path or referenced through a broken workflow index link
+- workflow `primary_role` missing, malformed, unresolved, unregistered, deprecated, or referencing more than one role
 - workflow `mode` missing or unsupported
 - workflow body structure or semantics that violate the workflow-format contract
+- invalid or automatically followed workflow or role `replaced_by` routing
 
 Treat these as warnings or non-blocking notices:
 
 - references to deprecated concepts
+- invocation of a draft workflow
+- multiple registered workflows sharing a filename stem
 - content past `stale_after`
 - broken optional contextual links
 - missing optional indexes outside mandatory initialized structure
@@ -255,6 +266,8 @@ status: deprecated
 replaced_by: /roles/project-steward/role.md
 ---
 ```
+
+The replacement is advisory. A router must not activate it automatically.
 
 ## Source-backed knowledge
 
@@ -298,7 +311,11 @@ mode: mutation
 ---
 ```
 
-Invalid because a workflow must reference exactly one primary role.
+Invalid because a workflow must reference exactly one role.
+
+## Unregistered workflow
+
+A valid-looking workflow file beneath `/workflows/` is not invokable when it is omitted from the workflow registry index hierarchy.
 
 ## Closed-taxonomy rejection
 
