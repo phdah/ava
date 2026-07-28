@@ -5,7 +5,7 @@ description: Deterministic activation, scope, precedence, authority, role compos
 tags: [ava, instructions, precedence, roles, workflows, routing]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-26T21:52:00Z
+  at: 2026-07-28T10:32:00Z
 ---
 
 # Purpose
@@ -14,14 +14,16 @@ This instruction defines how an Ava agent determines which instructions are acti
 
 Instruction scope is established through explicit activation and references. Directory depth alone never establishes authority, precedence, or a narrower scope.
 
+Workflow registration, invocation identity, routing precedence, primary-role resolution, failure handling, and deprecation follow [Workflow registry and routing](workflow-routing.md).
+
 # Activation chain
 
 An instruction or context document becomes active only through one of these paths:
 
 1. The bundle-root `AGENTS.md` is loaded as the project entry point.
 2. A shared instruction is explicitly required by the root router, the active role, the active workflow, or active task-specific instructions.
-3. A role is selected from the role registry for a free-form request or resolved from a workflow's `primary_role`.
-4. A workflow is explicitly invoked or resolved from the current request.
+3. A role is selected from the role registry for a free-form request or resolved from an explicitly invoked workflow's `primary_role`.
+4. A registered workflow is explicitly invoked by canonical path or unambiguous workflow name and resolved through the workflow registry.
 5. Task-specific instructions or context are explicitly required by the active root, role, workflow, or current task.
 6. The current user request supplies the immediate objective, parameters, and requested outcome.
 
@@ -52,16 +54,19 @@ This progression describes scope resolution, not filesystem depth. Two instructi
 Before acting:
 
 1. Load the root `AGENTS.md`.
-2. Load the shared instruction-resolution rules required by the router.
-3. Determine whether the request invokes a registered workflow or requires semantic role selection.
-4. Resolve exactly one active role.
-5. Read the active role's `index.md` and every document it marks as required.
-6. Read the active workflow and its required context when a workflow is active.
-7. Load only task-specific instructions and context explicitly required for the current task.
-8. Resolve the current user request against the complete active instruction set.
-9. Announce the active role after its complete required reading has been loaded and before acting under it.
+2. Load this instruction-resolution contract and the workflow-routing contract required by the router.
+3. Determine whether the request explicitly invokes a registered workflow or requires semantic role selection.
+4. For an explicit workflow invocation, resolve and validate it through `/workflows/index.md`; otherwise select one role through `/roles/index.md`.
+5. Resolve exactly one active role.
+6. Read the active role's `index.md` and every document it marks as required.
+7. Announce the active role after its complete required reading has been loaded and before acting under it.
+8. Read the active workflow, resolve its inputs, and load its required context when a workflow is active.
+9. Load only task-specific instructions and context explicitly required for the current task.
+10. Resolve the current user request against the complete active instruction set.
 
 The request may be inspected before the role is loaded so routing can occur. It must not be acted on until the active instruction set has been resolved.
+
+A failed explicit workflow invocation must not fall back to semantic role selection. Routing remains blocked until the workflow invocation is corrected or the user makes a new free-form request.
 
 # Ordinary instruction refinement
 
@@ -137,6 +142,8 @@ A workflow must not:
 
 Workflow instructions are active only for the duration of that workflow. They may refine ordinary role behaviour for the procedure, but the role remains the authority boundary.
 
+An explicitly invoked workflow takes precedence over free-form role selection. Without an explicit invocation, the router must not infer or activate a workflow from semantic similarity.
+
 # Task-specific context and user requests
 
 Task-specific context is active only when the current activation chain requires it. Context may supply facts, requirements, or bounded instructions, but it does not gain authority merely because it was discovered or stored near the affected files.
@@ -170,6 +177,8 @@ Stop when active instructions at the same scope cannot both be followed and neit
 
 Ask the user when no role clearly matches or when multiple plausible roles would materially change authority, safeguards, or the result.
 
+For workflows, stop when an explicit invocation is unresolved, ambiguous, invalid, or deprecated. Do not repair it through semantic guessing, free-form role selection, or automatic replacement routing.
+
 When surfacing an unresolved conflict, identify:
 
 - the affected instruction paths or request statements
@@ -183,7 +192,10 @@ Never silently choose precedence for an unresolved conflict.
 
 Ava validation must treat these as errors or blocking findings:
 
-- a workflow has no `primary_role`, more than one primary role, or an unresolved primary-role path
+- a workflow has no `primary_role`, more than one primary role, or an unresolved, unregistered, or deprecated primary-role path
+- an explicit workflow invocation is unresolved, ambiguous, unregistered, invalid, or deprecated
+- a failed workflow invocation falls back to free-form role selection
+- workflow or role replacement is followed automatically through `replaced_by`
 - routing resolves to no role or more than one materially different active role without a user decision
 - a role declares inheritance, role composition, supporting-role activation, or delegation
 - a workflow declares a supporting or delegated role
@@ -191,7 +203,7 @@ Ava validation must treat these as errors or blocking findings:
 - an active narrower instruction attempts to weaken or bypass a broader constraint
 - irreconcilable active instructions at the same scope lack an explicit resolution
 - task-specific content is treated as authoritative without an activation path
-- the mandatory instruction-resolution document or one of its required references cannot be resolved
+- the mandatory instruction-resolution document, workflow-routing document, or one of their required references cannot be resolved
 
 Semantic conflicts that require user judgment must be reported as blocking findings rather than guessed by a validator or agent.
 
