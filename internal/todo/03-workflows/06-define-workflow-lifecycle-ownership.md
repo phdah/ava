@@ -5,7 +5,7 @@ description: Evaluate and formalize responsibility for creating, maintaining, re
 tags: [internal, roadmap, workflows, roles, lifecycle]
 status: pending
 phase: 3
-order: 5
+order: 6
 generated:
   by: agent:openai-chatgpt
   at: 2026-07-28T14:45:00Z
@@ -19,13 +19,15 @@ The Project Steward currently owns project-wide workflow definitions and discove
 
 The semantic-tool roadmap separately plans `plan_workflow_change`, `apply_workflow_change`, `scaffold_workflow`, and `validate_workflow`. Those tools should implement deterministic mechanics without silently deciding semantic ownership or authority.
 
+This task follows the workflow purpose and built-in catalog review so lifecycle ownership is defined only for workflows that satisfy the accepted workflow criteria.
+
 ## Evaluate
 
 - whether workflow creation and lifecycle maintenance should remain within the Project Steward's existing authority boundary
 - whether a dedicated Workflow Manager role is justified by a distinct responsibility, authority, trust boundary, context requirement, or separation-of-duty need
 - whether workflow lifecycle work needs distinct free-form routing conditions from general project stewardship
 - how workflow ownership differs from role lifecycle work, independent semantic review, and deterministic validation
-- whether the initial catalog should include `create-workflow`, `update-workflow`, and `repair-workflow` procedures
+- whether the revised catalog should include workflow-maintenance procedures
 
 Do not create a new default role merely because workflows have distinct procedures. A dedicated role requires a materially different authority boundary and user approval.
 

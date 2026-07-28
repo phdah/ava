@@ -5,7 +5,7 @@ description: Define portable trigger metadata while keeping scheduler configurat
 tags: [internal, roadmap, workflows, triggers]
 status: pending
 phase: 3
-order: 4
+order: 5
 timestamp: 2026-07-25T00:00:00Z
 ---
 
