@@ -41,7 +41,7 @@ role -> may support many workflows
 role -> uses Ava semantic tools and workspace capabilities
 ```
 
-A workflow should not duplicate the role's durable instructions. It should define the procedure-specific request, inputs, trigger information, operating mode, and expected output. The selected role supplies the stable behavior and authority under which the workflow runs.
+A workflow should not duplicate the role's durable instructions. It should define the procedure-specific purpose, inputs, operating mode, required context, procedure, and expected output. The selected role supplies the stable behavior and authority under which the workflow runs.
 
 Ava initially permits exactly one active role. Roles do not inherit, compose, activate supporting roles, or delegate authority. Workflows may refine ordinary role behaviour for a bounded procedure, but they cannot expand the role's capabilities or weaken active constraints.
 
@@ -200,14 +200,15 @@ Ava adapts these ideas for agent instructions rather than data catalog metadata.
 
 ### Metadata contract
 
-The generated [document metadata instruction](templates/base/shared/instructions/document-metadata.md) defines the public metadata contract:
+The generated [document metadata instruction](templates/base/shared/instructions/document-metadata.md) and [workflow format instruction](templates/base/shared/instructions/workflow-format.md) define the public document and workflow contracts:
 
 - `index.md` and `log.md` are reserved documents
 - every other Markdown document requires a descriptive `type`
 - Ava-controlled semantic documents also require `title` and `description`
 - project-defined document types remain open
 - role routing remains semantic and prose-based
-- workflows reference exactly one `primary_role`
+- workflows reference exactly one `primary_role` and declare `mode`
+- workflow bodies use portable sections for inputs, required context, procedure, and expected output
 - OKF provenance, verification, lifecycle, and staleness fields are used directly
 - unknown fields and project-defined types remain forward-compatible
 - Ava-specific metadata stays minimal and flat
@@ -243,6 +244,7 @@ agent-platform/
         |-- instruction-resolution.md
         |-- scoped-history.md
         |-- document-metadata.md
+        |-- workflow-format.md
         `-- knowledge-organization.md
 ```
 
