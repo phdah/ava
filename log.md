@@ -4,6 +4,7 @@ This log records major conceptual and structural changes across the Ava reposito
 
 ## 2026-07-28
 
+* **Workflow registry and routing contract**: Defined `/workflows/index.md` as the canonical registry root, made workflow invocation explicit by canonical path or unambiguous filename stem, gave explicit workflows precedence over free-form role selection, prohibited semantic workflow inference and fallback after routing failure, required one registered non-deprecated primary role, and made deprecation replacements advisory rather than automatic.
 * **Workflow format contract**: Defined workflows as path-identified Markdown prompts with one `primary_role`, a required `read-only`, `suggestion`, or `mutation` mode, structured inputs, optional required-context links, ordered procedure and expected-output sections, explicit composition boundaries, and validation rules. Trigger metadata remains deferred to the dedicated portability task.
 
 ## 2026-07-26

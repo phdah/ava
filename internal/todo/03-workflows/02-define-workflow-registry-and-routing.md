@@ -3,27 +3,49 @@ type: Internal Development Task
 title: Define the Workflow Registry and Routing Contract
 description: Define deterministic workflow discovery, role resolution, precedence, and deprecation behavior.
 tags: [internal, roadmap, workflows, routing]
-status: pending
+status: completed
 phase: 3
 order: 2
-timestamp: 2026-07-25T00:00:00Z
+generated:
+  by: agent:openai-chatgpt
+  at: 2026-07-28T10:32:00Z
 ---
 
 # Define the Workflow Registry and Routing Contract
 
-## Rules
+## Completed outcome
 
-- every workflow must resolve to exactly one existing primary role
-- one role may support multiple workflows
-- a workflow must not duplicate the role's durable instructions
-- workflow routing takes precedence over free-form role selection when a registered workflow is explicitly invoked
-- missing, ambiguous, or deprecated role references must fail validation
-- delegation, if supported, must be explicit rather than inferred
+The public [workflow registry and routing contract](/templates/base/shared/instructions/workflow-routing.md) now defines:
+
+- `/workflows/index.md` as the canonical registry root
+- registry membership through progressive direct-child index discovery
+- workflow path as the stable identity without a separate identifier or registry format
+- explicit invocation by canonical path or unambiguous lowercase kebab-case filename stem
+- workflow titles as descriptive metadata rather than stable invocation identifiers
+- explicit workflow invocation taking precedence over free-form semantic role selection
+- no semantic inference of workflows from ordinary requests
+- blocking behavior for unresolved, ambiguous, unregistered, invalid, or deprecated workflows
+- no fallback to free-form role selection after a failed workflow invocation
+- exact resolution of one registered, non-deprecated `primary_role`
+- required input and required-context resolution before execution
+- advisory `replaced_by` metadata without automatic workflow or role redirection
+- migration behavior for moved, renamed, deprecated, and removed workflows
+- deterministic errors, warnings, and semantic blocking findings
+
+The generated router, workflow registry, workflow format, metadata contract, and instruction-resolution contract now reference the same authoritative routing behavior.
+
+## Core routing decisions
+
+- Workflows remain Markdown-native and path-identified.
+- A workflow must be explicitly invoked; Ava does not guess one from semantic similarity.
+- Explicit workflow routing activates the workflow's declared role and bypasses free-form role selection.
+- Routing failures stop execution rather than silently selecting another route.
+- Deprecated workflows and roles are never followed automatically through `replaced_by`.
 
 ## Completion criteria
 
-- choose the registry format and location
-- define router behavior for interactive and workflow-driven requests
-- update generated `AGENTS.md`
-- validate workflow links and role references
-- define deprecation and migration behavior
+- [x] choose the registry format and location
+- [x] define router behavior for interactive and workflow-driven requests
+- [x] update generated `AGENTS.md`
+- [x] validate workflow links and role references
+- [x] define deprecation and migration behavior

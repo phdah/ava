@@ -5,7 +5,7 @@ description: Portable structure, operating modes, inputs, outputs, context links
 tags: [ava, workflows, format, validation]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-28T10:00:00Z
+  at: 2026-07-28T10:32:00Z
 ---
 
 # Purpose
@@ -13,6 +13,8 @@ generated:
 A workflow is a reusable predefined prompt for one bounded procedure or outcome. It activates exactly one primary role and supplies procedure-specific scope, inputs, operating mode, required context, steps, and expected output.
 
 A workflow must remain readable as ordinary Markdown while exposing enough stable structure for Ava tools and agent clients to validate and invoke it consistently.
+
+Workflow registration, invocation identity, routing precedence, role resolution, and deprecation follow [Workflow registry and routing](workflow-routing.md).
 
 # Identity and naming
 
@@ -27,6 +29,8 @@ review-change.md
 ```
 
 The metadata `title` is the human-readable name. It must be non-empty and should describe the same action as the filename. Titles do not need to be globally unique because identity comes from the path.
+
+A workflow becomes invokable only when it is registered through `/workflows/index.md`. A canonical path identifies one registered workflow; a filename stem may be used only when it resolves unambiguously under the workflow-routing contract.
 
 # Required metadata
 
@@ -47,9 +51,10 @@ Rules:
 
 - `type` must be `Workflow`.
 - `title` and `description` must be non-empty strings.
-- `primary_role` must be a bundle-root-relative path to exactly one registered `role.md` document.
+- `primary_role` must be a bundle-root-relative path to exactly one registered, non-deprecated `role.md` document.
 - `mode` must be `read-only`, `suggestion`, or `mutation`.
 - `status` follows the shared lifecycle contract and remains optional.
+- A deprecated workflow may declare one bundle-root-relative `replaced_by` workflow path, but routing must not follow it automatically.
 - Unknown valid metadata must be preserved for forward compatibility.
 
 # Operating modes
@@ -171,7 +176,8 @@ A workflow may include an optional `Trigger notes` section for human-readable, a
 Treat these as errors:
 
 - missing or malformed required workflow metadata
-- a `primary_role` that is absent, unresolved, not bundle-root-relative, or does not identify exactly one registered `role.md`
+- a workflow file that is not registered through `/workflows/index.md`
+- a `primary_role` that is absent, unresolved, not bundle-root-relative, deprecated, or does not identify exactly one registered `role.md`
 - a missing or unsupported `mode`
 - a missing, duplicate, empty, or incorrectly ordered required body section
 - a level-one heading that does not match `title`
@@ -182,6 +188,7 @@ Treat these as errors:
 - a declared supporting workflow, supporting role, delegation, or role transition
 - an explicit procedure or expected output that contradicts the declared mode
 - a workflow instruction that attempts to grant capabilities or weaken constraints
+- a deprecated workflow being executed or redirected automatically through `replaced_by`
 
 Treat these as warnings or semantic findings:
 
@@ -190,8 +197,10 @@ Treat these as warnings or semantic findings:
 - an expected output that does not make completion reporting clear
 - likely duplication of the primary role's durable instructions
 - trigger-like metadata that has no recognized semantics
+- a draft workflow being invoked
+- a deprecated workflow without a valid replacement
 
-Semantic ambiguity requiring authority, policy, routing, or destructive-action judgment must block execution until the user resolves it.
+Semantic ambiguity requiring authority, policy, routing, compatibility, or destructive-action judgment must block execution until the user resolves it.
 
 # Valid example
 
@@ -245,14 +254,18 @@ Return the files changed, the validation performed, and any unresolved decision.
 The following are invalid:
 
 - `primary_role` is a list or points to a role `index.md` rather than one `role.md`
+- `primary_role` points to an unregistered or deprecated role
 - `mode: write` uses an unsupported mode
 - a `read-only` workflow tells the agent to update files
 - the workflow declares `supporting_role` or instructs the primary role to delegate
 - an optional input omits `Default`
 - `Procedure` is replaced by copied role instructions
+- a workflow exists beneath `/workflows/` but is omitted from its registry index
+- a deprecated workflow is executed or automatically redirected
 
 The following require clarification or correction before reliable invocation:
 
 - the title says `Review change`, but the filename is `apply-change.md`
 - an input says only `scope` without defining what form the value takes
 - the expected output does not say whether a suggestion should be applied
+- a shorthand workflow name matches more than one registered workflow path
