@@ -22,23 +22,28 @@ This task begins after completion of the preceding design tasks.
 - target-directory selection with the current directory as the default
 - convenience and verified bootstrap flows defined by the release contract
 - release asset download, integrity checks, and authenticity verification where requested
-- manifest creation and installed `ava_version` detection
+- manifest creation and installed `ava_version` detection under the defined Ava-managed path
 - managed-file comparison and safe replacement
 - deterministic migration execution
+- existing-project eligibility checks and the approved adoption, collision, abort, and explicit-resolution behavior
 - dry-run, conflict reporting, and non-interactive failure behavior
 - installation of pending semantic upgrade guidance and separate semantic-compatibility state
+- recording of the active upgrade transaction so normal Ava routing remains blocked until semantic completion, rollback, or another defined terminal state
+- clear handoff instructions for activating the dedicated Upgrade Role after deterministic work succeeds
 
 ## Keep it thin
 
-The script should orchestrate standard filesystem, archive, and verification operations. It must not become a general Ava CLI, role navigator, semantic editor, or persistent runtime.
+The script should orchestrate standard filesystem, archive, state-recording, and verification operations. It must not become a general Ava CLI, role navigator, semantic editor, or persistent runtime. Semantic project-owned changes remain the responsibility of the explicit Upgrade Role.
 
 ## Completion criteria
 
-- support a clean install into an eligible existing project
+- support a clean install into an eligible empty or compatible existing project
+- support explicit adoption or safe refusal for pre-existing Ava-like or conflicting project structures
 - support an explicit upgrade to a chosen version
 - support latest stable through the documented convenience path
 - support a separately verified pinned-version path
-- fail safely on conflicts, incomplete assets, checksum errors, authenticity failures, and unsupported transitions
+- fail safely on path collisions, managed-file conflicts, incomplete assets, checksum errors, authenticity failures, and unsupported transitions
 - clearly distinguish installed `ava_version` from semantic compatibility
+- preserve the active-upgrade state and prevent normal operation until the Upgrade Role completes or the protocol exits through another defined terminal state
 - remain readable, auditable, and usable through standard shell tooling
 - document required system commands, portability assumptions, and trust assumptions
