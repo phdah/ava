@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Define GitHub Release Assets
 description: Define immutable, version-consistent release assets, distribution channels, and bootstrap trust modes.
 tags: [internal, roadmap, releases, distribution, security]
-status: proposed
+status: pending
 phase: 4
 order: 3
 generated:
@@ -12,8 +12,6 @@ generated:
 ---
 
 # Define GitHub Release Assets
-
-This task becomes active only after explicit user approval of the distribution-first architecture.
 
 ## Define
 
@@ -36,7 +34,7 @@ Checksums downloaded from the same release provide integrity checking but do not
 
 Evaluate signed release manifests, GitHub artifact attestations, Sigstore, or another explicit authenticity mechanism. Keep the final mechanism minimal and document its trust assumptions.
 
-## Proposed convenience command shape
+## Convenience command shape
 
 ```sh
 curl -fsSL https://github.com/phdah/ava/releases/latest/download/ava-install.sh | sh
