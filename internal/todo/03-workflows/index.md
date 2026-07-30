@@ -11,14 +11,12 @@ Define workflows as focused predefined prompts that activate exactly one primary
 5. [ ] [Define workflow trigger portability](05-define-workflow-trigger-portability.md)
 6. [ ] [Define workflow lifecycle ownership](06-define-workflow-lifecycle-ownership.md)
 
-Under the proposed distribution-first architecture, the remaining tasks would be deferred until the ownership boundary establishes how workflows are classified, versioned, and migrated in installed projects.
-
-Until that architecture is approved, these tasks retain their existing pending status and the root roadmap controls which task may be selected.
+The remaining tasks are deferred until the distribution and ownership boundary establishes how workflows are classified, versioned, and migrated in installed projects.
 
 ## Previous phase
 
 [Core roles for initialized projects](../02-core-roles/).
 
-## Proposed next phase
+## Next active phase
 
-[Versioned distribution and upgrades](../04-distribution-and-upgrades/), pending explicit architecture approval.
+[Versioned distribution and upgrades](../04-distribution-and-upgrades/).
