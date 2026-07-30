@@ -10,8 +10,8 @@ Content under this directory is internal to the Ava repository. It must not be i
 
 # Planning
 
-* [Internal to-do roadmap](todo.md) - Stable entry point into accepted work, proposed replacement work, superseded planning, numbered phase indexes, and individual task files.
+* [Internal to-do roadmap](todo.md) - Stable entry point into the active roadmap, superseded planning, numbered phase indexes, and individual task files.
 
 # History
 
-* [Internal update log](log.md) - Records major conceptual and structural changes within the internal development scope, including whether architectural changes are proposed or approved.
+* [Internal update log](log.md) - Records major conceptual and structural changes within the internal development scope.
