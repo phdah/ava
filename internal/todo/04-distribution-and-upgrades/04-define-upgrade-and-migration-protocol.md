@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Define Upgrade and Migration Protocol
 description: Define safe base reconciliation, deterministic migrations, conflicts, rollback, and separate semantic completion state.
 tags: [internal, roadmap, upgrades, migrations]
-status: proposed
+status: pending
 phase: 4
 order: 4
 generated:
@@ -12,8 +12,6 @@ generated:
 ---
 
 # Define Upgrade and Migration Protocol
-
-This task becomes active only after explicit user approval of the distribution-first architecture.
 
 ## Define
 
