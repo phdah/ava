@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Publish First Versioned Ava Release
 description: Build, verify, document, and publish the first installable and upgradeable Ava distribution through GitHub Releases.
 tags: [internal, roadmap, releases, publishing]
-status: proposed
+status: pending
 phase: 4
 order: 8
 generated:
@@ -13,11 +13,11 @@ generated:
 
 # Publish First Versioned Ava Release
 
-This task becomes active only after explicit user approval of the distribution-first architecture and completion of all preceding phase tasks.
+This task begins after completion of all preceding phase tasks.
 
 ## Prepare
 
-- select the initial release version according to the approved pre-1.0 or stable-version policy
+- select the initial release version according to the defined pre-1.0 or stable-version policy
 - freeze the public base bundle, manifest schema, and separate semantic-compatibility schema for the release
 - build the installer, bundle, integrity checksums, release manifest, notes, guidance, migrations, and provenance from one commit
 - verify fresh installation through latest and pinned-version URLs
