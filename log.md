@@ -2,6 +2,15 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-07-30
+
+* **Versioned context distribution pivot**: Reframed Ava as a versioned, file-based context distribution rather than an MCP server, workspace-provider application, or feature-rich CLI. The files remain the public product and the host agent supplies navigation, editing, and repository operations.
+* **GitHub Release distribution**: Established immutable GitHub Release assets as the intended installation and upgrade channel, with latest-stable and version-pinned URLs, a thin shell installer, versioned base bundle, checksums, release manifest, change notes, agent upgrade guidance, and deterministic migrations.
+* **Upgrade ownership model**: Introduced the required distinction between Ava-managed base content and project-owned context. Deterministic tooling reconciles managed files and runs mechanical migrations, while project-owned semantic changes require one explicit agent request using release-specific guidance.
+* **SemVer direction**: Defined the proposed PATCH, MINOR, and MAJOR compatibility meanings and separated Ava distribution versioning from the underlying OKF version.
+* **Migration guidance and logs**: Retained scoped `log.md` files as conceptual history and release-note source material, while requiring release-specific structured guidance to state compatibility impact, affected project context, deterministic migrations, required decisions, and completion criteria.
+* **Roadmap replacement**: Superseded the provider, semantic MCP tool, shared application service, MCP implementation, and companion CLI phases with an active versioned distribution and upgrade phase.
+
 ## 2026-07-28
 
 * **Initial built-in workflow catalog**: Added ten registered workflows for role lifecycle, project stewardship, inbox ingestion, and semantic review. Mutation remains bounded by each primary role, recurring daily maintenance is suggestion-only, semantic reviews are read-only, and scheduling remains outside Ava's runtime.
