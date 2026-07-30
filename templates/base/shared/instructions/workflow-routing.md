@@ -5,7 +5,7 @@ description: Deterministic workflow registration, explicit invocation, role reso
 tags: [ava, workflows, registry, routing, validation]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-28T10:32:00Z
+  at: 2026-07-30T15:26:00Z
 ---
 
 # Purpose
@@ -78,7 +78,7 @@ After the root router has loaded the instruction-resolution and workflow-routing
 6. Announce `Active role: <role title>` after the role's complete required reading has been loaded.
 7. Load the workflow document and every valid link in its optional `Required context` section.
 8. Resolve the workflow inputs supplied by the invocation.
-9. Execute the workflow within its declared mode, the active role's authority, cumulative constraints, the user's approved scope, and available workspace capabilities.
+9. Execute the workflow within its declared mode, the active role's authority, cumulative constraints, the user's approved scope, and capabilities exposed by the host agent and its available tools.
 
 The workflow remains the active procedural scope for the duration of the invocation. It does not replace the role as the authority boundary.
 
