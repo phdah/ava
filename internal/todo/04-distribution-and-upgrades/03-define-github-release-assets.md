@@ -21,7 +21,9 @@ generated:
 - asset filenames and content types
 - how every asset declares or proves that it belongs to the same Ava version and source revision
 - stable, prerelease, and development distribution channels
-- retention and immutability expectations
+- the repository or organization configuration required to enable GitHub immutable releases for all published Ava releases
+- how release automation verifies that a published release, its tag, and its assets are immutable rather than merely assuming immutability
+- retention behavior and the relationship between immutable release settings, attestations, and the selected provenance model
 
 ## Bootstrap trust model
 
@@ -51,4 +53,6 @@ curl -fsSL https://github.com/phdah/ava/releases/download/v1.2.3/ava-install.sh 
 - reject mutable `main` assets as the recommended installation path
 - define convenience and verified bootstrap flows separately
 - document integrity, authenticity, trust assumptions, and failure behavior
+- require GitHub immutable releases to be enabled before the first publication
+- define an automated or repeatable verification that every published release is immutable
 - define how release automation builds and attests all assets from one source revision
