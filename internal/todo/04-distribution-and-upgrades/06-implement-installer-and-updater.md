@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Implement Installer and Updater
 description: Implement the thin POSIX shell entry point for fresh installation and explicit versioned upgrades.
 tags: [internal, roadmap, shell, installer, updater]
-status: proposed
+status: pending
 phase: 4
 order: 6
 generated:
@@ -13,7 +13,7 @@ generated:
 
 # Implement Installer and Updater
 
-This task becomes active only after explicit user approval of the distribution-first architecture and completion of the preceding design tasks.
+This task begins after completion of the preceding design tasks.
 
 ## Implement
 
