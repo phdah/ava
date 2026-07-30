@@ -1,16 +1,16 @@
 # Ava
 
-Ava is a versioned, file-based context distribution for AI agents. It provides a structured bundle of roles, workflows, instructions, constraints, and knowledge conventions that an agent can discover directly from a project repository.
+Ava is a proposed versioned, file-based context distribution for AI agents. It provides a structured bundle of roles, workflows, instructions, constraints, and knowledge conventions that an agent can discover directly from a project repository.
 
-Ava is intentionally not an agent runtime, MCP server, or general-purpose CLI application. The files are the product. The host agent supplies filesystem access, search, editing, and version-control operations.
+Ava is not intended to require an agent runtime, MCP server, or general-purpose CLI application. The files are the product. The host agent supplies filesystem access, search, editing, and version-control operations.
 
-> **Status:** Design phase. The repository contains the current format and project templates. Versioned release artifacts, installation, and upgrade support have not yet been implemented.
+> **Status:** Design phase. The distribution-first direction described here is proposed in draft PR #11 and is not accepted architecture until explicitly approved. The repository contains the current format and project templates. Versioned release artifacts, installation, and upgrade support have not yet been implemented.
 
 ## Purpose
 
 Ava should make it easy to add a coherent agent context system to an existing project with one command, while keeping the resulting files understandable and editable without proprietary tooling.
 
-The platform should make it clear:
+The system should make it clear:
 
 - which agent roles exist
 - what each role is responsible for
@@ -19,24 +19,25 @@ The platform should make it clear:
 - which predefined workflows exist and which role each workflow activates
 - how an agent discovers task-specific context progressively
 - which files are managed by Ava and which are owned by the project
-- which Ava version is installed
+- which Ava base version is installed
+- whether project-owned context is semantically compatible with that installed version
 - how a project is upgraded safely to a later Ava version
 
 The goal is not to hide agent behavior in an application or one large prompt. The goal is to represent it as a navigable, version-controlled hierarchy of small, explicit documents.
 
-## Core idea
+## Proposed core idea
 
-An Ava release contains a versioned base context bundle and the metadata needed to install or upgrade it. A project receives that bundle, adds its own roles, workflows, instructions, and knowledge, and exposes a root `AGENTS.md` entry point that an agent loads automatically.
+An Ava release would contain a versioned base context bundle and the metadata needed to install or upgrade it. A project would receive that bundle, add its own roles, workflows, instructions, and knowledge, and expose a root `AGENTS.md` entry point that an agent loads automatically.
 
 ```text
 GitHub Release
     -> thin shell installer or updater
     -> Ava-managed base context plus project-owned context
-    -> root AGENTS.md
+    -> Ava-managed root AGENTS.md
     -> automatic role and instruction discovery
 ```
 
-The installer and updater perform deterministic distribution work. The agent interprets and maintains semantic project context. Ava does not need an MCP protocol layer or a persistent command application between them.
+The installer and updater perform deterministic distribution work. The agent interprets and maintains semantic project context. Ava does not need an MCP protocol layer or persistent command application between them.
 
 ## Core model
 
@@ -55,81 +56,106 @@ explicit workflow -> exactly one primary role
 role or workflow -> shared instructions and relevant project context
 ```
 
-Roles and workflows remain ordinary Markdown. Deterministic installation, checksum verification, managed-file replacement, and mechanical migrations belong to the release tooling rather than agent roles.
+Roles and workflows remain ordinary Markdown. Deterministic installation, integrity verification, managed-file replacement, and mechanical migrations belong to release tooling rather than agent roles.
 
-## Distribution through GitHub Releases
+## Proposed distribution through GitHub Releases
 
-GitHub Releases should be the canonical Ava distribution channel. Each release should contain a mutually compatible set of immutable assets, including:
+GitHub Releases are the proposed canonical Ava distribution channel. Each release should contain a mutually compatible set of immutable assets, including:
 
 - a thin POSIX shell installer and updater
 - the versioned Ava base bundle
-- checksums for every release asset
+- integrity checksums for every release asset
 - a machine-readable release manifest
 - human-readable change notes
 - agent-readable upgrade guidance
 - deterministic migration scripts when required
+- signed release provenance or attestations when the trust model is finalized
 
-The recommended installation command should resolve the latest stable release:
+A convenient latest-stable installation could use:
 
 ```sh
 curl -fsSL https://github.com/phdah/ava/releases/latest/download/ava-install.sh | sh
 ```
 
-A version can be selected directly through the release URL:
+A version could be selected directly through the release URL:
 
 ```sh
 curl -fsSL https://github.com/phdah/ava/releases/download/v1.2.3/ava-install.sh | sh
 ```
 
-Using release assets keeps the installer, bundle, checksums, and migration guidance pinned to the same Ava version. A mutable script fetched from `main` should not be the recommended installation path.
+These one-line commands are convenient but execute the bootstrap installer before its checksum can be verified. Checksums downloaded from the same release protect payload integrity after the installer starts, but do not independently authenticate the bootstrap script or publisher.
 
-## Installed project ownership
+The release contract must therefore define two explicit trust modes:
 
-Ava must distinguish two ownership classes before upgrade support is implemented:
+1. **Convenience mode:** execute the immutable release installer directly and rely on GitHub account, repository, and TLS trust.
+2. **Verified mode:** download a pinned installer first, verify signed provenance or an attestation through a separately trusted mechanism, then execute it.
+
+The exact signing or attestation mechanism remains an open roadmap decision. Ava must not claim that release checksums alone make `curl | sh` independently verifiable.
+
+A mutable script fetched from `main` should not be the recommended installation path.
+
+## Proposed installed-project ownership
+
+Ava should use exactly two ownership classes.
 
 ### Ava-managed content
 
-Versioned base instructions, routing contracts, default roles, default workflows, and bootstrap files distributed by Ava. The local manifest records their installed version and checksums. An updater may replace unchanged managed files and must detect local modifications before overwriting them.
+Versioned base instructions, routing contracts, default roles, default workflows, manifests, migration guidance, and bootstrap files distributed by Ava. The root `AGENTS.md` is Ava-managed and should remain a stable router. Project customization must live in project-owned paths referenced by the managed router rather than modifying the router itself.
+
+The local manifest records the installed version and checksums of Ava-managed files. An updater may replace unchanged managed files and must detect local modifications before overwriting them.
 
 ### Project-owned content
 
 Project-specific roles, workflows, instructions, and knowledge created after installation. Ava must not rewrite this content as an incidental side effect of replacing the base bundle.
 
+There is no third ownership class for generated integration shims. Any installed bootstrap or integration file is Ava-managed. Any project customization is project-owned.
+
 The exact path layout and boundary rules remain an open roadmap task. The current files under `templates/base/` remain the format reference until that ownership contract is finalized.
 
-## Versioning
+## Proposed versioning
 
 Ava releases should follow Semantic Versioning:
 
-- **PATCH** releases correct defects or clarify text without changing the supported structure or intended behavior.
+- **PATCH** releases correct defects or clarify text without changing supported structure or intended behavior.
 - **MINOR** releases add backward-compatible instructions, roles, workflows, metadata, or optional capabilities.
 - **MAJOR** releases introduce incompatible format, routing, ownership, or behavioral contract changes.
 
-Every installed project should record its Ava version in a project-level manifest. The manifest should also record the release source, managed-file checksums, completed deterministic migrations, and whether a semantic project migration remains pending.
+Every installed project should record its Ava state in a project-level manifest.
 
-The OKF version and Ava version are separate. `okf_version` identifies the underlying knowledge-format compatibility level. `ava_version` identifies the installed Ava distribution and behavior contract.
+`ava_version` has one meaning only: it identifies the installed Ava-managed base distribution. It advances after the deterministic base upgrade succeeds, even when project-owned semantic migration remains pending.
 
-## Upgrade model
+Semantic compatibility must be tracked separately. The manifest should record at least:
 
-Running the release installer in an existing Ava project should perform an explicit upgrade:
+- which Ava version the project-owned context is semantically compatible through
+- which installed target version still requires semantic migration
+- whether that migration is complete, partial, blocked, or pending
+- unresolved user decisions that prevent completion
 
-1. Read the installed Ava version and managed-file manifest.
+The exact metadata shape remains part of the versioning task. It must not overload `ava_version` with both installed-base and project-behavior semantics.
+
+The OKF version and Ava version are also separate. `okf_version` identifies the underlying knowledge-format compatibility level. `ava_version` identifies only the installed Ava base distribution.
+
+## Proposed upgrade model
+
+Running the release installer in an existing Ava project should perform an explicit deterministic upgrade:
+
+1. Read the installed Ava base version and managed-file manifest.
 2. Resolve or receive the target release version.
-3. Download and verify the target release assets.
+3. Download and verify the target release assets according to the selected trust mode.
 4. Compare the previously installed base, current local managed files, and target base.
 5. Replace unchanged Ava-managed files and report conflicts for locally modified managed files.
 6. Run deterministic migrations in version order.
 7. Install the target release's semantic upgrade guidance.
-8. Report any required project-owned context migration as pending.
-9. Update the installed version only when the deterministic upgrade succeeds.
+8. Advance `ava_version` only when deterministic work succeeds.
+9. Record any required project-owned context migration in the separate semantic compatibility state.
 
 Project-owned context changes should happen through one explicit agent request, for example:
 
 ```text
-Upgrade this Ava project to v2.0.0. Apply the installed upgrade guidance to the project-owned context, explain material semantic changes, and report unresolved decisions before marking the migration complete.
+Reconcile this project's project-owned Ava context with the installed Ava version. Apply the installed upgrade guidance, explain material semantic changes, and report unresolved decisions before marking semantic migration complete.
 ```
 
-The active Ava agent should then inspect the installed version transition, release guidance, affected project context, and migration completion criteria. This keeps project-specific interpretation inside the agent while making the trigger a single clear prompt.
+The active Ava agent should inspect the installed version transition, release guidance, affected project context, and migration completion criteria. This keeps project-specific interpretation inside the agent while making the trigger a single clear prompt.
 
 ## Logs and release guidance
 
@@ -144,7 +170,7 @@ A release should therefore provide structured upgrade guidance derived from rele
 - required user decisions or conflict conditions
 - validation and completion criteria
 
-The roadmap will decide whether this is represented by a release manifest, an `UPGRADE.md` document, structured `log.md` entries, or a combination of them.
+The roadmap will decide whether this is represented by a release manifest, an `UPGRADE.md` document, structured upgrade metadata associated with `log.md`, or a combination of them.
 
 ## OKF v0.2 structure
 
@@ -177,11 +203,11 @@ An initialized project should provide deterministic guidance for how an agent re
 9. Keep capabilities and constraints cumulative and non-expandable at narrower scopes.
 10. Ask the user when routing or instruction conflicts remain unresolved.
 
-The current user request supplies the immediate objective and narrowest procedural scope, bounded by the active role, project constraints, and capabilities provided by the host agent.
+The current user request supplies the immediate objective and narrowest procedural scope, bounded by the active role, project constraints, and capabilities provided by the host agent and its available tools.
 
 ## Design goals
 
-- **Simple:** Installation and upgrade should require one command, while ordinary use requires no Ava process or service.
+- **Simple:** Installation and upgrade should require one command in convenience mode, while ordinary use requires no Ava process or service.
 - **Human-readable:** The complete system remains understandable with normal filesystem and Markdown tools.
 - **Agent-readable:** Agents can discover and parse instructions without an Ava SDK or protocol server.
 - **Progressive:** Agents load the minimum relevant context rather than scanning the complete project.
@@ -209,25 +235,28 @@ Ava is not initially intended to provide:
 - a fixed universal taxonomy
 - domain-specific integrations such as databases, APIs, or cloud platforms
 
-The release installer may use standard tools such as `sh`, `curl`, `tar`, and checksum utilities. That does not make Ava a general command platform.
+The release installer may use standard tools such as `sh`, `curl`, `tar`, and checksum or signature utilities. That does not make Ava a general command platform.
 
 ## Internal development roles
 
-Repository-specific development roles live under [`internal/`](internal/). They exist only to help develop Ava and must never be copied into generated projects, templates, examples, or default role catalogs.
+Repository-specific development roles live under [`internal/`](internal/). They exist only to help develop Ava and must never be copied into distributed projects, templates, examples, or default role catalogs.
 
 The first internal role is the [Ava Internal Maintainer](internal/roles/ava-internal/).
 
-## Roadmap direction
+## Proposed roadmap direction
 
-The implementation roadmap is tracked in [`internal/todo.md`](internal/todo.md). Its active direction is:
+The proposed replacement roadmap is tracked in [`internal/todo.md`](internal/todo.md). Its direction is:
 
-1. retain and refine the existing file format, roles, workflows, and routing contracts
-2. define the boundary between Ava-managed base content and project-owned context
-3. define the Ava SemVer and compatibility contract
-4. package immutable, checksummed assets through GitHub Releases
-5. implement a thin installer and updater with explicit version selection
-6. implement deterministic migrations, conflict detection, rollback, and validation
-7. define structured, agent-readable semantic upgrade guidance
-8. support a one-prompt project-context migration procedure
-9. test fresh installs and upgrades across supported release transitions
-10. publish the first stable versioned Ava distribution
+1. obtain explicit approval for the distribution-first architecture
+2. retain and refine the existing file format, roles, workflows, and routing contracts
+3. define the boundary between Ava-managed base content and project-owned context
+4. define Ava SemVer, installed-base versioning, and separate semantic compatibility state
+5. define immutable GitHub Release assets and bootstrap trust modes
+6. implement a thin installer and updater with explicit version selection
+7. implement deterministic migrations, conflict detection, rollback, and validation
+8. define structured, agent-readable semantic upgrade guidance
+9. support a one-prompt project-context migration procedure
+10. test fresh installs and upgrades across supported release transitions
+11. publish the first versioned Ava distribution
+
+Until the architecture is explicitly approved, this roadmap remains a proposal and application-centric implementation tasks remain superseded only within this draft branch.
