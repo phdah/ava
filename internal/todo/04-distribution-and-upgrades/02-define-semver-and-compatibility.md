@@ -8,7 +8,7 @@ phase: 4
 order: 2
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-30T15:26:00Z
+  at: 2026-07-30T22:30:00+02:00
 ---
 
 # Define Ava SemVer and Compatibility
@@ -22,6 +22,8 @@ generated:
 - Semantic compatibility of project-owned context is tracked separately.
 - A project may therefore have `ava_version: 2.0.0` while semantic compatibility remains completed only through an earlier version.
 - Validation and reporting must make that state explicit rather than presenting the project as fully migrated.
+- A new role, workflow, instruction, metadata field, default, or registry entry qualifies as MINOR only when it is opt-in or demonstrably preserves every existing routing, workflow-resolution, role-selection, authority, and intended-behavior outcome for already supported projects.
+- Any addition that can change an existing resolution or authority outcome is behaviorally incompatible and requires MAJOR classification, even when the filesystem format remains readable.
 
 ## Define
 
@@ -30,8 +32,8 @@ generated:
 - the separate semantic-compatibility metadata and allowed states
 - which state transitions are mechanical updater actions and which require the Upgrade Role's semantic authority
 - PATCH changes that preserve supported structure and intended behavior
-- MINOR changes that remain backward-compatible for installed projects
-- MAJOR changes that require an incompatible format, routing, ownership, or behavioral migration
+- MINOR changes that are opt-in or provably preserve existing routing, resolution, authority, and behavior for installed projects
+- MAJOR changes that require an incompatible format, routing, ownership, authority, resolution, or behavioral migration
 - compatibility guarantees before and after Ava 1.0.0
 - supported direct and chained upgrade paths
 - how deprecated files, metadata, roles, and workflows communicate removal timelines
@@ -44,6 +46,8 @@ generated:
 - how release candidates and prerelease channels are represented
 - how older host agents or incomplete instruction-loading behavior affect compatibility claims
 - how commands and reports distinguish installed base state from semantic completion
+- how release review proves that a proposed MINOR role, workflow, instruction, metadata, default, or registry addition cannot alter existing selection or authority outcomes
+- which additions are explicitly opt-in and how that opt-in is represented without changing default routing
 
 ## Completion criteria
 
@@ -51,5 +55,7 @@ generated:
 - define `ava_version` strictly as installed-base state
 - define the manifest as Ava-managed and identify the deterministic and agent authorities allowed to update it
 - define separate semantic-compatibility metadata and transitions
+- define a repeatable compatibility test for distinguishing safe opt-in MINOR additions from behavior-changing MAJOR additions
+- include examples where a structurally readable role, workflow, or registry addition is nevertheless MAJOR because it changes resolution or authority
 - define compatibility and support windows
 - align release notes, validation, upgrade-role authority, and upgrade behavior with the policy
