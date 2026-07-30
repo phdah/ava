@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Define Ava SemVer and Compatibility
 description: Define installed-base versioning and separate semantic compatibility for project-owned context.
 tags: [internal, roadmap, semver, compatibility]
-status: proposed
+status: pending
 phase: 4
 order: 2
 generated:
@@ -12,8 +12,6 @@ generated:
 ---
 
 # Define Ava SemVer and Compatibility
-
-This task becomes active only after explicit user approval of the distribution-first architecture.
 
 ## Fixed version distinction
 
