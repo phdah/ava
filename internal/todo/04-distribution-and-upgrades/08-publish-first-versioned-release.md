@@ -22,15 +22,20 @@ This task begins after completion of all preceding phase tasks.
 - build the installer, bundle, integrity checksums, release manifest, notes, guidance, migrations, and provenance from one commit
 - verify fresh installation through latest and pinned-version URLs
 - verify the separately authenticated pinned-version installation path
-- verify every supported upgrade path into the release
+- verify every supported upgrade and existing-project adoption path into the release
+- enable GitHub immutable releases for the repository or governing organization before publication
+- verify that release automation can detect whether immutable releases are enabled
 - document known limitations, compatibility guarantees, and trust assumptions
 
 ## Publish
 
-- create the Git tag and GitHub Release
-- attach the complete immutable asset set
+- create the Git tag and draft GitHub Release
+- attach and verify the complete asset set before publication
 - publish the selected signature, provenance, or attestation evidence
 - mark the correct stable or prerelease channel
+- publish the release only after all assets and metadata are final
+- verify that GitHub reports the published release as immutable and that its tag and assets can no longer be changed
+- verify the generated release attestation or other selected provenance evidence
 - verify downloaded assets independently after publication
 - update repository documentation to reference the released version
 
@@ -41,5 +46,7 @@ This task begins after completion of all preceding phase tasks.
 - a project can record and validate installed `ava_version`
 - semantic compatibility of project-owned context is separately observable
 - the release can upgrade every explicitly supported prior state
+- the release can safely install into, adopt, or refuse every explicitly supported existing-project state
+- the GitHub immutable-release setting is enabled and the published release is verified as immutable
 - release notes and agent guidance accurately describe all compatibility-impacting changes
 - documentation does not claim that same-release checksums independently authenticate the bootstrap installer
