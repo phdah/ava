@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Define Release Logs and Agent Upgrade Guidance
 description: Define structured release information for one-prompt semantic reconciliation of project-owned context.
 tags: [internal, roadmap, releases, logs, migration, agents]
-status: proposed
+status: pending
 phase: 4
 order: 5
 generated:
@@ -12,8 +12,6 @@ generated:
 ---
 
 # Define Release Logs and Agent Upgrade Guidance
-
-This task becomes active only after explicit user approval of the distribution-first architecture.
 
 ## Goal
 
