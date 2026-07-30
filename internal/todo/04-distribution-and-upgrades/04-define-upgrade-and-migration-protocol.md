@@ -23,6 +23,9 @@ generated:
 - whether upgrades may skip versions or must traverse migration edges
 - transactional staging, validation, rollback, and resume behavior
 - separate state transitions for deterministic installation and project-owned semantic compatibility
+- the complete upgrade operation as one bounded transaction with deterministic and semantic stages
+- which operations remain permitted while an upgrade is in progress, pending, partial, or blocked
+- how a user resumes, resolves, aborts, or rolls back an incomplete upgrade
 
 ## Required state semantics
 
@@ -30,6 +33,9 @@ generated:
 - Advancing `ava_version` does not imply that project-owned context has completed semantic migration.
 - Semantic compatibility must record its own completed, partial, blocked, or pending state and target version.
 - Reports must show both installed base version and semantic compatibility state.
+- The overall upgrade remains active until semantic migration completes, the user explicitly rolls back, or the protocol reaches another defined terminal state.
+- Normal Ava operations must not begin while the upgrade remains active. Only upgrade inspection, conflict resolution, user-decision capture, resume, abort, and rollback operations are permitted.
+- A blocked semantic migration is not treated as a completed upgrade merely because deterministic installation succeeded.
 
 ## Safety rules
 
@@ -37,13 +43,15 @@ generated:
 - never rewrite project-owned context as part of deterministic base replacement
 - do not advance `ava_version` after failed deterministic work
 - do not mark semantic compatibility complete while unresolved decisions remain
-- retain enough state to explain and resume an interrupted upgrade
+- do not resume ordinary project operations while the upgrade transaction is incomplete
+- retain enough state to explain and resume an interrupted or blocked upgrade
 
 ## Completion criteria
 
 - define local manifest and migration-state changes for every upgrade stage
-- define conflict and rollback semantics
+- define the entry, permitted operations, and exit conditions for every incomplete upgrade state
+- define conflict, abort, rollback, and resume semantics
 - define direct and chained upgrade behavior
 - provide worked examples for PATCH, MINOR, and MAJOR transitions
-- demonstrate an installed-new-base but pending-semantic-migration state
-- align the protocol with installer implementation and release assets
+- demonstrate an installed-new-base but pending-semantic-migration state and show that ordinary operations remain blocked
+- align the protocol with installer implementation, Upgrade Role authority, validation, and release assets
