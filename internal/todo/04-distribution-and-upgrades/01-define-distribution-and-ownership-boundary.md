@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Define Distribution and Ownership Boundary
 description: Define Ava as a file distribution and separate Ava-managed base content from project-owned context.
 tags: [internal, roadmap, distribution, ownership]
-status: proposed
+status: pending
 phase: 4
 order: 1
 generated:
@@ -13,9 +13,7 @@ generated:
 
 # Define Distribution and Ownership Boundary
 
-This task becomes active only after explicit user approval of the distribution-first architecture.
-
-## Fixed proposal constraints
+## Architecture constraints
 
 - Ava uses exactly two ownership classes: Ava-managed and project-owned.
 - The root `AGENTS.md`, manifests, release guidance, and every installed bootstrap file are Ava-managed.
@@ -24,7 +22,7 @@ This task becomes active only after explicit user approval of the distribution-f
 
 ## Decide
 
-- the exact public product boundary for Ava as a versioned context distribution
+- the exact installed ownership boundary for Ava as a versioned context distribution
 - the installed path layout for base instructions, default roles, default workflows, manifests, and project context
 - which managed files may be customized, or whether managed-file customization is prohibited
 - how local modifications to managed files are detected and reported
