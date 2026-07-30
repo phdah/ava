@@ -8,7 +8,7 @@ phase: 4
 order: 5
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-30T22:30:00+02:00
+  at: 2026-07-30T22:59:00+02:00
 ---
 
 # Define Release Guidance and Upgrade Role
@@ -16,6 +16,8 @@ generated:
 ## Goal
 
 A user should be able to issue one explicit request that activates a dedicated Upgrade Role and reconciles every affected project-owned Ava file after a deterministic base upgrade.
+
+The one-prompt requirement applies only to project-owned changes required by an active Ava version upgrade. Ordinary project maintenance remains governed by the normal role and workflow authority model and must not require Upgrade Role activation or release-specific guidance.
 
 The managed upgrade path must remain reachable even when the newly installed base is not yet compatible with project-owned routing, roles, workflows, or registries.
 
@@ -73,6 +75,8 @@ Scoped logs remain human-readable conceptual history. They may be an input to re
 
 The one-prompt semantic migration must not change the meaning of `ava_version`, which identifies the installed base. Any manifest update must follow the field ownership and state transitions defined by the versioning and upgrade protocol tasks.
 
+Upgrade-specific authority must not replace or narrow the ordinary authority of roles such as Project Steward, Role Manager, Inbox Ingester, or Change Reviewer when no upgrade is active.
+
 ## Completion criteria
 
 - define a structured, agent-readable release guidance contract
@@ -86,4 +90,5 @@ The one-prompt semantic migration must not change the meaning of `ava_version`, 
 - define completion, partial completion, conflict, and user-decision states
 - ensure reports show installed base version and semantic compatibility separately
 - ensure the role cannot resume normal routing while the upgrade remains incomplete
+- ensure public roadmap and architecture wording restricts the one-prompt requirement to upgrade-required project-owned changes without limiting ordinary project maintenance
 - align the guidance and role with manifests, instruction resolution, workflows, validation, and release assets
