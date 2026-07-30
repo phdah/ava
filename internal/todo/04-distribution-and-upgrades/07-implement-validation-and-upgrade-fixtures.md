@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Implement Validation and Upgrade Fixtures
 description: Validate installed base state, semantic compatibility, trust modes, conflicts, rollback, and supported transitions.
 tags: [internal, roadmap, validation, testing, upgrades]
-status: proposed
+status: pending
 phase: 4
 order: 7
 generated:
@@ -13,7 +13,7 @@ generated:
 
 # Implement Validation and Upgrade Fixtures
 
-This task becomes active only after explicit user approval of the distribution-first architecture and completion of the preceding design tasks.
+This task begins after completion of the preceding design and installer tasks.
 
 ## Implement
 
