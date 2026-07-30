@@ -16,6 +16,8 @@ generated:
 ## Fixed version distinction
 
 - `ava_version` identifies only the installed Ava-managed base distribution.
+- `ava_version` and semantic migration state live in an Ava-managed manifest under the Ava-managed directory.
+- The upgrade process is the only authority that may update the Ava-managed manifest. The explicit Upgrade Role is the sole agent role with authority to update it, while deterministic tooling may perform mechanical state transitions defined by the upgrade protocol.
 - `ava_version` advances when the deterministic base upgrade succeeds.
 - Semantic compatibility of project-owned context is tracked separately.
 - A project may therefore have `ava_version: 2.0.0` while semantic compatibility remains completed only through an earlier version.
@@ -23,8 +25,10 @@ generated:
 
 ## Define
 
-- the project-level `ava_version` contract and its relationship to `okf_version`
+- the Ava-managed manifest path, schema, ownership, and allowed writers
+- the `ava_version` contract and its relationship to `okf_version`
 - the separate semantic-compatibility metadata and allowed states
+- which state transitions are mechanical updater actions and which require the Upgrade Role's semantic authority
 - PATCH changes that preserve supported structure and intended behavior
 - MINOR changes that remain backward-compatible for installed projects
 - MAJOR changes that require an incompatible format, routing, ownership, or behavioral migration
@@ -35,7 +39,7 @@ generated:
 
 ## Required decisions
 
-- the exact semantic-compatibility field names and schema
+- the exact manifest location, field names, schema, and field-level update rules
 - whether an installer may skip intermediate releases when migrations exist
 - how release candidates and prerelease channels are represented
 - how older host agents or incomplete instruction-loading behavior affect compatibility claims
@@ -45,6 +49,7 @@ generated:
 
 - publish a precise SemVer policy with examples
 - define `ava_version` strictly as installed-base state
+- define the manifest as Ava-managed and identify the deterministic and agent authorities allowed to update it
 - define separate semantic-compatibility metadata and transitions
 - define compatibility and support windows
-- align release notes, validation, and upgrade behavior with the policy
+- align release notes, validation, upgrade-role authority, and upgrade behavior with the policy
