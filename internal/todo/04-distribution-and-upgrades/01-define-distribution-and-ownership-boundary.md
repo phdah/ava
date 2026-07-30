@@ -8,7 +8,7 @@ phase: 4
 order: 1
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-30T22:27:00+02:00
+  at: 2026-07-30T22:59:00+02:00
 ---
 
 # Define Distribution and Ownership Boundary
@@ -21,6 +21,7 @@ generated:
 - There is no third generated-integration-shim ownership class.
 - The root `AGENTS.md` remains the canonical bundle entry point. Compatibility bootstrap files may direct host agents to it but must not duplicate or redefine its routing semantics.
 - Ownership is determined by the accepted path, manifest, authority, and adoption contract, never by when a file was created.
+- Project-owned content may predate Ava installation or be created afterward. Creation time never defines or limits the project-owned class.
 
 ## Decide
 
@@ -37,6 +38,7 @@ generated:
 - what makes an existing project eligible for Ava installation or adoption
 - how installation handles pre-existing `AGENTS.md`, `index.md`, `log.md`, role registries, workflow registries, instructions, knowledge, and directory layouts
 - how explicit adoption decisions classify each accepted pre-existing path as Ava-managed or project-owned without relying on creation time, timestamps, or repository history
+- how public documentation defines project-owned content without implying that it must be created after installation
 - which path and content collisions must abort automatically and which may be resolved through an explicit adoption or migration decision
 - how an existing unversioned or partially Ava-structured project is classified and adopted without silently changing project ownership
 - which previous MCP, CLI, provider, and application-service concepts are removed from the public architecture
@@ -61,6 +63,7 @@ generated:
 - define native and fallback bootstrap discovery across supported host agents, including explicit activation and unsupported-host reporting
 - define any host-specific bootstrap files as thin Ava-managed integration points without creating another ownership or authority model
 - define ownership classification through paths, manifest records, authority, and explicit adoption rather than creation time
+- remove creation-time qualifiers from public ownership definitions and explicitly include adopted pre-existing project content in the project-owned class
 - define existing-project eligibility, adoption, collision, abort, and explicit-resolution behavior
 - demonstrate how pre-existing roles, workflows, instructions, knowledge, registries, and root files retain or receive unambiguous ownership during adoption
 - identify any required migration from the current template layout or existing unversioned Ava projects
