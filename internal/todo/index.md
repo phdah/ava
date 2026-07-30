@@ -1,62 +1,76 @@
 # Ava Internal Roadmap
 
-This directory contains the ordered implementation roadmap for Ava. Each executable to-do has its own file so a future Ava Internal Maintainer session can select and complete one bounded task at a time.
+This directory contains the ordered development roadmap for Ava. Each executable task has its own file so a future Ava Internal Maintainer session can complete one bounded change at a time.
 
 ## Accepted architecture direction
 
 ```text
-workflow -> activates exactly one primary role
-role -> may support many workflows
-role -> uses Ava semantic tools and workspace capabilities
-Ava semantic tool -> uses shared application services
-application service -> operates through a workspace provider
+GitHub Release
+    -> thin shell installer or updater
+    -> versioned Ava-managed base content
+       plus project-owned roles, workflows, instructions, and knowledge
+    -> root AGENTS.md
+    -> exactly one active role for each request
 ```
 
-- Roles contain durable purpose, responsibilities, authority, constraints, required instructions, and context.
-- Ava initially supports exactly one active role. Roles do not inherit, compose, activate supporting roles, or delegate authority.
-- Workflows are reusable predefined prompts for a procedure or outcome.
-- A workflow names one primary role and should not duplicate that role's base instructions or delegate to another role.
-- Instruction scope follows explicit activation and references rather than directory depth.
-- Narrower ordinary instructions may refine broader behaviour, but capabilities and constraints remain cumulative and non-expandable at narrower scopes.
-- Workflow triggers may be interactive, scheduled, or event-driven, but Ava is not initially the scheduler or agent runtime.
-- Deterministic structural work should be implemented as Ava application or MCP capabilities rather than encoded as separate agent roles.
-- Generic file and version-control operations should be supplied by a workspace provider rather than hard-coded to one backend.
-- Ava's public MCP tools should primarily expose semantic platform operations rather than duplicate every generic file operation.
-- Scoped logs record major conceptual or structural changes at the nearest owning scope; routine edits remain in Git history only.
-- Internal Ava development roles remain separate from all roles generated into initialized projects.
+- The files are Ava's product and public interface.
+- Ava does not initially require an MCP server, workspace-provider layer, shared Go application service, or feature-rich CLI.
+- GitHub Releases provide immutable, version-addressable installer, bundle, checksum, manifest, change-note, and migration assets.
+- The installer performs deterministic installation, managed-file reconciliation, checksum verification, and mechanical migrations.
+- The host agent performs semantic work against project-owned context through existing Ava roles and instructions.
+- Ava-managed content and project-owned content must have an explicit ownership boundary.
+- Installed projects record their Ava version, managed-file checksums, completed migrations, and pending semantic upgrade state.
+- Semantic Versioning describes compatibility across Ava distributions.
+- Project-owned context is changed only through an explicit agent request that loads release-specific upgrade guidance.
+- Scoped `log.md` files remain conceptual history and may feed release notes, but release upgrade guidance must clearly state compatibility impact and required actions.
+- Internal Ava development roles remain separate from every distributed project bundle.
 
-## Roadmap order
+## Active roadmap
 
 1. [Format contract and base structure](01-format-contract/) - 3 of 3 complete
 2. [Core roles for initialized projects](02-core-roles/) - 4 of 4 complete
-3. [Workflow system](03-workflows/) - 3 of 6 complete
-4. [Workspace access and provider abstraction](04-workspace-provider/) - 0 of 3 complete
-5. [Semantic MCP tool catalog](05-semantic-tools/) - 0 of 5 complete
-6. [Deterministic validation](06-validation/) - 0 of 3 complete
-7. [Shared Go application services](07-application-services/) - 0 of 4 complete
-8. [MCP implementation](08-mcp/) - 0 of 3 complete
-9. [Companion CLI](09-cli/) - 0 of 2 complete
-10. [Testing, compatibility, and migrations](10-compatibility/) - 0 of 3 complete
+3. [Workflow system](03-workflows/) - 3 of 6 complete; remaining work is deferred until the distribution ownership contract is settled
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 0 of 8 complete
 
-Tasks may be completed out of order when they unblock design work, but implementation must not establish a public contract before the relevant design task is resolved.
+The distribution pivot is now the active priority. Resume the remaining workflow-system tasks after the ownership, release, and migration boundaries are explicit enough to evaluate how workflows participate in upgrades.
+
+## Superseded pre-pivot phases
+
+The following directories preserve the previous application-centric roadmap for historical context. Their pending tasks are not executable roadmap work and must not be selected as the next task:
+
+- [Workspace access and provider abstraction](04-workspace-provider/)
+- [Semantic MCP tool catalog](05-semantic-tools/)
+- [Deterministic validation for the application architecture](06-validation/)
+- [Shared Go application services](07-application-services/)
+- [MCP implementation](08-mcp/)
+- [Companion CLI](09-cli/)
+- [Testing, compatibility, and migrations for the application architecture](10-compatibility/)
+
+These directories may be removed or converted into historical notes after the replacement roadmap has been implemented and reviewed. Until then, this root roadmap determines which tasks are active.
 
 ## Task status
 
-- `pending`: the task has not met its completion criteria.
-- `complete`: the intended change has been implemented, indexed, validated, and committed.
+- `pending`: active roadmap work that has not met its completion criteria
+- `complete`: active roadmap work that has been implemented, indexed, validated, and committed
+- `superseded`: historical planning that must not be executed under the accepted architecture
 
-Update a task's frontmatter and its phase index together when its status changes.
+A phase explicitly listed under **Superseded pre-pivot phases** is superseded regardless of legacy `pending` metadata in its child task files.
+
+Update a task's frontmatter and its active phase index together when its status changes.
 
 ## Shared completion work
 
-Complete these concerns as part of the relevant individual tasks rather than creating separate roles or roadmap items:
+Complete these concerns as part of the relevant individual tasks:
 
+- preserve the existing generated-project instruction contracts unless the task explicitly changes them
 - keep `templates/base/roles/index.md` accurate
-- keep the future workflow registry accurate
+- keep the workflow registry accurate
 - verify every role has deterministic required reading
 - keep role and workflow routing conditions distinct
-- validate required files, metadata, links, and references
+- validate required files, metadata, links, version state, ownership, and migration references
 - update affected template and repository indexes
 - update conceptual logs only when a task introduces a major conceptual or structural change
-- ensure no files or instructions under `/internal/` are copied into generated projects
+- ensure no files or instructions under `/internal/` are copied into distributed projects
 - keep public Ava behavior independent of the internal development role
+- ensure every release asset set is internally version-consistent and checksum-verifiable
+- test both fresh installation and supported upgrade transitions
