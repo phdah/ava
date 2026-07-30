@@ -6,6 +6,10 @@ Ava does not require an agent runtime, MCP server, or general-purpose CLI applic
 
 > **Status:** Design phase. The repository contains the current format and project templates. Versioned release artifacts, installation, and upgrade support have not yet been implemented.
 
+## Name
+
+The name Ava is inspired by the AI robot Ava in [*Ex Machina*](https://www.imdb.com/title/tt0470752/). Ava is exceptionally good at playing different roles to achieve her goals. This mirrors the project's role-based structure, where distinct roles support different workflows and make relevant context easy to collect, organize, and retrieve.
+
 ## Purpose
 
 Ava should make it easy to add a coherent agent context system to an existing project with one command, while keeping the resulting files understandable and editable without proprietary tooling.
