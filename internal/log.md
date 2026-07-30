@@ -2,6 +2,13 @@
 
 This log records major conceptual and structural changes to Ava's internal development instructions. It does not replace Git history.
 
+## 2026-07-30
+
+* **Distribution-first roadmap**: Replaced the active application-centric implementation direction with a versioned distribution and upgrade phase covering ownership, SemVer, GitHub Release assets, deterministic migrations, agent-readable upgrade guidance, a thin installer and updater, validation, and the first published release.
+* **Superseded phases**: Marked workspace providers, semantic MCP tools, shared Go services, MCP implementation, companion CLI, and their application-specific compatibility plan as superseded historical planning rather than executable tasks.
+* **Workflow dependency update**: Deferred the remaining workflow catalog and lifecycle tasks until the distribution ownership and migration contracts are settled, and removed their dependency on planned semantic MCP tools.
+* **Next task**: Set the managed versus project-owned distribution boundary as the next architectural decision.
+
 ## 2026-07-26
 
 * **Index maintenance**: Required Ava Internal Maintainers to keep each `index.md` limited to direct children and delegate descendant discovery to child indexes.
