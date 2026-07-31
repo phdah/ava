@@ -4,6 +4,7 @@ This log records major conceptual and structural changes across the Ava reposito
 
 ## 2026-07-31
 
+* **Installed ownership instruction**: Split repository release and installation rules from agent-facing ownership behavior. The managed root router now loads a shared instruction that distinguishes release ownership from role mutation authority while preserving the repository contract for assembly, adoption, and upgrade mechanics.
 * **Installed ownership boundary**: Established `/AGENTS.md` as the canonical managed router, `/.ava/base/` as the managed default context, `/.ava/state/` as the manifest and upgrade-state location, and `/.ava/guidance/` as the managed release-guidance location.
 * **Project-owned extension paths**: Established `/roles/`, `/workflows/`, `/shared/`, `/knowledge/`, `/inbox/`, and root project indexes or logs as project-owned when present, including content that predates Ava installation.
 * **Managed customization policy**: Prohibited direct customization of managed files. Local modifications remain managed-file conflicts and must be restored, discarded, or migrated into project-owned paths explicitly.
