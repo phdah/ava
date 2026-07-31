@@ -8,7 +8,8 @@ Files under this directory are repository source material for Ava releases. They
 - [Versioning and compatibility contract](versioning-and-compatibility.md) - Ava SemVer, installed manifest state, semantic compatibility, upgrade-path compatibility, deprecation, and support guarantees.
 - [GitHub release assets contract](github-release-assets.md) - Immutable release identity, required assets, channels, checksums, attestations, bootstrap trust modes, publication, verification, and retention.
 - [Upgrade and migration protocol](upgrade-and-migration.md) - Explicit upgrade edges, three-way managed reconciliation, durable transaction state, deterministic migration ordering, rollback, and managed upgrade routing.
-- [Distribution schemas](schemas/) - Machine-readable schemas for installed state, release metadata, and upgrade transactions.
+- [Release guidance contract](release-guidance.md) - Installed `UPGRADE.md` metadata, semantic obligations, decisions, composition, completion, and Upgrade Role discovery.
+- [Distribution schemas](schemas/) - Machine-readable schemas for installed state, release metadata, upgrade transactions, and release guidance metadata.
 - [Current base format source](base/) - Authored roles, workflows, shared instructions, and project-format examples used while release assembly is being implemented.
 
 The release assembler must map source files to explicit installed destinations and ownership classes. In particular, the installed project uses a managed `/.ava/` namespace plus project-owned extension paths; it does not reproduce this repository's `/templates/` hierarchy.
