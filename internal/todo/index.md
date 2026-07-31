@@ -27,15 +27,17 @@ GitHub Release
 - Release checksums protect byte integrity but do not independently authenticate bootstrap execution. Ava uses GitHub immutable release attestations for the initial verified publication path.
 - Public distribution contracts, release payload sources, and internal publication procedures must remain separate repository concerns.
 - Internal Ava development roles remain separate from every distributed project bundle.
+- Upgrades use explicit release edges, durable transaction state, three-way managed reconciliation, deterministic migration descriptors, and managed pre-routing upgrade mode.
+- Normal project routing remains blocked until deterministic installation and required semantic migration reach a safe terminal state.
 
 ## Active roadmap
 
 1. [Format contract and base structure](01-format-contract/) - 3 of 4 complete; document update metadata remains as a follow-up
 2. [Core roles for initialized projects](02-core-roles/) - 4 of 4 complete
 3. [Workflow system](03-workflows/) - 3 of 6 complete; remaining work is deferred until the distribution ownership, versioning, and migration contracts are settled
-4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 3 of 9 complete
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 4 of 9 complete
 
-The distribution pivot remains the active priority. Resume the remaining workflow-system tasks after the ownership, release, and migration boundaries are explicit enough to evaluate how workflows participate in upgrades. The format metadata follow-up remains pending without replacing the current upgrade and migration protocol task.
+The distribution pivot remains the active priority. The next task defines installed release guidance and the managed Upgrade Role against the accepted upgrade transaction protocol. Resume the remaining workflow-system tasks after the ownership, release, and migration boundaries are explicit enough to evaluate how workflows participate in upgrades. The format metadata follow-up remains pending without replacing the current release-guidance task.
 
 ## Task status
 
