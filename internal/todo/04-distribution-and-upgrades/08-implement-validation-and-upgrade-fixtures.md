@@ -5,15 +5,15 @@ description: Validate the public format, installed base state, semantic compatib
 tags: [internal, roadmap, validation, testing, conformance, upgrades]
 status: pending
 phase: 4
-order: 7
+order: 8
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-30T15:26:00Z
+  at: 2026-07-31T14:09:00+02:00
 ---
 
 # Implement Validation, Conformance, and Upgrade Fixtures
 
-This task begins after completion of the preceding design and installer tasks.
+This task begins after completion of the preceding design, repository-boundary, and installer tasks.
 
 ## Validation contract
 
@@ -35,6 +35,7 @@ Automatic repair is permitted only when the correct result is unambiguous and de
 
 - validation for required files and directories, reserved filenames, frontmatter presence and schema, internal links, indexes, registry membership, required-reading paths, workflow-to-role references, duplicate identifiers, orphaned documents, deprecated references, and internal-content leakage
 - validation that role, workflow, and instruction discovery follows explicit indexes and registries and reports missing or ambiguous required paths
+- validation of the repository boundary between public distribution contracts, release payload sources, and internal release procedures
 - separation of structural and deterministic findings from semantic compatibility findings and unresolved project decisions
 - validation for installed `ava_version`, release source, managed-file checksums, deterministic migration state, and separate semantic compatibility
 - validation that the manifest remains at its Ava-managed path and is updated only by permitted upgrade mechanisms

@@ -5,17 +5,17 @@ description: Implement the thin POSIX shell entry point for fresh installation a
 tags: [internal, roadmap, shell, installer, updater]
 status: pending
 phase: 4
-order: 6
+order: 7
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T10:51:00+02:00
+  at: 2026-07-31T14:09:00+02:00
 ---
 
 # Implement Installer and Updater
 
-This task begins after completion of the preceding design tasks.
+This task begins after completion of the preceding design and repository-boundary tasks.
 
-Implement the accepted [distribution and ownership contract](/templates/distribution-and-ownership.md). The repository source tree must not be copied verbatim into a project.
+Implement the accepted [distribution and ownership contract](/distribution/ownership.md). The repository source tree must not be copied verbatim into a project.
 
 ## Release assembly
 
