@@ -4,6 +4,11 @@ This log records major conceptual and structural changes to Ava's internal devel
 
 ## 2026-07-31
 
+* **Ownership boundary completion**: Completed the first versioned-distribution task and accepted `/AGENTS.md` plus `/.ava/` as the managed namespace, with project-owned extension and context paths remaining at the project root.
+* **Repository and installation separation**: Defined `templates/` as repository release source rather than an installed-project mirror. Release assembly must map every source file to an explicit destination and ownership class instead of copying `templates/base/` verbatim.
+* **Adoption and collision contract**: Defined fresh-install eligibility, create-if-absent project scaffolding, explicit adoption of existing projects, automatic abort conditions, managed-file checksum conflicts, and migration requirements for unversioned Ava layouts.
+* **Bootstrap discovery contract**: Defined native `AGENTS.md` discovery, optional thin managed host bootstraps, explicit activation, and unsupported-host reporting without adding another router or ownership class.
+* **Roadmap advance**: Set the Ava SemVer and compatibility contract as the next task.
 * **Deprecated roadmap removal**: Removed the superseded workspace-provider, semantic-tool, application-service, MCP, CLI, and application-specific compatibility task directories from the executable roadmap hierarchy.
 * **Requirement preservation**: Moved the remaining valid requirements into the active installer and validation tasks, including safe path resolution, traversal and symlink protection, atomic grouped changes, dry-run and pre/post validation, stable machine-readable findings, structural conformance rules, deterministic repair boundaries, and compatibility fixtures.
 * **Historical boundary**: Kept the architecture pivot and removed planning available through this log and Git history rather than as misleading unchecked tasks.

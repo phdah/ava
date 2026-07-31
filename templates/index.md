@@ -1,9 +1,12 @@
-# Generated Project Templates
+# Distribution Sources
 
-Files under [`base/`](base/) define the initial filesystem content copied into a project by `ava init`.
+Files under this directory are repository source material for Ava releases. They are not copied verbatim into an installed project, and their repository paths do not determine installed ownership.
 
 ## Contents
 
-- [Base project template](base/) - Complete source tree copied into newly initialized Ava projects.
+- [Distribution and ownership contract](distribution-and-ownership.md) - Installed path layout, ownership classes, source-to-installed mapping, adoption, collision, and bootstrap rules.
+- [Current base format source](base/) - Authored roles, workflows, shared instructions, and project-format examples used while release assembly is being implemented.
 
-Repository-development instructions under `/internal/` are not part of generated project templates.
+The release assembler must map source files to explicit installed destinations and ownership classes. In particular, the installed project uses a managed `/.ava/` namespace plus project-owned extension paths; it does not reproduce this repository's `/templates/` hierarchy.
+
+Repository-development instructions under `/internal/` are never part of generated or installed project content.

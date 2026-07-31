@@ -1,11 +1,11 @@
 ---
 type: Shared Instruction
 title: Document Metadata
-description: Required metadata, document types, routing references, provenance, lifecycle, validation, and compatibility rules.
-tags: [ava, metadata, okf, documents, compatibility]
+description: Required metadata, document types, routing references, provenance, lifecycle, validation, ownership, and compatibility rules.
+tags: [ava, metadata, okf, documents, compatibility, ownership]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-28T10:32:00Z
+  at: 2026-07-31T10:51:00+02:00
 ---
 
 # Purpose
@@ -13,6 +13,8 @@ generated:
 Ava projects follow Open Knowledge Format version 0.2 and add only the metadata needed for deterministic Ava behaviour.
 
 Keep metadata open and extensible. Agents should make the best semantic classification available from the project context instead of forcing every document into a closed Ava taxonomy.
+
+Installed ownership and path authority are defined by the [distribution and ownership contract](../../../distribution-and-ownership.md). Document metadata must not be used to silently transfer ownership between Ava and the project.
 
 # Conformance layers
 
@@ -32,7 +34,10 @@ Unknown fields and project-defined document types do not invalidate the document
 
 An OKF-conformant project is Ava-valid when its Ava-controlled structures are also coherent, including:
 
-- mandatory initialized paths and reserved files exist
+- the managed root `/AGENTS.md` and `/.ava/` state are valid for the installed version
+- the managed base index at `/.ava/base/index.md` exists and declares the OKF version
+- managed files agree with `/.ava/state/manifest.json`
+- project-owned extension paths are not claimed by the managed manifest
 - known Ava semantic documents contain their required fields
 - role required-reading paths resolve
 - workflows are registered and reference exactly one registered, non-deprecated primary role
@@ -44,13 +49,15 @@ A document may remain a valid generic OKF concept even when Ava does not assign 
 
 `index.md` and `log.md` are reserved OKF documents and do not require normal concept frontmatter.
 
-The bundle-root `index.md` must declare the OKF version:
+The Ava-managed base index at `/.ava/base/index.md` must declare the OKF version:
 
 ```yaml
 ---
 okf_version: "0.2"
 ---
 ```
+
+A project-root `/index.md` is project-owned when present. It may also declare `okf_version`, but it is not the installed Ava version record and must not be added to the managed manifest merely because it resembles an Ava scaffold.
 
 Other Ava filenames, including `AGENTS.md`, `role.md`, `instructions.md`, `capabilities.md`, and `constraints.md`, are ordinary concept documents and require normal frontmatter.
 
@@ -109,10 +116,25 @@ New or meaningfully modified documents should use:
 ```yaml
 generated:
   by: agent:<identifier>
-  at: 2026-07-26T14:41:00Z
+  at: 2026-07-31T10:51:00+02:00
 ```
 
 Existing `timestamp` fields are legacy metadata. Preserve them until the document is meaningfully modified, then replace them with `generated` metadata.
+
+# Ownership metadata boundary
+
+Ownership is determined by installed path, manifest record, installing or adopting authority, and the accepted adoption transaction.
+
+Do not infer ownership from:
+
+- document `type`
+- `generated` or `verified` timestamps
+- filename
+- similarity to a default document
+- repository history
+- whether the file existed before installation
+
+A local edit to an Ava-managed file does not make it project-owned. It creates a managed-file conflict. Project-specific changes belong in project-owned extension paths.
 
 # Role routing
 
@@ -120,7 +142,9 @@ Role routing remains semantic and prose-based for free-form requests.
 
 Do not add keyword lists, regular expressions, numeric priorities, confidence thresholds, or a routing rule language to role metadata.
 
-The root router reads `roles/index.md`, compares a free-form request with each role's stated purpose and activation conditions, and selects the best match. A role's directory path is its stable identity, so a separate `role_id` is not required.
+The root router reads the managed role registry at `/.ava/base/roles/index.md` and the project-owned role registry at `/roles/index.md` when present. It compares a free-form request with each registered role's stated purpose and activation conditions and selects the best match.
+
+A role's canonical project-root-relative path is its stable identity, so a separate `role_id` is not required. Managed default roles use paths under `/.ava/base/roles/`; project roles use paths under `/roles/`.
 
 Explicit workflow invocation bypasses free-form role selection and resolves the workflow's declared `primary_role` according to [Workflow registry and routing](workflow-routing.md).
 
@@ -133,7 +157,7 @@ Every workflow requires:
 type: Workflow
 title: Configure project
 description: Establishes or clarifies project-wide purpose and shared guidance.
-primary_role: /roles/project-steward/role.md
+primary_role: /.ava/base/roles/project-steward/role.md
 mode: mutation
 status: stable
 ---
@@ -142,14 +166,18 @@ status: stable
 Rules:
 
 - `primary_role` is required.
-- It must be a bundle-root-relative path to exactly one registered, non-deprecated `role.md` document.
+- It must be a project-root-relative path to exactly one registered, non-deprecated `role.md` document.
+- It may reference a managed role under `/.ava/base/roles/` or a project-owned role under `/roles/`.
 - `mode` is required and must be `read-only`, `suggestion`, or `mutation`.
 - The workflow file path is the workflow identity.
-- The workflow must be reachable through `/workflows/index.md` to be registered and invokable.
+- A managed workflow must be reachable through `/.ava/base/workflows/index.md`.
+- A project-owned workflow must be reachable through `/workflows/index.md`.
 - A workflow must not duplicate the primary role's durable instructions.
 - A deprecated workflow may declare `replaced_by`, but the router must report rather than automatically invoke the replacement.
 - The complete body structure, input representation, mode semantics, expected output, context links, composition boundaries, and validation rules are defined by [Workflow format](workflow-format.md).
 - Registry discovery, invocation identity, routing precedence, primary-role resolution, failure handling, and deprecation are defined by [Workflow registry and routing](workflow-routing.md).
+
+Canonical path invocation remains unambiguous across ownership classes. A name that matches more than one registered role or workflow must be reported as ambiguous rather than resolved by managed or project-owned precedence.
 
 # Provenance and trust
 
@@ -170,7 +198,7 @@ Use `generated` to identify the actor and time that produced the current documen
 ```yaml
 verified:
   - by: human:project-owner
-    at: 2026-07-26T15:00:00Z
+    at: 2026-07-31T10:51:00+02:00
 ```
 
 Missing `verified` metadata means unverified, not invalid.
@@ -194,7 +222,7 @@ status: deprecated
 replaced_by: /roles/project-steward/role.md
 ```
 
-`replaced_by` must be a bundle-root-relative path. Explain the deprecation rationale in the document body and record major lifecycle changes in the nearest relevant `log.md`.
+`replaced_by` must be a project-root-relative canonical path. Explain the deprecation rationale in the document body and record major lifecycle changes in the nearest relevant `log.md`.
 
 A replacement reference does not itself activate or authorize the replacement. In particular, workflow and role routing must not automatically follow `replaced_by`; the caller must explicitly select the replacement and the router must resolve it normally.
 
@@ -206,7 +234,7 @@ Ava producers and editors must preserve unknown frontmatter fields and unknown v
 
 Unknown project-defined types and fields must not block normal OKF conformance. Strict diagnostic tooling may report them as non-blocking notices, but must not remove or rewrite them without an explicit rule.
 
-Do not add a document-level schema version. The bundle-root `okf_version` controls OKF compatibility. Ava may add one project-level `ava_version` later when it publishes a separate compatibility contract.
+Do not add a document-level schema version. The managed base `okf_version` controls OKF compatibility. The installed Ava distribution version belongs in `/.ava/state/manifest.json`; it must not be duplicated as document metadata or conflated with semantic compatibility of project-owned context.
 
 # Validation rules
 
@@ -215,23 +243,26 @@ Treat these as errors:
 - missing or invalid frontmatter on a non-reserved Markdown document
 - missing or empty `type`
 - malformed known OKF or Ava fields
-- missing mandatory initialized paths or reserved files
+- missing managed bootstrap, base, state, or other mandatory installed paths
+- a managed file missing from the manifest or differing from its recorded checksum
+- a project-owned extension path claimed by the managed manifest
 - broken required-reading paths
 - missing `title` or `description` on an Ava-controlled semantic document
-- a workflow omitted from its registry path or referenced through a broken workflow index link
+- a workflow omitted from the correct managed or project-owned registry
 - workflow `primary_role` missing, malformed, unresolved, unregistered, deprecated, or referencing more than one role
 - workflow `mode` missing or unsupported
 - workflow body structure or semantics that violate the workflow-format contract
 - invalid or automatically followed workflow or role `replaced_by` routing
+- ambiguous name-based routing across managed and project-owned registries
 
 Treat these as warnings or non-blocking notices:
 
 - references to deprecated concepts
 - invocation of a draft workflow
-- multiple registered workflows sharing a filename stem
+- multiple registered workflows sharing a filename stem when not invoked by that stem
 - content past `stale_after`
 - broken optional contextual links
-- missing optional indexes outside mandatory initialized structure
+- missing optional project-owned indexes
 - unknown fields or project-defined types reported by strict diagnostic tooling
 
 # Obsidian compatibility
@@ -253,21 +284,29 @@ tags: [data, ingestion]
 ---
 ```
 
-This is valid because project-defined descriptive types are open.
-
-## Deprecated role with replacement
+## Managed workflow using a default role
 
 ```yaml
 ---
-type: Agent Role
-title: Legacy Curator
-description: Deprecated role retained for existing links.
-status: deprecated
-replaced_by: /roles/project-steward/role.md
+type: Workflow
+title: Configure project
+description: Configures the project.
+primary_role: /.ava/base/roles/project-steward/role.md
+mode: mutation
 ---
 ```
 
-The replacement is advisory. A router must not activate it automatically.
+## Project workflow using a project role
+
+```yaml
+---
+type: Workflow
+title: Review deployment
+description: Reviews deployment readiness for this project.
+primary_role: /roles/deployment-reviewer/role.md
+mode: read-only
+---
+```
 
 ## Source-backed knowledge
 
@@ -275,13 +314,13 @@ The replacement is advisory. A router must not activate it automatically.
 ---
 type: Decision
 title: Retain processed inbox sources
-description: Project decision to preserve original source material after ingestion.
+description: Canonical decision to preserve source material after ingestion.
 sources:
   - id: ingestion-notes
     resource: /inbox/processed/ingestion-notes.md
 generated:
   by: agent:project-steward
-  at: 2026-07-26T14:41:00Z
+  at: 2026-07-31T10:51:00+02:00
 ---
 ```
 
@@ -295,8 +334,6 @@ title: Unclassified document
 ---
 ```
 
-Invalid because every non-reserved Markdown document requires `type`.
-
 ## Workflow without one resolvable role
 
 ```yaml
@@ -305,28 +342,12 @@ type: Workflow
 title: Configure project
 description: Configures the project.
 primary_role:
+  - /.ava/base/roles/project-steward/role.md
   - /roles/project-steward/role.md
-  - /roles/role-manager/role.md
 mode: mutation
 ---
 ```
 
-Invalid because a workflow must reference exactly one role.
+## Ownership inferred from metadata
 
-## Unregistered workflow
-
-A valid-looking workflow file beneath `/workflows/` is not invokable when it is omitted from the workflow registry index hierarchy.
-
-## Closed-taxonomy rejection
-
-A validator must not reject this only because the type is not known to Ava:
-
-```yaml
----
-type: Renovation Plan
-title: Kitchen renovation
-description: Canonical plan for the kitchen renovation.
----
-```
-
-Rejecting it would violate Ava's open document-type model.
+A file is not Ava-managed merely because its metadata resembles a default role or because `generated.by` names Ava. Only the installed ownership contract and manifest establish managed authority.
