@@ -5,14 +5,14 @@ description: Portable structure, operating modes, inputs, outputs, context links
 tags: [ava, workflows, format, validation]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-28T10:32:00Z
+  at: 2026-07-30T15:26:00Z
 ---
 
 # Purpose
 
 A workflow is a reusable predefined prompt for one bounded procedure or outcome. It activates exactly one primary role and supplies procedure-specific scope, inputs, operating mode, required context, steps, and expected output.
 
-A workflow must remain readable as ordinary Markdown while exposing enough stable structure for Ava tools and agent clients to validate and invoke it consistently.
+A workflow must remain readable as ordinary Markdown while exposing enough stable structure for host agents and available validation tools to validate and invoke it consistently.
 
 Workflow registration, invocation identity, routing precedence, role resolution, and deprecation follow [Workflow registry and routing](workflow-routing.md).
 
@@ -59,7 +59,7 @@ Rules:
 
 # Operating modes
 
-The mode states the maximum workspace effect requested by the workflow. It does not grant capabilities, weaken constraints, satisfy approval requirements, or guarantee that the workspace provider supports the requested operation.
+The mode states the maximum project effect requested by the workflow. It does not grant capabilities, weaken constraints, satisfy approval requirements, or guarantee that the host agent has tools capable of the requested operation.
 
 ## `read-only`
 
@@ -67,11 +67,11 @@ The workflow may inspect context and report findings. It must not create, update
 
 ## `suggestion`
 
-The workflow may inspect context and produce a proposed change, plan, patch, or recommendation. It must not apply the proposed workspace mutation.
+The workflow may inspect context and produce a proposed change, plan, patch, or recommendation. It must not apply the proposed project mutation.
 
 ## `mutation`
 
-The workflow may request workspace changes. Actual changes remain bounded by the active role, active constraints, the user's approved scope, and available workspace-provider capabilities.
+The workflow may request project changes. Actual changes remain bounded by the active role, active constraints, the user's approved scope, and capabilities exposed by the host agent and its available tools.
 
 # Prompt body
 

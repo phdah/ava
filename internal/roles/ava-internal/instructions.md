@@ -3,7 +3,9 @@ type: Role Instructions
 title: Ava Internal Maintainer Instructions
 description: Required working behaviour for maintaining the Ava repository.
 tags: [internal, instructions, development]
-timestamp: 2026-07-26T00:00:00Z
+generated:
+  by: agent:openai-chatgpt
+  at: 2026-07-30T15:26:00Z
 ---
 
 # Working model
@@ -30,6 +32,8 @@ The role may make suggestions and formulate alternatives.
 It may implement decisions already made through the current prompt, existing repository instructions, or explicit user approval.
 
 It must request approval before applying a large architectural decision as defined in [role.md](role.md).
+
+A draft pull request may express an architectural proposal before approval only when every affected authoritative document, roadmap entry, and log entry clearly marks it as proposed. Do not record the proposal as accepted, established, active, or superseding existing architecture until the user approves it.
 
 It does not need to produce ADR files or explain trade-offs unless requested.
 
@@ -71,12 +75,14 @@ For internal repository documents and other scopes not governed by a delegated r
 
 - use Markdown for knowledge and instruction documents
 - add YAML frontmatter to every non-reserved Markdown document except the repository root `README.md`
-- treat the root `README.md` as human-facing GitHub documentation for stable project purpose, architecture, goals, and boundaries
-- keep current roadmap state, open design questions, and the next task under `/internal/todo.md` and `/internal/todo/`, not in the root `README.md`
+- treat the root `README.md` as human-facing GitHub documentation for stable approved project purpose, architecture, goals, and boundaries
+- keep proposals, open design questions, current roadmap state, and the next task under `/internal/todo.md` and `/internal/todo/`
+- when a proposal must be visible in the README for review, mark its approval state explicitly and remove that marker only after approval
 - include a non-empty `type` field in frontmatter
 - use descriptive Ava-specific type values rather than Google's data-oriented taxonomy
 - use `index.md` for directory discovery
 - use `log.md` only for major conceptual or structural changes
+- distinguish proposed changes from accepted historical changes in conceptual logs
 - use Markdown links to connect related documents
 - keep documents focused and avoid combining unrelated responsibilities
 
@@ -92,18 +98,19 @@ Update the nearest relevant `log.md` for major conceptual or structural changes.
 
 # Implementation defaults
 
-Default to Go for application code and Bash for shell automation when appropriate.
+Default to POSIX shell for thin release, installation, and upgrade automation. Use another implementation language only when an approved task requires complexity that shell cannot safely or portably handle.
 
-No MCP protocol implementation is required until the repository design reaches that phase.
+Do not implement an MCP server, feature-rich CLI, workspace-provider layer, or persistent application service unless the user has explicitly approved an architecture requiring it.
 
-Testing requirements should be defined when MCP or CLI implementation begins. Until then, validate documentation structure and links where practical.
+Define tests as part of the implementation task they protect. At minimum, validate documentation structure, links, managed-file boundaries, version state, migration state, release-asset integrity, and declared trust behavior where relevant.
 
 # Completion
 
 When the requested work is complete:
 
 1. verify that every delegated role's applicable completion checks were satisfied
-2. verify that internal and generated-platform concerns remain separated
-3. verify that affected indexes reflect the current structure without flattening descendants
-4. update conceptual logs when required
-5. report what changed and identify any unresolved decision
+2. verify that internal and distributed-project concerns remain separated
+3. verify that proposed and approved architecture states are represented accurately
+4. verify that affected indexes reflect the current structure without flattening descendants
+5. update conceptual logs when required
+6. report what changed and identify any unresolved decision

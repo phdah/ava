@@ -2,6 +2,16 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-07-30
+
+* **Versioned context distribution pivot**: Reframed Ava as a versioned, file-based context distribution rather than an MCP server, workspace-provider application, or feature-rich CLI. The files remain the public product and the host agent supplies navigation, editing, and repository operations.
+* **GitHub Release distribution**: Established immutable GitHub Release assets as the installation and upgrade channel, with latest-stable and version-pinned URLs, a thin shell installer, versioned base bundle, integrity checksums, release manifest, change notes, agent upgrade guidance, deterministic migrations, and an explicit signing or attestation decision.
+* **Ownership model**: Limited the design to two ownership classes. Ava-managed content includes the root `AGENTS.md` and all bootstrap files. Project customization remains project-owned and outside managed paths.
+* **Version-state separation**: Defined `ava_version` solely as the installed Ava-managed base version and required semantic compatibility of project-owned context to be tracked separately.
+* **Migration guidance and logs**: Retained scoped `log.md` files as conceptual history and release-note source material, while requiring release-specific structured guidance to state compatibility impact, affected project context, deterministic migrations, required decisions, and completion criteria.
+* **Roadmap replacement**: Superseded the provider, semantic MCP tool, shared application service, MCP implementation, companion CLI, and application-specific compatibility phases with an active distribution and upgrade roadmap.
+* **Host capability terminology**: Replaced public instruction dependence on a workspace-provider abstraction with the active role, user-approved scope, and capabilities exposed by the host agent and its available tools.
+
 ## 2026-07-28
 
 * **Initial built-in workflow catalog**: Added ten registered workflows for role lifecycle, project stewardship, inbox ingestion, and semantic review. Mutation remains bounded by each primary role, recurring daily maintenance is suggestion-only, semantic reviews are read-only, and scheduling remains outside Ava's runtime.

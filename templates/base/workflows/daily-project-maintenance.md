@@ -7,14 +7,14 @@ mode: suggestion
 status: stable
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-28T13:01:48Z
+  at: 2026-07-30T15:26:00Z
 ---
 
 # Daily project maintenance
 
 ## Purpose
 
-Inspect a bounded project scope for maintenance needs and produce a prioritized proposal without applying workspace changes.
+Inspect a bounded project scope for maintenance needs and produce a prioritized proposal without applying project changes.
 
 ## Inputs
 
