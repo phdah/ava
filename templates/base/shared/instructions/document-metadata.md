@@ -226,7 +226,7 @@ replaced_by: /roles/project-steward/role.md
 
 A replacement reference does not itself activate or authorize the replacement. In particular, workflow and role routing must not automatically follow `replaced_by`; the caller must explicitly select the replacement and the router must resolve it normally.
 
-Ava-managed public files, metadata fields, roles, and workflows that are deprecated by a release must also declare:
+Ava-managed public documents, roles, and workflows that are deprecated by a release must also declare:
 
 ```yaml
 status: deprecated
@@ -244,6 +244,8 @@ Rules:
 - `replaced_by` remains optional when no direct replacement exists.
 - Release notes and upgrade guidance must explain migration impact and removal timing.
 - Removal or behavior-changing replacement requires the SemVer classification defined by the versioning and compatibility contract.
+
+A deprecated metadata field cannot declare frontmatter. Its authoritative contract, release notes, and upgrade guidance must instead record its deprecation version, earliest removal version, replacement when present, and migration impact.
 
 Project-owned concepts may use these fields when their lifecycle is intentionally tied to an Ava release. They are not required to invent an Ava removal version for ordinary project-specific deprecation.
 
