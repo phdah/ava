@@ -1,7 +1,7 @@
 ---
 type: Distribution Contract
 title: Ava Distribution and Ownership Boundary
-description: Defines the repository source model, installed-project paths, ownership classes, adoption rules, managed-file conflicts, and bootstrap discovery contract.
+description: Defines repository source mapping, installed paths, release ownership, adoption, managed-file conflicts, and bootstrap discovery.
 tags: [ava, distribution, ownership, installation, adoption, bootstrap]
 generated:
   by: agent:openai-chatgpt
@@ -10,9 +10,9 @@ generated:
 
 # Ava Distribution and Ownership Boundary
 
-This document defines the accepted boundary between Ava-managed distribution content and project-owned context.
+This document defines the repository, release, installation, and upgrade boundary between Ava-managed distribution content and project-owned context.
 
-The Ava repository and an installed Ava project intentionally use different directory structures. Repository source paths organize development and release assembly. Installed paths define ownership, routing, upgrade behavior, and the public file contract.
+It is a release and assembly contract, not the complete instruction loaded by agents during ordinary project work. Installed agent behavior is defined separately by [Ownership and mutation authority](base/shared/instructions/ownership-and-mutation.md), which release assembly installs under `/.ava/base/shared/instructions/`.
 
 # Repository source model
 
@@ -27,7 +27,7 @@ The Ava repository remains a development repository:
 └── templates/
     ├── index.md
     ├── distribution-and-ownership.md
-    └── base/                 # current authored format and release source material
+    └── base/                 # authored managed-base and scaffold source material
 ```
 
 `internal/` is never distributed.
@@ -63,7 +63,7 @@ The accepted installed layout is:
 
 Project-owned paths may exist before installation, be created by create-if-absent scaffolding, or be added later. Creation time never changes their ownership.
 
-# Ownership classes
+# Release ownership classes
 
 Ava has exactly two ownership classes.
 
@@ -81,9 +81,7 @@ It includes:
 - any selected host-specific bootstrap file
 - deterministic migration support installed by the release
 
-Ava-managed files must not contain project-specific customization.
-
-Managed-file customization is prohibited. A local edit does not convert a managed file into project-owned content. Custom behavior must be expressed through the project-owned extension paths referenced by the router.
+Ava-managed files must not contain project-specific customization. A local edit does not convert a managed file into project-owned content.
 
 ## Project-owned
 
@@ -100,33 +98,7 @@ The standard extension roots are:
 
 Pre-existing content accepted during installation remains project-owned unless an explicit adoption decision assigns an exact path to the managed release set. The installer must never infer ownership from timestamps, creation order, filenames alone, or similarity to an Ava default.
 
-# Ownership versus mutation authority
-
-Distribution ownership and mutation authority are separate concepts.
-
-Ownership determines:
-
-- whether a path belongs to the installed Ava release or to the project
-- whether a path is recorded in the managed manifest
-- whether release tooling may replace, move, or delete it mechanically
-- which authority supplies its canonical lifecycle and upgrade baseline
-
-Ownership does not grant exclusive editing rights to Ava or to a human project owner. In particular, `project-owned` does not mean that Ava roles are read-only or prohibited from changing the file.
-
-Active Ava roles and workflows are expected to maintain project-owned context. Within the current user request and resolved instruction set, they may create, update, reorganize, move, or remove project-owned files when their capabilities permit it and their constraints do not prohibit it. This includes ordinary role work, inbox ingestion, role and workflow maintenance, project stewardship, and bounded semantic upgrade work.
-
-Mutation authority is determined by:
-
-1. the active role and any explicitly invoked workflow
-2. the role's capabilities and constraints
-3. the current user-approved task scope
-4. applicable project instructions and unresolved-decision rules
-
-A mutation does not change file ownership. A project-owned file remains project-owned after an Ava role edits it. An Ava-managed file remains Ava-managed after a permitted state transition or release operation.
-
-Ordinary semantic roles must not customize Ava-managed files. Managed files are changed through deterministic release tooling or another narrowly defined managed mechanism. The Upgrade Role may update managed semantic-migration state only where the upgrade protocol explicitly grants that authority.
-
-The protection for project-owned content applies to automatic release behavior: installers, updaters, and deterministic migrations must not rewrite project semantics as an incidental consequence of replacing the Ava base. It does not restrict normal agent work performed under an active role with appropriate authority.
+The operational meaning of these classes, including the distinction between ownership and role mutation authority, belongs to the installed [Ownership and mutation authority](base/shared/instructions/ownership-and-mutation.md) contract.
 
 # Manifest authority
 
@@ -159,7 +131,7 @@ Restoring the installed version, explicitly discarding the local modification, o
 
 The router discovers:
 
-- managed routing contracts under `/.ava/base/shared/`
+- managed routing and ownership contracts under `/.ava/base/shared/`
 - managed default roles under `/.ava/base/roles/`
 - managed default workflows under `/.ava/base/workflows/`
 - project-owned roles through `/roles/index.md` when present
@@ -272,7 +244,8 @@ The intended mapping is:
 | managed base index and contracts | `/.ava/base/` | Ava-managed |
 | default roles | `/.ava/base/roles/` | Ava-managed |
 | default workflows | `/.ava/base/workflows/` | Ava-managed |
-| managed shared instructions | `/.ava/base/shared/` | Ava-managed |
+| `templates/base/shared/instructions/ownership-and-mutation.md` | `/.ava/base/shared/instructions/ownership-and-mutation.md` | Ava-managed |
+| other managed shared instructions | `/.ava/base/shared/` | Ava-managed |
 | release-generated manifest and state | `/.ava/state/` | Ava-managed |
 | release upgrade guidance | `/.ava/guidance/` | Ava-managed |
 | minimal project scaffold sources | project root extension paths | Project-owned, create-if-absent only |
@@ -291,4 +264,4 @@ This boundary does not require or reserve responsibility for:
 - repository or storage provider layers
 - application-service ownership of project context
 
-The installer performs deterministic filesystem and release operations. Active Ava roles work directly with installed project-owned context under their defined authority. Release tooling applies only deterministic managed changes and must not perform semantic project maintenance as an incidental side effect.
+The installer performs deterministic filesystem and release operations. Installed shared instructions govern how active Ava roles work directly with project-owned context. Release tooling applies only deterministic managed changes and must not perform semantic project maintenance as an incidental side effect.
