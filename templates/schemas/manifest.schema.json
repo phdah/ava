@@ -44,7 +44,12 @@
           "pattern": "^v(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-(?:alpha|beta|rc)\\.(?:0|[1-9][0-9]*))?$"
         },
         "channel": {
-          "enum": ["stable", "rc", "beta", "alpha"]
+          "enum": [
+            "stable",
+            "rc",
+            "beta",
+            "alpha"
+          ]
         },
         "source_revision": {
           "$ref": "#/$defs/gitSha"
@@ -72,7 +77,10 @@
         {
           "contains": {
             "type": "object",
-            "required": ["path", "kind"],
+            "required": [
+              "path",
+              "kind"
+            ],
             "properties": {
               "path": {
                 "const": "/AGENTS.md"
@@ -86,7 +94,10 @@
         {
           "contains": {
             "type": "object",
-            "required": ["path", "kind"],
+            "required": [
+              "path",
+              "kind"
+            ],
             "properties": {
               "path": {
                 "const": "/.ava/state/manifest.json"
@@ -100,7 +111,10 @@
         {
           "contains": {
             "type": "object",
-            "required": ["path", "kind"],
+            "required": [
+              "path",
+              "kind"
+            ],
             "properties": {
               "path": {
                 "const": "/.ava/state/upgrade.json"
@@ -119,7 +133,13 @@
           "$ref": "#/$defs/completeCompatibility"
         },
         {
-          "$ref": "#/$defs/incompleteCompatibility"
+          "$ref": "#/$defs/pendingCompatibility"
+        },
+        {
+          "$ref": "#/$defs/partialCompatibility"
+        },
+        {
+          "$ref": "#/$defs/blockedCompatibility"
         }
       ]
     }
@@ -150,7 +170,12 @@
     "payloadFile": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["path", "role", "kind", "sha256"],
+      "required": [
+        "path",
+        "role",
+        "kind",
+        "sha256"
+      ],
       "properties": {
         "path": {
           "type": "string",
@@ -170,7 +195,11 @@
     "stateFile": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["path", "role", "kind"],
+      "required": [
+        "path",
+        "role",
+        "kind"
+      ],
       "properties": {
         "path": {
           "enum": [
@@ -210,7 +239,12 @@
           ]
         },
         "status": {
-          "enum": ["complete", "pending", "partial", "blocked"]
+          "enum": [
+            "complete",
+            "pending",
+            "partial",
+            "blocked"
+          ]
         },
         "unresolved_decisions": {
           "type": "array",
@@ -243,7 +277,7 @@
         }
       ]
     },
-    "incompleteCompatibility": {
+    "pendingCompatibility": {
       "allOf": [
         {
           "$ref": "#/$defs/compatibilityBase"
@@ -255,7 +289,49 @@
               "$ref": "#/$defs/semver"
             },
             "status": {
-              "enum": ["pending", "partial", "blocked"]
+              "const": "pending"
+            },
+            "unresolved_decisions": {
+              "maxItems": 0
+            }
+          }
+        }
+      ]
+    },
+    "partialCompatibility": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/compatibilityBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "target_version": {
+              "$ref": "#/$defs/semver"
+            },
+            "status": {
+              "const": "partial"
+            }
+          }
+        }
+      ]
+    },
+    "blockedCompatibility": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/compatibilityBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "target_version": {
+              "$ref": "#/$defs/semver"
+            },
+            "status": {
+              "const": "blocked"
+            },
+            "unresolved_decisions": {
+              "minItems": 1
             }
           }
         }
