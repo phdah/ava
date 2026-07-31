@@ -3,69 +3,61 @@ type: Internal Development Task
 title: Define Distribution and Ownership Boundary
 description: Define Ava as a file distribution and separate Ava-managed base content from project-owned context.
 tags: [internal, roadmap, distribution, ownership]
-status: pending
+status: complete
 phase: 4
 order: 1
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-30T22:59:00+02:00
+  at: 2026-07-31T10:51:00+02:00
 ---
 
 # Define Distribution and Ownership Boundary
 
-## Architecture constraints
+The accepted public contract is documented in [Ava Distribution and Ownership Boundary](/templates/distribution-and-ownership.md).
+
+## Accepted decisions
 
 - Ava uses exactly two ownership classes: Ava-managed and project-owned.
-- The root `AGENTS.md`, manifests, release guidance, and every installed bootstrap file are Ava-managed.
-- Project-specific customization must live in project-owned paths referenced by managed instructions.
-- There is no third generated-integration-shim ownership class.
-- The root `AGENTS.md` remains the canonical bundle entry point. Compatibility bootstrap files may direct host agents to it but must not duplicate or redefine its routing semantics.
-- Ownership is determined by the accepted path, manifest, authority, and adoption contract, never by when a file was created.
-- Project-owned content may predate Ava installation or be created afterward. Creation time never defines or limits the project-owned class.
+- The repository source layout and installed-project layout are intentionally different.
+- Repository source paths do not determine installed ownership.
+- `/AGENTS.md` is the Ava-managed canonical router.
+- `/.ava/base/` contains managed default roles, workflows, shared instructions, and base navigation.
+- `/.ava/state/manifest.json` is the stable managed-file ownership and installed-version record.
+- `/.ava/state/upgrade.json` is the stable active-upgrade state location.
+- `/.ava/guidance/` contains release-specific managed upgrade guidance.
+- `/roles/`, `/workflows/`, `/shared/`, `/knowledge/`, `/inbox/`, `/index.md`, and `/log.md` are project-owned extension and context paths when present.
+- Project-owned files may predate installation, be created by create-if-absent scaffolding, or be added later.
+- Managed-file customization is prohibited. Checksum mismatches are reported as conflicts and are never silently overwritten or reclassified.
+- Project-specific behavior must be expressed in project-owned extension paths rather than by editing managed files.
+- Host-specific bootstrap files are optional thin Ava-managed pointers to `/AGENTS.md`, never independent routers or a third ownership class.
+- Hosts without validated automatic discovery use an explicit instruction to load `/AGENTS.md`; unsupported discovery behavior is reported rather than guessed.
+- Existing projects are adopted through explicit path classification and collision resolution. Installation never silently claims, replaces, relocates, or merges pre-existing files.
+- Pre-existing root files and standard extension directories remain project-owned by default.
+- A pre-existing `/AGENTS.md`, an unrecognized `/.ava/`, a conflicting host bootstrap, or a modified managed file aborts automatically unless an explicit adoption, recovery, or migration decision resolves the exact path.
+- Existing unversioned Ava projects require an explicit migration from mixed root defaults into the managed `/.ava/base/` namespace while preserving project-specific content.
+- MCP servers, persistent runtimes, feature-rich CLIs, workspace-provider layers, and application services are not part of the ownership or installation boundary.
 
-## Decide
+## Repository impact
 
-- the exact installed ownership boundary for Ava as a versioned context distribution
-- the installed path layout for base instructions, default roles, default workflows, manifests, and project context
-- the stable Ava-managed path for the installed manifest and upgrade state
-- which managed files may be customized, or whether managed-file customization is prohibited
-- how local modifications to managed files are detected and reported
-- how the managed root `AGENTS.md` discovers Ava-managed and project-owned instructions, registries, and extension points
-- which supported host agents discover `AGENTS.md` natively and what portable fallback entry point or explicit activation contract applies when they do not
-- whether host-specific bootstrap files are distributed, how the installer selects them, and how they remain thin Ava-managed pointers rather than a third ownership class
-- how installation and validation report unsupported host bootstrap behavior or missing automatic instruction loading
-- whether existing `templates/base/` paths can become the installed layout or require migration
-- what makes an existing project eligible for Ava installation or adoption
-- how installation handles pre-existing `AGENTS.md`, `index.md`, `log.md`, role registries, workflow registries, instructions, knowledge, and directory layouts
-- how explicit adoption decisions classify each accepted pre-existing path as Ava-managed or project-owned without relying on creation time, timestamps, or repository history
-- how public documentation defines project-owned content without implying that it must be created after installation
-- which path and content collisions must abort automatically and which may be resolved through an explicit adoption or migration decision
-- how an existing unversioned or partially Ava-structured project is classified and adopted without silently changing project ownership
-- which previous MCP, CLI, provider, and application-service concepts are removed from the public architecture
+This task defines release output and source mapping. It does not make the Ava repository itself resemble an installed project.
 
-## Constraints
+- `/internal/` remains repository-only development context.
+- `/templates/base/` remains current authored format and release source material during the design phase.
+- Release assembly must map source files to explicit installed paths and ownership classes rather than copying `templates/base/` verbatim.
+- The installer implementation task must either reorganize source templates or generate a complete release manifest that performs this mapping mechanically.
 
-- project-owned content must never be overwritten merely because a new base release exists
-- managed bootstrap files must not mix project-specific content into their ownership boundary
-- host compatibility must not require an MCP server, persistent Ava runtime, or feature-rich CLI
-- host-specific bootstrap files must not fork, duplicate, or weaken the canonical routing and instruction contracts
-- installation into an existing project must not silently claim, replace, relocate, or merge pre-existing project files
-- file age, creation order, commit date, and filesystem timestamps must never determine ownership
-- the ownership model must remain understandable through normal files and Git diffs
-- internal repository instructions must never enter the distributed bundle
-- incompatible public path changes require separate user approval
+## Validation
 
-## Completion criteria
+The contract covers:
 
-- document the two accepted ownership classes and exact path boundaries
-- define the stable bootstrap and manifest locations
-- define the root `AGENTS.md` as Ava-managed and the supported project-customization path
-- define native and fallback bootstrap discovery across supported host agents, including explicit activation and unsupported-host reporting
-- define any host-specific bootstrap files as thin Ava-managed integration points without creating another ownership or authority model
-- define ownership classification through paths, manifest records, authority, and explicit adoption rather than creation time
-- remove creation-time qualifiers from public ownership definitions and explicitly include adopted pre-existing project content in the project-owned class
-- define existing-project eligibility, adoption, collision, abort, and explicit-resolution behavior
-- demonstrate how pre-existing roles, workflows, instructions, knowledge, registries, and root files retain or receive unambiguous ownership during adoption
-- identify any required migration from the current template layout or existing unversioned Ava projects
-- align the README, template index, metadata contract, installer task, and upgrade roadmap
-- obtain user approval before applying incompatible public path changes
+- exact installed ownership paths
+- router and extension discovery
+- manifest authority
+- managed-file conflict detection
+- fresh installation eligibility
+- existing-project adoption and collision behavior
+- unversioned Ava migration
+- native, host-bootstrap, explicit-only, and unsupported discovery outcomes
+- repository-source to installed-path mapping
+
+The incompatible public path decision was approved by the user before implementation.
