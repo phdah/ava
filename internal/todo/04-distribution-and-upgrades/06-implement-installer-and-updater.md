@@ -26,7 +26,13 @@ This task begins after completion of the preceding design tasks.
 - managed-file comparison and safe replacement
 - deterministic migration execution
 - existing-project eligibility checks and the approved adoption, collision, abort, and explicit-resolution behavior
-- dry-run, conflict reporting, and non-interactive failure behavior
+- canonical path normalization for every managed operation
+- rejection of absolute paths, parent traversal, symlink escapes, and archive entries that resolve outside the selected target root
+- staged grouped changes with atomic apply or rollback behavior where the platform permits it
+- expected checksum or version checks before replacing, moving, or deleting existing managed files
+- dry-run output that reports every planned create, replace, move, and delete operation, its reason, detected conflicts, and expected validation effects
+- validation before apply and after staged changes, before committing the transaction
+- clear, normalized failure reporting suitable for both humans and automation
 - installation of pending semantic upgrade guidance and separate semantic-compatibility state
 - recording of the active upgrade transaction so normal Ava routing remains blocked until semantic completion, rollback, or another defined terminal state
 - clear handoff instructions for activating the dedicated Upgrade Role after deterministic work succeeds
@@ -42,7 +48,9 @@ The script should orchestrate standard filesystem, archive, state-recording, and
 - support an explicit upgrade to a chosen version
 - support latest stable through the documented convenience path
 - support a separately verified pinned-version path
-- fail safely on path collisions, managed-file conflicts, incomplete assets, checksum errors, authenticity failures, and unsupported transitions
+- fail safely on path collisions, managed-file conflicts, incomplete assets, checksum errors, authenticity failures, unsupported transitions, unsafe archive paths, and out-of-root filesystem resolution
+- prove that no installer, updater, migration, rollback, or cleanup operation can modify a path outside the selected target root
+- preserve grouped logical changes and avoid partial application when staging, validation, or final apply fails
 - clearly distinguish installed `ava_version` from semantic compatibility
 - preserve the active-upgrade state and prevent normal operation until the Upgrade Role completes or the protocol exits through another defined terminal state
 - remain readable, auditable, and usable through standard shell tooling

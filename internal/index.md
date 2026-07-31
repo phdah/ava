@@ -10,7 +10,7 @@ Content under this directory is internal to the Ava repository. It must not be i
 
 # Planning
 
-* [Internal to-do roadmap](todo.md) - Stable entry point into the active roadmap, superseded planning, numbered phase indexes, and individual task files.
+* [Internal to-do roadmap](todo.md) - Stable entry point into the active roadmap, numbered phase indexes, and individual task files.
 
 # History
 
