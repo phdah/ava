@@ -5,7 +5,7 @@ description: Deterministic activation, scope, precedence, authority, role compos
 tags: [ava, instructions, precedence, roles, workflows, routing]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-28T10:32:00Z
+  at: 2026-07-30T15:26:00Z
 ---
 
 # Purpose
@@ -87,9 +87,9 @@ A narrower instruction must not be inferred from directory depth. If Ava cannot 
 
 # Authority, capabilities, and constraints
 
-The active role defines the semantic authority for the task. Actual operations also remain limited by the available tools and workspace provider.
+The active role defines the semantic authority for the task. Actual operations also remain limited by the capabilities exposed by the host agent and its available tools.
 
-Effective capabilities are limited by all applicable authority sources. A workflow, task-specific instruction, or user request may narrow how a capability is used, but must not grant a capability that the active role or workspace provider does not have.
+Effective capabilities are limited by all applicable authority sources. A workflow, task-specific instruction, or user request may narrow how a capability is used, but must not grant a capability that the active role or available host tools do not have.
 
 Constraints are cumulative across every active scope:
 
@@ -199,7 +199,7 @@ Ava validation must treat these as errors or blocking findings:
 - routing resolves to no role or more than one materially different active role without a user decision
 - a role declares inheritance, role composition, supporting-role activation, or delegation
 - a workflow declares a supporting or delegated role
-- an active narrower instruction attempts to grant a capability absent from the active role or workspace provider
+- an active narrower instruction attempts to grant a capability absent from the active role or available host tools
 - an active narrower instruction attempts to weaken or bypass a broader constraint
 - irreconcilable active instructions at the same scope lack an explicit resolution
 - task-specific content is treated as authoritative without an activation path
