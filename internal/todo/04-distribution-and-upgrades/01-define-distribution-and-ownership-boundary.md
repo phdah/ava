@@ -8,7 +8,7 @@ phase: 4
 order: 1
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T10:51:00+02:00
+  at: 2026-07-31T11:16:00+02:00
 ---
 
 # Define Distribution and Ownership Boundary
@@ -18,6 +18,9 @@ The accepted public contract is documented in [Ava Distribution and Ownership Bo
 ## Accepted decisions
 
 - Ava uses exactly two ownership classes: Ava-managed and project-owned.
+- Distribution ownership controls release lifecycle, manifest membership, and automatic replacement. It does not define exclusive edit rights.
+- Active Ava roles and workflows are expected to maintain project-owned context within their capabilities, constraints, current instructions, and user-approved task scope.
+- Editing a file does not change its ownership class.
 - The repository source layout and installed-project layout are intentionally different.
 - Repository source paths do not determine installed ownership.
 - `/AGENTS.md` is the Ava-managed canonical router.
@@ -51,6 +54,7 @@ This task defines release output and source mapping. It does not make the Ava re
 The contract covers:
 
 - exact installed ownership paths
+- separation between distribution ownership and role mutation authority
 - router and extension discovery
 - manifest authority
 - managed-file conflict detection
