@@ -3,56 +3,56 @@ type: Internal Development Task
 title: Define GitHub Release Assets
 description: Define immutable, version-consistent release assets, distribution channels, and bootstrap trust modes.
 tags: [internal, roadmap, releases, distribution, security]
-status: pending
+status: complete
 phase: 4
 order: 3
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-30T15:26:00Z
+  at: 2026-07-31T13:27:00+02:00
 ---
 
 # Define GitHub Release Assets
 
-## Define
+The accepted public contract is documented in [Ava GitHub Release Assets](/templates/github-release-assets.md). Its machine-readable release manifest is defined by [release.schema.json](/templates/schemas/release.schema.json).
 
-- canonical release tag naming such as `v1.2.3`
-- the stable latest-release URL and version-pinned URLs
-- required assets, including installer, base bundle, integrity checksums, release manifest, change notes, upgrade guidance, and migrations
-- asset filenames and content types
-- how every asset declares or proves that it belongs to the same Ava version and source revision
-- stable, prerelease, and development distribution channels
-- the repository or organization configuration required to enable GitHub immutable releases for all published Ava releases
-- how release automation verifies that a published release, its tag, and its assets are immutable rather than merely assuming immutability
-- retention behavior and the relationship between immutable release settings, attestations, and the selected provenance model
+## Accepted decisions
 
-## Bootstrap trust model
+- Canonical release tags are `v` followed by canonical Ava SemVer without build metadata.
+- Stable releases use `/releases/latest/download/` and exact version-pinned URLs. Prereleases require exact tag selection.
+- Development builds are revision-named GitHub Actions artifacts and are not supported release installation sources.
+- Every stable and prerelease release publishes `ava-install.sh`, `ava-base.tar.gz`, `ava-guidance.tar.gz`, `ava-migrations.tar.gz`, `ava-release.json`, `ava-release-notes.md`, and `SHA256SUMS`.
+- Guidance and migration archives remain present with explicit empty inventories when no entries apply.
+- The tag, release manifest, installer, archive metadata, release notes, and GitHub release target must identify one Ava version and one full source revision.
+- `ava-release.json` contains the asset inventory, source-to-installed mapping, compatibility declarations, and upgrade metadata. It does not contain its own checksum.
+- `SHA256SUMS` covers every other uploaded Ava asset and avoids a self-checksum cycle.
+- SHA-256 provides byte integrity after the expected digest is authenticated. Checksums from the same unverified release do not independently authenticate the publisher.
+- Ava initially uses GitHub immutable release attestations as its authenticity mechanism rather than maintaining a second Sigstore key or project signing hierarchy.
+- Convenience bootstrap trusts GitHub account, repository, TLS, and immutable release delivery before executing the installer.
+- Verified bootstrap requires a pinned tag and verifies the GitHub release attestation and local installer asset before execution.
+- Release assets are built twice from one clean source revision and must be reproducible before publication.
+- Release automation assembles a draft, uploads and validates the complete asset set, then publishes once. Published assets and tags are never edited or reused.
+- Repository release immutability must be enabled before the first publication and automation must verify the setting before release creation.
+- Post-publication automation verifies immutable state, the release attestation, the tag target, the exact asset set, and every retained local asset.
+- Stable and prerelease assets are retained indefinitely. Development artifacts follow Actions retention policy.
 
-Define two distinct paths:
+## Repository impact
 
-1. A convenience path that executes an immutable release installer directly and relies on GitHub repository, account, TLS, and release trust.
-2. A verified path that downloads a pinned installer, verifies signed provenance or an attestation through a separately trusted mechanism, and only then executes it.
+- Added the public GitHub release asset and trust contract.
+- Added a Draft 2020-12 JSON Schema for `ava-release.json`.
+- Indexed the release contract and release schema.
+- Recorded the conceptual release identity, integrity, authenticity, publication, and retention decisions.
+- Advanced the active roadmap to the upgrade and migration protocol.
 
-Checksums downloaded from the same release provide integrity checking but do not independently authenticate the bootstrap script or publisher. Do not describe checksums alone as solving the `curl | sh` trust problem.
+## Validation
 
-Evaluate signed release manifests, GitHub artifact attestations, Sigstore, or another explicit authenticity mechanism. Keep the final mechanism minimal and document its trust assumptions.
+The release schema was parsed with `python -m json.tool` and checked with `jsonschema` Draft 2020-12 validation.
 
-## Convenience command shape
+Validation covered:
 
-```sh
-curl -fsSL https://github.com/phdah/ava/releases/latest/download/ava-install.sh | sh
-```
+- a valid release-candidate manifest
+- exact required asset names, order, and media types
+- rejection of a prerelease version declared as stable
+- rejection of an asset with the wrong media type
+- managed replacement and project-owned create-if-absent mapping rules
 
-```sh
-curl -fsSL https://github.com/phdah/ava/releases/download/v1.2.3/ava-install.sh | sh
-```
-
-## Completion criteria
-
-- define the complete release artifact contract
-- define latest and pinned-version installation behavior
-- reject mutable `main` assets as the recommended installation path
-- define convenience and verified bootstrap flows separately
-- document integrity, authenticity, trust assumptions, and failure behavior
-- require GitHub immutable releases to be enabled before the first publication
-- define an automated or repeatable verification that every published release is immutable
-- define how release automation builds and attests all assets from one source revision
+The implementation and fixture tasks must automate the full publication and post-publication checks defined by the public contract.
