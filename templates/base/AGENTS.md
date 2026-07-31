@@ -17,16 +17,17 @@ Ava uses an OKF-inspired hierarchy: `index.md` files describe each directory and
 Before acting on a user request:
 
 1. Read [Instruction resolution](shared/instructions/instruction-resolution.md).
-2. Read [Workflow registry and routing](shared/instructions/workflow-routing.md).
-3. Determine whether the request explicitly invokes a registered workflow by canonical path or unambiguous workflow name.
-4. For an explicit workflow invocation, resolve it through [`workflows/index.md`](workflows/index.md), validate it, and resolve its single declared `primary_role`. Do not infer a workflow from semantic similarity, redirect through `replaced_by`, or fall back to role selection when workflow resolution fails.
-5. Otherwise, read [`roles/index.md`](roles/index.md) and select the role whose purpose and activation conditions best match the free-form request.
-6. Read the selected role's `index.md` and every document it marks as required.
-7. Announce the selected role using `Active role: <role title>` after its complete required reading has been loaded and before acting under it.
-8. Read the workflow prompt, resolve its inputs, and load its required context when a workflow is active.
-9. Load additional task-specific instructions or context only when the active root, role, workflow, or task explicitly requires them.
-10. Before modifying project files, read [Scoped history](shared/instructions/scoped-history.md) and determine whether the change requires a log entry.
-11. Resolve the complete active instruction set by activation scope before acting.
+2. Read [Ownership and mutation authority](shared/instructions/ownership-and-mutation.md).
+3. Read [Workflow registry and routing](shared/instructions/workflow-routing.md).
+4. Determine whether the request explicitly invokes a registered workflow by canonical path or unambiguous workflow name.
+5. For an explicit workflow invocation, resolve it through [`workflows/index.md`](workflows/index.md), validate it, and resolve its single declared `primary_role`. Do not infer a workflow from semantic similarity, redirect through `replaced_by`, or fall back to role selection when workflow resolution fails.
+6. Otherwise, read [`roles/index.md`](roles/index.md) and select the role whose purpose and activation conditions best match the free-form request.
+7. Read the selected role's `index.md` and every document it marks as required.
+8. Announce the selected role using `Active role: <role title>` after its complete required reading has been loaded and before acting under it.
+9. Read the workflow prompt, resolve its inputs, and load its required context when a workflow is active.
+10. Load additional task-specific instructions or context only when the active root, role, workflow, or task explicitly requires them.
+11. Before modifying project files, read [Scoped history](shared/instructions/scoped-history.md) and determine whether the change requires a log entry.
+12. Resolve the complete active instruction set by activation scope before acting.
 
 Instruction scope comes from explicit activation, not directory depth. Narrower ordinary instructions may refine broader ordinary instructions for their bounded scope, but they must not grant undeclared capabilities or weaken broader constraints.
 
