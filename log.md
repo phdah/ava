@@ -4,6 +4,10 @@ This log records major conceptual and structural changes across the Ava reposito
 
 ## 2026-07-31
 
+* **Immutable release contract**: Defined one version-consistent GitHub Release asset set, exact stable and prerelease selection behavior, reproducible archive rules, source-to-installed mapping, and indefinite retention for published distributions.
+* **Bootstrap trust modes**: Separated convenience execution, which trusts GitHub delivery before installer execution, from pinned verified execution, which validates the immutable release attestation and installer asset first.
+* **Release authenticity**: Selected GitHub immutable release attestations as Ava's initial authenticity mechanism and kept SHA-256 checksums scoped to byte integrity rather than publisher authentication.
+* **Publication verification**: Required repository release immutability before publication, draft-first asset assembly, post-publication immutable-state and attestation verification, and new-version correction instead of mutation.
 * **Versioning and compatibility contract**: Defined `ava_version` strictly as installed managed-base state, kept `okf_version` separate, and established explicit semantic compatibility fields and `complete`, `pending`, `partial`, and `blocked` migration states.
 * **Manifest integrity model**: Defined immutable managed payload entries with SHA-256 checksums and mutable managed state entries validated through schema and authorized transitions. The manifest and upgrade state are recorded without impossible self-checksums.
 * **Behavior-sensitive SemVer**: Required PATCH to preserve supported behavior, MINOR to prove unchanged routing, resolution, authority, validation, and intended behavior or remain explicitly unreachable without opt-in, and MAJOR for behavior-changing additions even when old files remain readable.
