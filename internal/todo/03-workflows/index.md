@@ -11,7 +11,7 @@ Define workflows as focused predefined prompts that activate exactly one primary
 5. [ ] [Define workflow trigger portability](05-define-workflow-trigger-portability.md)
 6. [ ] [Define workflow lifecycle ownership](06-define-workflow-lifecycle-ownership.md)
 
-The remaining tasks are deferred until the distribution and ownership boundary establishes how workflows are classified, versioned, and migrated in installed projects.
+The remaining tasks are deferred until the distribution ownership, versioning, and migration contracts establish how workflows are classified, versioned, and migrated in installed projects. Resume this phase after the required Phase 04 design tasks are complete.
 
 ## Previous phase
 
