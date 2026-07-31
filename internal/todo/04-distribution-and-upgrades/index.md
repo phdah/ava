@@ -10,7 +10,7 @@ Define and implement Ava as an immutable, versioned context distribution install
 4. [ ] [Define the upgrade and migration protocol](04-define-upgrade-and-migration-protocol.md)
 5. [ ] [Define release guidance and the Upgrade Role](05-define-release-logs-and-agent-guidance.md)
 6. [ ] [Implement the installer and updater](06-implement-installer-and-updater.md)
-7. [ ] [Implement validation, rollback, trust, and upgrade fixtures](07-implement-validation-and-upgrade-fixtures.md)
+7. [ ] [Implement validation, conformance, and upgrade fixtures](07-implement-validation-and-upgrade-fixtures.md)
 8. [ ] [Publish the first versioned Ava release](08-publish-first-versioned-release.md)
 
 All tasks are active roadmap work and should be completed in order unless a later task is required to unblock an earlier design decision.

@@ -24,7 +24,7 @@ GitHub Release
 - Semantic compatibility of project-owned content is tracked separately from `ava_version`.
 - Project-owned context changes only through an explicit agent request that loads release-specific upgrade guidance.
 - Scoped `log.md` files remain conceptual history and may feed release notes, but release guidance must state compatibility impact and required actions directly.
-- Release checksums protect integrity but do not independently authenticate a `curl | sh` bootstrap. A separate signing or attestation decision is required.
+- Release checksums protect integrity but do not independently authenticate bootstrap execution. A separate signing or attestation decision is required.
 - Internal Ava development roles remain separate from every distributed project bundle.
 
 ## Active roadmap
@@ -36,27 +36,10 @@ GitHub Release
 
 The distribution pivot is the active priority. Resume the remaining workflow-system tasks after the ownership, release, and migration boundaries are explicit enough to evaluate how workflows participate in upgrades.
 
-## Superseded pre-pivot phases
-
-The following directories preserve the previous application-centric roadmap for historical context. Their pending tasks are not executable roadmap work and must not be selected as the next task:
-
-- [Workspace access and provider abstraction](04-workspace-provider/)
-- [Semantic MCP tool catalog](05-semantic-tools/)
-- [Deterministic validation for the application architecture](06-validation/)
-- [Shared Go application services](07-application-services/)
-- [MCP implementation](08-mcp/)
-- [Companion CLI](09-cli/)
-- [Testing, compatibility, and migrations for the application architecture](10-compatibility/)
-
-These directories may be removed or converted into historical notes after the replacement roadmap has been implemented and reviewed. Until then, this root roadmap determines which tasks are active.
-
 ## Task status
 
 - `pending`: active roadmap work that has not met its completion criteria
 - `complete`: active roadmap work that has been implemented, indexed, validated, and committed
-- `superseded`: historical planning that must not be executed under the accepted architecture
-
-A phase explicitly listed under **Superseded pre-pivot phases** is superseded regardless of legacy `pending` metadata in its child task files.
 
 Update a task's frontmatter and its active phase index together when its status changes.
 
