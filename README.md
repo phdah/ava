@@ -4,7 +4,7 @@ Ava is a versioned, file-based context distribution for AI agents. It provides a
 
 Ava does not require an agent runtime, MCP server, or general-purpose CLI application. The files are the product. The host agent supplies filesystem access, search, editing, and version-control operations.
 
-> **Status:** Design phase. The repository contains the current format and project templates. Versioned release artifacts, installation, and upgrade support have not yet been implemented.
+> **Status:** Design phase. The public format and distribution ownership boundary are defined. Versioned release assets, installation, and upgrade support have not yet been implemented.
 
 ## Name
 
@@ -31,17 +31,59 @@ The goal is not to hide agent behavior in an application or one large prompt. Th
 
 ## Core idea
 
-An Ava release contains a versioned base context bundle and the metadata needed to install or upgrade it. A project receives that bundle, adds its own roles, workflows, instructions, and knowledge, and exposes a root `AGENTS.md` entry point that an agent loads automatically.
+An Ava release contains a versioned managed base bundle and the metadata needed to install or upgrade it. A project retains its own roles, workflows, instructions, knowledge, and source material through explicit project-owned extension paths.
 
 ```text
 GitHub Release
     -> thin shell installer or updater
-    -> Ava-managed base context plus project-owned context
-    -> Ava-managed root AGENTS.md
-    -> automatic role and instruction discovery
+    -> Ava-managed router, base bundle, state, and guidance
+       plus preserved project-owned context
+    -> exactly one active role for each request
 ```
 
-The installer and updater perform deterministic distribution work. The agent interprets and maintains semantic project context. Ava does not need an MCP protocol layer or persistent command application between them.
+The installer and updater perform deterministic distribution work. The host agent interprets and maintains semantic project context. Ava does not need an MCP protocol layer or persistent command application between them.
+
+## Repository source versus installed projects
+
+This repository does not mirror the filesystem of an installed project.
+
+```text
+Ava repository
+├── README.md
+├── internal/          # repository-only development context
+└── templates/         # authored format and release source material
+```
+
+Release assembly maps repository sources to explicit installed destinations and ownership classes. The repository's `templates/base/` directory is not copied verbatim to a project, and its source paths do not determine installed ownership.
+
+The complete mapping, adoption rules, and collision behavior are defined by the [distribution and ownership contract](templates/distribution-and-ownership.md).
+
+## Installed-project layout
+
+The accepted installed layout is:
+
+```text
+/
+├── AGENTS.md                         # Ava-managed canonical router
+├── .ava/                             # Ava-managed namespace
+│   ├── base/
+│   │   ├── index.md
+│   │   ├── roles/
+│   │   ├── workflows/
+│   │   └── shared/
+│   ├── state/
+│   │   ├── manifest.json
+│   │   └── upgrade.json
+│   └── guidance/
+├── index.md                          # project-owned when present
+├── roles/                            # project-owned role extensions
+├── workflows/                        # project-owned workflow extensions
+├── shared/                           # project-owned shared instructions and context
+├── knowledge/                        # project-owned trusted knowledge
+└── inbox/                            # project-owned source intake
+```
+
+Project-owned paths may predate Ava installation, be created by create-if-absent scaffolding, or be added later. Creation time never defines ownership.
 
 ## Core model
 
@@ -49,15 +91,15 @@ Ava distinguishes four public concepts:
 
 1. **Roles** define durable responsibilities, authority, constraints, required instructions, and context.
 2. **Workflows** define reusable, bounded procedures that activate exactly one primary role.
-3. **Shared instructions** define project-wide contracts for routing, metadata, history, and other common behavior.
+3. **Shared instructions** define routing, metadata, history, ownership, and other common contracts.
 4. **Knowledge** provides trusted project context that roles and workflows load when relevant.
 
 The intended relationship is:
 
 ```text
-request -> root router -> exactly one active role
+request -> managed root router -> exactly one active role
 explicit workflow -> exactly one primary role
-role or workflow -> shared instructions and relevant project context
+role or workflow -> managed contracts plus relevant project context
 ```
 
 Roles and workflows remain ordinary Markdown. Deterministic installation, integrity verification, managed-file replacement, and mechanical migrations belong to release tooling rather than agent roles.
@@ -67,7 +109,7 @@ Roles and workflows remain ordinary Markdown. Deterministic installation, integr
 GitHub Releases are the canonical Ava distribution channel. Each release contains a mutually compatible set of immutable assets, including:
 
 - a thin POSIX shell installer and updater
-- the versioned Ava base bundle
+- the versioned Ava-managed base bundle
 - integrity checksums for every release asset
 - a machine-readable release manifest
 - human-readable change notes
@@ -94,7 +136,7 @@ The release contract therefore defines two trust modes:
 1. **Convenience mode:** execute the immutable release installer directly and rely on GitHub account, repository, TLS, and release trust.
 2. **Verified mode:** download a pinned installer first, verify signed provenance or an attestation through a separately trusted mechanism, then execute it.
 
-The exact signing or attestation mechanism remains an implementation decision. Ava must not claim that release checksums alone make `curl | sh` independently verifiable.
+The exact signing or attestation mechanism remains an implementation decision. Ava must not claim that release checksums alone make direct bootstrap execution independently verifiable.
 
 A mutable script fetched from `main` is not the recommended installation path.
 
@@ -104,17 +146,81 @@ Ava uses exactly two ownership classes.
 
 ### Ava-managed content
 
-Versioned base instructions, routing contracts, default roles, default workflows, manifests, migration guidance, and bootstrap files distributed by Ava. The root `AGENTS.md` is Ava-managed and remains a stable router. Project customization lives in project-owned paths referenced by the managed router rather than modifying the router itself.
+Ava-managed content is installed from a specific release and recorded in `/.ava/state/manifest.json`.
 
-The local manifest records the installed version and checksums of Ava-managed files. An updater may replace unchanged managed files and must detect local modifications before overwriting them.
+It includes:
+
+- `/AGENTS.md`
+- all files under `/.ava/base/`
+- `/.ava/state/manifest.json`
+- `/.ava/state/upgrade.json`
+- all files under `/.ava/guidance/`
+- any selected host-specific bootstrap file
+- deterministic migration support installed by the release
+
+The root `AGENTS.md` remains a stable, project-independent router. Managed default roles, workflows, and shared contracts live under `/.ava/base/`.
+
+Managed-file customization is prohibited. A local edit does not convert a managed file into project-owned content. The updater detects checksum mismatches, reports the conflict, and refuses to overwrite or merge the file silently.
 
 ### Project-owned content
 
-Project-specific roles, workflows, instructions, and knowledge created after installation. Ava must not rewrite this content as an incidental side effect of replacing the base bundle.
+Project-owned content includes project-specific roles, workflows, instructions, knowledge, source material, indexes, logs, and other context outside declared managed paths.
+
+The standard extension roots are:
+
+- `/roles/`
+- `/workflows/`
+- `/shared/`
+- `/knowledge/`
+- `/inbox/`
+- `/index.md` and `/log.md` when present
+
+Existing content under those paths remains project-owned during installation. Ava may create minimal scaffold files only when a path is absent. Such scaffolds are project-owned immediately and are never added to the managed manifest.
 
 There is no third ownership class for generated integration shims. Any installed bootstrap or integration file is Ava-managed. Any project customization is project-owned.
 
-The exact path layout and boundary rules are defined by the active ownership-boundary roadmap task. The current files under `templates/base/` remain the format reference until that contract is finalized.
+Ownership is established by the accepted path contract, manifest record, authority, and explicit adoption decision. It is never inferred from timestamps, creation order, Git history, or similarity to a default file.
+
+## Router and project extensions
+
+The managed root router discovers:
+
+- managed instruction contracts under `/.ava/base/shared/`
+- managed default roles under `/.ava/base/roles/`
+- managed default workflows under `/.ava/base/workflows/`
+- project-owned roles through `/roles/index.md` when present
+- project-owned workflows through `/workflows/index.md` when present
+- project-owned shared instructions, knowledge, and inbox material only when relevant
+
+Managed and project-owned registries remain separate. A project must not edit managed registries to add project-specific entries.
+
+Canonical paths identify roles and workflows. A name that matches more than one registered concept is ambiguous and must be reported rather than resolved through ownership precedence.
+
+## Host discovery
+
+The canonical entry point is always `/AGENTS.md`.
+
+A host may discover it in one of three supported ways:
+
+1. **Native discovery:** the host automatically loads root `AGENTS.md` with validated compatible semantics.
+2. **Host bootstrap:** an optional Ava-managed host-specific file contains only a thin instruction to load `/AGENTS.md`.
+3. **Explicit activation:** the user instructs the host to read and follow `./AGENTS.md` as the project root instructions.
+
+Ava must not claim native compatibility for a named host until the behavior is documented or covered by a maintained conformance fixture. Installation and validation report discovery as native, host-bootstrap, explicit-only, or unsupported.
+
+Host-specific bootstrap files must never duplicate routing or ownership rules, contain project customization, or become a second canonical router.
+
+## Installation and adoption
+
+A fresh installation may proceed when the target root is safe and writable, `/.ava/` is absent, and planned managed paths do not collide with unclassified content.
+
+Existing `/index.md`, `/log.md`, `/roles/`, `/workflows/`, `/shared/`, `/knowledge/`, and `/inbox/` paths remain untouched and project-owned. Missing minimal scaffolds may be created using create-if-absent behavior.
+
+A pre-existing `/AGENTS.md`, unrecognized `/.ava/`, conflicting host bootstrap, or locally modified managed file aborts automatically until an explicit adoption, recovery, or migration decision resolves the exact path.
+
+Installation into a non-empty project first produces a dry-run classification. It must never silently claim, replace, relocate, merge, or reclassify existing files.
+
+Existing unversioned Ava projects require an explicit migration because their current root layout may mix historical defaults and project-specific content. The migration inventories the files, preserves project-specific behavior in project-owned paths, installs release defaults under `/.ava/base/`, and replaces the root router only after its project-specific meaning has been resolved.
 
 ## Versioning
 
@@ -124,20 +230,20 @@ Ava releases follow Semantic Versioning:
 - **MINOR** releases add backward-compatible instructions, roles, workflows, metadata, or optional capabilities.
 - **MAJOR** releases introduce incompatible format, routing, ownership, or behavioral contract changes.
 
-Every installed project records its Ava state in a project-level manifest.
+Every installed project records its Ava state in `/.ava/state/manifest.json`.
 
 `ava_version` has one meaning only: it identifies the installed Ava-managed base distribution. It advances after the deterministic base upgrade succeeds, even when project-owned semantic migration remains pending.
 
-Semantic compatibility is tracked separately. The manifest records at least:
+Semantic compatibility is tracked separately. The state records at least:
 
 - which Ava version the project-owned context is semantically compatible through
 - which installed target version still requires semantic migration
 - whether that migration is complete, partial, blocked, or pending
 - unresolved user decisions that prevent completion
 
-The exact metadata field names remain part of the active versioning task. They must not overload `ava_version` with both installed-base and project-behavior semantics.
+The exact metadata field names remain part of the SemVer and compatibility task. They must not overload `ava_version` with both installed-base and project-behavior semantics.
 
-The OKF version and Ava version are also separate. `okf_version` identifies the underlying knowledge-format compatibility level. `ava_version` identifies only the installed Ava base distribution.
+The OKF version and Ava version are separate. `okf_version` identifies the underlying knowledge-format compatibility level. `ava_version` identifies only the installed Ava base distribution.
 
 ## Upgrade model
 
@@ -147,11 +253,12 @@ Running the release installer in an existing Ava project performs an explicit de
 2. Resolve or receive the target release version.
 3. Download and verify the target release assets according to the selected trust mode.
 4. Compare the previously installed base, current local managed files, and target base.
-5. Replace unchanged Ava-managed files and report conflicts for locally modified managed files.
-6. Run deterministic migrations in version order.
-7. Install the target release's semantic upgrade guidance.
-8. Advance `ava_version` only when deterministic work succeeds.
-9. Record any required project-owned context migration in the separate semantic compatibility state.
+5. Abort and report any modified, missing, or corrupt managed file.
+6. Replace unchanged Ava-managed files.
+7. Run deterministic migrations in version order.
+8. Install the target release's semantic upgrade guidance.
+9. Advance `ava_version` only when deterministic work succeeds.
+10. Record any required project-owned context migration in separate semantic compatibility state.
 
 Project-owned context changes happen through one explicit agent request, for example:
 
@@ -165,7 +272,7 @@ The active Ava agent inspects the installed version transition, release guidance
 
 Scoped `log.md` files remain useful as conceptual history and as source material for release notes. They are not by themselves the migration protocol because they may contain unrelated history and do not necessarily state compatibility impact or required actions.
 
-A release therefore provides structured upgrade guidance derived from relevant logs and explicit migration decisions. It identifies:
+A release therefore provides structured upgrade guidance that identifies:
 
 - the source and target versions
 - changed base contracts and managed paths
@@ -174,7 +281,7 @@ A release therefore provides structured upgrade guidance derived from relevant l
 - required user decisions or conflict conditions
 - validation and completion criteria
 
-The active release-guidance task decides whether this is represented by a release manifest, an `UPGRADE.md` document, structured upgrade metadata associated with `log.md`, or a combination of them.
+The release-guidance task decides the final representation under `/.ava/guidance/`.
 
 ## OKF v0.2 structure
 
@@ -190,22 +297,22 @@ Ava follows Google's Open Knowledge Format version 0.2, especially its use of:
 
 Ava adapts these ideas for agent instructions rather than data-catalog metadata. It does not use BigQuery-specific concepts, resource identifiers, or a fixed data-oriented taxonomy.
 
-The generated document metadata and workflow instructions under `templates/base/shared/instructions/` define the current public format contracts.
+The authored document metadata and workflow instructions under `templates/base/shared/instructions/` define the current public format contracts. Release assembly maps them into the installed managed base.
 
 ## Agent traversal model
 
-An initialized project provides deterministic guidance for how an agent reads it:
+An installed project provides deterministic guidance for how an agent reads it:
 
-1. Automatically load the root `AGENTS.md` file.
-2. Read the shared instruction-resolution contract required by the router.
-3. Determine whether the request explicitly invokes a registered workflow or is a free-form request.
-4. Resolve exactly one active role.
+1. Automatically or explicitly load the root `/AGENTS.md` file.
+2. Read the managed instruction-resolution and upgrade-state contracts.
+3. Determine whether the request explicitly invokes a registered managed or project-owned workflow or is a free-form request.
+4. Resolve exactly one active role from the managed and project-owned registries.
 5. Read the active role's `index.md` and every document it marks as required.
-6. Read the workflow prompt and workflow-specific context when a workflow is active.
-7. Follow explicit links to task-specific instructions and context only when relevant.
+6. Read the workflow prompt, inputs, and workflow-specific context when a workflow is active.
+7. Follow explicit links to task-specific instructions and project context only when relevant.
 8. Resolve instruction overlap by explicit activation scope rather than directory depth.
 9. Keep capabilities and constraints cumulative and non-expandable at narrower scopes.
-10. Ask the user when routing or instruction conflicts remain unresolved.
+10. Ask the user when routing, ownership, or instruction conflicts remain unresolved.
 
 The current user request supplies the immediate objective and narrowest procedural scope, bounded by the active role, project constraints, and capabilities provided by the host agent and its available tools.
 
@@ -255,9 +362,7 @@ The implementation roadmap is tracked in [`internal/todo.md`](internal/todo.md).
 2. define the boundary between Ava-managed base content and project-owned context
 3. define Ava SemVer, installed-base versioning, and separate semantic compatibility state
 4. define immutable GitHub Release assets and bootstrap trust modes
-5. implement a thin installer and updater with explicit version selection
-6. implement deterministic migrations, conflict detection, rollback, and validation
-7. define structured, agent-readable semantic upgrade guidance
-8. support a one-prompt project-context migration procedure
-9. test fresh installs and upgrades across supported release transitions
-10. publish the first versioned Ava distribution
+5. define deterministic upgrade, migration, and agent-guidance protocols
+6. implement a thin installer and updater with explicit version selection
+7. implement validation and fixtures for installation, adoption, and upgrades
+8. publish the first versioned Ava distribution
