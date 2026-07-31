@@ -3,59 +3,57 @@ type: Internal Development Task
 title: Define Ava SemVer and Compatibility
 description: Define installed-base versioning and separate semantic compatibility for project-owned context.
 tags: [internal, roadmap, semver, compatibility]
-status: pending
+status: complete
 phase: 4
 order: 2
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-30T22:30:00+02:00
+  at: 2026-07-31T12:08:00+02:00
 ---
 
 # Define Ava SemVer and Compatibility
 
-## Fixed version distinction
+The accepted public contract is documented in [Ava Versioning and Compatibility](/templates/versioning-and-compatibility.md). The installed manifest shape is defined by [manifest.schema.json](/templates/schemas/manifest.schema.json).
 
+## Accepted decisions
+
+- `/.ava/state/manifest.json` is the Ava-managed ownership and installed-state record.
 - `ava_version` identifies only the installed Ava-managed base distribution.
-- `ava_version` and semantic migration state live in an Ava-managed manifest under the Ava-managed directory.
-- The upgrade process is the only authority that may update the Ava-managed manifest. The explicit Upgrade Role is the sole agent role with authority to update it, while deterministic tooling may perform mechanical state transitions defined by the upgrade protocol.
-- `ava_version` advances when the deterministic base upgrade succeeds.
-- Semantic compatibility of project-owned context is tracked separately.
-- A project may therefore have `ava_version: 2.0.0` while semantic compatibility remains completed only through an earlier version.
-- Validation and reporting must make that state explicit rather than presenting the project as fully migrated.
-- A new role, workflow, instruction, metadata field, default, or registry entry qualifies as MINOR only when it is opt-in or demonstrably preserves every existing routing, workflow-resolution, role-selection, authority, and intended-behavior outcome for already supported projects.
-- Any addition that can change an existing resolution or authority outcome is behaviorally incompatible and requires MAJOR classification, even when the filesystem format remains readable.
+- `okf_version` remains a separate knowledge-format compatibility value.
+- Semantic compatibility of project-owned context is recorded separately through `compatible_through`, `target_version`, `status`, and `unresolved_decisions`.
+- Valid semantic states are `complete`, `pending`, `partial`, and `blocked`, with explicit state invariants.
+- Deterministic tooling exclusively controls manifest schema, installed release identity, `ava_version`, `okf_version`, timestamps, and the managed-file inventory.
+- Deterministic tooling may mechanically retain semantic completion when a release declares no semantic review, or initialize a pending target when review is required.
+- The explicit Upgrade Role is the sole agent role allowed to update semantic compatibility state and may never change release identity, managed paths, or checksums.
+- Immutable managed payload files require SHA-256 checksums.
+- Mutable managed state files are schema and transition validated and must not contain self-checksums.
+- `manifest.json` and `upgrade.json` are recorded as managed state rather than immutable payload.
+- PATCH preserves supported structure and intended behavior.
+- MINOR requires explicit opt-in reachability or repeatable evidence that every existing routing, workflow, role-selection, authority, validation, and intended-behavior outcome is unchanged.
+- Any addition that changes or makes an existing resolution or authority outcome ambiguous is MAJOR even when old files remain readable.
+- MINOR review compares maintained fixtures across validation, ownership, routing, required reading, capabilities, constraints, workflow mode, mutation authority, and semantic migration requirements.
+- The current unversioned repository has no release compatibility guarantee. Ava's first supported stable distribution is `1.0.0`; pre-stable testing uses `1.0.0-alpha.N`, `beta.N`, and `rc.N` prereleases.
+- Stable installers do not select prereleases automatically.
+- Direct version skipping is allowed only when the target explicitly supports the source and includes all required deterministic migrations and semantic guidance. Otherwise a declared chained path is required.
+- Ava-managed deprecations use `deprecated_since` and `removal_not_before`; removal or behavior-changing replacement requires the applicable MAJOR release.
+- Compatibility claims assume host conformance with complete instruction loading and unknown-field preservation. Host discovery status remains separate from Ava version and semantic completion.
+- The latest MINOR of the current MAJOR receives PATCH maintenance. The immediately previous MAJOR remains a supported upgrade source for at least twelve months after the next MAJOR becomes stable.
 
-## Define
+## Repository impact
 
-- the Ava-managed manifest path, schema, ownership, and allowed writers
-- the `ava_version` contract and its relationship to `okf_version`
-- the separate semantic-compatibility metadata and allowed states
-- which state transitions are mechanical updater actions and which require the Upgrade Role's semantic authority
-- PATCH changes that preserve supported structure and intended behavior
-- MINOR changes that are opt-in or provably preserve existing routing, resolution, authority, and behavior for installed projects
-- MAJOR changes that require an incompatible format, routing, ownership, authority, resolution, or behavioral migration
-- compatibility guarantees before and after Ava 1.0.0
-- supported direct and chained upgrade paths
-- how deprecated files, metadata, roles, and workflows communicate removal timelines
-- how completed, partial, blocked, and pending semantic migrations are recorded
+- Added the public versioning and compatibility contract.
+- Added a Draft 2020-12 JSON Schema for the installed manifest.
+- Added schema navigation under `/templates/schemas/`.
+- Aligned the distribution contract with payload checksums and mutable state validation.
+- Added versioned deprecation metadata and validation rules to the document metadata contract.
+- Updated repository navigation and conceptual history.
 
-## Required decisions
+## Validation
 
-- the exact manifest location, field names, schema, and field-level update rules
-- whether an installer may skip intermediate releases when migrations exist
-- how release candidates and prerelease channels are represented
-- how older host agents or incomplete instruction-loading behavior affect compatibility claims
-- how commands and reports distinguish installed base state from semantic completion
-- how release review proves that a proposed MINOR role, workflow, instruction, metadata, default, or registry addition cannot alter existing selection or authority outcomes
-- which additions are explicitly opt-in and how that opt-in is represented without changing default routing
+The schema was parsed with `python -m json.tool` and validated with `jsonschema` against:
 
-## Completion criteria
+- a valid pending semantic migration
+- a valid complete semantic migration
+- rejection of checksums on mutable state entries
 
-- publish a precise SemVer policy with examples
-- define `ava_version` strictly as installed-base state
-- define the manifest as Ava-managed and identify the deterministic and agent authorities allowed to update it
-- define separate semantic-compatibility metadata and transitions
-- define a repeatable compatibility test for distinguishing safe opt-in MINOR additions from behavior-changing MAJOR additions
-- include examples where a structurally readable role, workflow, or registry addition is nevertheless MAJOR because it changes resolution or authority
-- define compatibility and support windows
-- align release notes, validation, upgrade-role authority, and upgrade behavior with the policy
+The policy defines the repeatable MINOR compatibility proof that the later validation-fixtures task must implement.

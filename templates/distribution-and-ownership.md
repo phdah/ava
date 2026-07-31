@@ -5,14 +5,14 @@ description: Defines repository source mapping, installed paths, release ownersh
 tags: [ava, distribution, ownership, installation, adoption, bootstrap]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T11:16:00+02:00
+  at: 2026-07-31T12:08:00+02:00
 ---
 
 # Ava Distribution and Ownership Boundary
 
 This document defines the repository, release, installation, and upgrade boundary between Ava-managed distribution content and project-owned context.
 
-It is a release and assembly contract, not the complete instruction loaded by agents during ordinary project work. Installed agent behavior is defined separately by [Ownership and mutation authority](base/shared/instructions/ownership-and-mutation.md), which release assembly installs under `/.ava/base/shared/instructions/`.
+It is a release and assembly contract, not the complete instruction loaded by agents during ordinary project work. Installed agent behavior is defined separately by [Ownership and mutation authority](base/shared/instructions/ownership-and-mutation.md), which release assembly installs under `/.ava/base/shared/instructions/`. Manifest fields, payload checksums, mutable state, and compatibility are defined by [Ava Versioning and Compatibility](versioning-and-compatibility.md).
 
 # Repository source model
 
@@ -27,6 +27,8 @@ The Ava repository remains a development repository:
 └── templates/
     ├── index.md
     ├── distribution-and-ownership.md
+    ├── versioning-and-compatibility.md
+    ├── schemas/
     └── base/                 # authored managed-base and scaffold source material
 ```
 
@@ -102,7 +104,7 @@ The operational meaning of these classes, including the distinction between owne
 
 # Manifest authority
 
-`/.ava/state/manifest.json` is the installed ownership record for Ava-managed files. It records at least the installed Ava version, release identity, installed path, expected checksum, and managed-file role.
+`/.ava/state/manifest.json` is the installed ownership record for Ava-managed files. It records at least the installed Ava version, release identity, installed path, managed-file role, and whether the path is immutable payload or mutable managed state. Payload entries record an expected checksum. State entries are validated through their schema and allowed transitions and do not contain self-checksums.
 
 A path is Ava-managed only when all of these agree:
 
@@ -115,12 +117,15 @@ The manifest must never claim project-owned extension roots or arbitrary pre-exi
 
 # Managed-file conflicts
 
-Before replacing, deleting, or moving a managed file, the updater compares its current checksum with the checksum recorded for the installed version.
+Before replacing, deleting, or moving an immutable managed payload, the updater compares its current checksum with the checksum recorded for the installed version.
 
-- An unchanged managed file may be replaced by the target release.
-- A modified, missing, or corrupt managed file is a conflict.
+Before changing mutable managed state, the updater validates its schema, internal consistency, and allowed transition from the previously completed state.
+
+- An unchanged managed payload may be replaced by the target release.
+- A modified, missing, or corrupt managed payload is a conflict.
+- Missing, malformed, inconsistent, or unauthorized managed state is a conflict.
 - Conflicts abort the affected upgrade transaction before project files are changed.
-- The updater reports the path, expected checksum, actual state, intended operation, and available recovery choices.
+- The updater reports the path, expected payload checksum or state invariant, actual state, intended operation, and available recovery choices.
 - The updater never silently overwrites, merges, or reclassifies the file.
 
 Restoring the installed version, explicitly discarding the local modification, or moving project-specific content into a project-owned extension path are separate user-approved recovery actions.

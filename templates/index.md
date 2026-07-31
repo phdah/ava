@@ -5,6 +5,8 @@ Files under this directory are repository source material for Ava releases. They
 ## Contents
 
 - [Distribution and ownership contract](distribution-and-ownership.md) - Installed path layout, ownership classes, source-to-installed mapping, adoption, collision, and bootstrap rules.
+- [Versioning and compatibility contract](versioning-and-compatibility.md) - Ava SemVer, installed manifest state, semantic compatibility, upgrade-path compatibility, deprecation, and support guarantees.
+- [Distribution schemas](schemas/) - Machine-readable schemas for installed state and release validation.
 - [Current base format source](base/) - Authored roles, workflows, shared instructions, and project-format examples used while release assembly is being implemented.
 
 The release assembler must map source files to explicit installed destinations and ownership classes. In particular, the installed project uses a managed `/.ava/` namespace plus project-owned extension paths; it does not reproduce this repository's `/templates/` hierarchy.

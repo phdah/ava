@@ -4,7 +4,7 @@ Ava is a versioned, file-based context distribution for AI agents. It provides a
 
 Ava does not require an agent runtime, MCP server, or general-purpose CLI application. The files are the product. The host agent supplies filesystem access, search, editing, and version-control operations.
 
-> **Status:** Design phase. The public format and distribution ownership boundary are defined. Versioned release assets, installation, and upgrade support have not yet been implemented.
+> **Status:** Design phase. The public format, distribution ownership boundary, and versioning and compatibility contract are defined. Versioned release assets, installation, and upgrade support have not yet been implemented.
 
 ## Name
 
@@ -56,7 +56,7 @@ Ava repository
 
 Release assembly maps repository sources to explicit installed destinations and ownership classes. The repository's `templates/base/` directory is not copied verbatim to a project, and its source paths do not determine installed ownership.
 
-The complete mapping, adoption rules, and collision behavior are defined by the [distribution and ownership contract](templates/distribution-and-ownership.md).
+The complete mapping, adoption rules, and collision behavior are defined by the [distribution and ownership contract](templates/distribution-and-ownership.md). Ava versions, installed manifest state, semantic compatibility, and support guarantees are defined by the [versioning and compatibility contract](templates/versioning-and-compatibility.md).
 
 ## Installed-project layout
 
@@ -160,7 +160,7 @@ It includes:
 
 The root `AGENTS.md` remains a stable, project-independent router. Managed default roles, workflows, and shared contracts live under `/.ava/base/`.
 
-Managed-file customization is prohibited. A local edit does not convert a managed file into project-owned content. The updater detects checksum mismatches, reports the conflict, and refuses to overwrite or merge the file silently.
+Managed-file customization is prohibited. A local edit does not convert a managed file into project-owned content. The updater checks immutable payloads against recorded SHA-256 values, validates mutable managed state through schema and allowed transitions, reports conflicts, and refuses silent overwrite or merge.
 
 ### Project-owned content
 
@@ -224,26 +224,28 @@ Existing unversioned Ava projects require an explicit migration because their cu
 
 ## Versioning
 
-Ava releases follow Semantic Versioning:
+Ava releases follow Semantic Versioning based on supported behavior, not only whether old files remain readable:
 
-- **PATCH** releases correct defects or clarify text without changing supported structure or intended behavior.
-- **MINOR** releases add backward-compatible instructions, roles, workflows, metadata, or optional capabilities.
-- **MAJOR** releases introduce incompatible format, routing, ownership, or behavioral contract changes.
+- **PATCH** releases preserve supported structure and intended behavior.
+- **MINOR** releases add backward-compatible capability that is explicitly opt-in or proven not to change existing routing, resolution, authority, validation, or behavior.
+- **MAJOR** releases introduce incompatible format, routing, ownership, authority, resolution, validation, or behavioral changes.
 
 Every installed project records its Ava state in `/.ava/state/manifest.json`.
 
 `ava_version` has one meaning only: it identifies the installed Ava-managed base distribution. It advances after the deterministic base upgrade succeeds, even when project-owned semantic migration remains pending.
 
-Semantic compatibility is tracked separately. The state records at least:
+Semantic compatibility is tracked separately through:
 
-- which Ava version the project-owned context is semantically compatible through
-- which installed target version still requires semantic migration
-- whether that migration is complete, partial, blocked, or pending
-- unresolved user decisions that prevent completion
+- `compatible_through`: highest Ava version completed by project-owned context
+- `target_version`: installed version currently requiring reconciliation, or `null`
+- `status`: `complete`, `pending`, `partial`, or `blocked`
+- `unresolved_decisions`: decisions or prerequisites preventing completion
 
-The exact metadata field names remain part of the SemVer and compatibility task. They must not overload `ava_version` with both installed-base and project-behavior semantics.
+The manifest records immutable managed files as checksum-protected `payload` and mutable files such as `manifest.json` and `upgrade.json` as schema-validated `state`. Managed state files do not contain impossible self-checksums.
 
 The OKF version and Ava version are separate. `okf_version` identifies the underlying knowledge-format compatibility level. `ava_version` identifies only the installed Ava base distribution.
+
+The complete policy, manifest fields, compatibility test, prerelease rules, upgrade paths, deprecation lifecycle, and support windows are defined by [Ava Versioning and Compatibility](templates/versioning-and-compatibility.md).
 
 ## Upgrade model
 
@@ -253,8 +255,8 @@ Running the release installer in an existing Ava project performs an explicit de
 2. Resolve or receive the target release version.
 3. Download and verify the target release assets according to the selected trust mode.
 4. Compare the previously installed base, current local managed files, and target base.
-5. Abort and report any modified, missing, or corrupt managed file.
-6. Replace unchanged Ava-managed files.
+5. Abort and report any modified, missing, corrupt, or invalid managed content or state.
+6. Replace unchanged Ava-managed payload files.
 7. Run deterministic migrations in version order.
 8. Install the target release's semantic upgrade guidance.
 9. Advance `ava_version` only when deterministic work succeeds.

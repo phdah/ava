@@ -5,7 +5,7 @@ description: Stable entry point for Ava's ordered internal development roadmap a
 tags: [internal, planning, roadmap, todo]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T10:51:00+02:00
+  at: 2026-07-31T12:08:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -16,7 +16,7 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Define the Ava SemVer and compatibility contract](todo/04-distribution-and-upgrades/02-define-semver-and-compatibility.md).
+[Define GitHub release assets, trust modes, and channels](todo/04-distribution-and-upgrades/03-define-github-release-assets.md).
 
 ## Working rule
 
