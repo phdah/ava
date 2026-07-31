@@ -1,6 +1,6 @@
 # Workflows
 
-This file is the canonical registry root for reusable project workflows.
+This file is the managed registry root for reusable default workflows. Project-owned workflows are discovered separately through `/workflows/index.md` when present.
 
 A workflow is registered only when it is reachable by following discovery links from this index. Each workflow-owning subdirectory must maintain its own `index.md` and list only direct child files and directories.
 
@@ -8,7 +8,9 @@ Each workflow activates exactly one primary role and defines procedure-specific 
 
 Workflow files must follow the shared [workflow format](../shared/instructions/workflow-format.md). Invocation, routing precedence, primary-role resolution, validation, and deprecation follow [workflow registry and routing](../shared/instructions/workflow-routing.md).
 
-Invoke a workflow by its canonical bundle-root-relative path or by an unambiguous lowercase kebab-case filename stem. Workflow titles are descriptive and are not stable invocation identifiers.
+Invoke a workflow by its canonical installed path or by an unambiguous lowercase kebab-case filename stem. Workflow titles are descriptive and are not stable invocation identifiers.
+
+Semantic Ava version reconciliation is not a workflow. A role declaring `activation_mode: managed-pre-routing` is invalid as a workflow `primary_role`. Active upgrade state directly selects the managed Upgrade Role before workflow discovery, and normal workflow routing remains blocked until the upgrade protocol permits it.
 
 ## Available workflows
 
