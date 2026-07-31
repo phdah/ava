@@ -4,6 +4,10 @@ This log records major conceptual and structural changes across the Ava reposito
 
 ## 2026-07-31
 
+* **Upgrade transaction protocol**: Defined explicit direct and chained release edges, durable `upgrade.json` journaling, stage-specific permitted operations, manifest-last managed commit semantics, interruption recovery, abort, and rollback.
+* **Managed reconciliation and migrations**: Defined three-way managed-file comparison and structured deterministic migration descriptors with stable IDs, dependencies, checksums, apply and verification entry points, idempotency, and durable completion records.
+* **Managed upgrade routing**: Required the root router to check managed upgrade and semantic state before ordinary routing, activate the managed Upgrade Role without project-owned registries, and block normal operations until a safe terminal state.
+* **Rollback boundary**: Required managed rollback to restore the recorded source release while never automatically reversing project-owned semantic edits. Rollback after project edits remains blocked until explicit reconciliation and source compatibility validation.
 * **Immutable release contract**: Defined one version-consistent GitHub Release asset set, exact stable and prerelease selection behavior, reproducible archive rules, source-to-installed mapping, and indefinite retention for published distributions.
 * **Bootstrap trust modes**: Separated convenience execution, which trusts GitHub delivery before installer execution, from pinned verified execution, which validates the immutable release attestation and installer asset first.
 * **Release authenticity**: Selected GitHub immutable release attestations as Ava's initial authenticity mechanism and kept SHA-256 checksums scoped to byte integrity rather than publisher authentication.
