@@ -2,6 +2,15 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-07-31
+
+* **Installed ownership boundary**: Established `/AGENTS.md` as the canonical managed router, `/.ava/base/` as the managed default context, `/.ava/state/` as the manifest and upgrade-state location, and `/.ava/guidance/` as the managed release-guidance location.
+* **Project-owned extension paths**: Established `/roles/`, `/workflows/`, `/shared/`, `/knowledge/`, `/inbox/`, and root project indexes or logs as project-owned when present, including content that predates Ava installation.
+* **Managed customization policy**: Prohibited direct customization of managed files. Local modifications remain managed-file conflicts and must be restored, discarded, or migrated into project-owned paths explicitly.
+* **Repository source mapping**: Clarified that the Ava repository does not mirror an installed project. `templates/base/` is authored source material and release assembly must map every file to an explicit installed destination and ownership class.
+* **Adoption contract**: Defined safe fresh installation, create-if-absent project scaffolding, explicit existing-project adoption, collision aborts, and migration of unversioned Ava projects without silent ownership transfer.
+* **Bootstrap discovery**: Defined native root-router discovery, optional thin managed host bootstrap files, explicit activation, and unsupported-host reporting while retaining `/AGENTS.md` as the only canonical router.
+
 ## 2026-07-30
 
 * **Versioned context distribution pivot**: Reframed Ava as a versioned, file-based context distribution rather than an MCP server, workspace-provider application, or feature-rich CLI. The files remain the public product and the host agent supplies navigation, editing, and repository operations.
