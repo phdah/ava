@@ -1,8 +1,8 @@
 ---
 type: Internal Development Task
-title: Implement Validation and Upgrade Fixtures
-description: Validate installed base state, semantic compatibility, trust modes, conflicts, rollback, and supported transitions.
-tags: [internal, roadmap, validation, testing, upgrades]
+title: Implement Validation, Conformance, and Upgrade Fixtures
+description: Validate the public format, installed base state, semantic compatibility, filesystem safety, trust modes, conflicts, rollback, and supported transitions.
+tags: [internal, roadmap, validation, testing, conformance, upgrades]
 status: pending
 phase: 4
 order: 7
@@ -11,17 +11,39 @@ generated:
   at: 2026-07-30T15:26:00Z
 ---
 
-# Implement Validation and Upgrade Fixtures
+# Implement Validation, Conformance, and Upgrade Fixtures
 
 This task begins after completion of the preceding design and installer tasks.
 
+## Validation contract
+
+Define and implement stable machine-readable findings with at least:
+
+- rule identifier
+- severity with stable `error`, `warning`, and `recommendation` semantics
+- affected path
+- actionable message
+- deterministic fix availability
+- whether a semantic or user decision is required
+- related role, workflow, version, migration, or release asset when applicable
+
+Required structure and references must produce blocking findings. Optional context may produce non-blocking findings when its absence does not invalidate routing, authority, installation, or upgrade behavior.
+
+Automatic repair is permitted only when the correct result is unambiguous and deterministic. Validation and repair must never silently resolve contradictory instructions, choose between competing canonical documents, grant authority, delete uncertain project knowledge, or change role or workflow purpose.
+
 ## Implement
 
+- validation for required files and directories, reserved filenames, frontmatter presence and schema, internal links, indexes, registry membership, required-reading paths, workflow-to-role references, duplicate identifiers, orphaned documents, deprecated references, and internal-content leakage
+- validation that role, workflow, and instruction discovery follows explicit indexes and registries and reports missing or ambiguous required paths
+- separation of structural and deterministic findings from semantic compatibility findings and unresolved project decisions
 - validation for installed `ava_version`, release source, managed-file checksums, deterministic migration state, and separate semantic compatibility
 - validation that the manifest remains at its Ava-managed path and is updated only by permitted upgrade mechanisms
-- fixtures for a minimal fresh installation and a project with project-owned context
+- fixtures for a minimal fresh installation, a complete base installation, and a project with project-owned context
+- invalid-format fixtures covering role structures, workflow routing, required and optional references, metadata, duplicate identifiers, orphaned documents, deprecated references, and internal-content leakage
 - fixtures for eligible adoption, an existing unversioned Ava structure, pre-existing root files, path collisions, explicit resolution, and safe refusal
 - unchanged, locally modified, missing, and corrupt managed-file cases
+- path-normalization, parent-traversal, symlink-escape, unsafe-archive-entry, and out-of-root write cases
+- staged grouped-change, expected-version, dry-run, pre-validation, post-validation, partial-apply prevention, and rollback cases
 - PATCH, MINOR, MAJOR, direct, and chained upgrade transitions
 - deterministic migration success, failure, interruption, retry, and rollback cases
 - semantic migration pending, partial, blocked, and completed states
@@ -36,8 +58,14 @@ This task begins after completion of the preceding design and installer tasks.
 
 ## Completion criteria
 
+- the current public Ava format has a complete structural conformance validator
+- validation severity and finding fields remain stable and machine-readable
+- required and optional failures are distinguished consistently
+- deterministic fixes never make semantic or authority decisions
 - every supported installation, adoption, and upgrade path has an integration fixture
 - unsupported or unsafe states fail with actionable diagnostics
+- filesystem safety fixtures prove that no operation can escape the selected target root
+- grouped changes cannot leave a partially applied project after validation or apply failure
 - rollback and resume behavior are tested
 - validation distinguishes deterministic failure from pending semantic work
 - validation never equates `ava_version` with semantic completion
