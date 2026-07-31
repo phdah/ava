@@ -5,7 +5,7 @@ description: Required metadata, document types, routing references, provenance, 
 tags: [ava, metadata, okf, documents, compatibility, ownership]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T10:51:00+02:00
+  at: 2026-07-31T12:08:00+02:00
 ---
 
 # Purpose
@@ -14,7 +14,7 @@ Ava projects follow Open Knowledge Format version 0.2 and add only the metadata 
 
 Keep metadata open and extensible. Agents should make the best semantic classification available from the project context instead of forcing every document into a closed Ava taxonomy.
 
-Installed ownership and path authority are defined by the [distribution and ownership contract](../../../distribution-and-ownership.md). Document metadata must not be used to silently transfer ownership between Ava and the project.
+Installed ownership and path authority are defined by the [distribution and ownership contract](../../../distribution-and-ownership.md). Ava release versions, semantic compatibility, and deprecation timelines are defined by the [versioning and compatibility contract](../../../versioning-and-compatibility.md). Document metadata must not be used to silently transfer ownership between Ava and the project.
 
 # Conformance layers
 
@@ -116,7 +116,7 @@ New or meaningfully modified documents should use:
 ```yaml
 generated:
   by: agent:<identifier>
-  at: 2026-07-31T10:51:00+02:00
+  at: 2026-07-31T12:08:00+02:00
 ```
 
 Existing `timestamp` fields are legacy metadata. Preserve them until the document is meaningfully modified, then replace them with `generated` metadata.
@@ -198,7 +198,7 @@ Use `generated` to identify the actor and time that produced the current documen
 ```yaml
 verified:
   - by: human:project-owner
-    at: 2026-07-31T10:51:00+02:00
+    at: 2026-07-31T12:08:00+02:00
 ```
 
 Missing `verified` metadata means unverified, not invalid.
@@ -226,7 +226,26 @@ replaced_by: /roles/project-steward/role.md
 
 A replacement reference does not itself activate or authorize the replacement. In particular, workflow and role routing must not automatically follow `replaced_by`; the caller must explicitly select the replacement and the router must resolve it normally.
 
-Do not add `deprecated_at`, removal versions, or nested Ava lifecycle structures until a migration task requires them.
+Ava-managed public files, metadata fields, roles, and workflows that are deprecated by a release must also declare:
+
+```yaml
+status: deprecated
+deprecated_since: 1.4.0
+removal_not_before: 2.0.0
+replaced_by: /.ava/base/roles/project-steward/role.md
+```
+
+Rules:
+
+- `deprecated_since` is the first stable Ava version that declared the deprecation.
+- `removal_not_before` is the earliest stable MAJOR version in which removal is permitted.
+- Both fields use canonical SemVer without build metadata.
+- `removal_not_before` must be later than `deprecated_since` and must have a greater MAJOR component.
+- `replaced_by` remains optional when no direct replacement exists.
+- Release notes and upgrade guidance must explain migration impact and removal timing.
+- Removal or behavior-changing replacement requires the SemVer classification defined by the versioning and compatibility contract.
+
+Project-owned concepts may use these fields when their lifecycle is intentionally tied to an Ava release. They are not required to invent an Ava removal version for ordinary project-specific deprecation.
 
 # Forward compatibility
 
@@ -244,7 +263,9 @@ Treat these as errors:
 - missing or empty `type`
 - malformed known OKF or Ava fields
 - missing managed bootstrap, base, state, or other mandatory installed paths
-- a managed file missing from the manifest or differing from its recorded checksum
+- a managed path missing from the manifest
+- a managed payload missing its checksum or differing from its recorded checksum
+- a managed state entry containing a payload checksum or violating its schema or allowed transitions
 - a project-owned extension path claimed by the managed manifest
 - broken required-reading paths
 - missing `title` or `description` on an Ava-controlled semantic document
@@ -253,6 +274,7 @@ Treat these as errors:
 - workflow `mode` missing or unsupported
 - workflow body structure or semantics that violate the workflow-format contract
 - invalid or automatically followed workflow or role `replaced_by` routing
+- malformed, regressive, or inconsistent `deprecated_since` or `removal_not_before` metadata
 - ambiguous name-based routing across managed and project-owned registries
 
 Treat these as warnings or non-blocking notices:
@@ -320,7 +342,7 @@ sources:
     resource: /inbox/processed/ingestion-notes.md
 generated:
   by: agent:project-steward
-  at: 2026-07-31T10:51:00+02:00
+  at: 2026-07-31T12:08:00+02:00
 ---
 ```
 
