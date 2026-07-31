@@ -24,7 +24,8 @@ GitHub Release
 - Semantic compatibility of project-owned content is tracked separately from `ava_version`.
 - Project-owned context changes only through an explicit agent request that loads release-specific upgrade guidance.
 - Scoped `log.md` files remain conceptual history and may feed release notes, but release guidance must state compatibility impact and required actions directly.
-- Release checksums protect integrity but do not independently authenticate bootstrap execution. A separate signing or attestation decision is required.
+- Release checksums protect byte integrity but do not independently authenticate bootstrap execution. Ava uses GitHub immutable release attestations for the initial verified publication path.
+- Public distribution contracts, release payload sources, and internal publication procedures must remain separate repository concerns.
 - Internal Ava development roles remain separate from every distributed project bundle.
 
 ## Active roadmap
@@ -32,9 +33,9 @@ GitHub Release
 1. [Format contract and base structure](01-format-contract/) - 3 of 4 complete; document update metadata remains as a follow-up
 2. [Core roles for initialized projects](02-core-roles/) - 4 of 4 complete
 3. [Workflow system](03-workflows/) - 3 of 6 complete; remaining work is deferred until the distribution ownership, versioning, and migration contracts are settled
-4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 1 of 8 complete
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 3 of 9 complete
 
-The distribution pivot remains the active priority. Resume the remaining workflow-system tasks after the ownership, release, and migration boundaries are explicit enough to evaluate how workflows participate in upgrades. The format metadata follow-up remains pending without replacing the current SemVer task.
+The distribution pivot remains the active priority. Resume the remaining workflow-system tasks after the ownership, release, and migration boundaries are explicit enough to evaluate how workflows participate in upgrades. The format metadata follow-up remains pending without replacing the current upgrade and migration protocol task.
 
 ## Task status
 
