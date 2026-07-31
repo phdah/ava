@@ -2,12 +2,18 @@
 
 This log records major conceptual and structural changes to Ava's internal development instructions. It does not replace Git history.
 
+## 2026-07-31
+
+* **Deprecated roadmap removal**: Removed the superseded workspace-provider, semantic-tool, application-service, MCP, CLI, and application-specific compatibility task directories from the executable roadmap hierarchy.
+* **Requirement preservation**: Moved the remaining valid requirements into the active installer and validation tasks, including safe path resolution, traversal and symlink protection, atomic grouped changes, dry-run and pre/post validation, stable machine-readable findings, structural conformance rules, deterministic repair boundaries, and compatibility fixtures.
+* **Historical boundary**: Kept the architecture pivot and removed planning available through this log and Git history rather than as misleading unchecked tasks.
+
 ## 2026-07-30
 
 * **Distribution-first roadmap**: Replaced the active application-centric implementation direction with a versioned distribution and upgrade phase covering ownership, SemVer, GitHub Release assets, deterministic migrations, agent-readable upgrade guidance, a thin installer and updater, validation, and the first published release.
 * **Superseded phases**: Marked workspace providers, semantic MCP tools, shared Go services, MCP implementation, companion CLI, and their application-specific compatibility plan as superseded historical planning rather than executable tasks.
 * **Version and ownership model**: Limited the architecture to two ownership classes, made the root `AGENTS.md` Ava-managed, defined `ava_version` as installed-base state only, and required separate semantic compatibility state.
-* **Bootstrap trust boundary**: Required the release roadmap to distinguish convenient `curl | sh` execution from a separately verified download-first flow. Checksums alone are not treated as independent bootstrap authentication.
+* **Bootstrap trust boundary**: Required the release roadmap to distinguish convenient bootstrap execution from a separately verified download-first flow. Checksums alone are not treated as independent bootstrap authentication.
 * **Authoritative terminology alignment**: Updated internal maintainer scope and generated project instructions to depend on host-agent tools and repository access rather than a required workspace-provider or MCP layer.
 * **Workflow dependency update**: Deferred the remaining workflow catalog and lifecycle tasks until the distribution ownership and migration contracts are settled, and removed their dependency on planned semantic MCP tools.
 * **Next task**: Set the managed versus project-owned distribution boundary as the next architectural task.
