@@ -4,6 +4,10 @@ This log records major conceptual and structural changes across the Ava reposito
 
 ## 2026-07-31
 
+* **Versioning and compatibility contract**: Defined `ava_version` strictly as installed managed-base state, kept `okf_version` separate, and established explicit semantic compatibility fields and `complete`, `pending`, `partial`, and `blocked` migration states.
+* **Manifest integrity model**: Defined immutable managed payload entries with SHA-256 checksums and mutable managed state entries validated through schema and authorized transitions. The manifest and upgrade state are recorded without impossible self-checksums.
+* **Behavior-sensitive SemVer**: Required PATCH to preserve supported behavior, MINOR to prove unchanged routing, resolution, authority, validation, and intended behavior or remain explicitly unreachable without opt-in, and MAJOR for behavior-changing additions even when old files remain readable.
+* **Compatibility lifecycle**: Defined prerelease representation, direct and chained upgrade eligibility, versioned deprecation fields, host-conformance limits, release reporting requirements, and stable support windows.
 * **Installed ownership instruction**: Split repository release and installation rules from agent-facing ownership behavior. The managed root router now loads a shared instruction that distinguishes release ownership from role mutation authority while preserving the repository contract for assembly, adoption, and upgrade mechanics.
 * **Installed ownership boundary**: Established `/AGENTS.md` as the canonical managed router, `/.ava/base/` as the managed default context, `/.ava/state/` as the manifest and upgrade-state location, and `/.ava/guidance/` as the managed release-guidance location.
 * **Project-owned extension paths**: Established `/roles/`, `/workflows/`, `/shared/`, `/knowledge/`, `/inbox/`, and root project indexes or logs as project-owned when present, including content that predates Ava installation.
@@ -36,7 +40,7 @@ This log records major conceptual and structural changes across the Ava reposito
 * **Initialized project structure**: Finalized the minimal `ava init` tree with stable top-level locations for the agent router, inbox, knowledge, roles, workflows, and shared context. The structure remains extensible beneath those locations, creates logs only when needed, and requires migration support only when stable initialized paths are changed or repurposed.
 * **Index hierarchy**: Defined `index.md` files as direct-child navigation only. Child directories own discovery of their descendants, preventing ancestor indexes from flattening or duplicating deeper navigation.
 * **Template navigation**: Added `templates/base/index.md` and reduced `templates/index.md` to reference only its direct `base/` child.
-* **Role activation visibility**: Required the generated agent router to announce the selected role after its complete required instruction set has been loaded and before acting under that role.
+* **Role activation visibility**: Required the generated agent router to announce the selected role after its complete required instruction set has been loaded and before acting under it.
 * **Delegation visibility**: Required the Ava Internal Maintainer to announce both its active primary role and each delegated specialist before specialist instructions affect the work.
 
 ## 2026-07-25
