@@ -171,7 +171,7 @@ When `status` is `complete`:
 
 - `compatible_through` is lower than `ava_version`
 - `target_version` equals `ava_version`
-- `unresolved_decisions` is empty unless release guidance identifies a decision before work can begin
+- `unresolved_decisions` is empty
 
 ### Partial
 
@@ -209,7 +209,7 @@ Deterministic tooling exclusively controls:
 During a completed base upgrade it may also perform only these mechanical semantic transitions:
 
 1. When the target release declares no project-owned semantic review and the prior state was `complete`, set `compatible_through` to the target `ava_version` and retain `complete`.
-2. When semantic review is required, preserve `compatible_through`, set `target_version` to the installed target, set `status` to `pending`, and initialize unresolved decisions from release guidance.
+2. When semantic review is required, preserve `compatible_through`, set `target_version` to the installed target, set `status` to `pending`, and initialize `unresolved_decisions` as empty.
 3. When an upgrade transaction fails, leave the previously completed manifest authoritative. Temporary transaction state belongs in `upgrade.json`.
 
 The updater must not mark user-dependent semantic work `partial`, `blocked`, or `complete` based on filesystem replacement alone.
@@ -291,7 +291,7 @@ A structurally readable file can still require MAJOR classification when its int
 
 # Compatibility proof for MINOR releases
 
-Every proposed MINOR release must produce a repeatable compatibility report against the previous stable MINOR release in the same MAJOR line.
+Every proposed MINOR release must produce a repeatable compatibility report against the immediately previous stable release in the same MAJOR line.
 
 The report runs the previous and candidate managed bases against maintained fixtures representing all supported project shapes and routing boundaries.
 
@@ -364,13 +364,15 @@ The upgrade-protocol task defines the machine-readable path representation and t
 
 Deprecated files, metadata, roles, and workflows remain valid until removal.
 
-A deprecated concept must communicate:
+A deprecated managed document, role, or workflow must communicate through frontmatter and its body:
 
 - `status: deprecated`
 - `deprecated_since`: first stable Ava version that declared the deprecation
 - `removal_not_before`: earliest MAJOR Ava version in which removal is allowed
 - `replaced_by`: canonical path when a direct replacement exists
 - a body explanation of migration impact
+
+A deprecated metadata field cannot carry its own frontmatter. Its authoritative contract, release notes, and upgrade guidance must communicate the same `deprecated_since`, `removal_not_before`, replacement, and migration information.
 
 Deprecation does not authorize automatic redirection or ownership transfer.
 
@@ -434,11 +436,12 @@ Every release must state:
 Validation must reject:
 
 - manifest fields with invalid shapes or versions
+- duplicate managed-file paths
 - payload entries without checksums
 - state entries with checksums
 - manifest or upgrade state omitted from the managed inventory
 - inconsistent release tag, channel, and `ava_version`
-- impossible semantic state combinations
+- impossible semantic state combinations, including pending state with unresolved decisions or blocked state without them
 - unauthorized or regressive semantic transitions
 - a `complete` state that does not match the installed `ava_version`
 - a release classified below the compatibility impact demonstrated by its fixtures
