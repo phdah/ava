@@ -5,7 +5,7 @@ description: Defines the repository source model, installed-project paths, owner
 tags: [ava, distribution, ownership, installation, adoption, bootstrap]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T10:51:00+02:00
+  at: 2026-07-31T11:16:00+02:00
 ---
 
 # Ava Distribution and Ownership Boundary
@@ -99,6 +99,34 @@ The standard extension roots are:
 - `/index.md` and `/log.md` when present
 
 Pre-existing content accepted during installation remains project-owned unless an explicit adoption decision assigns an exact path to the managed release set. The installer must never infer ownership from timestamps, creation order, filenames alone, or similarity to an Ava default.
+
+# Ownership versus mutation authority
+
+Distribution ownership and mutation authority are separate concepts.
+
+Ownership determines:
+
+- whether a path belongs to the installed Ava release or to the project
+- whether a path is recorded in the managed manifest
+- whether release tooling may replace, move, or delete it mechanically
+- which authority supplies its canonical lifecycle and upgrade baseline
+
+Ownership does not grant exclusive editing rights to Ava or to a human project owner. In particular, `project-owned` does not mean that Ava roles are read-only or prohibited from changing the file.
+
+Active Ava roles and workflows are expected to maintain project-owned context. Within the current user request and resolved instruction set, they may create, update, reorganize, move, or remove project-owned files when their capabilities permit it and their constraints do not prohibit it. This includes ordinary role work, inbox ingestion, role and workflow maintenance, project stewardship, and bounded semantic upgrade work.
+
+Mutation authority is determined by:
+
+1. the active role and any explicitly invoked workflow
+2. the role's capabilities and constraints
+3. the current user-approved task scope
+4. applicable project instructions and unresolved-decision rules
+
+A mutation does not change file ownership. A project-owned file remains project-owned after an Ava role edits it. An Ava-managed file remains Ava-managed after a permitted state transition or release operation.
+
+Ordinary semantic roles must not customize Ava-managed files. Managed files are changed through deterministic release tooling or another narrowly defined managed mechanism. The Upgrade Role may update managed semantic-migration state only where the upgrade protocol explicitly grants that authority.
+
+The protection for project-owned content applies to automatic release behavior: installers, updaters, and deterministic migrations must not rewrite project semantics as an incidental consequence of replacing the Ava base. It does not restrict normal agent work performed under an active role with appropriate authority.
 
 # Manifest authority
 
@@ -263,4 +291,4 @@ This boundary does not require or reserve responsibility for:
 - repository or storage provider layers
 - application-service ownership of project context
 
-The installer performs deterministic filesystem and release operations. The host agent works directly with the installed files and applies semantic project-owned changes only through explicit user requests.
+The installer performs deterministic filesystem and release operations. Active Ava roles work directly with installed project-owned context under their defined authority. Release tooling applies only deterministic managed changes and must not perform semantic project maintenance as an incidental side effect.
