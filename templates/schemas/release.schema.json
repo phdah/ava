@@ -2,266 +2,156 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/phdah/ava/blob/main/templates/schemas/release.schema.json",
   "title": "Ava Release Manifest",
-  "description": "Machine-readable identity, asset inventory, installed mapping, and compatibility declarations for one immutable Ava GitHub Release.",
+  "description": "Machine-readable identity, asset inventory, installed mapping, explicit upgrade edges, migration descriptors, and compatibility declarations for one immutable Ava GitHub Release.",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "release_schema",
-    "ava_version",
-    "tag",
-    "channel",
-    "source_repository",
-    "source_revision",
-    "published_at",
-    "installer_protocol",
-    "okf_version",
-    "manifest_schema",
-    "semantic_review_required",
-    "assets",
-    "installed_files",
-    "upgrade_paths",
-    "guidance",
-    "migrations"
-  ],
+  "required": ["release_schema", "ava_version", "tag", "channel", "source_repository", "source_revision", "published_at", "installer_protocol", "okf_version", "manifest_schema", "semantic_review_required", "assets", "installed_files", "upgrade_paths", "guidance", "migrations"],
   "properties": {
-    "release_schema": { "const": 1 },
-    "ava_version": { "$ref": "#/$defs/version" },
-    "tag": {
-      "type": "string",
-      "pattern": "^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-(alpha|beta|rc)\\.[1-9][0-9]*)?$"
-    },
-    "channel": { "enum": ["stable", "rc", "beta", "alpha"] },
-    "source_repository": { "const": "phdah/ava" },
-    "source_revision": { "$ref": "#/$defs/sha1" },
-    "published_at": { "type": "string", "format": "date-time" },
-    "installer_protocol": { "type": "integer", "minimum": 1 },
-    "okf_version": { "type": "string", "minLength": 1 },
-    "manifest_schema": { "type": "integer", "minimum": 1 },
-    "semantic_review_required": { "type": "boolean" },
+    "release_schema": {"const": 1},
+    "ava_version": {"$ref": "#/$defs/version"},
+    "tag": {"type": "string", "pattern": "^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-(alpha|beta|rc)\\.[1-9][0-9]*)?$"},
+    "channel": {"enum": ["stable", "rc", "beta", "alpha"]},
+    "source_repository": {"const": "phdah/ava"},
+    "source_revision": {"$ref": "#/$defs/sha1"},
+    "published_at": {"type": "string", "format": "date-time"},
+    "installer_protocol": {"type": "integer", "minimum": 1},
+    "okf_version": {"type": "string", "minLength": 1},
+    "manifest_schema": {"type": "integer", "minimum": 1},
+    "semantic_review_required": {"type": "boolean"},
     "assets": {
       "type": "array",
       "minItems": 7,
       "maxItems": 7,
       "prefixItems": [
-        { "$ref": "#/$defs/installerAsset" },
-        { "$ref": "#/$defs/baseAsset" },
-        { "$ref": "#/$defs/guidanceAsset" },
-        { "$ref": "#/$defs/migrationsAsset" },
-        { "$ref": "#/$defs/releaseManifestAsset" },
-        { "$ref": "#/$defs/releaseNotesAsset" },
-        { "$ref": "#/$defs/checksumsAsset" }
+        {"$ref": "#/$defs/installerAsset"},
+        {"$ref": "#/$defs/baseAsset"},
+        {"$ref": "#/$defs/guidanceAsset"},
+        {"$ref": "#/$defs/migrationsAsset"},
+        {"$ref": "#/$defs/releaseManifestAsset"},
+        {"$ref": "#/$defs/releaseNotesAsset"},
+        {"$ref": "#/$defs/checksumsAsset"}
       ],
       "items": false
     },
-    "installed_files": {
-      "type": "array",
-      "minItems": 1,
-      "items": { "$ref": "#/$defs/installedFile" }
-    },
+    "installed_files": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/installedFile"}},
     "upgrade_paths": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["direct_sources", "required_intermediates", "carry_unresolved_semantic_state"],
-      "properties": {
-        "direct_sources": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": { "type": "string", "minLength": 1 }
-        },
-        "required_intermediates": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": { "$ref": "#/$defs/version" }
-        },
-        "carry_unresolved_semantic_state": { "type": "boolean" }
-      }
+      "required": ["edges"],
+      "properties": {"edges": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/upgradeEdge"}}}
     },
-    "guidance": { "$ref": "#/$defs/archiveInventory" },
-    "migrations": { "$ref": "#/$defs/archiveInventory" }
+    "guidance": {"$ref": "#/$defs/archiveInventory"},
+    "migrations": {"$ref": "#/$defs/migrationInventory"}
   },
   "$defs": {
-    "version": {
-      "type": "string",
-      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-(alpha|beta|rc)\\.[1-9][0-9]*)?$"
-    },
-    "sha1": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
-    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-(alpha|beta|rc)\\.[1-9][0-9]*)?$"},
+    "sha1": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "relativePath": {"type": "string", "minLength": 1, "not": {"pattern": "(^/|(^|/)\\.\\.(/|$))"}},
+    "migrationId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
     "hashedAsset": {
       "type": "object",
       "additionalProperties": false,
       "required": ["name", "role", "media_type", "size", "sha256"],
       "properties": {
-        "name": { "type": "string" },
-        "role": { "type": "string" },
-        "media_type": { "type": "string" },
-        "size": { "type": "integer", "minimum": 1 },
-        "sha256": { "$ref": "#/$defs/sha256" }
+        "name": {"type": "string"},
+        "role": {"type": "string"},
+        "media_type": {"type": "string"},
+        "size": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
       }
     },
     "unhashedAsset": {
       "type": "object",
       "additionalProperties": false,
       "required": ["name", "role", "media_type"],
-      "properties": {
-        "name": { "type": "string" },
-        "role": { "type": "string" },
-        "media_type": { "type": "string" }
-      }
+      "properties": {"name": {"type": "string"}, "role": {"type": "string"}, "media_type": {"type": "string"}}
     },
-    "installerAsset": {
-      "allOf": [
-        { "$ref": "#/$defs/hashedAsset" },
-        { "properties": {
-          "name": { "const": "ava-install.sh" },
-          "role": { "const": "installer" },
-          "media_type": { "const": "text/x-shellscript" }
-        } }
-      ]
-    },
-    "baseAsset": {
-      "allOf": [
-        { "$ref": "#/$defs/hashedAsset" },
-        { "properties": {
-          "name": { "const": "ava-base.tar.gz" },
-          "role": { "const": "base" },
-          "media_type": { "const": "application/gzip" }
-        } }
-      ]
-    },
-    "guidanceAsset": {
-      "allOf": [
-        { "$ref": "#/$defs/hashedAsset" },
-        { "properties": {
-          "name": { "const": "ava-guidance.tar.gz" },
-          "role": { "const": "guidance" },
-          "media_type": { "const": "application/gzip" }
-        } }
-      ]
-    },
-    "migrationsAsset": {
-      "allOf": [
-        { "$ref": "#/$defs/hashedAsset" },
-        { "properties": {
-          "name": { "const": "ava-migrations.tar.gz" },
-          "role": { "const": "migrations" },
-          "media_type": { "const": "application/gzip" }
-        } }
-      ]
-    },
-    "releaseManifestAsset": {
-      "allOf": [
-        { "$ref": "#/$defs/unhashedAsset" },
-        { "properties": {
-          "name": { "const": "ava-release.json" },
-          "role": { "const": "release-manifest" },
-          "media_type": { "const": "application/json" }
-        } }
-      ]
-    },
-    "releaseNotesAsset": {
-      "allOf": [
-        { "$ref": "#/$defs/hashedAsset" },
-        { "properties": {
-          "name": { "const": "ava-release-notes.md" },
-          "role": { "const": "release-notes" },
-          "media_type": { "const": "text/markdown" }
-        } }
-      ]
-    },
-    "checksumsAsset": {
-      "allOf": [
-        { "$ref": "#/$defs/unhashedAsset" },
-        { "properties": {
-          "name": { "const": "SHA256SUMS" },
-          "role": { "const": "checksums" },
-          "media_type": { "const": "text/plain" }
-        } }
-      ]
-    },
+    "installerAsset": {"allOf": [{"$ref": "#/$defs/hashedAsset"}, {"properties": {"name": {"const": "ava-install.sh"}, "role": {"const": "installer"}, "media_type": {"const": "text/x-shellscript"}}}]},
+    "baseAsset": {"allOf": [{"$ref": "#/$defs/hashedAsset"}, {"properties": {"name": {"const": "ava-base.tar.gz"}, "role": {"const": "base"}, "media_type": {"const": "application/gzip"}}}]},
+    "guidanceAsset": {"allOf": [{"$ref": "#/$defs/hashedAsset"}, {"properties": {"name": {"const": "ava-guidance.tar.gz"}, "role": {"const": "guidance"}, "media_type": {"const": "application/gzip"}}}]},
+    "migrationsAsset": {"allOf": [{"$ref": "#/$defs/hashedAsset"}, {"properties": {"name": {"const": "ava-migrations.tar.gz"}, "role": {"const": "migrations"}, "media_type": {"const": "application/gzip"}}}]},
+    "releaseManifestAsset": {"allOf": [{"$ref": "#/$defs/unhashedAsset"}, {"properties": {"name": {"const": "ava-release.json"}, "role": {"const": "release-manifest"}, "media_type": {"const": "application/json"}}}]},
+    "releaseNotesAsset": {"allOf": [{"$ref": "#/$defs/hashedAsset"}, {"properties": {"name": {"const": "ava-release-notes.md"}, "role": {"const": "release-notes"}, "media_type": {"const": "text/markdown"}}}]},
+    "checksumsAsset": {"allOf": [{"$ref": "#/$defs/unhashedAsset"}, {"properties": {"name": {"const": "SHA256SUMS"}, "role": {"const": "checksums"}, "media_type": {"const": "text/plain"}}}]},
     "installedFile": {
       "type": "object",
       "additionalProperties": false,
       "required": ["source_asset", "source_path", "destination", "ownership", "operation", "role", "sha256"],
       "properties": {
-        "source_asset": { "const": "ava-base.tar.gz" },
-        "source_path": {
-          "type": "string",
-          "minLength": 1,
-          "not": { "pattern": "(^/|(^|/)\\.\\.(/|$))" }
-        },
-        "destination": { "type": "string", "pattern": "^/" },
-        "ownership": { "enum": ["ava-managed", "project-owned"] },
-        "operation": { "enum": ["replace-managed", "create-if-absent"] },
-        "role": { "enum": ["router", "base", "bootstrap", "state", "scaffold"] },
-        "sha256": { "$ref": "#/$defs/sha256" }
+        "source_asset": {"const": "ava-base.tar.gz"},
+        "source_path": {"$ref": "#/$defs/relativePath"},
+        "destination": {"type": "string", "pattern": "^/"},
+        "ownership": {"enum": ["ava-managed", "project-owned"]},
+        "operation": {"enum": ["replace-managed", "create-if-absent"]},
+        "role": {"enum": ["router", "base", "bootstrap", "state", "scaffold"]},
+        "sha256": {"$ref": "#/$defs/sha256"}
       },
       "allOf": [
-        {
-          "if": { "properties": { "ownership": { "const": "ava-managed" } }, "required": ["ownership"] },
-          "then": { "properties": { "operation": { "const": "replace-managed" } } }
-        },
-        {
-          "if": { "properties": { "ownership": { "const": "project-owned" } }, "required": ["ownership"] },
-          "then": { "properties": {
-            "operation": { "const": "create-if-absent" },
-            "role": { "const": "scaffold" }
-          } }
-        }
+        {"if": {"properties": {"ownership": {"const": "ava-managed"}}, "required": ["ownership"]}, "then": {"properties": {"operation": {"const": "replace-managed"}}}},
+        {"if": {"properties": {"ownership": {"const": "project-owned"}}, "required": ["ownership"]}, "then": {"properties": {"operation": {"const": "create-if-absent"}, "role": {"const": "scaffold"}}}}
       ]
+    },
+    "upgradeEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "mode", "intermediates", "carry_unresolved_semantic_state", "migration_ids", "guidance_paths"],
+      "properties": {
+        "from": {"$ref": "#/$defs/version"},
+        "to": {"$ref": "#/$defs/version"},
+        "mode": {"enum": ["direct", "chained"]},
+        "intermediates": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/version"}},
+        "carry_unresolved_semantic_state": {"type": "boolean"},
+        "migration_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/migrationId"}},
+        "guidance_paths": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/relativePath"}}
+      },
+      "allOf": [
+        {"if": {"properties": {"mode": {"const": "direct"}}, "required": ["mode"]}, "then": {"properties": {"intermediates": {"maxItems": 0}}}},
+        {"if": {"properties": {"mode": {"const": "chained"}}, "required": ["mode"]}, "then": {"properties": {"intermediates": {"minItems": 1}}}}
+      ]
+    },
+    "archiveEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {"path": {"$ref": "#/$defs/relativePath"}, "sha256": {"$ref": "#/$defs/sha256"}}
     },
     "archiveInventory": {
       "type": "object",
       "additionalProperties": false,
       "required": ["entries"],
+      "properties": {"entries": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/archiveEntry"}}}
+    },
+    "migrationInventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files", "steps"],
       "properties": {
-        "entries": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["path", "sha256"],
-            "properties": {
-              "path": {
-                "type": "string",
-                "minLength": 1,
-                "not": { "pattern": "(^/|(^|/)\\.\\.(/|$))" }
-              },
-              "sha256": { "$ref": "#/$defs/sha256" }
-            }
-          }
-        }
+        "files": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/archiveEntry"}},
+        "steps": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/migrationStep"}}
+      }
+    },
+    "migrationStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "from", "to", "order", "depends_on", "apply_path", "verify_path", "descriptor_sha256", "idempotent"],
+      "properties": {
+        "id": {"$ref": "#/$defs/migrationId"},
+        "from": {"$ref": "#/$defs/version"},
+        "to": {"$ref": "#/$defs/version"},
+        "order": {"type": "integer", "minimum": 0},
+        "depends_on": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/migrationId"}},
+        "apply_path": {"$ref": "#/$defs/relativePath"},
+        "verify_path": {"$ref": "#/$defs/relativePath"},
+        "descriptor_sha256": {"$ref": "#/$defs/sha256"},
+        "idempotent": {"const": true}
       }
     }
   },
   "allOf": [
-    {
-      "if": { "properties": { "channel": { "const": "stable" } }, "required": ["channel"] },
-      "then": { "properties": {
-        "ava_version": { "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
-        "tag": { "pattern": "^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" }
-      } }
-    },
-    {
-      "if": { "properties": { "channel": { "const": "rc" } }, "required": ["channel"] },
-      "then": { "properties": {
-        "ava_version": { "pattern": "-rc\\.[1-9][0-9]*$" },
-        "tag": { "pattern": "-rc\\.[1-9][0-9]*$" }
-      } }
-    },
-    {
-      "if": { "properties": { "channel": { "const": "beta" } }, "required": ["channel"] },
-      "then": { "properties": {
-        "ava_version": { "pattern": "-beta\\.[1-9][0-9]*$" },
-        "tag": { "pattern": "-beta\\.[1-9][0-9]*$" }
-      } }
-    },
-    {
-      "if": { "properties": { "channel": { "const": "alpha" } }, "required": ["channel"] },
-      "then": { "properties": {
-        "ava_version": { "pattern": "-alpha\\.[1-9][0-9]*$" },
-        "tag": { "pattern": "-alpha\\.[1-9][0-9]*$" }
-      } }
-    }
+    {"if": {"properties": {"channel": {"const": "stable"}}, "required": ["channel"]}, "then": {"properties": {"ava_version": {"pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"}, "tag": {"pattern": "^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"}}}},
+    {"if": {"properties": {"channel": {"const": "rc"}}, "required": ["channel"]}, "then": {"properties": {"ava_version": {"pattern": "-rc\\.[1-9][0-9]*$"}, "tag": {"pattern": "-rc\\.[1-9][0-9]*$"}}}},
+    {"if": {"properties": {"channel": {"const": "beta"}}, "required": ["channel"]}, "then": {"properties": {"ava_version": {"pattern": "-beta\\.[1-9][0-9]*$"}, "tag": {"pattern": "-beta\\.[1-9][0-9]*$"}}}},
+    {"if": {"properties": {"channel": {"const": "alpha"}}, "required": ["channel"]}, "then": {"properties": {"ava_version": {"pattern": "-alpha\\.[1-9][0-9]*$"}, "tag": {"pattern": "-alpha\\.[1-9][0-9]*$"}}}}
   ]
 }
