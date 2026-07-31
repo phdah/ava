@@ -1,6 +1,7 @@
 # Shared Instructions
 
-- [Instruction resolution](instruction-resolution.md) - Deterministic activation, scope, precedence, authority, role composition, workflow routing, and conflict rules.
+- [Upgrade state and routing](upgrade-state-and-routing.md) - Managed pre-routing state checks, Upgrade Role activation, permitted operations, guidance discovery, recovery, and return to normal routing.
+- [Instruction resolution](instruction-resolution.md) - Deterministic ordinary activation, scope, precedence, authority, role composition, workflow routing, and conflict rules.
 - [Ownership and mutation authority](ownership-and-mutation.md) - Installed ownership classes, role mutation authority, managed-file boundaries, and upgrade-specific exceptions.
 - [Scoped history](scoped-history.md) - Rules for creating and updating the nearest scoped log without duplicating routine Git history.
 - [Document metadata](document-metadata.md) - Required metadata, document types, provenance, lifecycle, validation, and compatibility rules.

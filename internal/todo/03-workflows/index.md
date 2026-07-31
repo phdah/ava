@@ -11,12 +11,14 @@ Define workflows as focused predefined prompts that activate exactly one primary
 5. [ ] [Define workflow trigger portability](05-define-workflow-trigger-portability.md)
 6. [ ] [Define workflow lifecycle ownership](06-define-workflow-lifecycle-ownership.md)
 
-The remaining tasks are deferred until the distribution ownership, versioning, and migration contracts establish how workflows are classified, versioned, and migrated in installed projects. Resume this phase after the required Phase 04 design tasks are complete.
+The distribution ownership, SemVer, release, upgrade-transaction, release-guidance, and managed Upgrade Role boundaries are now explicit. This phase is active again.
+
+Task 4 must audit the catalog against the accepted distinction between ordinary free-form role work, reusable semantic procedures, deterministic release tooling, and direct managed Upgrade Role activation. Semantic Ava version reconciliation must not be introduced as a workflow.
 
 ## Previous phase
 
 [Core roles for initialized projects](../02-core-roles/).
 
-## Next active phase
+## Paused phase
 
-[Versioned distribution and upgrades](../04-distribution-and-upgrades/).
+[Versioned distribution and upgrades](../04-distribution-and-upgrades/) resumes after the workflow purpose audit unless that audit identifies a blocking distribution contract issue.

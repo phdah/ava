@@ -4,6 +4,10 @@ This log records major conceptual and structural changes across the Ava reposito
 
 ## 2026-07-31
 
+* **Release guidance contract**: Defined canonical installed `UPGRADE.md` guidance with validated source-to-target metadata, explicit changed contracts, affected project-owned concepts, required decisions, semantic procedures, completion criteria, rollback implications, and ordered multi-version composition.
+* **Managed Upgrade Role**: Added a dedicated Ava-managed role with direct pre-routing activation, bounded cross-scope authority for project-owned semantic migration, exclusive semantic-state update authority, and strict separation from deterministic installer and updater work.
+* **Upgrade routing boundary**: Made semantic version reconciliation a direct managed role activation rather than a workflow, kept project-owned registries unreachable until upgrade authority is active, and required normal routing to remain blocked until a safe terminal state.
+* **Workflow phase resumed**: Marked the workflow system active again now that ownership, versioning, transaction, guidance, and Upgrade Role boundaries are explicit. The built-in workflow purpose audit is the next task.
 * **Upgrade transaction protocol**: Defined explicit direct and chained release edges, durable `upgrade.json` journaling, stage-specific permitted operations, manifest-last managed commit semantics, interruption recovery, abort, and rollback.
 * **Managed reconciliation and migrations**: Defined three-way managed-file comparison and structured deterministic migration descriptors with stable IDs, dependencies, checksums, apply and verification entry points, idempotency, and durable completion records.
 * **Managed upgrade routing**: Required the root router to check managed upgrade and semantic state before ordinary routing, activate the managed Upgrade Role without project-owned registries, and block normal operations until a safe terminal state.

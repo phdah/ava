@@ -22,8 +22,10 @@ GitHub Release
 - The root `AGENTS.md` and every installed bootstrap file are Ava-managed. Project customization lives only in project-owned paths.
 - `ava_version` identifies only the installed Ava-managed base distribution.
 - Semantic compatibility of project-owned content is tracked separately from `ava_version`.
-- Project-owned context changes only through an explicit agent request that loads release-specific upgrade guidance.
-- Scoped `log.md` files remain conceptual history and may feed release notes, but release guidance must state compatibility impact and required actions directly.
+- Project-owned upgrade changes happen through one explicit request that loads installed release guidance.
+- Active upgrade state directly selects the managed Upgrade Role before ordinary workflow or role routing.
+- Semantic Ava version reconciliation is not a workflow.
+- Scoped `log.md` files remain conceptual history and may feed release notes, but release guidance states compatibility impact and required actions directly.
 - Release checksums protect byte integrity but do not independently authenticate bootstrap execution. Ava uses GitHub immutable release attestations for the initial verified publication path.
 - Public distribution contracts, release payload sources, and internal publication procedures must remain separate repository concerns.
 - Internal Ava development roles remain separate from every distributed project bundle.
@@ -34,10 +36,12 @@ GitHub Release
 
 1. [Format contract and base structure](01-format-contract/) - 3 of 4 complete; document update metadata remains as a follow-up
 2. [Core roles for initialized projects](02-core-roles/) - 4 of 4 complete
-3. [Workflow system](03-workflows/) - 3 of 6 complete; remaining work is deferred until the distribution ownership, versioning, and migration contracts are settled
-4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 4 of 9 complete
+3. [Workflow system](03-workflows/) - 3 of 6 complete; active again, with the built-in catalog purpose audit next
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 5 of 9 complete; paused after defining the Upgrade Role while workflows are reassessed
 
-The distribution pivot remains the active priority. The next task defines installed release guidance and the managed Upgrade Role against the accepted upgrade transaction protocol. Resume the remaining workflow-system tasks after the ownership, release, and migration boundaries are explicit enough to evaluate how workflows participate in upgrades. The format metadata follow-up remains pending without replacing the current release-guidance task.
+The next task reviews whether each built-in workflow provides reusable procedural value beyond ordinary free-form role work. It must preserve the accepted boundary that deterministic release mechanics belong to tooling and semantic version reconciliation directly activates the managed Upgrade Role.
+
+After the workflow purpose audit, return to Phase 04 task 6 unless the audit identifies a contract issue that must be resolved first. The format metadata follow-up remains pending without replacing the current workflow task.
 
 ## Task status
 
