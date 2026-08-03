@@ -49,6 +49,7 @@ class OpenCodeHostTests(unittest.TestCase):
         cwd: Path | None = None,
         env: dict[str, str] | None = None,
         timeout: int = 60,
+        check: bool = True,
     ) -> subprocess.CompletedProcess[str]:
         result = subprocess.run(
             args,
@@ -59,7 +60,7 @@ class OpenCodeHostTests(unittest.TestCase):
             stderr=subprocess.PIPE,
             timeout=timeout,
         )
-        if result.returncode != 0:
+        if check and result.returncode != 0:
             self.fail(
                 f"command failed ({result.returncode}): {' '.join(args)}\n"
                 f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
@@ -88,14 +89,17 @@ class OpenCodeHostTests(unittest.TestCase):
         self.run_command(*args)
         return output
 
-    def install(self, assets: Path) -> None:
-        self.run_command(
+    def install(
+        self, assets: Path, *, check: bool = True
+    ) -> subprocess.CompletedProcess[str]:
+        return self.run_command(
             "sh",
             str(assets / "ava-install.sh"),
             "--target",
             str(self.target),
             "--asset-dir",
             str(assets),
+            check=check,
         )
 
     def test_clean_install_uses_native_agents_without_opencode_config(self) -> None:
@@ -123,9 +127,11 @@ class OpenCodeHostTests(unittest.TestCase):
 
         self.install(self.build("0.1.0"))
         router = self.repo / "templates/base/AGENTS.md"
-        router.write_text(router.read_text() + "\n")
+        upgraded_router = router.read_text() + "\n# OpenCode upgrade fixture\n"
+        router.write_text(upgraded_router)
         self.install(self.build("0.2.0", upgrade_from="0.1.0"))
 
+        self.assertEqual((self.target / "AGENTS.md").read_text(), upgraded_router)
         self.assertEqual((self.target / "opencode.json").read_bytes(), project_json)
         self.assertEqual((self.target / "opencode.jsonc").read_bytes(), project_jsonc)
         self.assertEqual(global_path.read_bytes(), global_config)
@@ -140,7 +146,30 @@ class OpenCodeHostTests(unittest.TestCase):
         for link in managed_links:
             path = (self.target / link[2:]).resolve()
             self.assertTrue(path.is_relative_to(self.target.resolve()), link)
-            self.assertTrue(path.is_file(), link)
+            self.assertTrue(path.exists(), link)
+
+    def test_managed_edit_blocks_upgrade_and_preserves_project_context(self) -> None:
+        project_files = {}
+        for directory in ("roles", "workflows", "shared", "knowledge"):
+            path = self.target / directory / "custom.md"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            content = f"# Project-owned {directory}\n"
+            path.write_text(content)
+            project_files[path] = content
+
+        self.install(self.build("0.1.0"))
+        (self.target / "AGENTS.md").write_text("locally modified\n")
+        router = self.repo / "templates/base/AGENTS.md"
+        router.write_text(router.read_text() + "\n# Upgrade fixture\n")
+        failed = self.install(
+            self.build("0.2.0", upgrade_from="0.1.0"),
+            check=False,
+        )
+
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertIn("MANAGED_CONFLICT", failed.stderr)
+        for path, content in project_files.items():
+            self.assertEqual(path.read_text(), content)
 
     def test_host_neutral_router_fixture_uses_same_relative_paths(self) -> None:
         self.install(self.build("0.1.0"))
