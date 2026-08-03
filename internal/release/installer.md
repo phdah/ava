@@ -1,7 +1,7 @@
 ---
 type: Internal Release Implementation
 title: Ava Release Assembler and Installer
-description: Documents the implemented deterministic release assembly, installation, upgrade, migration, and recovery tooling.
+description: Documents the implemented deterministic release assembly, installation, upgrade, migration, host integration, and recovery tooling.
 tags: [internal, releases, installer, updater, assembly, migrations]
 generated:
   by: agent:openai-chatgpt
@@ -13,7 +13,7 @@ generated:
 Ava uses two maintainer-facing source tools and one distributed entry point:
 
 - `assemble.sh` invokes `assemble.py` to build the exact seven-asset GitHub Release set.
-- `assemble.py` classifies every source file, creates reproducible archives, emits the release manifest, and writes `SHA256SUMS`.
+- `assemble.py` classifies every distributed source file, creates reproducible archives, emits the release manifest, and writes `SHA256SUMS`.
 - `ava-install.sh` and the ordered Python fragments under `installer/` are assembled into the distributed `ava-install.sh` asset with immutable release identity embedded near its beginning.
 
 The installed entry point remains one POSIX shell file. It delegates strict JSON, archive, checksum, path, transaction, and migration handling to embedded Python rather than parsing structured release state in shell.
@@ -59,23 +59,23 @@ A chained edge is declared as source followed by mandatory intermediates:
 --upgrade-from 0.1.0:0.2.0,0.3.0
 ```
 
-Each adjacent intermediate release must still declare its own direct edge. The installer verifies that complete graph before mutation.
+Each adjacent intermediate release must still declare its own direct edge. The installer verifies the complete graph before mutation.
 
-Optional inputs:
+Optional assembly inputs are:
 
-- `--guidance-dir DIR` packages relative guidance paths.
-- `--migrations-dir DIR` packages declarative deterministic migrations.
-- `--semantic-review-required` marks project-owned reconciliation as required.
-- `--host-bootstrap SOURCE=DESTINATION` maps one thin bootstrap source under `templates/host-bootstraps/` to an installed managed path.
+- `--guidance-dir DIR` to package relative guidance paths
+- `--migrations-dir DIR` to package declarative deterministic migrations
+- `--semantic-review-required` to mark project-owned reconciliation as required
 
 Assembly maps:
 
 - `templates/base/AGENTS.md` to `/AGENTS.md`
 - the base index, roles, workflows, and shared instructions to `/.ava/base/`
 - `templates/project-scaffolds/` to project-root create-if-absent paths
-- explicitly selected host bootstrap sources to their declared root paths
 
 The `knowledge/` and `inbox/` examples under `templates/base/` are not inferred as managed merely because of their source location. Installed ownership is determined only by the generated release mapping.
+
+Host-specific project files are not release sources. Ava does not package `CODEX.md`, `CLAUDE.md`, Copilot instructions, or similar host entrypoints.
 
 # Install and upgrade
 
@@ -109,13 +109,43 @@ A pre-existing root `AGENTS.md` blocks installation. After its project-specific 
 sh ava-install.sh --adopt-existing-agents
 ```
 
-An optional release-declared host bootstrap is selected by exact installed destination:
+# Project-provided host entrypoint
 
-```sh
-sh ava-install.sh --host-bootstrap /CODEX.md
+A project may already contain a host-specific instruction file, for example:
+
+```text
+/CODEX.md
+/.github/copilot-instructions.md
 ```
 
-No host is reported as natively supported by this implementation. Without a selected validated bootstrap, discovery is reported as `explicit-only`.
+The project owner may record one such file during installation:
+
+```sh
+sh ava-install.sh --host-entrypoint CODEX.md
+```
+
+The installer:
+
+- requires the path to resolve to an existing normal file inside the selected project root
+- rejects `/AGENTS.md`, `/.ava/`, and paths below `/.ava/`
+- records the normalized path as `project-owned` and `project-provided` host integration metadata
+- preserves the metadata across upgrades unless another entrypoint is explicitly supplied
+- never reads, rewrites, creates, deletes, checksums, backs up, or rolls back the project file
+- never adds the file to the release inventory or `managed_files`
+
+The project owner remains responsible for ensuring that the host file directs the host to load and follow `/AGENTS.md`. Ava records the integration point but does not interpret its prose.
+
+Without recorded host integration, discovery is reported as `explicit-only`. No host is reported as natively supported by this implementation.
+
+The installed manifest representation is either `null` or:
+
+```json
+{
+  "entrypoint": "/CODEX.md",
+  "ownership": "project-owned",
+  "discovery": "project-provided"
+}
+```
 
 # Verified bootstrap
 
@@ -137,9 +167,9 @@ sh ./ava-install.sh --verified
 
 Before managed mutation, the updater:
 
-1. validates release identity, checksums, archive safety, source mapping, installed state, and the complete upgrade graph
+1. validates release identity, checksums, archive safety, source mapping, installed state, optional host entrypoint, and the complete upgrade graph
 2. performs three-way reconciliation of prior, current, and target managed payloads
-3. stages the complete target tree inside the selected target root
+3. stages the complete managed target tree inside the selected target root
 4. records a durable transaction plan and rollback backup
 5. executes declared migrations only against staged managed content
 6. validates the candidate tree
@@ -162,7 +192,7 @@ After deterministic work requiring semantic reconciliation, the journal remains 
 sh ava-install.sh --finalize
 ```
 
-Automatic rollback never reverses project-owned edits. Recorded project changes must first be explicitly reverted before managed rollback is permitted.
+Automatic rollback never reverses project-owned edits, including a recorded host entrypoint. Recorded semantic project changes must first be explicitly reverted before managed rollback is permitted.
 
 # Path and archive safety
 
@@ -176,8 +206,9 @@ The installer rejects:
 - symlink components in installed destinations
 - destinations resolving outside the canonical target root
 - undeclared managed paths
-- project scaffolds outside the accepted project-owned extension roots
+- project scaffolds outside accepted project-owned extension roots
 - file-directory prefix collisions in the release mapping
+- host entrypoints that are missing, non-regular, outside the project root, or inside Ava-managed paths
 
 Downloads, staging, backup, migration application, rollback, and cleanup use paths beneath the selected target root. A local asset directory is read-only input.
 
@@ -202,6 +233,6 @@ Run the focused implementation suite with:
 sh internal/release/test.sh
 ```
 
-The suite covers clean installation, explicit adoption, project-owned preservation, managed conflicts, checksum failures, unsafe archives, symlink escapes, optional host bootstraps, direct and chained upgrades, declarative migrations, semantic blocking, rollback, and post-upgrade rollback conflicts.
+The suite covers clean installation, explicit adoption, project-owned preservation, managed conflicts, checksum failures, unsafe archives, symlink escapes, project-provided host entrypoints, direct and chained upgrades, declarative migrations, semantic blocking, rollback, and post-upgrade rollback conflicts.
 
 Broader conformance matrices and compatibility fixtures remain Phase 4 task 8.
