@@ -9,14 +9,8 @@ from internal.release.tests.test_installer import InstallerTests
 EXPECTED_CONFIG = {
     "$schema": "https://opencode.ai/config.json",
     "permission": {
-        "read": {
-            "AGENTS.md": "allow",
-            ".ava/**": "allow",
-        },
-        "edit": {
-            "AGENTS.md": "ask",
-            ".ava/**": "ask",
-        },
+        "read": {".ava/**": "allow"},
+        "edit": {".ava/**": "ask"},
     },
 }
 
