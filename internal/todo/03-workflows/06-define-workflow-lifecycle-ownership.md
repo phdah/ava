@@ -8,10 +8,12 @@ phase: 3
 order: 6
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-30T11:26:00Z
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Define Workflow Lifecycle Ownership
+
+Complete this task after [Workflow Trigger Portability](05-define-workflow-trigger-portability.md). It is the final Phase 3 task and must finish before Phase 4 installer implementation resumes.
 
 ## Current state
 
@@ -47,3 +49,7 @@ Do not create a new default role merely because workflows have distinct procedur
 - decide whether built-in workflow-maintenance or semantic-upgrade workflows should be added
 - align workflow migration behavior with Ava SemVer and release guidance
 - update affected role, workflow, and roadmap documentation
+
+## Following task
+
+After this task completes Phase 3, resume [Implement Installer and Updater](../04-distribution-and-upgrades/07-implement-installer-and-updater.md).
