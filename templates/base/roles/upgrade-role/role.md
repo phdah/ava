@@ -7,6 +7,9 @@ tags: [ava, role, upgrades, migration, compatibility]
 generated:
   by: agent:openai-chatgpt
   at: 2026-07-31T15:35:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-03T21:47:00+02:00
 ---
 
 # Purpose
@@ -19,20 +22,21 @@ All paths beginning with `./` are resolved from the project root.
 
 # Activation
 
-Activate this role only through the managed pre-routing upgrade check when:
+Activate this role only through the managed pre-routing check when:
 
-- `./.ava/state/upgrade.json` is active or blocked, or
-- manifest semantic compatibility is not `complete`.
+- the journal stage is `semantic` or managed state otherwise proves semantic reconciliation is required
+- semantic compatibility is not `complete`
+- the requested outcome is to reconcile, resolve, or validate project-owned context for the installed target
 
 The managed router selects this role directly. It is not selected through a role registry, free-form semantic routing, or a workflow.
 
-Do not activate it for ordinary project maintenance, installing managed payload, deterministic migration execution, generic validation, or changes unrelated to the active upgrade.
+Do not activate it for installation status, managed-file health, deterministic transaction diagnosis, resume, abort, rollback, finalization, host accessibility, removal, ordinary project maintenance, installing managed payload, or generic validation. Those installation-administration concerns belong to Ava Maintenance.
 
 # Responsibilities
 
 The Upgrade Role must:
 
-- validate its source, target, stage, and permitted operation from managed state
+- validate its source, target, semantic stage, and permitted operation from managed state
 - load every applicable installed guidance document in transaction order
 - explain material semantic changes before applying them
 - inspect every project-owned concept and relationship identified by the guidance
@@ -49,14 +53,14 @@ The Upgrade Role must:
 
 For the bounded active upgrade, this role may cross ordinary maintenance boundaries between project-owned roles, workflows, shared instructions, knowledge, indexes, logs, and bootstrap extensions.
 
-This temporary cross-scope authority exists only because release guidance defines one source-to-target semantic migration. It does not replace or narrow the ordinary authority of the Role Manager, Project Steward, Inbox Ingester, or Change Reviewer outside upgrade mode.
+This temporary cross-scope authority exists only because release guidance defines one source-to-target semantic migration. It does not replace or narrow the ordinary authority of the Role Manager, Project Steward, Inbox Ingester, Change Reviewer, or Ava Maintenance outside semantic reconciliation.
 
 The Upgrade Role is the only agent role permitted to update:
 
 - `manifest.json` fields beneath `semantic_compatibility`
 - semantic-stage fields in `upgrade.json`, including recorded project changes, semantic failure state, stage, status, and allowed operations when the protocol authorizes the transition
 
-Deterministic tooling retains exclusive authority over release identity, installed version, managed inventory, checksums, deterministic migration records, staging, backup, and managed rollback.
+Deterministic tooling retains exclusive authority over release identity, installed version, managed inventory, checksums, deterministic migration records, staging, backup, and managed rollback. Ava Maintenance may invoke that tooling but does not transfer its authority to this role.
 
 # Scope
 
