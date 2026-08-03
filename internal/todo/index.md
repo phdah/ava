@@ -19,7 +19,7 @@ GitHub Release
 - The installer performs deterministic installation, managed-file reconciliation, integrity verification, and mechanical migrations.
 - The host agent performs semantic work against project-owned context through existing Ava roles and instructions.
 - Ava uses exactly two ownership classes: Ava-managed and project-owned.
-- The root `AGENTS.md` and every installed bootstrap file are Ava-managed. Project customization lives only in project-owned paths.
+- The root `AGENTS.md` and installed Ava base are Ava-managed. Project customization and host-specific entrypoints remain project-owned.
 - `ava_version` identifies only the installed Ava-managed base distribution.
 - Semantic compatibility of project-owned content is tracked separately from `ava_version`.
 - Project-owned upgrade changes happen through one explicit request that loads installed release guidance.
@@ -32,11 +32,11 @@ GitHub Release
 1. [Format contract and base structure](01-format-contract/) - 3 of 4 complete; document update metadata remains as a follow-up
 2. [Core roles for initialized projects](02-core-roles/) - 4 of 4 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
-4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 7 of 9 complete; active with validation and conformance next
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 7 of 11 complete; active with installed path normalization next
 
-The release assembler and thin installer/updater now implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, and optional host bootstraps.
+The release assembler and thin installer/updater now implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, and project-owned host entrypoint metadata.
 
-Continue Phase 4 with validation, conformance, and upgrade fixtures before publishing the first immutable release.
+Continue Phase 4 by normalizing project-root path references, deciding the managed-directory discoverability and host-permission strategy, and then implementing the broader validation and compatibility fixture matrix before publishing the first immutable release.
 
 The format metadata follow-up remains pending without replacing the current Phase 4 sequence.
 

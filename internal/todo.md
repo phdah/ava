@@ -16,9 +16,9 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Implement validation, conformance, and upgrade fixtures](todo/04-distribution-and-upgrades/08-implement-validation-and-upgrade-fixtures.md).
+[Normalize installed project paths](todo/04-distribution-and-upgrades/08-normalize-installed-project-paths.md).
 
-The installer and updater are implemented. Continue Phase 4 with the broader conformance and compatibility fixture matrix.
+The installer and updater are implemented. Resolve the observed project-root path ambiguity first, then decide how the managed directory should be exposed to host agents before broader conformance work and the first release.
 
 ## Working rule
 

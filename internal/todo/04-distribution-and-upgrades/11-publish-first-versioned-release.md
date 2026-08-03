@@ -5,7 +5,7 @@ description: Build, verify, document, and publish the first installable and upgr
 tags: [internal, roadmap, releases, publishing]
 status: pending
 phase: 4
-order: 9
+order: 11
 generated:
   by: agent:openai-chatgpt
   at: 2026-07-31T14:09:00+02:00
