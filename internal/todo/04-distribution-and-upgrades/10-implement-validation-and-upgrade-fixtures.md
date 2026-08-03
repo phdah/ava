@@ -5,7 +5,7 @@ description: Validate the public format, installed base state, semantic compatib
 tags: [internal, roadmap, validation, testing, conformance, upgrades]
 status: pending
 phase: 4
-order: 8
+order: 10
 generated:
   by: agent:openai-chatgpt
   at: 2026-07-31T14:09:00+02:00
@@ -13,7 +13,7 @@ generated:
 
 # Implement Validation, Conformance, and Upgrade Fixtures
 
-This task begins after completion of the preceding design, repository-boundary, and installer tasks.
+This task begins after completion of the preceding design, repository-boundary, installer, path, and managed-directory discoverability tasks.
 
 ## Validation contract
 
