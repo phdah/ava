@@ -12,16 +12,26 @@ Define and implement Ava as an immutable, versioned context distribution install
 6. [x] [Separate distribution contracts and release procedures](06-separate-distribution-contracts-and-release-procedures.md)
 7. [x] [Implement the installer and updater](07-implement-installer-and-updater.md)
 8. [ ] [Normalize installed project paths](08-normalize-installed-project-paths.md)
-9. [ ] [Decide managed directory discoverability](09-decide-managed-directory-discoverability.md)
+9. [ ] [Implement OpenCode support and decide managed directory discoverability](09-implement-opencode-host-support.md)
 10. [ ] [Implement validation, conformance, and upgrade fixtures](10-implement-validation-and-upgrade-fixtures.md)
-11. [ ] [Publish the first versioned Ava release](11-publish-first-versioned-release.md)
 
 Task 7 implements deterministic release assembly and one thin POSIX installer/updater with embedded structured-data handling. It supports fresh installation, explicit adoption, direct and chained upgrades, three-way managed reconciliation, restricted deterministic migrations, durable recovery, semantic upgrade blocking, and project-owned host entrypoint metadata.
 
 The focused implementation suite covers clean installation, create-if-absent preservation, managed conflicts, checksum failures, unsafe archives, symlink escapes, project-provided host entrypoints, migration execution, chained upgrades, semantic state, and rollback.
 
-Local installation testing exposed two pre-release portability questions: installed instructions use leading-slash paths that some hosts interpret as filesystem-root paths, and hidden `.ava/` reads may require host-specific permission confirmation. Tasks 8 and 9 resolve those issues before the broader conformance matrix in task 10 and publication in task 11.
+Local installation testing exposed two pre-release portability requirements: installed instructions must use unambiguous project-root-relative paths, and OpenCode must be able to load managed context reliably under the selected managed-directory strategy. Tasks 8 and 9 resolve those requirements.
+
+Before task 10 begins, also complete:
+
+- [document update metadata](../01-format-contract/04-define-document-update-metadata.md)
+- [the Ava Maintenance role](../02-core-roles/05-create-ava-maintenance-role.md)
+
+Task 10 then freezes the full structural, operational, host, installation, recovery, and upgrade conformance matrix required before release qualification.
 
 ## Current active task
 
 [Normalize installed project paths](08-normalize-installed-project-paths.md).
+
+## Next phase
+
+[V1 release qualification](../05-release-qualification/).
