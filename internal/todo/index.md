@@ -31,12 +31,14 @@ GitHub Release
 
 1. [Format contract and base structure](01-format-contract/) - 3 of 4 complete; document update metadata remains as a follow-up
 2. [Core roles for initialized projects](02-core-roles/) - 4 of 4 complete
-3. [Workflow system](03-workflows/) - 4 of 6 complete; active, with trigger portability next
-4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 6 of 9 complete; paused before installer implementation
+3. [Workflow system](03-workflows/) - 6 of 6 complete
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 6 of 9 complete; active with installer implementation next
 
-The repository responsibility boundary is now explicit. Finish Phase 3 by defining workflow trigger portability and then workflow lifecycle ownership. Resume Phase 4 with the thin POSIX installer and updater only after both workflow tasks are complete.
+Phase 3 is complete. Project-owned workflow lifecycle belongs to the Project Steward, managed workflow replacement remains deterministic release work, and active semantic upgrade migration remains with the Upgrade Role.
 
-The format metadata follow-up remains pending without replacing the current Phase 3 sequence.
+Resume Phase 4 with the thin POSIX installer and updater.
+
+The format metadata follow-up remains pending without replacing the current Phase 4 sequence.
 
 ## Task status
 
