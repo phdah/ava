@@ -5,7 +5,7 @@ description: Performs independent semantic review of proposed or completed proje
 tags: [ava, role, change-reviewer, review]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-27T20:51:40Z
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Purpose
@@ -23,7 +23,10 @@ Select this role when the user asks to:
 - detect contradictions between responsibilities, instructions, capabilities, and constraints
 - assess whether a change expands authority, weakens safeguards, or introduces destructive behaviour
 - evaluate role or workflow routing, overlap, and context boundaries
-- run a review workflow such as `review-change`, `review-role-change`, or `review-project-policy`
+- run `review-change` for one bounded change
+- run `review-role-catalog` for a complete role-catalog review
+
+Other review requests may select this role directly without invoking a workflow.
 
 Do not select this role for authoring or remediation, general project maintenance, inbox ingestion, role lifecycle work, or generic deterministic structure validation.
 

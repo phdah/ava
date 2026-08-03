@@ -5,7 +5,7 @@ description: Defines Ava SemVer, installed manifest state, semantic compatibilit
 tags: [ava, distribution, semver, compatibility, manifest, upgrades]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T12:08:00+02:00
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Ava Versioning and Compatibility
@@ -280,7 +280,8 @@ MAJOR examples include:
 - moving or repurposing a managed or project-owned public path
 - changing the meaning of an existing manifest field or semantic state
 - adding a required metadata field that makes an existing supported project invalid
-- changing a workflow's primary role or mode
+- changing a workflow's primary role, mode, required inputs, invocation identity, or intended outcome
+- removing a registered workflow or changing its replacement behavior
 - changing a role's authority, capabilities, constraints, or activation outcomes
 - adding a registered role that changes free-form role selection or introduces ambiguity
 - adding a registered workflow whose name makes an existing invocation ambiguous
@@ -288,6 +289,16 @@ MAJOR examples include:
 - automatically following a deprecation replacement where previous versions only reported it
 
 A structurally readable file can still require MAJOR classification when its interpretation changes.
+
+# Workflow catalog compatibility
+
+Managed workflows are versioned Ava-managed payloads. The deterministic updater installs the target managed catalog and records it in the managed-file inventory.
+
+Project-owned workflows remain outside managed replacement. When a new Ava release changes workflow format, routing, role paths, invocation identity, or required behavior in a way that affects project-owned workflows or references, release guidance must identify the affected concepts and the managed Upgrade Role must reconcile them before semantic compatibility is complete.
+
+Ava does not migrate workflows through a persistent execution service. Deterministic tooling replaces managed payloads and runs mechanical migrations; the Upgrade Role applies release-specific semantic changes to project-owned workflow definitions, indexes, links, and references.
+
+Before `1.0.0`, repository workflow files are unversioned development material and may be removed directly. After publication, deprecation and removal follow the compatibility and lifecycle rules below.
 
 # Compatibility proof for MINOR releases
 
