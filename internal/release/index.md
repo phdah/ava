@@ -7,6 +7,7 @@ This directory contains maintainer-only release assembly, installation implement
 - [Installer and updater shell template](ava-install.sh)
 - [Embedded installer Python fragments](installer/)
 - [Installer implementation guide](installer.md)
+- [OpenCode release validation](opencode.md)
 - [Release publication procedure](procedure.md)
 - [Repository boundary validator](validate-boundaries.sh)
 - [Installer test runner](test.sh)
