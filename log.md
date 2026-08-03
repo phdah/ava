@@ -4,6 +4,12 @@ This log records major conceptual and structural changes across the Ava reposito
 
 ## 2026-08-03
 
+* **Workflow lifecycle ownership**: Assigned project-owned workflow creation, update, repair, reorganization, rename, deprecation, replacement, removal, and migration to the Project Steward.
+* **No Workflow Manager**: Kept workflow lifecycle within the Project Steward's existing project-wide authority and trust boundary rather than adding an overlapping default role.
+* **Workflow lifecycle procedure**: Added a progressively loaded shared contract for required inspection, approval-sensitive changes, references, deprecation, removal, migration, and validation.
+* **Lifecycle responsibility separation**: Kept role lifecycle with the Role Manager, independent review with the Change Reviewer, active semantic upgrade work with the Upgrade Role, and managed replacement and structural validation with deterministic tooling.
+* **Workflow catalog boundary**: Added no workflow-maintenance or semantic-upgrade workflow because both would duplicate durable role or managed pre-routing behavior.
+* **Workflow phase completion**: Completed all six workflow-system tasks and resumed Phase 4 with installer and updater implementation next.
 * **Distribution responsibility boundary**: Moved public distribution contracts and schemas into `/distribution/`, kept release payload and scaffold sources under `/templates/`, and added maintainer-only publication procedures under `/internal/release/`.
 * **Explicit release inclusion**: Clarified that public contracts are not automatically installed and that release manifests must explicitly select every distributed source and destination.
 * **Boundary validation**: Added a POSIX repository check that rejects stale contract locations, unexpected template roots, invalid schema identifiers, and references from public release sources into internal maintainer content.

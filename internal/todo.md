@@ -16,9 +16,9 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Define workflow lifecycle ownership](todo/03-workflows/06-define-workflow-lifecycle-ownership.md).
+[Implement the installer and updater](todo/04-distribution-and-upgrades/07-implement-installer-and-updater.md).
 
-Complete Phase 3 task 6 before resuming Phase 4 installer work.
+Phase 3 is complete. Resume Phase 4 with installer task 7.
 
 ## Working rule
 

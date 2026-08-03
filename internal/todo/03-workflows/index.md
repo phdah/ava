@@ -9,20 +9,21 @@ Define workflows as optional focused procedures that activate exactly one primar
 3. [x] [Create the initial built-in workflow catalog](03-create-built-in-workflow-catalog.md)
 4. [x] [Review workflow purpose and built-in catalog](04-review-workflow-purpose-and-built-in-catalog.md)
 5. [x] [Define workflow trigger portability](05-define-workflow-trigger-portability.md)
-6. [ ] [Define workflow lifecycle ownership](06-define-workflow-lifecycle-ownership.md)
+6. [x] [Define workflow lifecycle ownership](06-define-workflow-lifecycle-ownership.md)
 
 The built-in catalog contains four reusable procedures: batch inbox ingestion, bounded change review, complete role-catalog review, and bounded project-context audit.
 
-Portable trigger metadata now describes validated manual, schedule, and event intent while executable scheduler and event bindings remain external to Ava.
+Portable trigger metadata describes validated manual, schedule, and event intent while executable scheduler and event bindings remain external to Ava.
 
-Routine role lifecycle, project configuration, knowledge curation, and instruction tightening remain free-form role work. Deterministic release mechanics remain tooling, and semantic Ava version reconciliation directly activates the managed Upgrade Role.
+The Project Steward owns project-owned workflow lifecycle through a progressively loaded shared procedure. Managed workflow replacement remains deterministic release work, independent review remains separate, and active semantic version reconciliation directly activates the Upgrade Role.
 
-## Current sequence
+Routine role lifecycle, project configuration, workflow lifecycle, knowledge curation, and instruction tightening remain free-form role work. Deterministic release mechanics remain tooling.
 
-1. Define workflow lifecycle ownership.
-2. Resume [Versioned distribution and upgrades](../04-distribution-and-upgrades/) with installer task 7.
+## Phase status
 
-Phase 3 remains active until workflow lifecycle ownership is complete.
+Phase 3 is complete.
+
+Resume [Versioned distribution and upgrades](../04-distribution-and-upgrades/) with installer task 7.
 
 ## Previous phase
 
