@@ -17,8 +17,6 @@ def plan_operations(root: Path, installed: dict[str, Any] | None, target_payload
                 operation = "create"
             elif path == "/AGENTS.md" and installed is None and adopt_agents:
                 operation = "replace"
-            elif new["role"] == "bootstrap" and current_sha == new["sha256"]:
-                operation = "retain"
             else:
                 raise AvaError("PATH_COLLISION", f"new managed path already exists: {path}")
         else:
@@ -54,14 +52,23 @@ def plan_scaffolds(root: Path, target: Bundle, fresh: bool) -> list[dict[str, An
     return result
 
 
-def print_plan(operations: list[dict[str, Any]], scaffolds: list[dict[str, Any]], semantic: dict[str, Any], discovery: str, json_output: bool) -> None:
+def print_plan(
+    operations: list[dict[str, Any]],
+    scaffolds: list[dict[str, Any]],
+    semantic: dict[str, Any],
+    host_integration: dict[str, str] | None,
+    json_output: bool,
+) -> None:
     records = []
     for item in operations:
         records.append({"type": "managed", "operation": item["operation"], "path": item["path"], "ownership": "ava-managed"})
     for item in scaffolds:
         records.append({"type": "scaffold", "operation": item["operation"], "path": item["path"], "ownership": "project-owned"})
     records.append({"type": "semantic", **semantic})
-    records.append({"type": "discovery", "outcome": discovery})
+    if host_integration is None:
+        records.append({"type": "host-integration", "entrypoint": None, "discovery": "explicit-only"})
+    else:
+        records.append({"type": "host-integration", **host_integration})
     if json_output:
         for record in records:
             print(json.dumps(record, sort_keys=True))
@@ -70,7 +77,10 @@ def print_plan(operations: list[dict[str, Any]], scaffolds: list[dict[str, Any]]
             if record["type"] in {"managed", "scaffold"}:
                 print(f"{record['operation'].upper():7} {record['path']} [{record['ownership']}]")
         print(f"SEMANTIC {semantic['status']} compatible_through={semantic['compatible_through']} target={semantic['target_version']}")
-        print(f"DISCOVERY {discovery}")
+        if host_integration is None:
+            print("HOST      explicit-only")
+        else:
+            print(f"HOST      {host_integration['entrypoint']} [project-owned, project-provided]")
 
 
 def backup_path(backup: Path, destination: str) -> Path:
