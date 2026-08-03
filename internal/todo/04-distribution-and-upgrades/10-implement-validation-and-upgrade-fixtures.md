@@ -3,12 +3,15 @@ type: Internal Development Task
 title: Implement Validation, Conformance, and Upgrade Fixtures
 description: Validate the public format, installed base state, agent-first maintenance, OpenCode support, semantic compatibility, filesystem safety, trust modes, conflicts, rollback, and supported transitions.
 tags: [internal, roadmap, validation, testing, conformance, upgrades, maintenance, opencode]
-status: pending
+status: completed
 phase: 4
 order: 10
 generated:
   by: agent:openai-chatgpt
   at: 2026-07-31T14:09:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-03T22:30:00+02:00
 ---
 
 # Implement Validation, Conformance, and Upgrade Fixtures
@@ -69,6 +72,16 @@ Automatic repair is permitted only when the correct result is unambiguous and de
 The validator may expose machine-readable findings to deterministic release tooling and tests. User-facing interpretation of installation health belongs to Ava Maintenance.
 
 Do not introduce standalone status, version, repair, or uninstall commands as a substitute for the role. Existing deterministic installer operations remain available for the role to invoke when recovery requires them.
+
+## Implementation result
+
+- Added `internal/release/conformance.py` with repository, installed-project, release-asset, and automatic validation modes.
+- Stabilized machine-readable finding fields, severity semantics, deterministic-fix and decision flags, related context, JSON, JSON Lines, and text output.
+- Added explicit installed-state routing qualification that remains blocked by deterministic, semantic, or routing errors.
+- Added release asset checksum, manifest metadata, version-channel, and immutable-publication evidence validation.
+- Added an 86-case machine-readable conformance matrix with explicit prerelease transitions, semantic completion scope, host claims, trust modes, and executable evidence references.
+- Added validator, matrix, and installer conformance tests for metadata, discovery, managed integrity, unknown historical layouts, dry-run behavior, grouped rollback, migration failure, exact version selection, OpenCode diagnostics, and publication failures.
+- Wired the same validator and tests into the release test runner and repository boundary validation.
 
 ## Completion criteria
 
