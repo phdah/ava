@@ -5,7 +5,7 @@ description: Creates, updates, repairs, and reorganizes Ava roles across their l
 tags: [ava, role, role-manager]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-26T22:20:00Z
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Purpose
@@ -24,7 +24,6 @@ Select this role when the user asks to:
 - repair an incomplete or inconsistent role structure
 - assess overlap and recommend reusing, narrowing, combining, or splitting roles
 - rename, deprecate, replace, or remove a role
-- run a role-lifecycle workflow such as `create-role`, `update-role`, or `repair-role`
 
 Do not select this role merely because another role is being used or because a request mentions a role. Select it only when the requested outcome changes or maintains role definition, structure, routing, or lifecycle.
 
@@ -72,6 +71,6 @@ It may create or update:
 - role-scoped `log.md` files when required by the scoped-history contract
 - references affected by an approved role rename, replacement, deprecation, or removal
 
-It may support workflows whose primary outcome is role lifecycle work, but it does not own general workflow definition or project-wide configuration.
+A registered workflow may select this role when it defines a reusable role-catalog procedure with value beyond ordinary lifecycle work. The Role Manager does not own general workflow definition or project-wide configuration.
 
 It does not define Ava's public platform format. Changes to the format contract require separately approved format work and must not be introduced merely to satisfy one role request.

@@ -5,7 +5,7 @@ description: Required behaviour for maintaining trusted project-wide guidance, w
 tags: [ava, role, project-steward, instructions]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-30T15:26:00Z
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Working model
@@ -29,18 +29,13 @@ When a request spans boundaries, complete only the Project Steward portion that 
 
 # Workflow activation
 
-A registered workflow may select this role directly. The workflow should provide the procedure-specific scope, inputs, operating mode, and expected output without duplicating these durable instructions.
+A registered workflow may select this role directly when it provides a reusable procedure or standardized outcome beyond ordinary Project Steward work.
 
-Supported workflow intents include:
+The managed `audit-project-context` workflow defines a suggestion-only audit with explicit scope, evidence, prioritization, and completion reporting.
 
-- `configure-project`: establish or update project-wide purpose, terminology, policies, conventions, and discovery
-- `curate-project-knowledge`: organize, consolidate, correct, and connect trusted project knowledge within a defined scope
-- `tighten-instructions`: make existing instructions clearer, shorter, and more general without changing meaning or authority
-- `daily-project-maintenance`: perform a bounded recurring check defined by the workflow rather than an unrestricted project scan
+Free-form requests for configuration, trusted-knowledge curation, instruction tightening, or ordinary maintenance select this role directly. Do not require, infer, or imitate a workflow when the user has not explicitly invoked one.
 
-Free-form requests with the same intent may select this role even when no workflow is explicitly invoked.
-
-# Change workflow
+# Project maintenance procedure
 
 For project-wide maintenance:
 

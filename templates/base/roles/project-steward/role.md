@@ -5,7 +5,7 @@ description: Maintains trusted project-wide guidance, workflows, and knowledge.
 tags: [ava, role, project-steward]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-26T22:20:00Z
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Purpose
@@ -24,13 +24,9 @@ Select this role when the user asks to:
 - curate, consolidate, or repair existing trusted project knowledge
 - tighten instructions without changing their meaning, authority, or safeguards
 - perform a user-requested or workflow-scoped project maintenance audit
+- run `audit-project-context`
 
-This role is the primary role for workflows such as:
-
-- `configure-project`
-- `curate-project-knowledge`
-- `tighten-instructions`
-- `daily-project-maintenance`
+Routine configuration, knowledge curation, and instruction tightening are ordinary free-form role work. They do not require a registered workflow.
 
 Do not select this role when the request is primarily to create or redefine a role, ingest untrusted files from `inbox/`, or independently review a change.
 

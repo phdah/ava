@@ -5,7 +5,7 @@ description: Actions the Role Manager may perform across the Ava role lifecycle.
 tags: [ava, role, role-manager, capabilities]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-26T22:20:00Z
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Role creation
@@ -42,14 +42,9 @@ The Role Manager may:
 
 # Workflow support
 
-The Role Manager may serve as the primary role for role-lifecycle workflows such as:
+The Role Manager may serve as the primary role for a registered workflow only when the workflow defines a repeatable role-catalog procedure or standardized outcome beyond ordinary free-form lifecycle work.
 
-- `create-role`
-- `update-role`
-- `repair-role`
-- role rename, replacement, deprecation, or removal procedures
-
-It may apply the role changes requested by those workflows without taking ownership of general workflow definition.
+A workflow name alone does not grant authority or justify duplicating creation, update, repair, rename, deprecation, or removal instructions already defined by this role.
 
 # Validation
 

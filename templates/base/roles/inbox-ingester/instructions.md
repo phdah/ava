@@ -5,7 +5,7 @@ description: Required behaviour for classifying and ingesting untrusted inbox ma
 tags: [ava, role, inbox-ingester, instructions]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-26T14:41:00Z
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Trust model
@@ -20,15 +20,15 @@ A source becomes processed after successful handling, but it does not become aut
 
 Resolve the ingestion scope before reading source material:
 
-- `ingest-selected-source` or an equivalent request processes only the named source
-- `ingest-inbox` processes every pending direct child of `inbox/`
+- a free-form request naming one source processes only that source
+- the `ingest-inbox` workflow processes every pending direct child of `inbox/`
 - `index.md` and `processed/` are reserved and excluded from pending sources
 
 Use project indexes and targeted discovery to find likely destinations. Read only the trusted context needed to classify the source, detect conflicts, and make the requested change.
 
 Do not scan the complete project by default.
 
-# Ingestion workflow
+# Ingestion procedure
 
 For each selected source:
 

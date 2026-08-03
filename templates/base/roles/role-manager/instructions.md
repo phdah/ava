@@ -1,11 +1,11 @@
 ---
 type: Role Instructions
 title: Role Manager Instructions
-description: Workflow for creating, updating, repairing, and reorganizing Ava roles.
+description: Required behaviour for creating, updating, repairing, and reorganizing Ava roles.
 tags: [ava, role, role-manager, instructions]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-26T22:20:00Z
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Working model
@@ -28,7 +28,7 @@ Before changing content, classify the requested outcome:
 
 When a request spans boundaries, complete only the role-lifecycle work clearly within scope. Do not silently absorb another role's authority or present the Role Manager's own verification as independent review.
 
-# Role lifecycle workflow
+# Role lifecycle procedure
 
 When creating, updating, repairing, or reorganizing roles:
 
@@ -65,7 +65,7 @@ Every role directory must contain:
 
 - `index.md`, the role entry point and required-reading manifest
 - `role.md`, defining purpose, activation, responsibilities, authority, and scope
-- `instructions.md`, defining required behaviour and workflows
+- `instructions.md`, defining required behaviour and procedures
 - `capabilities.md`, defining permitted actions
 - `constraints.md`, defining prohibited actions, escalation boundaries, and safeguards
 

@@ -2,12 +2,12 @@
 type: Workflow
 title: Review change
 description: Performs a bounded read-only semantic review of a proposed or completed project change.
-primary_role: /roles/change-reviewer/role.md
+primary_role: /.ava/base/roles/change-reviewer/role.md
 mode: read-only
 status: stable
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-28T13:01:48Z
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Review change
@@ -15,6 +15,8 @@ generated:
 ## Purpose
 
 Evaluate the semantic effects of one proposed or completed project change without modifying the project or performing remediation.
+
+This workflow standardizes review evidence, severity, independence disclosure, and remediation ownership for a bounded change.
 
 ## Inputs
 

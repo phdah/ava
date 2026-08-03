@@ -25,6 +25,8 @@ GitHub Release
 - Project-owned upgrade changes happen through one explicit request that loads installed release guidance.
 - Active upgrade state directly selects the managed Upgrade Role before ordinary workflow or role routing.
 - Semantic Ava version reconciliation is not a workflow.
+- Workflows are optional explicitly invoked procedures. Ordinary requests route directly to a role.
+- The built-in catalog contains batch ingestion, bounded change review, complete role-catalog review, and bounded project-context audit.
 - Scoped `log.md` files remain conceptual history and may feed release notes, but release guidance states compatibility impact and required actions directly.
 - Release checksums protect byte integrity but do not independently authenticate bootstrap execution. Ava uses GitHub immutable release attestations for the initial verified publication path.
 - Public distribution contracts, release payload sources, and internal publication procedures must remain separate repository concerns.
@@ -36,12 +38,12 @@ GitHub Release
 
 1. [Format contract and base structure](01-format-contract/) - 3 of 4 complete; document update metadata remains as a follow-up
 2. [Core roles for initialized projects](02-core-roles/) - 4 of 4 complete
-3. [Workflow system](03-workflows/) - 3 of 6 complete; active again, with the built-in catalog purpose audit next
-4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 5 of 9 complete; paused after defining the Upgrade Role while workflows are reassessed
+3. [Workflow system](03-workflows/) - 4 of 6 complete; paused after the built-in catalog audit
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 5 of 9 complete; task 6 is next
 
-The next task reviews whether each built-in workflow provides reusable procedural value beyond ordinary free-form role work. It must preserve the accepted boundary that deterministic release mechanics belong to tooling and semantic version reconciliation directly activates the managed Upgrade Role.
+The next task separates public distribution contracts, release payload sources, and maintainer-only release procedures before installer implementation begins.
 
-After the workflow purpose audit, return to Phase 04 task 6 unless the audit identifies a contract issue that must be resolved first. The format metadata follow-up remains pending without replacing the current workflow task.
+Workflow trigger portability, workflow lifecycle ownership, and the format metadata follow-up remain pending without replacing the current distribution task.
 
 ## Task status
 
