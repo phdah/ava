@@ -61,7 +61,7 @@ The manifest is both:
 - the ownership inventory for installed Ava-managed files
 - the authoritative installed-base and semantic-compatibility state
 
-The manifest must not contain project-specific configuration other than the bounded semantic compatibility state required to describe migration of project-owned context.
+The manifest must not contain project-specific configuration other than the bounded semantic compatibility state and optional project-owned host integration metadata defined by the public schemas.
 
 ## Manifest fields
 
@@ -73,6 +73,7 @@ The manifest contains:
 - `installed_at`: timestamp of the completed install or base upgrade
 - `release`: immutable identity of the installed release
 - `managed_files`: complete installed Ava-managed file inventory
+- `host_integration`: optional metadata for one existing project-owned host entrypoint, or `null`
 - `semantic_compatibility`: separate project-context compatibility state
 
 Published `ava_version` values use canonical SemVer without build metadata. Git tags use the same version prefixed by `v`.
@@ -93,7 +94,7 @@ The release-assets contract defines how this identity is authenticated and how a
 Each `managed_files` entry contains:
 
 - `path`: canonical project-root-relative absolute path
-- `role`: semantic release role such as `router`, `base`, `guidance`, `migration`, `bootstrap`, or `state`
+- `role`: semantic release role such as `router`, `base`, `guidance`, `migration`, or `state`
 - `kind`: `payload` or `state`
 - `sha256`: required only for `payload`
 
@@ -104,6 +105,16 @@ Each `managed_files` entry contains:
 `/.ava/state/manifest.json` and `/.ava/state/upgrade.json` are recorded as `state`. They must not contain their own checksums. A self-checksum cannot stabilize because writing the checksum changes the file and therefore changes the checksum again.
 
 All other managed files are `payload` unless another public contract explicitly defines a mutable state file.
+
+## Host integration metadata
+
+`host_integration` is either `null` or a bounded reference to one project-owned host instruction file:
+
+- `entrypoint`: normalized project-root-relative absolute path
+- `ownership`: always `project-owned`
+- `discovery`: always `project-provided`
+
+The entrypoint is not part of `managed_files`, carries no Ava checksum, and is never created, modified, migrated, backed up, restored, or rolled back by deterministic Ava tooling.
 
 ## Example manifest
 
@@ -137,6 +148,11 @@ All other managed files are `payload` unless another public contract explicitly 
       "kind": "state"
     }
   ],
+  "host_integration": {
+    "entrypoint": "/CODEX.md",
+    "ownership": "project-owned",
+    "discovery": "project-provided"
+  },
   "semantic_compatibility": {
     "compatible_through": "1.4.2",
     "target_version": "2.0.0",
@@ -205,6 +221,9 @@ Deterministic tooling exclusively controls:
 - `installed_at`
 - `release`
 - `managed_files`
+- `host_integration`
+
+`host_integration` records only validated metadata for a project-owned entrypoint. Control of that metadata does not grant Ava authority over the referenced project file.
 
 During a completed base upgrade it may also perform only these mechanical semantic transitions:
 
@@ -229,7 +248,7 @@ Within the installed source-to-target guidance it may:
 
 It must not:
 
-- change release identity, installed-base fields, managed paths, or checksums
+- change release identity, installed-base fields, managed paths, checksums, or host integration metadata
 - reduce `compatible_through`
 - mark a version complete while unresolved decisions remain
 - claim compatibility beyond the installed `ava_version`
@@ -402,7 +421,9 @@ Ava compatibility assumes the host loads the complete managed router, required i
 
 When a host agent skips required reading, applies incompatible precedence, cannot preserve unknown metadata, or cannot perform required file operations, Ava must not report the project as fully compatible merely because the files parse.
 
-Host discovery is reported separately as `native`, `host-bootstrap`, `explicit-only`, or `unsupported`. Unsupported or unverified host behavior may block semantic migration and must be recorded as an unresolved decision when it prevents completion.
+Host discovery is reported separately as `native`, `project-provided`, `explicit-only`, or `unsupported`. Unsupported or unverified host behavior may block semantic migration and must be recorded as an unresolved decision when it prevents completion.
+
+A `project-provided` result means only that an existing project-owned entrypoint has been recorded. It is not a native-support or content-conformance claim.
 
 # Reporting requirements
 
@@ -451,6 +472,7 @@ Validation must reject:
 - payload entries without checksums
 - state entries with checksums
 - manifest or upgrade state omitted from the managed inventory
+- invalid or managed-path host integration metadata
 - inconsistent release tag, channel, and `ava_version`
 - impossible semantic state combinations, including pending state with unresolved decisions or blocked state without them
 - unauthorized or regressive semantic transitions
