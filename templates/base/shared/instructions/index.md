@@ -8,4 +8,5 @@
 - [Workflow format](workflow-format.md) - Portable workflow structure, operating modes, inputs, outputs, context links, and validation rules.
 - [Workflow registry and routing](workflow-routing.md) - Deterministic workflow registration, explicit invocation, primary-role resolution, routing precedence, validation, and deprecation rules.
 - [Workflow triggers](workflow-triggers.md) - Portable manual, schedule, and event trigger intent, external executor discovery, validation, and scheduler ownership boundaries.
+- [Workflow lifecycle](workflow-lifecycle.md) - Ownership, lifecycle procedures, approval boundaries, migration behavior, and completion checks for project-owned workflows.
 - [Knowledge organization](knowledge-organization.md) - Rules for classifying, creating, linking, and maintaining trusted knowledge.
