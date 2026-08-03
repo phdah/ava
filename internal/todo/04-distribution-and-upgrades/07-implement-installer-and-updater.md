@@ -22,7 +22,7 @@ This task is complete.
 - explicit source-to-installed mapping with checksums, ownership, role, and operation
 - managed base installation under `/AGENTS.md` and `/.ava/base/`
 - explicit project-owned create-if-absent scaffolds under `templates/project-scaffolds/`
-- optional release-declared managed host bootstrap mapping and selection
+- optional project-provided host entrypoint validation and project-owned manifest metadata
 - latest-stable behavior through the embedded installer fetched from the canonical latest URL
 - explicit version selection and target-directory selection
 - convenience integrity verification and pinned `gh` immutable-release verification mode
@@ -38,7 +38,7 @@ This task is complete.
 - separate installed `ava_version` and semantic compatibility state
 - installed release guidance and active semantic upgrade routing block
 - human plan output and normalized JSON Lines output
-- explicit-only or host-bootstrap discovery reporting without unsupported native claims
+- explicit-only or project-provided host discovery reporting without unsupported native claims
 
 ## Implementation locations
 
@@ -47,11 +47,10 @@ This task is complete.
 - [Implementation guide](../../../internal/release/installer.md)
 - [Focused tests](../../../internal/release/tests/test_installer.py)
 - [Project scaffold sources](../../../templates/project-scaffolds/)
-- [Optional host bootstrap sources](../../../templates/host-bootstraps/)
 
 ## Validation
 
-`sh internal/release/test.sh` passes 11 integration tests covering:
+`sh internal/release/test.sh` covers 13 integration cases including:
 
 - clean installation and project-owned preservation
 - explicit root-router adoption
@@ -59,7 +58,8 @@ This task is complete.
 - checksum failure before mutation
 - archive traversal rejection
 - symlink escape rejection
-- optional host bootstrap installation
+- project-owned host entrypoint recording and preservation
+- invalid or reserved host entrypoint refusal
 - declarative migration execution
 - direct and chained upgrades
 - semantic pending state and rollback
