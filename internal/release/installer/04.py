@@ -1,5 +1,5 @@
 def construct_target_payload(
-    bundles: list[Bundle], edges: list[dict[str, Any]], selected_bootstraps: set[str]
+    bundles: list[Bundle], edges: list[dict[str, Any]]
 ) -> tuple[dict[str, dict[str, Any]], list[tuple[Bundle, dict[str, Any]]], list[dict[str, Any]]]:
     target = bundles[-1]
     payload: dict[str, dict[str, Any]] = {}
@@ -7,8 +7,6 @@ def construct_target_payload(
         if item["ownership"] != "ava-managed":
             continue
         allowed_managed_destination(item)
-        if item["role"] == "bootstrap" and item["destination"] not in selected_bootstraps:
-            continue
         payload[item["destination"]] = {
             "path": item["destination"],
             "role": item["role"],
@@ -182,7 +180,12 @@ def build_semantic_state(installed: dict[str, Any] | None, target: Bundle, edges
     }
 
 
-def target_manifest(target: Bundle, target_payload: dict[str, dict[str, Any]], semantic: dict[str, Any]) -> dict[str, Any]:
+def target_manifest(
+    target: Bundle,
+    target_payload: dict[str, dict[str, Any]],
+    semantic: dict[str, Any],
+    host_integration: dict[str, str] | None,
+) -> dict[str, Any]:
     files = [
         {"path": path, "role": item["role"], "kind": "payload", "sha256": item["sha256"]}
         for path, item in sorted(target_payload.items())
@@ -203,6 +206,7 @@ def target_manifest(target: Bundle, target_payload: dict[str, dict[str, Any]], s
             "release_manifest_sha256": target.manifest_sha256,
         },
         "managed_files": files,
+        "host_integration": host_integration,
         "semantic_compatibility": semantic,
     }
 
