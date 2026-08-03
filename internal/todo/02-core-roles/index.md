@@ -24,12 +24,16 @@ The Ava Maintenance role owns agent-facing understanding of the installed Ava di
 4. [x] [Create the Change Reviewer role](04-create-change-reviewer.md)
 5. [ ] [Create the Ava Maintenance role](05-create-ava-maintenance-role.md)
 
-Task 5 is sequenced after installed path and OpenCode decisions, and before the final conformance matrix and first alpha.
+Document update metadata, installed paths, and OpenCode configuration are complete. Task 5 is now the current v1 blocker before the final conformance matrix and first alpha.
+
+## Current active task
+
+[Create the Ava Maintenance role](05-create-ava-maintenance-role.md).
 
 ## Previous phase
 
-[Format contract and base structure](../01-format-contract/).
+[Format contract and base structure](../01-format-contract/) is complete.
 
 ## Next phase
 
-[Workflow system](../03-workflows/).
+[Workflow system](../03-workflows/) is complete. After task 5, return to the final [distribution conformance task](../04-distribution-and-upgrades/10-implement-validation-and-upgrade-fixtures.md).
