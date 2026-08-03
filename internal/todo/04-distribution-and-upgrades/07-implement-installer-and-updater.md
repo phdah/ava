@@ -8,7 +8,7 @@ phase: 4
 order: 7
 generated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T16:30:00+02:00
+  at: 2026-08-03T15:15:00+02:00
 ---
 
 # Implement Installer and Updater
@@ -17,40 +17,56 @@ This task is complete.
 
 ## Implemented
 
-- deterministic release assembly through [`internal/release/build-assets.sh`](../../../release/build-assets.sh)
-- one generated POSIX shell entry point from [`templates/installer/ava-install.sh`](../../../../templates/installer/ava-install.sh)
-- an auditable manifest-driven engine packaged inside the verified base archive
-- explicit source-to-installed mapping for the managed router, base roles, workflows, shared instructions, state, optional bootstraps, and create-if-absent project scaffolds
-- latest-stable and pinned-version URL behavior through immutable release identity embedded during assembly
-- convenience and GitHub immutable-release verified bootstrap modes
-- target selection, dry-run planning, explicit `/AGENTS.md` adoption, and optional host bootstrap selection
-- archive, checksum, identity, path, symlink, collision, managed-file, transition, and semantic-state validation
-- direct declared upgrades, explicit intermediate-release refusal for chained paths, deterministic migration execution, and post-apply validation
-- target-root transaction staging, managed-file backup, rollback on failure, and manifest-last commit
-- separate installed `ava_version`, semantic compatibility, durable `upgrade.json`, and Upgrade Role handoff
-- normalized `AVA_PLAN`, `AVA_RESULT`, `AVA_HANDOFF`, and `AVA_ERROR` output
+- deterministic release assembly for the exact seven required GitHub Release assets
+- reproducible tar and gzip output with embedded release identity
+- explicit source-to-installed mapping with checksums, ownership, role, and operation
+- managed base installation under `/AGENTS.md` and `/.ava/base/`
+- explicit project-owned create-if-absent scaffolds under `templates/project-scaffolds/`
+- optional release-declared managed host bootstrap mapping and selection
+- latest-stable behavior through the embedded installer fetched from the canonical latest URL
+- explicit version selection and target-directory selection
+- convenience integrity verification and pinned `gh` immutable-release verification mode
+- strict manifest, checksum, asset identity, archive inventory, and release graph validation
+- safe archive extraction without links, devices, absolute paths, traversal, or duplicates
+- canonical installed-path normalization and symlink escape rejection
+- fresh installation, explicit `/AGENTS.md` adoption, and safe refusal of unrecognized `/.ava/`
+- three-way managed reconciliation and local managed-modification conflicts
+- direct and chained upgrades with adjacent-edge verification
+- declarative deterministic migrations restricted to staged managed content
+- durable transaction planning, staging, backup, resume, abort, rollback, and finalization
+- manifest-last managed commit semantics and handled-failure restoration
+- separate installed `ava_version` and semantic compatibility state
+- installed release guidance and active semantic upgrade routing block
+- human plan output and normalized JSON Lines output
+- explicit-only or host-bootstrap discovery reporting without unsupported native claims
+
+## Implementation locations
+
+- [Release assembler](../../../internal/release/assemble.py)
+- [Distributed installer source](../../../internal/release/ava-install.sh)
+- [Implementation guide](../../../internal/release/installer.md)
+- [Focused tests](../../../internal/release/tests/test_installer.py)
+- [Project scaffold sources](../../../templates/project-scaffolds/)
+- [Optional host bootstrap sources](../../../templates/host-bootstraps/)
 
 ## Validation
 
-[`internal/release/test-installer.sh`](../../../release/test-installer.sh) builds two prerelease fixture distributions and verifies:
+`sh internal/release/test.sh` passes 11 integration tests covering:
 
-- dry-run without target mutation
-- clean installation
-- explicit direct upgrade
-- project-owned scaffold preservation
-- locally modified managed-file refusal
-- existing router refusal and explicit adoption
-- unrecognized `/.ava/` refusal
-- unsafe destination rejection without out-of-root writes
+- clean installation and project-owned preservation
+- explicit root-router adoption
+- managed-file conflict refusal
+- checksum failure before mutation
+- archive traversal rejection
+- symlink escape rejection
+- optional host bootstrap installation
+- declarative migration execution
+- direct and chained upgrades
+- semantic pending state and rollback
+- rollback conflict detection after a managed edit
 
-[`internal/release/validate-boundaries.sh`](../../../release/validate-boundaries.sh) validates shell syntax, compiled installer-engine source, release-source boundaries, required files, and canonical schema locations.
+The implementation also passes shell syntax checks, Python compilation, and the expanded repository-boundary validator.
 
-## Portability and trust
-
-The implementation requires a POSIX shell and Python 3.10 or later. `curl` is required for downloads, a SHA-256 utility is required for integrity checks, and GitHub CLI is required only for verified immutable-release mode.
-
-The complete implementation contract and usage are documented in [Ava Installer and Updater](../../../../distribution/installer.md).
-
-## Next task
+## Following task
 
 [Implement validation, conformance, and upgrade fixtures](08-implement-validation-and-upgrade-fixtures.md).

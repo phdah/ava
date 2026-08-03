@@ -5,7 +5,7 @@ description: Stable entry point for Ava's ordered internal development roadmap a
 tags: [internal, planning, roadmap, todo]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T16:30:00+02:00
+  at: 2026-08-03T15:15:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -18,7 +18,7 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 [Implement validation, conformance, and upgrade fixtures](todo/04-distribution-and-upgrades/08-implement-validation-and-upgrade-fixtures.md).
 
-The thin installer and updater are implemented. Continue Phase 4 with validation and conformance fixtures.
+The installer and updater are implemented. Continue Phase 4 with the broader conformance and compatibility fixture matrix.
 
 ## Working rule
 

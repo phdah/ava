@@ -31,26 +31,41 @@ for path in \
   distribution/schemas/guidance.schema.json \
   templates/index.md \
   templates/base/index.md \
-  templates/base/base-index.md \
-  templates/base/scaffold/index.md \
-  templates/installer/index.md \
-  templates/installer/ava-install.sh \
+  templates/project-scaffolds/index.md \
+  templates/host-bootstraps/index.md \
   internal/release/index.md \
   internal/release/procedure.md \
-  internal/release/build-assets.sh \
-  internal/release/test-installer.sh
+  internal/release/installer.md \
+  internal/release/assemble.sh \
+  internal/release/assemble.py \
+  internal/release/ava-install.sh \
+  internal/release/installer/00.py \
+  internal/release/installer/01.py \
+  internal/release/installer/02.py \
+  internal/release/installer/03.py \
+  internal/release/installer/04.py \
+  internal/release/installer/05.py \
+  internal/release/installer/06.py \
+  internal/release/installer/07.py \
+  internal/release/test.sh \
+  internal/release/tests/test_installer.py
 do
   require_file "$path"
 done
 
-require_dir templates/base
-require_dir templates/installer/engine
+for path in templates/base templates/project-scaffolds templates/host-bootstraps internal/release/installer
+do
+  require_dir "$path"
+done
 
 for path in "$ROOT"/templates/* "$ROOT"/templates/.[!.]* "$ROOT"/templates/..?*
 do
   [ -e "$path" ] || continue
   case "$path" in
-    "$ROOT/templates/index.md"|"$ROOT/templates/base"|"$ROOT/templates/installer") ;;
+    "$ROOT/templates/index.md"|\
+    "$ROOT/templates/base"|\
+    "$ROOT/templates/project-scaffolds"|\
+    "$ROOT/templates/host-bootstraps") ;;
     *) fail "unexpected templates root entry: ${path#"$ROOT/"}" ;;
   esac
 done
@@ -74,24 +89,6 @@ do
   grep -F "$expected" "$file" >/dev/null || fail "schema id is not canonical: ${file#"$ROOT/"}"
 done
 
-for script in \
-  templates/installer/ava-install.sh \
-  internal/release/build-assets.sh \
-  internal/release/test-installer.sh \
-  internal/release/validate-boundaries.sh
-do
-  sh -n "$ROOT/$script" || fail "invalid POSIX shell syntax: $script"
-done
-
-python3 - "$ROOT/templates/installer/engine" <<'PY' || exit 1
-import pathlib, sys
-root = pathlib.Path(sys.argv[1])
-parts = sorted(path for path in root.rglob('*') if path.is_file())
-if not parts:
-    raise SystemExit('ERROR: installer engine has no source fragments')
-compile(b''.join(path.read_bytes() for path in parts), 'installer/engine.py', 'exec')
-PY
-
 stale_pattern='templates/(distribution-and-ownership|versioning-and-compatibility|github-release-assets|upgrade-and-migration|release-guidance)\.md|templates/schemas/'
 
 find "$ROOT" -path "$ROOT/.git" -prune -o -type f -print | while IFS= read -r file
@@ -103,12 +100,20 @@ do
   fi
 done
 
-find "$ROOT/templates/base" -type f -print | while IFS= read -r file
+for source_root in templates/base templates/project-scaffolds templates/host-bootstraps
 do
-  if grep -En '\]\([^)]*internal/|resource:[[:space:]]*/?internal/' "$file" >/dev/null 2>&1; then
-    printf 'ERROR: release source depends on internal content: %s\n' "${file#"$ROOT/"}" >&2
-    exit 1
-  fi
+  find "$ROOT/$source_root" -type f -print | while IFS= read -r file
+  do
+    if grep -En '\]\([^)]*internal/|resource:[[:space:]]*/?internal/' "$file" >/dev/null 2>&1; then
+      printf 'ERROR: release source depends on internal content: %s\n' "${file#"$ROOT/"}" >&2
+      exit 1
+    fi
+  done
 done
+
+sh -n "$ROOT/internal/release/assemble.sh"
+sh -n "$ROOT/internal/release/ava-install.sh"
+sh -n "$ROOT/internal/release/test.sh"
+python3 -m py_compile "$ROOT/internal/release/assemble.py"
 
 printf 'Repository boundaries valid.\n'

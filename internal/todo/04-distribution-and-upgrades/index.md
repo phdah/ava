@@ -14,9 +14,9 @@ Define and implement Ava as an immutable, versioned context distribution install
 8. [ ] [Implement validation, conformance, and upgrade fixtures](08-implement-validation-and-upgrade-fixtures.md)
 9. [ ] [Publish the first versioned Ava release](09-publish-first-versioned-release.md)
 
-Task 7 implemented deterministic release assembly and a thin manifest-driven installer and updater. It provides explicit source mapping, checksum and archive validation, safe project adoption, direct declared upgrades, transactional managed-file replacement, migration execution, semantic upgrade state, and smoke coverage.
+Task 7 implements deterministic release assembly and one thin POSIX installer/updater with embedded structured-data handling. It supports fresh installation, explicit adoption, direct and chained upgrades, three-way managed reconciliation, restricted deterministic migrations, durable recovery, semantic upgrade blocking, and optional managed host bootstraps.
 
-The accepted distribution boundary places managed content under `/AGENTS.md` and `/.ava/`, while project-owned extension and context paths remain at the project root. Installed `ava_version` remains separate from project-owned semantic compatibility.
+The focused implementation suite covers clean installation, create-if-absent preservation, managed conflicts, checksum failures, unsafe archives, symlink escapes, host bootstrap selection, migration execution, chained upgrades, semantic state, and rollback. The broader conformance and compatibility matrix remains task 8.
 
 ## Current active task
 

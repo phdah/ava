@@ -4,21 +4,19 @@ okf_version: "0.2"
 
 # Ava Base Format Source
 
-This directory contains the current authored release payload and project-scaffold source material for Ava-managed defaults and project-format examples.
+This directory contains the current authored Ava-managed release payload plus project-format references retained for design context.
 
-It is not copied verbatim to an installed project. The accepted [distribution and ownership contract](../../distribution/ownership.md) maps managed base content into `/.ava/base/`, maps the canonical router to `/AGENTS.md`, and treats project extension paths as project-owned.
+It is not copied verbatim to an installed project. Release assembly maps the root router and managed base content into `/AGENTS.md` and `/.ava/base/`. Project-owned create-if-absent sources live separately under [`templates/project-scaffolds/`](../project-scaffolds/).
 
 Follow the linked indexes progressively instead of scanning the complete source tree.
 
 ## Contents
 
 - [Agent router source](AGENTS.md) - Source for the Ava-managed root router.
-- [Managed base index source](base-index.md) - Source installed at `/.ava/base/index.md`.
+- [Inbox format reference](inbox/) - Project-owned inbox format reference, not an installed release source.
+- [Knowledge format reference](knowledge/) - Project-owned knowledge format reference, not an installed release source.
 - [Default roles](roles/) - Ava-managed role sources for the installed base catalog.
 - [Default workflows](workflows/) - Ava-managed workflow sources for the installed base catalog.
-- [Shared context](shared/) - Ava-managed shared instruction sources and current project-format context.
-- [Project scaffold sources](scaffold/) - Minimal create-if-absent project-owned extension files.
-- [Inbox format](inbox/) - Project-owned inbox scaffold and format reference.
-- [Knowledge format](knowledge/) - Project-owned knowledge scaffold and format reference.
+- [Shared context](shared/) - Ava-managed shared instruction sources.
 
-Release assembly must classify each installed source file explicitly. Repository location under `templates/base/` alone does not make a file Ava-managed.
+Release assembly classifies each source file explicitly. Repository location under `templates/base/` alone does not make a file Ava-managed, and reference content is excluded unless an explicit release mapping declares it.
