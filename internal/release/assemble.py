@@ -81,7 +81,7 @@ def iter_files(root: Path) -> Iterable[Path]:
     return sorted((path for path in root.rglob("*") if path.is_file()), key=lambda p: p.relative_to(root).as_posix().encode())
 
 
-def read_payloads(root: Path, host_bootstraps: list[str]) -> list[Payload]:
+def read_payloads(root: Path) -> list[Payload]:
     base = root / "templates" / "base"
     scaffolds = root / "templates" / "project-scaffolds"
     if not base.is_dir():
@@ -107,22 +107,6 @@ def read_payloads(root: Path, host_bootstraps: list[str]) -> list[Payload]:
     for path in iter_files(scaffolds):
         rel = path.relative_to(scaffolds).as_posix()
         result.append(Payload(f"scaffolds/{rel}", f"/{rel}", "project-owned", "create-if-absent", "scaffold", path.read_bytes()))
-
-    seen_destinations = {item.destination for item in result}
-    for mapping in host_bootstraps:
-        if "=" not in mapping:
-            raise AssemblyError("host bootstrap must use SOURCE=DESTINATION")
-        source, destination = mapping.split("=", 1)
-        source_rel = safe_relative(source)
-        if not destination.startswith("/") or destination == "/" or ".." in PurePosixPath(destination).parts:
-            raise AssemblyError(f"unsafe host bootstrap destination: {destination}")
-        source_path = root / "templates" / "host-bootstraps" / source_rel
-        if not source_path.is_file():
-            raise AssemblyError(f"missing host bootstrap source: {source}")
-        if destination in seen_destinations:
-            raise AssemblyError(f"duplicate installed destination: {destination}")
-        result.append(Payload(f"bootstraps/{source_rel}", destination, "ava-managed", "replace-managed", "bootstrap", source_path.read_bytes()))
-        seen_destinations.add(destination)
 
     destinations = [item.destination for item in result]
     archive_paths = [item.archive_path for item in result]
@@ -238,7 +222,7 @@ def build(args: argparse.Namespace) -> None:
     epoch = args.source_date_epoch
     published_at = args.published_at or datetime.fromtimestamp(epoch, timezone.utc).isoformat().replace("+00:00", "Z")
 
-    payloads = read_payloads(root, args.host_bootstrap)
+    payloads = read_payloads(root)
     base_files = {"ava-asset.json": asset_identity("ava-base.tar.gz", "base", version, channel, args.source_revision)}
     for payload in payloads:
         base_files[payload.archive_path] = payload.data
@@ -381,7 +365,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--guidance-dir", type=Path)
     parser.add_argument("--migrations-dir", type=Path)
     parser.add_argument("--upgrade-from", action="append", default=[])
-    parser.add_argument("--host-bootstrap", action="append", default=[])
     parser.add_argument("--semantic-review-required", action="store_true")
     return parser.parse_args()
 
