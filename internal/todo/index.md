@@ -31,12 +31,12 @@ GitHub Release
 
 1. [Format contract and base structure](01-format-contract/) - 3 of 4 complete; document update metadata remains as a follow-up
 2. [Core roles for initialized projects](02-core-roles/) - 4 of 4 complete
-3. [Workflow system](03-workflows/) - 4 of 6 complete; paused after the built-in catalog audit
-4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 6 of 9 complete; task 7 is next
+3. [Workflow system](03-workflows/) - 4 of 6 complete; active, with trigger portability next
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 6 of 9 complete; paused before installer implementation
 
-The repository responsibility boundary is now explicit. The next task implements the thin POSIX installer and updater against the public contracts and release sources.
+The repository responsibility boundary is now explicit. Finish Phase 3 by defining workflow trigger portability and then workflow lifecycle ownership. Resume Phase 4 with the thin POSIX installer and updater only after both workflow tasks are complete.
 
-Workflow trigger portability, workflow lifecycle ownership, and the format metadata follow-up remain pending without replacing the current distribution task.
+The format metadata follow-up remains pending without replacing the current Phase 3 sequence.
 
 ## Task status
 
