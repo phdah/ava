@@ -31,7 +31,20 @@ class InstalledPathTests(unittest.TestCase):
         self.assertEqual(validator.ambiguous_findings(SOURCE_ROOT), [])
 
     def test_root_router_project_paths_resolve(self) -> None:
-        self.assertEqual(validator.unresolved_router_links(SOURCE_ROOT), [])
+        self.assertEqual(validator.unresolved_router_paths(SOURCE_ROOT), [])
+
+    def test_root_router_inline_code_paths_are_validated(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "templates/base").mkdir(parents=True)
+            (root / "templates/project-scaffolds").mkdir(parents=True)
+            (root / "templates/base/AGENTS.md").write_text(
+                "Read `./.ava/base/shared/missing.md`.\n"
+            )
+            self.assertEqual(
+                validator.unresolved_router_paths(root),
+                ["./.ava/base/shared/missing.md"],
+            )
 
     def test_regression_reference_is_explicitly_project_relative(self) -> None:
         router = (SOURCE_ROOT / "templates/base/AGENTS.md").read_text()
