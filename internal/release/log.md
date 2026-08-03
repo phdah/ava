@@ -4,6 +4,8 @@ This log records major conceptual and structural changes to Ava's internal relea
 
 ## 2026-08-03
 
+- **OpenCode host support**: Classified project-root `AGENTS.md` discovery as native, retained `./.ava/` as project-local managed content, and rejected installer-managed OpenCode configuration as unnecessary ownership expansion.
+- **OpenCode validation**: Added fresh-install, upgrade, configuration-preservation, router-resolution, host-neutral portability, and pinned live CLI startup fixtures.
 - **Deterministic release assembly**: Added reproducible construction of the exact seven GitHub Release assets, explicit source-to-installed mapping, checksums, embedded identity, guidance and migration inventories, and create-if-absent project scaffolds.
 - **Thin installer and updater**: Added one distributed POSIX shell entry point with embedded Python for strict release-state, archive, path, transaction, and checksum handling.
 - **Managed transaction protocol**: Implemented fresh installation, direct and chained upgrades, three-way managed reconciliation, manifest-last commit, durable backup, resume, abort, rollback, finalization, and semantic upgrade blocking.
