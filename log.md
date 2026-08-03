@@ -4,6 +4,12 @@ This log records major conceptual and structural changes across the Ava reposito
 
 ## 2026-08-03
 
+* **Document update provenance**: Added canonical `updated.by` and `updated.at` metadata for the latest meaningful mutation while preserving `generated` as immutable creation provenance.
+* **Meaningful mutation threshold**: Defined semantic, authority, trust, identity, lifecycle, discovery, and behaviour changes as meaningful while excluding provably meaning-preserving formatting and mechanical edits.
+* **Provenance actor format**: Standardized human, agent, and deterministic-tool provenance identifiers under a shared `<kind>:<stable-identifier>` format.
+* **Update history boundary**: Kept only the latest meaningful update in frontmatter, retained Git as the complete audit trail, and preserved scoped logs for major conceptual or structural history only.
+* **Legacy and reserved documents**: Required forward-compatible preservation of legacy and unknown update fields, adopted canonical metadata on the next meaningful mutation, and kept reserved indexes, logs, and the root README free from provenance-only frontmatter.
+* **Update metadata validation**: Reserved stable `AVA-META-*` diagnostics and added machine-readable fixtures for creation, meaningful and trivial mutation, repetition, legacy metadata, malformed state, timestamp regression, stale verification, and reserved documents.
 * **Workflow lifecycle ownership**: Assigned project-owned workflow creation, update, repair, reorganization, rename, deprecation, replacement, removal, and migration to the Project Steward.
 * **No Workflow Manager**: Kept workflow lifecycle within the Project Steward's existing project-wide authority and trust boundary rather than adding an overlapping default role.
 * **Workflow lifecycle procedure**: Added a progressively loaded shared contract for required inspection, approval-sensitive changes, references, deprecation, removal, migration, and validation.
