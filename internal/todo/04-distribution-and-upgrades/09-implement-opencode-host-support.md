@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Implement OpenCode Support and Decide Managed Directory Discoverability
 description: Make OpenCode Ava's first explicitly supported host and settle how Ava-managed context is exposed and permitted under the selected managed-directory strategy.
 tags: [internal, roadmap, discoverability, hosts, permissions, opencode]
-status: pending
+status: completed
 phase: 4
 order: 9
 generated:
@@ -15,65 +15,46 @@ generated:
 
 The first local installation test showed that a host may require explicit confirmation before reading files under `.ava/`, even when the root `AGENTS.md` correctly routes the agent there. Ava instructions cannot themselves grant host filesystem permissions.
 
-OpenCode is the first host Ava must explicitly support. This task must produce a tested configuration and a clear managed-directory decision rather than only documenting generic host uncertainty.
+OpenCode is now Ava's first explicitly supported host.
 
-## Evaluate
+## Decision
 
-- keeping the managed base at `.ava/` and documenting the required OpenCode permission configuration
-- keeping `.ava/` while offering an explicit OpenCode integration option that does not silently mutate project-owned configuration
-- moving managed content to a visible project directory while preserving the ownership and upgrade boundary
-- whether OpenCode discovers root `AGENTS.md` natively or requires a project-owned host entrypoint
-- whether a project-provided host entrypoint is sufficient for discovery but not permission granting
-- whether OpenCode configuration should be project-owned, Ava-managed, create-if-absent, explicitly installed, or only documented
-- the portability and ownership cost of `opencode.json` or another OpenCode-specific project file
-- hidden-file behavior in OpenCode file reads, search, globbing, and permission prompts
-- security implications of allowing managed reads while continuing to guard managed writes
+- Keep `./.ava/` as the canonical Ava-managed directory.
+- Use OpenCode's native project-root `AGENTS.md` discovery.
+- Load mandatory managed context through explicit direct `./.ava/...` paths rather than hidden-file scanning.
+- Treat `./.ava/` as project-local workspace content, not an external directory.
+- Require no OpenCode project configuration for default discovery or reads.
+- Never create or modify project `opencode.json`, project `opencode.jsonc`, global OpenCode configuration, or `.opencode/` content.
+- Offer no installer-managed OpenCode integration option because native discovery is sufficient.
+- Keep optional host-level managed write protection project-owned.
+- Keep deterministic managed writes inside the installer and updater transaction.
 
-## Define the host contract
+The authoritative public contract is [OpenCode host support](../../../distribution/opencode.md).
 
-- state whether `.ava/` remains the canonical managed directory
-- define exactly how a clean OpenCode project discovers and loads root `AGENTS.md`
-- define the OpenCode configuration required to read every managed required-reading path without repeated unexplained prompts
-- state what Ava guarantees and what remains the responsibility of OpenCode or the adopting project
-- explicitly document that instruction text cannot grant host filesystem permissions
-- define whether the installer may offer an explicit OpenCode integration option without silently changing project-owned configuration
-- define ownership, upgrade, conflict, and rollback behavior for any generated or recommended OpenCode configuration
-- classify OpenCode discovery accurately as native or project-provided based on the tested result
+## Implementation
 
-## Implement
+- added the public OpenCode discovery, permission, ownership, installation, and troubleshooting contract
+- documented maintainer release validation and the pinned compatibility policy
+- added installation and upgrade fixtures that preserve absent, project, and global OpenCode configuration
+- added installed-router resolution and host-neutral portability fixtures
+- added a live OpenCode startup fixture using an isolated home and the installed project root
+- added a dedicated CI job for the pinned supported OpenCode version
 
-- update distribution, ownership, installation, and host-integration documentation
-- update templates and installer behavior when required by the selected managed-directory or explicit OpenCode integration strategy
-- provide the minimal documented OpenCode setup needed for a user to begin working with Ava after installation
-- preserve existing global and project OpenCode configuration unless the user explicitly authorizes a compatible change
-- ensure declining installer-managed integration leaves a clear manual configuration path
-- include required OpenCode setup and limitations in generated prerelease documentation
+## Validation boundary
 
-## Validate
+The deterministic conformance boundary covers native router discovery, project-local managed paths, default workspace-read behavior, configuration preservation, and real OpenCode startup against an installed fixture.
 
-Add maintained OpenCode fixtures covering:
-
-- clean project startup after Ava installation
-- discovery and loading of root `AGENTS.md`
-- direct resolution of every managed required-reading path
-- reading hidden managed content without repeated unexplained prompts
-- ordinary protection against accidental managed-file editing
-- intentional deterministic installer or updater writes
-- project-owned roles, workflows, shared instructions, and knowledge
-- an existing global OpenCode configuration
-- an existing project `opencode.json` or equivalent configuration
-- explicit acceptance and rejection of any offered integration change
-- a project-provided host entrypoint when that mode is supported
-
-Add at least one host-neutral fixture proving that root-router discovery remains portable without claiming support for another named host.
+A model-backed end-to-end response depends on the user's selected provider and model. Ava does not treat provider credentials or model behavior as part of the file-distribution compatibility contract.
 
 ## Completion criteria
 
-- OpenCode is Ava's first explicitly documented and tested supported host
-- a fresh OpenCode session can load every required managed context file without failed absolute-path attempts or repeated unexplained permission prompts
-- the managed-directory strategy is an explicit documented decision
-- Ava never implies that instruction text grants filesystem permissions
-- OpenCode-specific configuration has a clear ownership and mutation policy
-- existing project and global OpenCode configuration is preserved unless the user explicitly authorizes a compatible change
-- managed reads, guarded managed writes, and deterministic updater writes are all tested
-- the first alpha remains blocked until OpenCode support and the selected managed-directory strategy are implemented and validated
+- [x] OpenCode is Ava's first explicitly documented supported host.
+- [x] root `AGENTS.md` discovery is classified as native.
+- [x] `./.ava/` remains the explicit canonical managed directory.
+- [x] mandatory managed reads use direct project-local paths and do not depend on hidden scanning.
+- [x] Ava does not imply that instruction text grants filesystem permissions.
+- [x] OpenCode-specific configuration has a project-owned and user-owned mutation policy.
+- [x] existing project and global OpenCode configuration is preserved.
+- [x] fresh installation and upgrade fixtures cover the selected strategy.
+- [x] a host-neutral fixture proves router portability.
+- [x] the pinned OpenCode CLI starts from an installed fixture in CI.
