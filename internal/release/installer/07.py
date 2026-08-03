@@ -162,7 +162,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--json", action="store_true", help="Emit normalized JSON Lines plan output.")
     parser.add_argument("--verified", action="store_true", help="Require GitHub immutable release and asset attestation verification.")
     parser.add_argument("--adopt-existing-agents", action="store_true", help="Explicitly authorize replacement of an existing /AGENTS.md after its project meaning has been preserved or discarded.")
-    parser.add_argument("--host-bootstrap", action="append", default=[], metavar="/PATH", help="Select a release-declared optional host bootstrap destination.")
+    parser.add_argument(
+        "--host-entrypoint",
+        metavar="PATH",
+        help="Record an existing project-owned host instruction file, relative to the project root. The installer validates but never modifies it.",
+    )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--resume", action="store_true")
     mode.add_argument("--abort", action="store_true")
