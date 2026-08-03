@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "actor_pattern": "^(human|agent|tool):[a-z0-9][a-z0-9._/-]*$",
+  "cases": [
+    {
+      "id": "creation",
+      "change": "creation",
+      "document_kind": "non-reserved",
+      "before": null,
+      "after": {
+        "generated": {
+          "by": "agent:project-steward",
+          "at": "2026-08-03T10:00:00+02:00"
+        }
+      },
+      "expected_diagnostics": []
+    },
+    {
+      "id": "meaningful-mutation",
+      "change": "meaningful",
+      "document_kind": "non-reserved",
+      "before": {
+        "generated": {
+          "by": "human:project-owner",
+          "at": "2026-08-01T09:00:00+02:00"
+        }
+      },
+      "after": {
+        "generated": {
+          "by": "human:project-owner",
+          "at": "2026-08-01T09:00:00+02:00"
+        },
+        "updated": {
+          "by": "agent:project-steward",
+          "at": "2026-08-03T10:00:00+02:00"
+        }
+      },
+      "expected_diagnostics": []
+    },
+    {
+      "id": "trivial-mutation",
+      "change": "trivial",
+      "document_kind": "non-reserved",
+      "before": {
+        "generated": {
+          "by": "human:project-owner",
+          "at": "2026-08-01T09:00:00+02:00"
+        },
+        "updated": {
+          "by": "agent:project-steward",
+          "at": "2026-08-02T12:00:00+02:00"
+        }
+      },
+      "after": {
+        "generated": {
+          "by": "human:project-owner",
+          "at": "2026-08-01T09:00:00+02:00"
+        },
+        "updated": {
+          "by": "agent:project-steward",
+          "at": "2026-08-02T12:00:00+02:00"
+        }
+      },
+      "expected_diagnostics": []
+    },
+    {
+      "id": "repeated-mutation",
+      "change": "meaningful",
+      "document_kind": "non-reserved",
+      "before": {
+        "generated": {
+          "by": "human:project-owner",
+          "at": "2026-08-01T09:00:00+02:00"
+        },
+        "updated": {
+          "by": "agent:project-steward",
+          "at": "2026-08-02T12:00:00+02:00"
+        }
+      },
+      "after": {
+        "generated": {
+          "by": "human:project-owner",
+          "at": "2026-08-01T09:00:00+02:00"
+        },
+        "updated": {
+          "by": "human:project-owner",
+          "at": "2026-08-03T11:00:00+02:00"
+        }
+      },
+      "expected_diagnostics": []
+    },
+    {
+      "id": "legacy-timestamp",
+      "change": "meaningful",
+      "document_kind": "non-reserved",
+      "before": {
+        "timestamp": "2026-07-01T08:00:00+02:00"
+      },
+      "after": {
+        "timestamp": "2026-07-01T08:00:00+02:00",
+        "updated": {
+          "by": "agent:project-steward",
+          "at": "2026-08-03T10:00:00+02:00"
+        }
+      },
+      "expected_diagnostics": [
+        {
+          "rule": "AVA-META-UPDATE-LEGACY-TIMESTAMP",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "id": "reserved-index",
+      "change": "meaningful",
+      "document_kind": "reserved",
+      "before": null,
+      "after": null,
+      "expected_diagnostics": []
+    },
+    {
+      "id": "malformed-updated",
+      "change": "state-validation",
+      "document_kind": "non-reserved",
+      "before": null,
+      "after": {
+        "updated": "2026-08-03"
+      },
+      "expected_diagnostics": [
+        {
+          "rule": "AVA-META-UPDATE-SHAPE",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "id": "regressive-updated",
+      "change": "meaningful",
+      "document_kind": "non-reserved",
+      "before": {
+        "updated": {
+          "by": "agent:project-steward",
+          "at": "2026-08-03T10:00:00+02:00"
+        }
+      },
+      "after": {
+        "updated": {
+          "by": "agent:project-steward",
+          "at": "2026-08-02T10:00:00+02:00"
+        }
+      },
+      "expected_diagnostics": [
+        {
+          "rule": "AVA-META-UPDATE-REGRESSION",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "id": "stale-verification",
+      "change": "state-validation",
+      "document_kind": "non-reserved",
+      "before": null,
+      "after": {
+        "updated": {
+          "by": "agent:project-steward",
+          "at": "2026-08-03T10:00:00+02:00"
+        },
+        "verified": [
+          {
+            "by": "human:project-owner",
+            "at": "2026-08-02T10:00:00+02:00"
+          }
+        ]
+      },
+      "expected_diagnostics": [
+        {
+          "rule": "AVA-META-VERIFICATION-STALE",
+          "severity": "error"
+        }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,9 @@ tags: [ava, metadata, okf, documents, compatibility, ownership]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-03T21:29:00+02:00
 ---
 
 # Purpose
@@ -61,6 +64,10 @@ okf_version: "0.2"
 
 A project-root `./index.md` is project-owned when present. It may also declare `okf_version`, but it is not the installed Ava version record and must not be added to the managed manifest merely because it resembles an Ava scaffold.
 
+The repository root `README.md` is human-facing documentation and intentionally omits normal concept frontmatter.
+
+Reserved `index.md` and `log.md` files and the root `README.md` do not add `generated` or `updated` solely to represent edit provenance. Git records their complete edit history. Dated log entries record qualifying conceptual history according to [Scoped history](scoped-history.md).
+
 Other Ava filenames, including `AGENTS.md`, `role.md`, `instructions.md`, `capabilities.md`, and `constraints.md`, are ordinary concept documents and require normal frontmatter.
 
 # Required metadata
@@ -107,13 +114,53 @@ Documents may use OKF metadata where relevant:
 - `resource`: external or canonical resource identifier
 - `status`: lifecycle state
 - `sources`: provenance sources
-- `generated`: generation actor and time
+- `generated`: creation actor and time
 - `verified`: verification actors and times
 - `stale_after`: time after which the content should be reviewed
 
-Use ISO 8601 dates and timestamps.
+Ava additionally defines the optional `updated` field for latest meaningful-update provenance.
 
-New or meaningfully modified documents should use:
+Use ISO 8601 dates and timestamps with an explicit offset when a time is recorded.
+
+# Actor identifiers
+
+`generated.by`, `updated.by`, and `verified[].by` use the same actor identifier format:
+
+```text
+<kind>:<stable-identifier>
+```
+
+Supported kinds are:
+
+- `human` for a person or human-owned identity
+- `agent` for an AI agent identity or durable role identity
+- `tool` for deterministic software
+
+Identifiers use lowercase letters, digits, dots, underscores, hyphens, and slash-separated stable sub-identifiers. Examples:
+
+```yaml
+generated:
+  by: human:project-owner
+  at: 2026-08-01T09:00:00+02:00
+
+updated:
+  by: agent:project-steward
+  at: 2026-08-03T10:00:00+02:00
+
+updated:
+  by: tool:ava-migration/1.0.0-to-1.1.0
+  at: 2026-08-03T10:00:00+02:00
+```
+
+A deterministic migration uses `tool:<identifier>` rather than inventing a separate actor kind. An agent applying semantic migration guidance uses its `agent:<identifier>` identity.
+
+Do not invent a human, agent, or tool identity that cannot be established from the active context.
+
+# Creation provenance
+
+`generated` records who originally created the canonical document and when. It does not describe the latest edit and must not be rewritten during later mutations.
+
+A newly created non-reserved document produced by an Ava role, workflow, or deterministic Ava tool must include:
 
 ```yaml
 generated:
@@ -121,7 +168,93 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 ```
 
-Existing `timestamp` fields are legacy metadata. Preserve them until the document is meaningfully modified, then replace them with `generated` metadata.
+Existing documents without `generated` remain valid when creation provenance is unknown. Later editors must not fabricate creation provenance merely to fill the field.
+
+# Latest meaningful update provenance
+
+`updated` is an Ava metadata extension. It records only the actor and time of the latest meaningful mutation after document creation:
+
+```yaml
+updated:
+  by: agent:<identifier>
+  at: 2026-08-03T10:00:00+02:00
+```
+
+Rules:
+
+- omit `updated` when the document is first created because `generated` already identifies that event
+- preserve `generated` exactly during later mutations
+- add `updated` on the first meaningful mutation
+- replace the previous `updated` value on each later meaningful mutation
+- do not store an update array or bounded update history in frontmatter
+- do not change `updated` for a trivial mutation
+- do not let `updated.at` precede `generated.at` or regress from a previous `updated.at`
+- when clock resolution produces the same timestamp, the complete `updated` value must still identify the actual latest actor and must not remain stale
+
+Git remains the complete audit trail. Scoped logs record only qualifying conceptual or structural history and do not duplicate every `updated` event.
+
+# Meaningful mutation threshold
+
+A mutation is meaningful when it changes how a reasonable reader or agent should understand, route, trust, maintain, or act on the document.
+
+Update `updated` when a change does any of the following:
+
+- adds, removes, or replaces substantive content
+- changes a factual claim, project decision, policy, requirement, instruction, permission, capability, constraint, or safeguard
+- changes purpose, scope, authority, ownership meaning, routing, activation, operating mode, procedure, expected output, required input, or required context
+- changes canonical identity, classification, lifecycle status, replacement relationship, deprecation timing, or compatibility meaning
+- changes material source attribution, verification meaning, or the evidence supporting a claim
+- changes links, indexes, filenames, or structure in a way that changes discovery, identity, or interpretation
+- resolves a material contradiction or semantic defect
+
+A mutation is trivial when it provably preserves content meaning, authority, trust, identity, classification, discovery, and behaviour. Examples include:
+
+- whitespace or wrapping changes
+- formatting-only Markdown changes
+- spelling, grammar, or style corrections that preserve meaning
+- mechanical link repair where the referenced canonical identity is unchanged
+- metadata key ordering or serialization normalization
+- line-ending or encoding normalization
+- index synchronization that only reflects an already represented child and does not change discovery semantics
+
+When a mixed edit contains any meaningful change, treat the complete document mutation as meaningful and update `updated` once.
+
+# Interaction with other metadata
+
+## Verification
+
+`updated` does not imply verification.
+
+`verified` describes verification of the current document content. A meaningful mutation invalidates any whole-document verification whose timestamp precedes `updated.at`. Remove stale verification entries or replace them only after actual re-verification.
+
+Missing `verified` metadata means unverified, not invalid.
+
+## Sources
+
+Preserve valid `sources` entries during mutation. Add, update, or remove a source only when the material evidence or source-derived claims change. `updated` does not replace source provenance.
+
+## Lifecycle
+
+Changes to `status`, `replaced_by`, `deprecated_since`, or `removal_not_before` are meaningful and require `updated`.
+
+## Scoped history
+
+An `updated` change does not automatically require a `log.md` entry. Use the stricter conceptual and structural threshold in [Scoped history](scoped-history.md).
+
+# Legacy and unknown update fields
+
+`timestamp` is legacy and semantically ambiguous. Preserve it during trivial edits.
+
+On a meaningful mutation:
+
+- do not reinterpret `timestamp` as creation or update provenance without evidence
+- add or maintain canonical `updated` for the current mutation
+- convert `timestamp` to `generated.at` only when the project can establish that it represented creation time and can also establish the original actor
+- otherwise preserve `timestamp` and report a non-blocking migration warning until a user or authoritative migration rule resolves it
+
+Unknown fields such as `modified`, `last_updated`, or project-specific update structures remain forward-compatible metadata. Preserve them. Do not automatically map, delete, or normalize them into `updated` without an explicit project or release rule. A validator may report a notice that a likely alias exists alongside or instead of canonical `updated`.
+
+Existing repository and template documents are not bulk-migrated. They adopt this rule on their next meaningful mutation. A meaningful mutation to an existing non-reserved document must preserve known creation provenance and add or advance canonical `updated`.
 
 # Ownership metadata boundary
 
@@ -130,7 +263,7 @@ Ownership is determined by installed path, manifest record, installing or adopti
 Do not infer ownership from:
 
 - document `type`
-- `generated` or `verified` timestamps
+- `generated`, `updated`, or `verified` timestamps
 - filename
 - similarity to a default document
 - repository history
@@ -195,16 +328,6 @@ sources:
 
 Use the source `id` with Markdown footnotes when individual claims require precise attribution.
 
-Use `generated` to identify the actor and time that produced the current document version. Use `verified` only after an actor has actually verified the content:
-
-```yaml
-verified:
-  - by: human:project-owner
-    at: 2026-08-03T10:00:00+02:00
-```
-
-Missing `verified` metadata means unverified, not invalid.
-
 Preserve original source files through the inbox lifecycle. A processed source remains evidence and does not become authoritative merely because it has been processed.
 
 # Lifecycle and replacement
@@ -261,8 +384,17 @@ Do not add a document-level schema version. The managed base `okf_version` contr
 
 # Validation rules
 
+Stable update-metadata rule identifiers are defined here for future conformance tooling and fixtures.
+
 Treat these as errors:
 
+- `AVA-META-UPDATE-SHAPE`: `updated` is not a mapping with exactly one non-empty `by` actor and one valid ISO 8601 `at` timestamp
+- `AVA-META-UPDATE-ACTOR`: a known provenance actor does not follow the supported actor identifier format
+- `AVA-META-UPDATE-BEFORE-CREATION`: `updated.at` precedes `generated.at`
+- `AVA-META-UPDATE-REGRESSION`: a changed document moves `updated.at` backwards from its previous value
+- `AVA-META-UPDATE-STALE`: a change-aware validator identifies a meaningful mutation but canonical `updated` was not added or advanced
+- `AVA-META-GENERATED-REWRITTEN`: a mutation rewrites established creation provenance without an explicit correction decision
+- `AVA-META-VERIFICATION-STALE`: a `verified` entry predates the latest meaningful update and still claims verification of the current document
 - missing or invalid frontmatter on a non-reserved Markdown document
 - missing or empty `type`
 - malformed known OKF or Ava fields
@@ -281,23 +413,60 @@ Treat these as errors:
 - malformed, regressive, or inconsistent `deprecated_since` or `removal_not_before` metadata
 - ambiguous name-based routing across managed and project-owned registries
 
-Treat these as warnings or non-blocking notices:
+Treat these as warnings:
 
+- `AVA-META-UPDATE-LEGACY-TIMESTAMP`: a meaningful mutation retains an unresolved legacy `timestamp`
+- `AVA-META-UPDATE-TRIVIAL-CHURN`: a change-aware validator finds that `updated` changed but the document diff is trivial only
 - references to deprecated concepts
 - invocation of a draft workflow
 - multiple registered workflows sharing a filename stem when not invoked by that stem
 - content past `stale_after`
 - broken optional contextual links
 - missing optional project-owned indexes
+
+Treat these as non-blocking notices:
+
+- `AVA-META-UPDATE-ALIAS`: an unknown likely update alias such as `modified` or `last_updated` is preserved
 - unknown fields or project-defined types reported by strict diagnostic tooling
+
+Static validation can validate field shape and temporal consistency. `AVA-META-UPDATE-STALE`, `AVA-META-GENERATED-REWRITTEN`, and `AVA-META-UPDATE-TRIVIAL-CHURN` require a previous document state or diff-aware validation.
 
 # Obsidian compatibility
 
 Use UTF-8 Markdown, YAML frontmatter, standard Markdown links, lowercase kebab-case filenames, and ISO dates and timestamps.
 
-Keep Ava-specific metadata flat. OKF-standard nested metadata such as `sources`, `generated`, and `verified` remains allowed and authoritative even when Obsidian's Properties interface cannot edit every nested value. The files must remain readable and editable in Obsidian source mode.
+Keep Ava-specific metadata flat. OKF-standard nested metadata such as `sources`, `generated`, and `verified`, plus the Ava `updated` structure, remain allowed and authoritative even when Obsidian's Properties interface cannot edit every nested value. The files must remain readable and editable in Obsidian source mode.
 
 # Valid examples
+
+## New document
+
+```yaml
+---
+type: Decision
+title: Retain processed inbox sources
+description: Canonical decision to preserve source material after ingestion.
+generated:
+  by: agent:project-steward
+  at: 2026-08-01T09:00:00+02:00
+---
+```
+
+## Meaningfully updated document
+
+```yaml
+---
+type: Decision
+title: Retain processed inbox sources
+description: Canonical decision to preserve source material after ingestion.
+generated:
+  by: human:project-owner
+  at: 2026-08-01T09:00:00+02:00
+updated:
+  by: agent:project-steward
+  at: 2026-08-03T10:00:00+02:00
+---
+```
 
 ## Project-defined knowledge type
 
@@ -322,18 +491,6 @@ mode: mutation
 ---
 ```
 
-## Project workflow using a project role
-
-```yaml
----
-type: Workflow
-title: Review deployment
-description: Reviews deployment readiness for this project.
-primary_role: ./roles/deployment-reviewer/role.md
-mode: read-only
----
-```
-
 ## Source-backed knowledge
 
 ```yaml
@@ -346,34 +503,65 @@ sources:
     resource: ./inbox/processed/ingestion-notes.md
 generated:
   by: agent:project-steward
+  at: 2026-08-01T09:00:00+02:00
+updated:
+  by: agent:inbox-ingester
   at: 2026-08-03T10:00:00+02:00
 ---
 ```
 
 # Invalid examples
 
-## Missing type
+## Latest edit overwrites creation provenance
 
 ```yaml
 ---
-title: Unclassified document
+type: Decision
+generated:
+  by: agent:project-steward
+  at: 2026-08-03T10:00:00+02:00
 ---
 ```
 
-## Workflow without one resolvable role
+This is invalid when the document was originally created earlier by another actor. Preserve the original `generated` and use `updated` for the latest meaningful mutation.
+
+## Malformed updated value
 
 ```yaml
 ---
-type: Workflow
-title: Configure project
-description: Configures the project.
-primary_role:
-  - ./.ava/base/roles/project-steward/role.md
-  - ./roles/project-steward/role.md
-mode: mutation
+type: Decision
+updated: 2026-08-03
+---
+```
+
+## Update before creation
+
+```yaml
+---
+type: Decision
+generated:
+  by: human:project-owner
+  at: 2026-08-03T10:00:00+02:00
+updated:
+  by: agent:project-steward
+  at: 2026-08-02T10:00:00+02:00
+---
+```
+
+## Stale verification
+
+```yaml
+---
+type: Decision
+updated:
+  by: agent:project-steward
+  at: 2026-08-03T10:00:00+02:00
+verified:
+  - by: human:project-owner
+    at: 2026-08-02T10:00:00+02:00
 ---
 ```
 
 ## Ownership inferred from metadata
 
-A file is not Ava-managed merely because its metadata resembles a default role or because `generated.by` names Ava. Only the installed ownership contract and manifest establish managed authority.
+A file is not Ava-managed merely because its metadata resembles a default role or because `generated.by` or `updated.by` names Ava. Only the installed ownership contract and manifest establish managed authority.
