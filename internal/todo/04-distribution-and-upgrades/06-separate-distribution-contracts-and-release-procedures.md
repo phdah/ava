@@ -62,4 +62,4 @@ Public contracts now use concise canonical paths:
 - current repository files contain no stale template-contract references
 - release source files do not depend on internal repository content
 
-The next task is [Implement Installer and Updater](07-implement-installer-and-updater.md).
+The next task is [Define Workflow Trigger Portability](../03-workflows/05-define-workflow-trigger-portability.md), followed by [Define Workflow Lifecycle Ownership](../03-workflows/06-define-workflow-lifecycle-ownership.md). Phase 4 resumes with [Implement Installer and Updater](07-implement-installer-and-updater.md) only after Phase 3 is complete.
