@@ -366,6 +366,7 @@ The implementation roadmap is tracked in [`internal/todo.md`](internal/todo.md).
 3. define Ava SemVer, installed-base versioning, and separate semantic compatibility state
 4. define immutable GitHub Release assets and bootstrap trust modes
 5. define deterministic upgrade, migration, and agent-guidance protocols
-6. implement a thin installer and updater with explicit version selection
-7. implement validation and fixtures for installation, adoption, and upgrades
-8. publish the first versioned Ava distribution
+6. complete workflow trigger portability and workflow lifecycle ownership
+7. implement a thin installer and updater with explicit version selection
+8. implement validation and fixtures for installation, adoption, and upgrades
+9. publish the first versioned Ava distribution
