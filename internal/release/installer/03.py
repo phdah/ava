@@ -160,23 +160,38 @@ def load_installed_state(root: Path) -> tuple[dict[str, Any] | None, dict[str, A
     return manifest, upgrade
 
 
-def select_bootstraps(target: Bundle, installed: dict[str, Any] | None, requested: list[str]) -> set[str]:
-    available = {
-        item["destination"] for item in target.manifest["installed_files"]
-        if item["ownership"] == "ava-managed" and item["role"] == "bootstrap"
+def normalize_host_entrypoint(value: str) -> str:
+    if not value:
+        raise AvaError("INVALID_HOST_ENTRYPOINT", "host entrypoint must not be empty")
+    if value.startswith("/"):
+        destination_relative(value)
+        destination = PurePosixPath(value).as_posix()
+    else:
+        destination = f"/{safe_relative(value)}"
+    if destination == "/AGENTS.md" or destination == "/.ava" or destination.startswith("/.ava/"):
+        raise AvaError("INVALID_HOST_ENTRYPOINT", "host entrypoint must be project-owned and outside Ava-managed paths")
+    return destination
+
+
+def resolve_host_integration(
+    root: Path, installed: dict[str, Any] | None, requested: str | None
+) -> dict[str, str] | None:
+    if requested is not None:
+        entrypoint = normalize_host_entrypoint(requested)
+    elif installed is not None and installed.get("host_integration") is not None:
+        entrypoint = installed["host_integration"]["entrypoint"]
+    else:
+        return None
+    live = safe_live_path(root, entrypoint)
+    if not live.is_file() or live.is_symlink():
+        raise AvaError("INVALID_HOST_ENTRYPOINT", f"host entrypoint is not a normal project file: {entrypoint}")
+    integration = {
+        "entrypoint": entrypoint,
+        "ownership": "project-owned",
+        "discovery": "project-provided",
     }
-    selected: set[str] = set()
-    if installed:
-        selected.update(
-            item["path"] for item in installed["managed_files"]
-            if item.get("kind") == "payload" and item.get("role") == "bootstrap" and item["path"] in available
-        )
-    for path in requested:
-        destination_relative(path)
-        if path not in available:
-            raise AvaError("UNKNOWN_BOOTSTRAP", f"release does not declare host bootstrap: {path}")
-        selected.add(path)
-    return selected
+    validate_host_integration(integration)
+    return integration
 
 
 def allowed_managed_destination(item: dict[str, Any]) -> None:
@@ -185,8 +200,6 @@ def allowed_managed_destination(item: dict[str, Any]) -> None:
     if role == "router" and path == "/AGENTS.md":
         return
     if role == "base" and path.startswith("/.ava/base/"):
-        return
-    if role == "bootstrap":
         return
     raise AvaError("INVALID_MANIFEST", f"managed mapping is outside allowed destinations: {path}")
 
