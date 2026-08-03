@@ -16,7 +16,9 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Implement the installer and updater](todo/04-distribution-and-upgrades/07-implement-installer-and-updater.md).
+[Define workflow trigger portability](todo/03-workflows/05-define-workflow-trigger-portability.md).
+
+Complete Phase 3 task 5, then [workflow lifecycle ownership](todo/03-workflows/06-define-workflow-lifecycle-ownership.md), before resuming Phase 4 installer work.
 
 ## Working rule
 
