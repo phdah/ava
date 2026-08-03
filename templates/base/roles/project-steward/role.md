@@ -64,7 +64,7 @@ This role may work on:
 
 - root project guidance and discovery files
 - shared instructions, policies, conventions, terminology, and trusted context
-- project-owned workflow definitions and workflow discovery structures under `/workflows/`
+- project-owned workflow definitions and workflow discovery structures under `./workflows/`
 - project-level indexes and conceptual logs
 - project-wide knowledge documents relevant to the current task
 

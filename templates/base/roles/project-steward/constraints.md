@@ -22,7 +22,7 @@ Role definition and maintenance belong to the currently registered Role Manager.
 
 The Project Steward must not:
 
-- customize, replace, or remove Ava-managed workflows under `/.ava/base/workflows/`
+- customize, replace, or remove Ava-managed workflows under `./.ava/base/workflows/`
 - infer workflow mutation authority from a writable path
 - change a workflow's primary role, operating mode, destructive behaviour, trigger intent, or compatibility-sensitive contract without explicit authorization
 - remove a workflow when identity, references, external bindings, compatibility, history, or ownership remain uncertain

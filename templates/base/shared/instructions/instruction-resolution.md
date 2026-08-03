@@ -16,6 +16,8 @@ Instruction scope is established through explicit activation and references. Dir
 
 Workflow registration, invocation identity, routing precedence, primary-role resolution, failure handling, and deprecation follow [Workflow registry and routing](workflow-routing.md).
 
+All paths beginning with `./` are resolved from the project root.
+
 # Activation chain
 
 An instruction or context document becomes active only through one of these paths:
@@ -56,7 +58,7 @@ Before acting:
 1. Load the root `AGENTS.md`.
 2. Load this instruction-resolution contract and the workflow-routing contract required by the router.
 3. Determine whether the request explicitly invokes a registered workflow or requires semantic role selection.
-4. For an explicit workflow invocation, resolve and validate it through `/workflows/index.md`; otherwise select one role through `/roles/index.md`.
+4. For an explicit workflow invocation, resolve and validate it through `./workflows/index.md`; otherwise select one role through `./roles/index.md`.
 5. Resolve exactly one active role.
 6. Read the active role's `index.md` and every document it marks as required.
 7. Announce the active role after its complete required reading has been loaded and before acting under it.

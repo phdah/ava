@@ -147,9 +147,9 @@ def load_installed_state(root: Path) -> tuple[dict[str, Any] | None, dict[str, A
     if not ava.exists():
         return None, None
     if ava.is_symlink() or not ava.is_dir():
-        raise AvaError("UNRECOGNIZED_AVA", "/.ava exists but is not a normal directory")
+        raise AvaError("UNRECOGNIZED_AVA", "./.ava exists but is not a normal directory")
     if not manifest_path.is_file():
-        raise AvaError("UNRECOGNIZED_AVA", "/.ava exists without a supported manifest")
+        raise AvaError("UNRECOGNIZED_AVA", "./.ava exists without a supported manifest")
     manifest = read_json(manifest_path, "INVALID_INSTALLED_STATE")
     validate_installed_manifest(manifest)
     if not upgrade_path.is_file():
@@ -164,11 +164,11 @@ def normalize_host_entrypoint(value: str) -> str:
     if not value:
         raise AvaError("INVALID_HOST_ENTRYPOINT", "host entrypoint must not be empty")
     if value.startswith("/"):
-        destination_relative(value)
-        destination = PurePosixPath(value).as_posix()
-    else:
-        destination = f"/{safe_relative(value)}"
-    if destination == "/AGENTS.md" or destination == "/.ava" or destination.startswith("/.ava/"):
+        raise AvaError("INVALID_HOST_ENTRYPOINT", "host entrypoint must be relative to the selected project root")
+    candidate = value.removeprefix("./")
+    relative = safe_relative(candidate)
+    destination = f"./{relative}"
+    if relative == "AGENTS.md" or relative == ".ava" or relative.startswith(".ava/"):
         raise AvaError("INVALID_HOST_ENTRYPOINT", "host entrypoint must be project-owned and outside Ava-managed paths")
     return destination
 
@@ -182,7 +182,8 @@ def resolve_host_integration(
         entrypoint = installed["host_integration"]["entrypoint"]
     else:
         return None
-    live = safe_live_path(root, entrypoint)
+    relative = host_entrypoint_relative(entrypoint)
+    live = safe_live_path(root, f"/{relative}")
     if not live.is_file() or live.is_symlink():
         raise AvaError("INVALID_HOST_ENTRYPOINT", f"host entrypoint is not a normal project file: {entrypoint}")
     integration = {
@@ -202,5 +203,3 @@ def allowed_managed_destination(item: dict[str, Any]) -> None:
     if role == "base" and path.startswith("/.ava/base/"):
         return
     raise AvaError("INVALID_MANIFEST", f"managed mapping is outside allowed destinations: {path}")
-
-

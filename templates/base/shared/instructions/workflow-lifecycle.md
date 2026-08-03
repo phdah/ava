@@ -14,9 +14,11 @@ This instruction defines who maintains workflows and how project-owned workflows
 
 It applies the durable contracts in [Workflow format](workflow-format.md), [Workflow registry and routing](workflow-routing.md), [Workflow triggers](workflow-triggers.md), [Document metadata](document-metadata.md), [Ownership and mutation authority](ownership-and-mutation.md), and [Scoped history](scoped-history.md). It does not restate their schemas or routing algorithms.
 
+All paths beginning with `./` are resolved from the project root.
+
 # Lifecycle ownership
 
-The Project Steward owns the lifecycle of project-owned workflows under `/workflows/`.
+The Project Steward owns the lifecycle of project-owned workflows under `./workflows/`.
 
 A dedicated Workflow Manager role is not justified because workflow lifecycle work uses the same project-wide authority, trusted context, discovery structures, and policy boundary already assigned to the Project Steward. A separate role would overlap rather than establish a distinct trust or separation-of-duty boundary.
 
@@ -34,8 +36,8 @@ Routine workflow lifecycle work is free-form Project Steward work. Ava does not 
 
 Before changing a workflow, classify it by installed path and manifest state.
 
-- workflows under `/.ava/base/workflows/` are Ava-managed and must not be customized by the Project Steward
-- workflows under `/workflows/` are project-owned and may be maintained within the current user-approved scope
+- workflows under `./.ava/base/workflows/` are Ava-managed and must not be customized by the Project Steward
+- workflows under `./workflows/` are project-owned and may be maintained within the current user-approved scope
 - a writable file does not imply mutation authority
 - a local edit to an Ava-managed workflow is a managed-file conflict, not project-owned customization
 
@@ -78,7 +80,7 @@ For every workflow lifecycle request:
 
 Create a project-owned workflow only when it satisfies every workflow admission criterion.
 
-- choose one canonical path beneath `/workflows/`
+- choose one canonical path beneath `./workflows/`
 - use exactly one registered, non-deprecated ordinary primary role
 - define the narrowest mode consistent with the intended effect
 - keep role authority and safeguards in the role rather than duplicating them in the workflow

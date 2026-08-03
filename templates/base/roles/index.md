@@ -1,8 +1,8 @@
 # Roles
 
-This file is the managed default role catalog used by the root `/AGENTS.md` router.
+This file is the managed default role catalog used by the root `./AGENTS.md` router.
 
-Read a selected role's `index.md` before acting. Project-owned roles are discovered separately through `/roles/index.md` when present.
+Read a selected role's `index.md` before acting. Project-owned roles are discovered separately through `./roles/index.md` when present.
 
 ## Managed pre-routing role
 

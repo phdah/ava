@@ -19,6 +19,7 @@ require_dir() {
 
 for path in \
   distribution/index.md \
+  distribution/paths.md \
   distribution/ownership.md \
   distribution/versioning.md \
   distribution/releases.md \
@@ -37,6 +38,7 @@ for path in \
   internal/release/installer.md \
   internal/release/assemble.sh \
   internal/release/assemble.py \
+  internal/release/validate-installed-paths.py \
   internal/release/ava-install.sh \
   internal/release/installer/00.py \
   internal/release/installer/01.py \
@@ -47,6 +49,7 @@ for path in \
   internal/release/installer/06.py \
   internal/release/installer/07.py \
   internal/release/test.sh \
+  internal/release/tests/test_installed_paths.py \
   internal/release/tests/test_installer.py
 do
   require_file "$path"
@@ -113,6 +116,9 @@ done
 sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
 sh -n "$ROOT/internal/release/test.sh"
-python3 -m py_compile "$ROOT/internal/release/assemble.py"
+python3 -m py_compile \
+  "$ROOT/internal/release/assemble.py" \
+  "$ROOT/internal/release/validate-installed-paths.py"
+python3 "$ROOT/internal/release/validate-installed-paths.py" --root "$ROOT"
 
 printf 'Repository boundaries valid.\n'

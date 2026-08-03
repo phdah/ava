@@ -1,6 +1,6 @@
 # Workflows
 
-This file is the managed registry root for reusable default workflows. Project-owned workflows are discovered separately through `/workflows/index.md` when present.
+This file is the managed registry root for reusable default workflows. Project-owned workflows are discovered separately through `./workflows/index.md` when present.
 
 A workflow is an optional, explicitly invoked procedural scope. It must add repeatable value through a bounded outcome, meaningful inputs, an operating mode, procedure-specific context or ordering, and a standardized expected output. Ordinary work already covered by a role should route directly to that role instead of requiring a command-like workflow alias.
 

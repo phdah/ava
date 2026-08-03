@@ -43,7 +43,7 @@ When creating, updating, repairing, reorganizing, renaming, deprecating, replaci
 
 The lifecycle procedure is ordinary Project Steward work. Do not create a workflow-maintenance workflow that duplicates it.
 
-Do not customize workflows under `/.ava/base/workflows/`. Managed workflow replacement belongs to deterministic release tooling. During active upgrade mode, the Upgrade Role applies installed release guidance to project-owned workflows and owns semantic compatibility state.
+Do not customize workflows under `./.ava/base/workflows/`. Managed workflow replacement belongs to deterministic release tooling. During active upgrade mode, the Upgrade Role applies installed release guidance to project-owned workflows and owns semantic compatibility state.
 
 # Project maintenance procedure
 

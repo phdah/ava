@@ -16,6 +16,8 @@ Keep metadata open and extensible. Agents should make the best semantic classifi
 
 Installed ownership and path authority are defined by the [distribution and ownership contract](../../../../distribution/ownership.md). Ava release versions, semantic compatibility, and deprecation timelines are defined by the [versioning and compatibility contract](../../../../distribution/versioning.md). Document metadata must not be used to silently transfer ownership between Ava and the project.
 
+All metadata paths beginning with `./` are resolved from the project root. A leading slash denotes an operating-system absolute path and is invalid for project-local metadata.
+
 # Conformance layers
 
 Ava distinguishes two validation layers.
@@ -34,9 +36,9 @@ Unknown fields and project-defined document types do not invalidate the document
 
 An OKF-conformant project is Ava-valid when its Ava-controlled structures are also coherent, including:
 
-- the managed root `/AGENTS.md` and `/.ava/` state are valid for the installed version
-- the managed base index at `/.ava/base/index.md` exists and declares the OKF version
-- managed files agree with `/.ava/state/manifest.json`
+- the managed root `./AGENTS.md` and `./.ava/` state are valid for the installed version
+- the managed base index at `./.ava/base/index.md` exists and declares the OKF version
+- managed files agree with `./.ava/state/manifest.json`
 - project-owned extension paths are not claimed by the managed manifest
 - known Ava semantic documents contain their required fields
 - role required-reading paths resolve
@@ -49,7 +51,7 @@ A document may remain a valid generic OKF concept even when Ava does not assign 
 
 `index.md` and `log.md` are reserved OKF documents and do not require normal concept frontmatter.
 
-The Ava-managed base index at `/.ava/base/index.md` must declare the OKF version:
+The Ava-managed base index at `./.ava/base/index.md` must declare the OKF version:
 
 ```yaml
 ---
@@ -57,7 +59,7 @@ okf_version: "0.2"
 ---
 ```
 
-A project-root `/index.md` is project-owned when present. It may also declare `okf_version`, but it is not the installed Ava version record and must not be added to the managed manifest merely because it resembles an Ava scaffold.
+A project-root `./index.md` is project-owned when present. It may also declare `okf_version`, but it is not the installed Ava version record and must not be added to the managed manifest merely because it resembles an Ava scaffold.
 
 Other Ava filenames, including `AGENTS.md`, `role.md`, `instructions.md`, `capabilities.md`, and `constraints.md`, are ordinary concept documents and require normal frontmatter.
 
@@ -142,9 +144,9 @@ Role routing remains semantic and prose-based for free-form requests.
 
 Do not add keyword lists, regular expressions, numeric priorities, confidence thresholds, or a routing rule language to role metadata.
 
-The root router reads the managed role registry at `/.ava/base/roles/index.md` and the project-owned role registry at `/roles/index.md` when present. It compares a free-form request with each registered role's stated purpose and activation conditions and selects the best match.
+The root router reads the managed role registry at `./.ava/base/roles/index.md` and the project-owned role registry at `./roles/index.md` when present. It compares a free-form request with each registered role's stated purpose and activation conditions and selects the best match.
 
-A role's canonical project-root-relative path is its stable identity, so a separate `role_id` is not required. Managed default roles use paths under `/.ava/base/roles/`; project roles use paths under `/roles/`.
+A role's canonical project-root-relative path is its stable identity, so a separate `role_id` is not required. Managed default roles use paths under `./.ava/base/roles/`; project roles use paths under `./roles/`.
 
 Explicit workflow invocation bypasses free-form role selection and resolves the workflow's declared `primary_role` according to [Workflow registry and routing](workflow-routing.md).
 
@@ -157,7 +159,7 @@ Every workflow requires:
 type: Workflow
 title: Configure project
 description: Establishes or clarifies project-wide purpose and shared guidance.
-primary_role: /.ava/base/roles/project-steward/role.md
+primary_role: ./.ava/base/roles/project-steward/role.md
 mode: mutation
 status: stable
 ---
@@ -166,12 +168,12 @@ status: stable
 Rules:
 
 - `primary_role` is required.
-- It must be a project-root-relative path to exactly one registered, non-deprecated `role.md` document.
-- It may reference a managed role under `/.ava/base/roles/` or a project-owned role under `/roles/`.
+- It must be an explicit project-root-relative path to exactly one registered, non-deprecated `role.md` document.
+- It may reference a managed role under `./.ava/base/roles/` or a project-owned role under `./roles/`.
 - `mode` is required and must be `read-only`, `suggestion`, or `mutation`.
 - The workflow file path is the workflow identity.
-- A managed workflow must be reachable through `/.ava/base/workflows/index.md`.
-- A project-owned workflow must be reachable through `/workflows/index.md`.
+- A managed workflow must be reachable through `./.ava/base/workflows/index.md`.
+- A project-owned workflow must be reachable through `./workflows/index.md`.
 - A workflow must not duplicate the primary role's durable instructions.
 - A deprecated workflow may declare `replaced_by`, but the router must report rather than automatically invoke the replacement.
 - The complete body structure, input representation, mode semantics, expected output, context links, composition boundaries, and validation rules are defined by [Workflow format](workflow-format.md).
@@ -186,7 +188,7 @@ Use OKF `sources` metadata for material derived from preserved source content:
 ```yaml
 sources:
   - id: original-notes
-    resource: /inbox/processed/project-notes.md
+    resource: ./inbox/processed/project-notes.md
     title: Original project notes
     author: human:project-owner
 ```
@@ -219,10 +221,10 @@ A deprecated document remains valid for history and existing links. When a direc
 
 ```yaml
 status: deprecated
-replaced_by: /roles/project-steward/role.md
+replaced_by: ./roles/project-steward/role.md
 ```
 
-`replaced_by` must be a project-root-relative canonical path. Explain the deprecation rationale in the document body and record major lifecycle changes in the nearest relevant `log.md`.
+`replaced_by` must be an explicit project-root-relative canonical path. Explain the deprecation rationale in the document body and record major lifecycle changes in the nearest relevant `log.md`.
 
 A replacement reference does not itself activate or authorize the replacement. In particular, workflow and role routing must not automatically follow `replaced_by`; the caller must explicitly select the replacement and the router must resolve it normally.
 
@@ -232,7 +234,7 @@ Ava-managed public documents, roles, and workflows that are deprecated by a rele
 status: deprecated
 deprecated_since: 1.4.0
 removal_not_before: 2.0.0
-replaced_by: /.ava/base/roles/project-steward/role.md
+replaced_by: ./.ava/base/roles/project-steward/role.md
 ```
 
 Rules:
@@ -255,7 +257,7 @@ Ava producers and editors must preserve unknown frontmatter fields and unknown v
 
 Unknown project-defined types and fields must not block normal OKF conformance. Strict diagnostic tooling may report them as non-blocking notices, but must not remove or rewrite them without an explicit rule.
 
-Do not add a document-level schema version. The managed base `okf_version` controls OKF compatibility. The installed Ava distribution version belongs in `/.ava/state/manifest.json`; it must not be duplicated as document metadata or conflated with semantic compatibility of project-owned context.
+Do not add a document-level schema version. The managed base `okf_version` controls OKF compatibility. The installed Ava distribution version belongs in `./.ava/state/manifest.json`; it must not be duplicated as document metadata or conflated with semantic compatibility of project-owned context.
 
 # Validation rules
 
@@ -315,7 +317,7 @@ tags: [data, ingestion]
 type: Workflow
 title: Configure project
 description: Configures the project.
-primary_role: /.ava/base/roles/project-steward/role.md
+primary_role: ./.ava/base/roles/project-steward/role.md
 mode: mutation
 ---
 ```
@@ -327,7 +329,7 @@ mode: mutation
 type: Workflow
 title: Review deployment
 description: Reviews deployment readiness for this project.
-primary_role: /roles/deployment-reviewer/role.md
+primary_role: ./roles/deployment-reviewer/role.md
 mode: read-only
 ---
 ```
@@ -341,7 +343,7 @@ title: Retain processed inbox sources
 description: Canonical decision to preserve source material after ingestion.
 sources:
   - id: ingestion-notes
-    resource: /inbox/processed/ingestion-notes.md
+    resource: ./inbox/processed/ingestion-notes.md
 generated:
   by: agent:project-steward
   at: 2026-08-03T10:00:00+02:00
@@ -366,8 +368,8 @@ type: Workflow
 title: Configure project
 description: Configures the project.
 primary_role:
-  - /.ava/base/roles/project-steward/role.md
-  - /roles/project-steward/role.md
+  - ./.ava/base/roles/project-steward/role.md
+  - ./roles/project-steward/role.md
 mode: mutation
 ---
 ```

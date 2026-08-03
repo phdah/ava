@@ -17,6 +17,6 @@ Before acting, read every file under **Required reading** in the listed order.
 
 ## Transaction guidance
 
-After the complete required reading is active, resolve the relative guidance paths recorded in `/.ava/state/upgrade.json` beneath `/.ava/guidance/` and load only those documents, in transaction order.
+After the complete required reading is active, resolve the relative guidance paths recorded in `./.ava/state/upgrade.json` beneath `./.ava/guidance/` and load only those documents, in transaction order.
 
 Do not discover guidance from project-owned registries, arbitrary logs, release-note prose, or filesystem scanning.

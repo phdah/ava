@@ -1,3 +1,12 @@
+def host_entrypoint_relative(value: Any) -> str:
+    if not isinstance(value, str) or not value.startswith("./"):
+        raise AvaError("INVALID_INSTALLED_STATE", "host entrypoint must use an explicit ./ project-root path")
+    relative = safe_relative(value[2:])
+    if value != f"./{relative}":
+        raise AvaError("INVALID_INSTALLED_STATE", "host entrypoint must use canonical ./ project-root form")
+    return relative
+
+
 def validate_host_integration(value: Any) -> None:
     if value is None:
         return
@@ -5,10 +14,8 @@ def validate_host_integration(value: Any) -> None:
         raise AvaError("INVALID_INSTALLED_STATE", "host_integration must be null or an object")
     require_exact_keys(value, {"entrypoint", "ownership", "discovery"}, "host integration")
     entrypoint = value.get("entrypoint")
-    if not isinstance(entrypoint, str):
-        raise AvaError("INVALID_INSTALLED_STATE", "host entrypoint must be a project-root path")
-    destination_relative(entrypoint)
-    if entrypoint == "/AGENTS.md" or entrypoint == "/.ava" or entrypoint.startswith("/.ava/"):
+    relative = host_entrypoint_relative(entrypoint)
+    if relative == "AGENTS.md" or relative == ".ava" or relative.startswith(".ava/"):
         raise AvaError("INVALID_INSTALLED_STATE", "host entrypoint must be project-owned and outside Ava-managed paths")
     if value.get("ownership") != "project-owned" or value.get("discovery") != "project-provided":
         raise AvaError("INVALID_INSTALLED_STATE", "invalid host integration ownership or discovery mode")
@@ -146,5 +153,3 @@ def locate_asset_directory(base: Path, version: str, target_version: str) -> Pat
         if (candidate / "ava-release.json").is_file():
             return candidate.resolve()
     raise AvaError("MISSING_ASSETS", f"cannot locate local assets for v{version}")
-
-

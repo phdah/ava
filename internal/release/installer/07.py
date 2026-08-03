@@ -161,7 +161,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--json", action="store_true", help="Emit normalized JSON Lines plan output.")
     parser.add_argument("--verified", action="store_true", help="Require GitHub immutable release and asset attestation verification.")
-    parser.add_argument("--adopt-existing-agents", action="store_true", help="Explicitly authorize replacement of an existing /AGENTS.md after its project meaning has been preserved or discarded.")
+    parser.add_argument("--adopt-existing-agents", action="store_true", help="Explicitly authorize replacement of an existing ./AGENTS.md after its project meaning has been preserved or discarded.")
     parser.add_argument(
         "--host-entrypoint",
         metavar="PATH",
