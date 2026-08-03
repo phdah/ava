@@ -1,6 +1,6 @@
 # Ava Internal Release Procedures
 
-This directory contains maintainer-only release assembly, installation implementation, publication coordination, validation, and tests. It is never distributed to Ava projects.
+This directory contains maintainer-only release assembly, installation implementation, publication coordination, validation, fixtures, and tests. It is never distributed to Ava projects.
 
 - [Release assembler entry point](assemble.sh)
 - [Release assembler implementation](assemble.py)
@@ -10,5 +10,6 @@ This directory contains maintainer-only release assembly, installation implement
 - [Release publication procedure](procedure.md)
 - [Repository boundary validator](validate-boundaries.sh)
 - [Installer test runner](test.sh)
+- [Validation fixtures](fixtures/) - Machine-readable contract cases used by release and conformance tests.
 - [Release implementation tests](tests/)
 - [Release implementation log](log.md)
