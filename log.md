@@ -4,6 +4,9 @@ This log records major conceptual and structural changes across the Ava reposito
 
 ## 2026-08-03
 
+* **Distribution responsibility boundary**: Moved public distribution contracts and schemas into `/distribution/`, kept release payload and scaffold sources under `/templates/`, and added maintainer-only publication procedures under `/internal/release/`.
+* **Explicit release inclusion**: Clarified that public contracts are not automatically installed and that release manifests must explicitly select every distributed source and destination.
+* **Boundary validation**: Added a POSIX repository check that rejects stale contract locations, unexpected template roots, invalid schema identifiers, and references from public release sources into internal maintainer content.
 * **Workflow purpose boundary**: Defined workflows as optional explicit procedural scopes that require repeatable bounded value beyond ordinary free-form role work.
 * **Reduced built-in workflow catalog**: Reduced the managed catalog from ten workflows to four: batch inbox ingestion, bounded change review, complete role-catalog review, and bounded project-context audit.
 * **Free-form role work**: Removed command-like role lifecycle and routine stewardship workflows while retaining their behavior through direct Role Manager and Project Steward routing.
@@ -34,7 +37,7 @@ This log records major conceptual and structural changes across the Ava reposito
 * **Managed customization policy**: Prohibited direct customization of managed files. Local modifications remain managed-file conflicts and must be restored, discarded, or migrated into project-owned paths explicitly.
 * **Repository source mapping**: Clarified that the Ava repository does not mirror an installed project. `templates/base/` is authored source material and release assembly must map every file to an explicit installed destination and ownership class.
 * **Adoption contract**: Defined safe fresh installation, create-if-absent project scaffolding, explicit existing-project adoption, collision aborts, and migration of unversioned Ava projects without silent ownership transfer.
-* **Bootstrap discovery**: Defined native root-router discovery, optional thin managed host bootstrap files, explicit activation, and unsupported-host reporting while retaining `/AGENTS.md` as the only canonical router.
+* **Bootstrap discovery**: Defined native root-router discovery, optional thin managed host bootstraps, explicit activation, and unsupported-host reporting while retaining `/AGENTS.md` as the only canonical router.
 
 ## 2026-07-30
 

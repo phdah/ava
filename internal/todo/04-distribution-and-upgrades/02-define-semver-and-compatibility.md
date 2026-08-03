@@ -13,7 +13,7 @@ generated:
 
 # Define Ava SemVer and Compatibility
 
-The accepted public contract is documented in [Ava Versioning and Compatibility](/templates/versioning-and-compatibility.md). The installed manifest shape is defined by [manifest.schema.json](/templates/schemas/manifest.schema.json).
+The accepted public contract is documented in [Ava Versioning and Compatibility](/distribution/versioning.md). The installed manifest shape is defined by [manifest.schema.json](/distribution/schemas/manifest.schema.json).
 
 ## Accepted decisions
 
@@ -43,7 +43,7 @@ The accepted public contract is documented in [Ava Versioning and Compatibility]
 
 - Added the public versioning and compatibility contract.
 - Added a Draft 2020-12 JSON Schema for the installed manifest.
-- Added schema navigation under `/templates/schemas/`.
+- Added schema navigation under `/distribution/schemas/`.
 - Aligned the distribution contract with payload checksums and mutable state validation.
 - Added versioned deprecation metadata and validation rules to the document metadata contract.
 - Updated repository navigation and conceptual history.

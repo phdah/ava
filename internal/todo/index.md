@@ -24,26 +24,19 @@ GitHub Release
 - Semantic compatibility of project-owned content is tracked separately from `ava_version`.
 - Project-owned upgrade changes happen through one explicit request that loads installed release guidance.
 - Active upgrade state directly selects the managed Upgrade Role before ordinary workflow or role routing.
-- Semantic Ava version reconciliation is not a workflow.
-- Workflows are optional explicitly invoked procedures. Ordinary requests route directly to a role.
-- The built-in catalog contains batch ingestion, bounded change review, complete role-catalog review, and bounded project-context audit.
-- Scoped `log.md` files remain conceptual history and may feed release notes, but release guidance states compatibility impact and required actions directly.
-- Release checksums protect byte integrity but do not independently authenticate bootstrap execution. Ava uses GitHub immutable release attestations for the initial verified publication path.
-- Public distribution contracts, release payload sources, and internal publication procedures must remain separate repository concerns.
+- Public distribution contracts, release payload sources, and internal publication procedures are separate repository concerns.
 - Internal Ava development roles remain separate from every distributed project bundle.
-- Upgrades use explicit release edges, durable transaction state, three-way managed reconciliation, deterministic migration descriptors, and managed pre-routing upgrade mode.
-- Normal project routing remains blocked until deterministic installation and required semantic migration reach a safe terminal state.
 
 ## Active roadmap
 
 1. [Format contract and base structure](01-format-contract/) - 3 of 4 complete; document update metadata remains as a follow-up
 2. [Core roles for initialized projects](02-core-roles/) - 4 of 4 complete
-3. [Workflow system](03-workflows/) - 4 of 6 complete; paused after the built-in catalog audit
-4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 5 of 9 complete; task 6 is next
+3. [Workflow system](03-workflows/) - 4 of 6 complete; active, with trigger portability next
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 6 of 9 complete; paused before installer implementation
 
-The next task separates public distribution contracts, release payload sources, and maintainer-only release procedures before installer implementation begins.
+The repository responsibility boundary is now explicit. Finish Phase 3 by defining workflow trigger portability and then workflow lifecycle ownership. Resume Phase 4 with the thin POSIX installer and updater only after both workflow tasks are complete.
 
-Workflow trigger portability, workflow lifecycle ownership, and the format metadata follow-up remain pending without replacing the current distribution task.
+The format metadata follow-up remains pending without replacing the current Phase 3 sequence.
 
 ## Task status
 

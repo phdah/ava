@@ -5,14 +5,14 @@ description: Defines Ava release tags, immutable assets, channels, integrity met
 tags: [ava, distribution, releases, github, integrity, authenticity, provenance]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T13:27:00+02:00
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Ava GitHub Release Assets
 
 This document defines the canonical GitHub Release contract for Ava. It specifies the immutable release identity, required assets, channels, integrity and authenticity model, publication transaction, post-publication verification, and retention guarantees.
 
-The installed ownership boundary is defined by [Ava Distribution and Ownership Boundary](distribution-and-ownership.md). Ava SemVer, installed release identity, and semantic compatibility are defined by [Ava Versioning and Compatibility](versioning-and-compatibility.md). The machine-readable release manifest conforms to [release.schema.json](schemas/release.schema.json).
+The installed ownership boundary is defined by [Ava Distribution and Ownership Boundary](ownership.md). Ava SemVer, installed release identity, and semantic compatibility are defined by [Ava Versioning and Compatibility](versioning.md). The machine-readable release manifest conforms to [release.schema.json](schemas/release.schema.json).
 
 # Release identity
 

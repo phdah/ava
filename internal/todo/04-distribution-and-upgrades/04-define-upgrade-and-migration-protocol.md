@@ -13,7 +13,7 @@ generated:
 
 # Define Upgrade and Migration Protocol
 
-The accepted public protocol is documented in [Ava Upgrade and Migration Protocol](/templates/upgrade-and-migration.md). Its durable transaction journal is defined by [upgrade.schema.json](/templates/schemas/upgrade.schema.json), and explicit release edges and migration descriptors are defined by the updated [release.schema.json](/templates/schemas/release.schema.json).
+The accepted public protocol is documented in [Ava Upgrade and Migration Protocol](/distribution/upgrades.md). Its durable transaction journal is defined by [upgrade.schema.json](/distribution/schemas/upgrade.schema.json), and explicit release edges and migration descriptors are defined by the updated [release.schema.json](/distribution/schemas/release.schema.json).
 
 ## Accepted decisions
 

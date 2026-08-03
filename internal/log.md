@@ -2,6 +2,13 @@
 
 This log records major conceptual and structural changes to Ava's internal development instructions. It does not replace Git history.
 
+## 2026-08-03
+
+* **Release responsibility separation**: Established `/distribution/` for public contracts and schemas, `/templates/` for release payload and scaffold sources, and `/internal/release/` for maintainer-only publication procedures.
+* **Publication procedure**: Added explicit maintainer preparation, approval, draft publication, post-publication verification, and immutable-release correction boundaries without duplicating deterministic release automation.
+* **Boundary validator**: Added a POSIX repository check for required contract locations, schema identifiers, template-root restrictions, stale references, and internal-content exclusion.
+* **Roadmap priority**: Completed the repository-boundary task, returned active work to Phase 3, and ordered workflow trigger portability before workflow lifecycle ownership. Installer work remains paused until both are complete.
+
 ## 2026-07-31
 
 * **Ownership boundary completion**: Completed the first versioned-distribution task and accepted `/AGENTS.md` plus `/.ava/` as the managed namespace, with project-owned extension and context paths remaining at the project root.

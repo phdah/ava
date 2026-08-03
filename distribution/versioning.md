@@ -12,7 +12,7 @@ generated:
 
 This document defines how Ava versions its managed distribution, records installed state, classifies compatible and incompatible changes, and distinguishes a successful base upgrade from completed migration of project-owned context.
 
-The distribution and ownership paths are defined by [Ava Distribution and Ownership Boundary](distribution-and-ownership.md). Release assets and bootstrap trust are defined separately by the GitHub release contract. Upgrade transaction mechanics and the Upgrade Role are defined by later contracts, but they must preserve the state and authority rules established here.
+The distribution and ownership paths are defined by [Ava Distribution and Ownership Boundary](ownership.md). Release assets and bootstrap trust are defined by [Ava GitHub Release Assets](releases.md). Upgrade transaction mechanics are defined by [Ava Upgrade and Migration Protocol](upgrades.md), and semantic guidance is defined by [Ava Release Guidance](guidance.md). Those contracts must preserve the state and authority rules established here.
 
 # Version identities
 
@@ -54,7 +54,7 @@ The canonical installed state file is:
 /.ava/state/manifest.json
 ```
 
-It is Ava-managed and conforms to [`templates/schemas/manifest.schema.json`](schemas/manifest.schema.json) in the source repository.
+It is Ava-managed and conforms to [`distribution/schemas/manifest.schema.json`](schemas/manifest.schema.json) in the source repository.
 
 The manifest is both:
 
@@ -234,7 +234,7 @@ It must not:
 - mark a version complete while unresolved decisions remain
 - claim compatibility beyond the installed `ava_version`
 
-The Upgrade Role definition and exact reconciliation procedure belong to the release-guidance task. They must implement, not redefine, this authority.
+The Upgrade Role definition and exact reconciliation procedure belong to the release-guidance contract. They must implement, not redefine, this authority.
 
 # Semantic Versioning policy
 
@@ -369,7 +369,7 @@ A release may require an intermediate waypoint when a migration must establish s
 
 Base upgrade while semantic migration is `partial` or `blocked` is allowed only when every traversed release explicitly declares that unresolved state can be carried forward and provides composed guidance. Otherwise semantic migration must be completed or resolved before the next base upgrade.
 
-The upgrade-protocol task defines the machine-readable path representation and transaction order.
+The upgrade protocol defines the machine-readable path representation and transaction order.
 
 # Deprecation and removal
 
@@ -394,7 +394,7 @@ After `1.0.0`:
 - `removal_not_before` must name a later MAJOR than `deprecated_since`
 - release notes and upgrade guidance must list newly deprecated and removed concepts
 
-The document metadata contract defines field shape and validation. Release guidance defines project-specific migration actions.
+The [document metadata contract](../templates/base/shared/instructions/document-metadata.md) defines field shape and validation. Release guidance defines project-specific migration actions.
 
 # Host conformance and compatibility claims
 

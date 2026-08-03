@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/phdah/ava/blob/main/templates/schemas/upgrade.schema.json",
+  "$id": "https://github.com/phdah/ava/blob/main/distribution/schemas/upgrade.schema.json",
   "title": "Ava upgrade transaction journal",
   "description": "Schema for the Ava-managed /.ava/state/upgrade.json durable upgrade transaction journal.",
   "type": "object",

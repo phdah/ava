@@ -5,7 +5,7 @@ description: Required metadata, document types, routing references, provenance, 
 tags: [ava, metadata, okf, documents, compatibility, ownership]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T12:08:00+02:00
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Purpose
@@ -14,7 +14,7 @@ Ava projects follow Open Knowledge Format version 0.2 and add only the metadata 
 
 Keep metadata open and extensible. Agents should make the best semantic classification available from the project context instead of forcing every document into a closed Ava taxonomy.
 
-Installed ownership and path authority are defined by the [distribution and ownership contract](../../../distribution-and-ownership.md). Ava release versions, semantic compatibility, and deprecation timelines are defined by the [versioning and compatibility contract](../../../versioning-and-compatibility.md). Document metadata must not be used to silently transfer ownership between Ava and the project.
+Installed ownership and path authority are defined by the [distribution and ownership contract](../../../../distribution/ownership.md). Ava release versions, semantic compatibility, and deprecation timelines are defined by the [versioning and compatibility contract](../../../../distribution/versioning.md). Document metadata must not be used to silently transfer ownership between Ava and the project.
 
 # Conformance layers
 
@@ -116,7 +116,7 @@ New or meaningfully modified documents should use:
 ```yaml
 generated:
   by: agent:<identifier>
-  at: 2026-07-31T12:08:00+02:00
+  at: 2026-08-03T10:00:00+02:00
 ```
 
 Existing `timestamp` fields are legacy metadata. Preserve them until the document is meaningfully modified, then replace them with `generated` metadata.
@@ -198,7 +198,7 @@ Use `generated` to identify the actor and time that produced the current documen
 ```yaml
 verified:
   - by: human:project-owner
-    at: 2026-07-31T12:08:00+02:00
+    at: 2026-08-03T10:00:00+02:00
 ```
 
 Missing `verified` metadata means unverified, not invalid.
@@ -344,7 +344,7 @@ sources:
     resource: /inbox/processed/ingestion-notes.md
 generated:
   by: agent:project-steward
-  at: 2026-07-31T12:08:00+02:00
+  at: 2026-08-03T10:00:00+02:00
 ---
 ```
 

@@ -4,7 +4,7 @@ Ava is a versioned, file-based context distribution for AI agents. It provides a
 
 Ava does not require an agent runtime, MCP server, or general-purpose CLI application. The files are the product. The host agent supplies filesystem access, search, editing, and version-control operations.
 
-> **Status:** Design phase. The public format, distribution ownership boundary, and versioning and compatibility contract are defined. Versioned release assets, installation, and upgrade support have not yet been implemented.
+> **Status:** Design phase. The public format, distribution ownership, versioning, release, upgrade, and semantic-guidance contracts are defined. Versioned release assembly, installation, and upgrade tooling have not yet been implemented.
 
 ## Name
 
@@ -50,13 +50,14 @@ This repository does not mirror the filesystem of an installed project.
 ```text
 Ava repository
 ├── README.md
-├── internal/          # repository-only development context
-└── templates/         # authored format and release source material
+├── distribution/      # public distribution contracts and schemas
+├── templates/         # authored release payload and scaffold sources
+└── internal/          # repository-only development and release procedures
 ```
 
-Release assembly maps repository sources to explicit installed destinations and ownership classes. The repository's `templates/base/` directory is not copied verbatim to a project, and its source paths do not determine installed ownership.
+Release assembly maps repository sources to explicit installed destinations and ownership classes. The repository's `templates/base/` directory is not copied verbatim to a project, and its source paths do not determine installed ownership. Public files under `distribution/` are contracts, not automatically installed payloads. Internal files are never distributed.
 
-The complete mapping, adoption rules, and collision behavior are defined by the [distribution and ownership contract](templates/distribution-and-ownership.md). Ava versions, installed manifest state, semantic compatibility, and support guarantees are defined by the [versioning and compatibility contract](templates/versioning-and-compatibility.md).
+The complete mapping, adoption rules, and collision behavior are defined by the [distribution and ownership contract](distribution/ownership.md). Ava versions, installed manifest state, semantic compatibility, and support guarantees are defined by the [versioning and compatibility contract](distribution/versioning.md).
 
 ## Installed-project layout
 
@@ -117,7 +118,7 @@ GitHub Releases are the canonical Ava distribution channel. Each release contain
 - human-readable change notes
 - agent-readable upgrade guidance
 - deterministic migration scripts when required
-- signed release provenance or attestations according to the finalized trust model
+- GitHub immutable release attestations
 
 The convenience installation path resolves the latest stable release:
 
@@ -133,12 +134,10 @@ curl -fsSL https://github.com/phdah/ava/releases/download/v1.2.3/ava-install.sh 
 
 These one-line commands execute the bootstrap installer before its checksum can be verified. Checksums downloaded from the same release protect payload integrity after the installer starts, but do not independently authenticate the bootstrap script or publisher.
 
-The release contract therefore defines two trust modes:
+The [release contract](distribution/releases.md) therefore defines two trust modes:
 
 1. **Convenience mode:** execute the immutable release installer directly and rely on GitHub account, repository, TLS, and release trust.
-2. **Verified mode:** download a pinned installer first, verify signed provenance or an attestation through a separately trusted mechanism, then execute it.
-
-The exact signing or attestation mechanism remains an implementation decision. Ava must not claim that release checksums alone make direct bootstrap execution independently verifiable.
+2. **Verified mode:** download a pinned installer first, verify the GitHub immutable release attestation and installer asset, then execute it.
 
 A mutable script fetched from `main` is not the recommended installation path.
 
@@ -247,7 +246,7 @@ The manifest records immutable managed files as checksum-protected `payload` and
 
 The OKF version and Ava version are separate. `okf_version` identifies the underlying knowledge-format compatibility level. `ava_version` identifies only the installed Ava base distribution.
 
-The complete policy, manifest fields, compatibility test, prerelease rules, upgrade paths, deprecation lifecycle, and support windows are defined by [Ava Versioning and Compatibility](templates/versioning-and-compatibility.md).
+The complete policy, manifest fields, compatibility test, prerelease rules, upgrade paths, deprecation lifecycle, and support windows are defined by [Ava Versioning and Compatibility](distribution/versioning.md).
 
 ## Upgrade model
 
@@ -285,7 +284,7 @@ A release therefore provides structured upgrade guidance that identifies:
 - required user decisions or conflict conditions
 - validation and completion criteria
 
-The release-guidance task decides the final representation under `/.ava/guidance/`.
+The complete representation and composition rules are defined by [Ava Release Guidance](distribution/guidance.md).
 
 ## OKF v0.2 structure
 
@@ -301,7 +300,7 @@ Ava follows Google's Open Knowledge Format version 0.2, especially its use of:
 
 Ava adapts these ideas for agent instructions rather than data-catalog metadata. It does not use BigQuery-specific concepts, resource identifiers, or a fixed data-oriented taxonomy.
 
-The authored document metadata and workflow instructions under `templates/base/shared/instructions/` define the current public format contracts. Release assembly maps them into the installed managed base.
+The authored document metadata and workflow instructions under `templates/base/shared/instructions/` define the current installed format contracts. Release assembly maps them into the installed managed base.
 
 ## Agent traversal model
 
@@ -356,7 +355,7 @@ The release installer may use standard tools such as `sh`, `curl`, `tar`, and ch
 
 Repository-specific development roles live under [`internal/`](internal/). They exist only to help develop Ava and must never be copied into distributed projects, templates, examples, or default role catalogs.
 
-The first internal role is the [Ava Internal Maintainer](internal/roles/ava-internal/).
+The first internal role is the [Ava Internal Maintainer](internal/roles/ava-internal/). Maintainer-only publication procedures live under [`internal/release/`](internal/release/).
 
 ## Roadmap direction
 
@@ -367,6 +366,7 @@ The implementation roadmap is tracked in [`internal/todo.md`](internal/todo.md).
 3. define Ava SemVer, installed-base versioning, and separate semantic compatibility state
 4. define immutable GitHub Release assets and bootstrap trust modes
 5. define deterministic upgrade, migration, and agent-guidance protocols
-6. implement a thin installer and updater with explicit version selection
-7. implement validation and fixtures for installation, adoption, and upgrades
-8. publish the first versioned Ava distribution
+6. complete workflow trigger portability and workflow lifecycle ownership
+7. implement a thin installer and updater with explicit version selection
+8. implement validation and fixtures for installation, adoption, and upgrades
+9. publish the first versioned Ava distribution

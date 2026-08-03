@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/phdah/ava/blob/main/templates/schemas/guidance.schema.json",
+  "$id": "https://github.com/phdah/ava/blob/main/distribution/schemas/guidance.schema.json",
   "title": "Ava upgrade guidance metadata",
   "description": "Schema for the parsed YAML frontmatter of an Ava-managed UPGRADE.md guidance document.",
   "type": "object",

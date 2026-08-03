@@ -4,9 +4,9 @@ okf_version: "0.2"
 
 # Ava Base Format Source
 
-This directory contains the current authored format and release source material for Ava-managed defaults and project-format examples.
+This directory contains the current authored release payload and project-scaffold source material for Ava-managed defaults and project-format examples.
 
-It is not copied verbatim to an installed project. The accepted [distribution and ownership contract](../distribution-and-ownership.md) maps managed base content into `/.ava/base/`, maps the canonical router to `/AGENTS.md`, and treats project extension paths as project-owned.
+It is not copied verbatim to an installed project. The accepted [distribution and ownership contract](../../distribution/ownership.md) maps managed base content into `/.ava/base/`, maps the canonical router to `/AGENTS.md`, and treats project extension paths as project-owned.
 
 Follow the linked indexes progressively instead of scanning the complete source tree.
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/phdah/ava/blob/main/templates/schemas/release.schema.json",
+  "$id": "https://github.com/phdah/ava/blob/main/distribution/schemas/release.schema.json",
   "title": "Ava Release Manifest",
   "description": "Machine-readable identity, asset inventory, installed mapping, explicit upgrade edges, migration descriptors, and compatibility declarations for one immutable Ava GitHub Release.",
   "type": "object",

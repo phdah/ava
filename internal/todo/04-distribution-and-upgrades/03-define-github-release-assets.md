@@ -13,7 +13,7 @@ generated:
 
 # Define GitHub Release Assets
 
-The accepted public contract is documented in [Ava GitHub Release Assets](/templates/github-release-assets.md). Its machine-readable release manifest is defined by [release.schema.json](/templates/schemas/release.schema.json).
+The accepted public contract is documented in [Ava GitHub Release Assets](/distribution/releases.md). Its machine-readable release manifest is defined by [release.schema.json](/distribution/schemas/release.schema.json).
 
 ## Accepted decisions
 

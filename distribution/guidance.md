@@ -5,12 +5,12 @@ description: Defines installed semantic-upgrade guidance, its release metadata, 
 tags: [ava, distribution, releases, guidance, upgrades, migration]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T15:35:00+02:00
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Ava Release Guidance
 
-This contract defines the Ava-managed guidance used by the Upgrade Role to reconcile project-owned context after deterministic installation of a new Ava base.
+This contract defines the Ava-managed guidance used by the Upgrade Role to reconcile project-owned context after deterministic installation of a new Ava base. It implements the semantic state defined by [Ava Versioning and Compatibility](versioning.md) and the transaction boundary defined by [Ava Upgrade and Migration Protocol](upgrades.md).
 
 Release guidance is explicit migration input. Scoped `log.md` files and release notes may explain history, but agents and tooling must not infer migration obligations from arbitrary historical prose.
 
