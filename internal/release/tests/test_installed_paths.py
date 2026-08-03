@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import importlib.util
+import json
+import re
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 
 SOURCE_ROOT = Path(__file__).resolve().parents[3]
 VALIDATOR_PATH = SOURCE_ROOT / "internal/release/validate-installed-paths.py"
@@ -14,6 +17,13 @@ assert spec and spec.loader
 validator = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = validator
 spec.loader.exec_module(validator)
+
+
+def schema_accepts(definition: dict[str, Any], value: str) -> bool:
+    if re.fullmatch(definition["pattern"], value) is None:
+        return False
+    excluded = definition.get("not", {}).get("anyOf", [])
+    return not any(re.search(item["pattern"], value) for item in excluded)
 
 
 class InstalledPathTests(unittest.TestCase):
@@ -53,6 +63,29 @@ class InstalledPathTests(unittest.TestCase):
                 "Read [root](../../AGENTS.md) and [index](../index.md).\n"
             )
             self.assertEqual(validator.ambiguous_findings(root), [])
+
+    def test_manifest_schema_path_contracts(self) -> None:
+        schema = json.loads(
+            (SOURCE_ROOT / "distribution/schemas/manifest.schema.json").read_text()
+        )
+        project_path = schema["$defs"]["projectPath"]
+        payload_path = schema["$defs"]["payloadFile"]["properties"]["path"]
+
+        self.assertTrue(schema_accepts(project_path, "./CODEX.md"))
+        for invalid in (
+            "CODEX.md",
+            "/CODEX.md",
+            "./AGENTS.md",
+            "./.ava/host.md",
+            "./../CODEX.md",
+            "./folder\\CODEX.md",
+            "./folder\x00CODEX.md",
+        ):
+            self.assertFalse(schema_accepts(project_path, invalid), invalid)
+
+        self.assertTrue(schema_accepts(payload_path, "/AGENTS.md"))
+        for invalid in ("AGENTS.md", "/../AGENTS.md", "/folder\\file.md", "/folder\x00file.md"):
+            self.assertFalse(schema_accepts(payload_path, invalid), invalid)
 
     def test_manifest_paths_remain_machine_identifiers(self) -> None:
         schema = (SOURCE_ROOT / "distribution/schemas/manifest.schema.json").read_text()
