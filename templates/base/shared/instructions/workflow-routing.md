@@ -1,18 +1,20 @@
 ---
 type: Shared Instruction
 title: Workflow Registry and Routing
-description: Deterministic managed and project-owned workflow registration, explicit invocation, role resolution, routing precedence, validation, and deprecation rules.
+description: Deterministic managed and project-owned workflow registration, explicit invocation, external trigger discovery, role resolution, routing precedence, validation, and deprecation rules.
 tags: [ava, workflows, registry, routing, validation]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T10:00:00+02:00
+  at: 2026-08-03T14:10:00+02:00
 ---
 
 # Purpose
 
-This instruction defines how managed and project-owned workflows become registered, how a request explicitly invokes one workflow, how the router resolves its primary role, and when routing must stop instead of guessing.
+This instruction defines how managed and project-owned workflows become registered, how a request or external executor explicitly invokes one workflow, how the router resolves its primary role, and when routing must stop instead of guessing.
 
 Workflow routing is deterministic. Ava does not infer a workflow from semantic similarity to an ordinary request.
+
+Portable trigger discovery and executor ownership follow [Workflow triggers](workflow-triggers.md).
 
 # Workflow registries
 
@@ -68,6 +70,23 @@ Workflow titles and descriptions are for humans and semantic discovery. They are
 
 A client may provide a dedicated workflow selector or structured invocation field. The resulting value must still resolve by canonical path or unambiguous filename stem according to this contract.
 
+# External trigger discovery and invocation
+
+An external executor may inspect registered workflows for portable `triggers` metadata according to [Workflow triggers](workflow-triggers.md).
+
+Discovery does not invoke a workflow. A matching trigger declaration only states that the workflow is suitable for that trigger kind.
+
+When an external executor invokes a discovered workflow, it must:
+
+1. retain and submit the canonical workflow path
+2. provide every required workflow input
+3. identify the invocation as explicit rather than free-form role work
+4. allow the normal managed upgrade-state, registration, validation, routing, role, authority, approval, and capability checks to run
+
+An executor must not use trigger metadata to bypass routing or execute an unregistered, invalid, deprecated, or blocked workflow.
+
+Ava does not validate or operate the external scheduler or event binding. It validates only the portable workflow declaration and the resulting explicit workflow invocation.
+
 # Routing precedence
 
 The managed upgrade-state check runs before ordinary workflow or role routing. When the upgrade protocol does not permit normal operation, workflow discovery and invocation remain blocked and the managed Upgrade Role is selected directly.
@@ -85,7 +104,7 @@ After the root router has loaded the instruction-resolution and workflow-routing
 1. Confirm that managed upgrade state permits normal routing.
 2. Resolve the invocation through the managed and project-owned workflow registries.
 3. Confirm that the workflow is registered and not deprecated.
-4. Validate the workflow metadata and body against the workflow-format contract.
+4. Validate the workflow metadata and body against the workflow-format and workflow-trigger contracts.
 5. Resolve `primary_role` to exactly one registered, non-deprecated ordinary `role.md` document.
 6. Reject a role whose activation contract reserves managed pre-routing.
 7. Read the selected role's `index.md` and every document it marks as required.
@@ -107,7 +126,7 @@ For a request without an explicit workflow invocation, the router must:
 5. resolve exactly one active role or ask the user when the choice is materially ambiguous
 6. load and announce that role before acting
 
-A free-form request may have the same intent as a known workflow without invoking it. In that case the role may perform ordinary work within its durable instructions, but the workflow's procedure, inputs, mode, required context, and expected output are not active.
+A free-form request may have the same intent as a known workflow without invoking it. In that case the role may perform ordinary work within its durable instructions, but the workflow's procedure, inputs, mode, required context, triggers, and expected output are not active.
 
 # Registered role resolution
 
@@ -142,12 +161,13 @@ Routing must stop before execution when:
 - the workflow invocation is unresolved or ambiguous
 - the resolved file is not registered
 - the workflow is deprecated
-- required workflow metadata or body structure is invalid
+- required workflow metadata, trigger metadata, or body structure is invalid
 - `primary_role` is missing, malformed, unresolved, unregistered, deprecated, or reserved for managed pre-routing
 - a required-context link is broken
 - a required input is missing
 - the procedure contradicts the declared mode
 - the workflow attempts role composition, delegation, or a role transition
+- an external executor attempts to bypass normal invocation checks
 - an active authority or instruction conflict remains unresolved
 
 A failed explicit workflow invocation must not fall back to free-form role selection. The router must report the blocking reason and the user decision or correction required.
@@ -165,7 +185,7 @@ replaced_by: /.ava/base/workflows/new-workflow.md
 
 `replaced_by` must resolve to one registered workflow whose status is not `deprecated`.
 
-The router must report the replacement but must not redirect automatically. The replacement may have different inputs, mode, required context, procedure, primary role, or expected output, so invoking it requires an explicit new selection.
+The router must report the replacement but must not redirect automatically. The replacement may have different inputs, mode, required context, procedure, primary role, triggers, or expected output, so invoking it requires an explicit new selection.
 
 A workflow whose `primary_role` is deprecated or reserved for managed pre-routing is invalid. The router must not automatically follow the role's `replaced_by` value. The workflow must be explicitly migrated to a valid registered ordinary role and reviewed as a workflow contract change.
 
@@ -189,22 +209,24 @@ Treat these as errors or blocking findings:
 - a workflow registry link that is broken, duplicated, escapes its workflow root, or bypasses direct-child indexing
 - an explicit workflow name resolving to zero or multiple registered workflows
 - invocation of a deprecated workflow
-- malformed workflow metadata or body structure
+- malformed workflow metadata, trigger metadata, or body structure
 - a `primary_role` that does not resolve to exactly one registered, non-deprecated ordinary `role.md`
 - a workflow referencing a role reserved for managed pre-routing
 - a broken required-context link
 - a missing required input
 - automatic fallback from a failed workflow invocation to role selection
 - automatic redirection through `replaced_by`
+- an external executor invoking an inferred workflow rather than an explicit canonical path
 
 Treat these as warnings or semantic findings:
 
 - a draft workflow being invoked
 - multiple registered workflows sharing a filename stem, because shorthand invocation becomes unavailable
-- workflow titles or descriptions that make discovery unclear
+- workflow titles, descriptions, or trigger descriptions that make discovery unclear
 - a deprecated workflow without a replacement
 - references to a deprecated workflow outside the known migration scope
 - a registered workflow that appears to duplicate ordinary role work rather than satisfy the workflow admission criteria
+- an external binding that cannot be verified from portable Ava context
 
 Semantic ambiguity involving authority, policy, destructive action, or compatibility must remain blocking until the user resolves it.
 
@@ -225,6 +247,14 @@ review-change
 /workflows/review-deployment.md
 review-deployment
 ```
+
+An external executor that discovers a matching trigger should retain and invoke the canonical path:
+
+```text
+/.ava/base/workflows/review-change.md
+```
+
+It must not infer another workflow from the event payload or invoke a title.
 
 If both of these exist:
 

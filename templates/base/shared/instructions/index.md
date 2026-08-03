@@ -7,4 +7,5 @@
 - [Document metadata](document-metadata.md) - Required metadata, document types, provenance, lifecycle, validation, and compatibility rules.
 - [Workflow format](workflow-format.md) - Portable workflow structure, operating modes, inputs, outputs, context links, and validation rules.
 - [Workflow registry and routing](workflow-routing.md) - Deterministic workflow registration, explicit invocation, primary-role resolution, routing precedence, validation, and deprecation rules.
+- [Workflow triggers](workflow-triggers.md) - Portable manual, schedule, and event trigger intent, external executor discovery, validation, and scheduler ownership boundaries.
 - [Knowledge organization](knowledge-organization.md) - Rules for classifying, creating, linking, and maintaining trusted knowledge.

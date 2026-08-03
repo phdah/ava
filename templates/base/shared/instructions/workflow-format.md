@@ -1,11 +1,11 @@
 ---
 type: Shared Instruction
 title: Workflow Format
-description: Portable structure, admission criteria, operating modes, inputs, outputs, context links, and validation rules for Ava workflows.
+description: Portable structure, admission criteria, operating modes, inputs, outputs, context links, trigger metadata, and validation rules for Ava workflows.
 tags: [ava, workflows, format, validation]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T10:00:00+02:00
+  at: 2026-08-03T12:20:00+02:00
 ---
 
 # Purpose
@@ -14,7 +14,7 @@ A workflow is an optional reusable predefined prompt for one bounded procedure o
 
 A workflow must remain readable as ordinary Markdown while exposing enough stable structure for host agents and available validation tools to validate and invoke it consistently.
 
-Workflow registration, invocation identity, routing precedence, role resolution, and deprecation follow [Workflow registry and routing](workflow-routing.md).
+Workflow registration, invocation identity, routing precedence, role resolution, and deprecation follow [Workflow registry and routing](workflow-routing.md). Portable trigger intent and executor boundaries follow [Workflow triggers](workflow-triggers.md).
 
 # Workflow admission criteria
 
@@ -71,9 +71,9 @@ A proposed workflow likely belongs in role instructions or deterministic tooling
 
 Managed workflows are Ava-managed release payloads and are installed or replaced deterministically with the rest of the managed base. Project-owned workflows remain project-owned and must not be overwritten by an Ava release.
 
-Adding, removing, renaming, or changing a workflow can affect invocation identity, ambiguity, primary-role resolution, required inputs, operating mode, and intended behavior. These changes follow the [versioning and compatibility contract](../../../versioning-and-compatibility.md), release notes, and upgrade guidance.
+Adding, removing, renaming, or changing a workflow can affect invocation identity, ambiguity, primary-role resolution, required inputs, operating mode, trigger discovery, and intended behavior. These changes follow the [versioning and compatibility contract](../../../versioning-and-compatibility.md), release notes, and upgrade guidance.
 
-Ava defines and validates workflow documents. It does not provide a persistent workflow execution runtime, scheduler, or workflow state service.
+Ava defines and validates workflow documents. It does not provide a persistent workflow execution runtime, scheduler, event source, or workflow state service.
 
 # Identity and naming
 
@@ -114,6 +114,7 @@ Rules:
 - A role using `activation_mode: managed-pre-routing` is invalid as a workflow `primary_role`.
 - `mode` must be `read-only`, `suggestion`, or `mutation`.
 - `status` follows the shared lifecycle contract and remains optional.
+- `triggers` is optional and follows [Workflow triggers](workflow-triggers.md).
 - A deprecated workflow may declare one bundle-root-relative `replaced_by` workflow path, but routing must not follow it automatically.
 - Unknown valid metadata must be preserved for forward compatibility.
 
@@ -225,11 +226,15 @@ A workflow must not:
 
 Normal links to related documentation are allowed, but they must not imply workflow or role activation.
 
-# Trigger boundary
+# Trigger metadata
 
-This contract defines no portable trigger metadata. Unknown trigger-related fields must be preserved but have no Ava execution or validation semantics yet.
+A workflow may declare optional `triggers` metadata for portable manual, scheduled, or event-driven discovery.
 
-A workflow may include an optional `Trigger notes` section for human-readable, advisory context. External scheduling and event configuration remain outside Ava. The dedicated trigger-portability contract will decide recognized trigger metadata and executor discovery.
+Trigger metadata is validated but advisory for execution. It does not configure an executor, grant permission, bypass normal routing, or make an invalid or unregistered workflow executable.
+
+Executable scheduler and event configuration remains outside the workflow document. Follow [Workflow triggers](workflow-triggers.md) for recognized fields, discovery rules, executor ownership, examples, and validation.
+
+The optional `Trigger notes` body section remains human-readable supporting context. It must not contradict the structured trigger metadata or contain environment-specific executable configuration.
 
 # Validation
 
@@ -239,6 +244,7 @@ Treat these as errors:
 - a workflow file that is not registered through the correct managed or project-owned workflow registry
 - a `primary_role` that is absent, unresolved, not bundle-root-relative, deprecated, reserved for managed pre-routing, or does not identify exactly one registered `role.md`
 - a missing or unsupported `mode`
+- malformed trigger metadata under the workflow-trigger contract
 - a missing, duplicate, empty, or incorrectly ordered required body section
 - a level-one heading that does not match `title`
 - duplicate or malformed input names
@@ -257,7 +263,7 @@ Treat these as warnings or semantic findings:
 - an expected output that does not make completion reporting clear
 - likely duplication of the primary role's durable instructions
 - failure to satisfy the workflow admission criteria
-- trigger-like metadata that has no recognized semantics
+- unknown trigger fields or vague trigger descriptions under the workflow-trigger contract
 - a draft workflow being invoked
 - a deprecated workflow without a valid replacement
 
@@ -273,6 +279,11 @@ description: Audits a bounded project-context scope.
 primary_role: /.ava/base/roles/project-steward/role.md
 mode: suggestion
 status: stable
+triggers:
+  - kind: manual
+    description: Run when a maintainer requests a bounded audit.
+  - kind: schedule
+    description: Run periodically through an externally configured scheduler.
 ---
 
 # Audit project context
@@ -309,6 +320,8 @@ The following are invalid:
 - a `read-only` workflow tells the agent to update files
 - the workflow declares `supporting_role` or instructs the primary role to delegate
 - an optional input omits `Default`
+- a schedule trigger embeds a cron expression or time zone
+- an event trigger embeds provider-specific event filters, secrets, or webhook configuration
 - `Procedure` is replaced by copied role instructions
 - a workflow exists beneath a managed or project-owned workflow root but is omitted from its registry index
 - a deprecated workflow is executed or automatically redirected
@@ -320,3 +333,4 @@ The following require clarification or correction before reliable invocation:
 - an input says only `scope` without defining what form the value takes
 - the expected output does not say whether a suggestion should be applied
 - a shorthand workflow name matches more than one registered workflow path
+- a trigger description is too vague for an external executor owner to configure a binding
