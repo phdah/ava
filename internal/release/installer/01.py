@@ -52,7 +52,7 @@ def validate_release_manifest(manifest: Any, expected_version: str) -> None:
         if not SHA256_RE.fullmatch(item["sha256"]):
             raise AvaError("INVALID_MANIFEST", f"invalid installed checksum: {item['destination']}")
         if item["ownership"] == "ava-managed":
-            if item["operation"] != "replace-managed" or item["role"] not in {"router", "base", "bootstrap", "state"}:
+            if item["operation"] != "replace-managed" or item["role"] not in {"router", "base", "state"}:
                 raise AvaError("INVALID_MANIFEST", f"invalid managed mapping: {item['destination']}")
         elif item["ownership"] == "project-owned":
             if item["operation"] != "create-if-absent" or item["role"] != "scaffold":
