@@ -6,6 +6,9 @@ tags: [internal, planning, roadmap, todo]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T15:15:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-03T21:29:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -16,9 +19,9 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Define document update metadata](todo/01-format-contract/04-define-document-update-metadata.md).
+[Create the Ava Maintenance role](todo/02-core-roles/05-create-ava-maintenance-role.md).
 
-The installer and updater are implemented, installed project paths use an explicit project-root convention, and the default installer now provides project-owned OpenCode permissions while preserving existing configuration. Define the document-update metadata contract next, then add the agent-facing Ava Maintenance role before freezing the full conformance and upgrade matrix. Release qualification then proceeds through alpha publication, real-project dogfooding, an RC gate, and the stable `1.0.0` release.
+The installer and updater are implemented, installed project paths use an explicit project-root convention, the default installer provides project-owned OpenCode permissions while preserving existing configuration, and the public document-update metadata contract is complete. Add the agent-facing Ava Maintenance role next, then freeze the full conformance and upgrade matrix. Release qualification proceeds through alpha publication, real-project dogfooding, an RC gate, and the stable `1.0.0` release.
 
 Alpha findings may add bounded fix tasks before release-candidate or stable publication. The roadmap must reflect those tasks rather than treating the first prerelease as feature-complete by definition.
 
