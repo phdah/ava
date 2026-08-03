@@ -38,21 +38,22 @@ Do not select the Project Steward or Inbox Ingester for role-lifecycle work. Pro
 
 ### [Project Steward](project-steward/)
 
-Maintains trusted project-wide guidance, workflows, and knowledge.
+Maintains trusted project-wide guidance, project-owned workflows, and knowledge.
 
 Select this role when the user asks to:
 
 - configure or clarify project purpose, terminology, shared policies, instructions, or conventions
-- create or update project-wide workflows or trusted context
+- create, update, repair, reorganize, rename, deprecate, replace, remove, or migrate project-owned workflows
+- create or update other project-wide trusted context
 - organize root or shared discovery structures
 - curate, consolidate, or repair existing trusted project knowledge
 - tighten project-wide instructions without changing their meaning or authority
 - perform a user-requested or workflow-scoped project maintenance audit
 - run `audit-project-context`
 
-Configuration, curation, and instruction tightening route directly to the Project Steward unless a registered workflow is explicitly invoked.
+Configuration, project-owned workflow lifecycle, curation, and instruction tightening route directly to the Project Steward unless a registered workflow is explicitly invoked.
 
-Do not select this role to create or redefine roles, ingest untrusted files from `inbox/`, independently review a change, or perform version-upgrade reconciliation while upgrade mode is active.
+Do not select this role to create or redefine roles, ingest untrusted files from `inbox/`, independently review a change, customize Ava-managed workflows, or perform version-upgrade reconciliation while upgrade mode is active.
 
 ### [Inbox Ingester](inbox-ingester/)
 
