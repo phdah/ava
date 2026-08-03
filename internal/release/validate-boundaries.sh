@@ -31,19 +31,26 @@ for path in \
   distribution/schemas/guidance.schema.json \
   templates/index.md \
   templates/base/index.md \
+  templates/base/base-index.md \
+  templates/base/scaffold/index.md \
+  templates/installer/index.md \
+  templates/installer/ava-install.sh \
   internal/release/index.md \
-  internal/release/procedure.md
+  internal/release/procedure.md \
+  internal/release/build-assets.sh \
+  internal/release/test-installer.sh
 do
   require_file "$path"
 done
 
 require_dir templates/base
+require_dir templates/installer/engine
 
 for path in "$ROOT"/templates/* "$ROOT"/templates/.[!.]* "$ROOT"/templates/..?*
 do
   [ -e "$path" ] || continue
   case "$path" in
-    "$ROOT/templates/index.md"|"$ROOT/templates/base") ;;
+    "$ROOT/templates/index.md"|"$ROOT/templates/base"|"$ROOT/templates/installer") ;;
     *) fail "unexpected templates root entry: ${path#"$ROOT/"}" ;;
   esac
 done
@@ -66,6 +73,24 @@ do
   grep -F '"$id":' "$file" >/dev/null || fail "schema has no id: ${file#"$ROOT/"}"
   grep -F "$expected" "$file" >/dev/null || fail "schema id is not canonical: ${file#"$ROOT/"}"
 done
+
+for script in \
+  templates/installer/ava-install.sh \
+  internal/release/build-assets.sh \
+  internal/release/test-installer.sh \
+  internal/release/validate-boundaries.sh
+do
+  sh -n "$ROOT/$script" || fail "invalid POSIX shell syntax: $script"
+done
+
+python3 - "$ROOT/templates/installer/engine" <<'PY' || exit 1
+import pathlib, sys
+root = pathlib.Path(sys.argv[1])
+parts = sorted(path for path in root.rglob('*') if path.is_file())
+if not parts:
+    raise SystemExit('ERROR: installer engine has no source fragments')
+compile(b''.join(path.read_bytes() for path in parts), 'installer/engine.py', 'exec')
+PY
 
 stale_pattern='templates/(distribution-and-ownership|versioning-and-compatibility|github-release-assets|upgrade-and-migration|release-guidance)\.md|templates/schemas/'
 
