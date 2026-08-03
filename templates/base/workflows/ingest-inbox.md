@@ -2,12 +2,12 @@
 type: Workflow
 title: Ingest inbox
 description: Classifies and ingests every pending direct child of the project inbox while preserving trust boundaries, provenance, and original sources.
-primary_role: /roles/inbox-ingester/role.md
+primary_role: /.ava/base/roles/inbox-ingester/role.md
 mode: mutation
 status: stable
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-28T14:13:00Z
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Ingest inbox
@@ -15,6 +15,8 @@ generated:
 ## Purpose
 
 Process every pending direct child of `/inbox/` independently and move only successfully ingested sources to `/inbox/processed/`.
+
+This workflow provides reusable batch semantics across all pending sources. A free-form request to ingest one selected source routes directly to the Inbox Ingester without invoking this workflow.
 
 ## Inputs
 

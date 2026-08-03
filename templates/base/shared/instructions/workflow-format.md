@@ -1,20 +1,79 @@
 ---
 type: Shared Instruction
 title: Workflow Format
-description: Portable structure, operating modes, inputs, outputs, context links, and validation rules for Ava workflows.
+description: Portable structure, admission criteria, operating modes, inputs, outputs, context links, and validation rules for Ava workflows.
 tags: [ava, workflows, format, validation]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-30T15:26:00Z
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Purpose
 
-A workflow is a reusable predefined prompt for one bounded procedure or outcome. It activates exactly one primary role and supplies procedure-specific scope, inputs, operating mode, required context, steps, and expected output.
+A workflow is an optional reusable predefined prompt for one bounded procedure or outcome. It activates exactly one primary role and supplies procedure-specific scope, inputs, operating mode, required context, steps, and expected output.
 
 A workflow must remain readable as ordinary Markdown while exposing enough stable structure for host agents and available validation tools to validate and invoke it consistently.
 
 Workflow registration, invocation identity, routing precedence, role resolution, and deprecation follow [Workflow registry and routing](workflow-routing.md).
+
+# Workflow admission criteria
+
+Add or retain a workflow only when all of these conditions hold:
+
+- the procedure or outcome is expected to recur across more than one instance
+- the scope is bounded enough to execute and report without an unrestricted project scan
+- the inputs define meaningful variation, or the workflow has a clear fixed batch scope
+- the operating mode materially constrains whether the workflow reports, proposes, or applies changes
+- the procedure adds ordering, isolation, batch semantics, audit criteria, review criteria, or another useful constraint beyond the primary role's durable instructions
+- the expected output standardizes evidence, completion, unresolved decisions, or another result that ordinary role work does not already guarantee
+- required context can be identified without activating another role or loading unrelated project content
+- exactly one registered role owns the complete authority boundary
+- the procedure is semantic agent work rather than deterministic installation, replacement, migration, integrity, or validation mechanics
+
+Useful workflow categories include bounded audits, standardized semantic reviews, batch processing, recurring maintenance scopes, and migration preparation that does not perform deterministic upgrade mechanics.
+
+# Free-form role boundary
+
+An ordinary request within a role's durable responsibilities selects that role directly. A workflow must not be required merely to create, update, repair, configure, curate, tighten, or otherwise perform routine work already defined by the role.
+
+A free-form request may have the same broad intent as a workflow. The workflow's inputs, mode, required context, procedure, and expected output become active only through explicit invocation.
+
+A workflow is not justified only because a command-like name is convenient.
+
+# Deterministic tooling boundary
+
+The following belong to deterministic release or validation tooling rather than workflows:
+
+- installation and adoption transactions
+- managed-file replacement or restoration
+- checksum and provenance verification
+- deterministic migration execution and journaling
+- manifest and state-schema validation
+- structural, metadata, required-path, and link validation
+
+A workflow may request or consume deterministic validation results, but it must not reproduce those mechanics as semantic prose.
+
+Semantic Ava version reconciliation is also not a workflow. Active upgrade state directly selects the managed Upgrade Role under the upgrade-routing contract.
+
+# Warning signs
+
+A proposed workflow likely belongs in role instructions or deterministic tooling when:
+
+- its name is only a verb-and-object alias for routine role work
+- its procedure mostly repeats the primary role's general working method
+- its only result is a generic list of changed files
+- it wraps one-off work without a reusable scope or outcome
+- it performs fixed filesystem, checksum, manifest, migration, or validation operations
+- it exists only to select a role that free-form routing already selects unambiguously
+- removing the workflow would not remove any meaningful inputs, mode boundary, procedure, or output contract
+
+# Versioning boundary
+
+Managed workflows are Ava-managed release payloads and are installed or replaced deterministically with the rest of the managed base. Project-owned workflows remain project-owned and must not be overwritten by an Ava release.
+
+Adding, removing, renaming, or changing a workflow can affect invocation identity, ambiguity, primary-role resolution, required inputs, operating mode, and intended behavior. These changes follow the [versioning and compatibility contract](../../../versioning-and-compatibility.md), release notes, and upgrade guidance.
+
+Ava defines and validates workflow documents. It does not provide a persistent workflow execution runtime, scheduler, or workflow state service.
 
 # Identity and naming
 
@@ -23,14 +82,14 @@ The workflow file path is its stable identity. Do not add a separate `workflow_i
 Workflow filenames must use lowercase kebab-case and describe the procedure as an action, such as:
 
 ```text
-configure-project.md
-curate-project-knowledge.md
+audit-project-context.md
+ingest-inbox.md
 review-change.md
 ```
 
 The metadata `title` is the human-readable name. It must be non-empty and should describe the same action as the filename. Titles do not need to be globally unique because identity comes from the path.
 
-A workflow becomes invokable only when it is registered through `/workflows/index.md`. A canonical path identifies one registered workflow; a filename stem may be used only when it resolves unambiguously under the workflow-routing contract.
+A workflow becomes invokable only when it is registered through the managed or project-owned workflow registry. A canonical path identifies one registered workflow; a filename stem may be used only when it resolves unambiguously under the workflow-routing contract.
 
 # Required metadata
 
@@ -39,10 +98,10 @@ Every workflow must follow [Document metadata](document-metadata.md) and include
 ```yaml
 ---
 type: Workflow
-title: Configure project
-description: Establishes or updates project-wide purpose and shared guidance.
-primary_role: /roles/project-steward/role.md
-mode: mutation
+title: Audit project context
+description: Audits a bounded project-context scope.
+primary_role: /.ava/base/roles/project-steward/role.md
+mode: suggestion
 status: stable
 ---
 ```
@@ -51,7 +110,8 @@ Rules:
 
 - `type` must be `Workflow`.
 - `title` and `description` must be non-empty strings.
-- `primary_role` must be a bundle-root-relative path to exactly one registered, non-deprecated `role.md` document.
+- `primary_role` must be a bundle-root-relative path to exactly one registered, non-deprecated ordinary `role.md` document.
+- A role using `activation_mode: managed-pre-routing` is invalid as a workflow `primary_role`.
 - `mode` must be `read-only`, `suggestion`, or `mutation`.
 - `status` follows the shared lifecycle contract and remains optional.
 - A deprecated workflow may declare one bundle-root-relative `replaced_by` workflow path, but routing must not follow it automatically.
@@ -96,7 +156,7 @@ Use `None.` when the workflow accepts no inputs. Otherwise, define each input wi
 ### `scope`
 
 - Required: yes
-- Description: Project area or set of files to configure.
+- Description: Project area or set of files to inspect.
 ```
 
 An optional input must declare its default:
@@ -176,8 +236,8 @@ A workflow may include an optional `Trigger notes` section for human-readable, a
 Treat these as errors:
 
 - missing or malformed required workflow metadata
-- a workflow file that is not registered through `/workflows/index.md`
-- a `primary_role` that is absent, unresolved, not bundle-root-relative, deprecated, or does not identify exactly one registered `role.md`
+- a workflow file that is not registered through the correct managed or project-owned workflow registry
+- a `primary_role` that is absent, unresolved, not bundle-root-relative, deprecated, reserved for managed pre-routing, or does not identify exactly one registered `role.md`
 - a missing or unsupported `mode`
 - a missing, duplicate, empty, or incorrectly ordered required body section
 - a level-one heading that does not match `title`
@@ -196,6 +256,7 @@ Treat these as warnings or semantic findings:
 - vague input descriptions or defaults
 - an expected output that does not make completion reporting clear
 - likely duplication of the primary role's durable instructions
+- failure to satisfy the workflow admission criteria
 - trigger-like metadata that has no recognized semantics
 - a draft workflow being invoked
 - a deprecated workflow without a valid replacement
@@ -207,46 +268,35 @@ Semantic ambiguity requiring authority, policy, routing, compatibility, or destr
 ```markdown
 ---
 type: Workflow
-title: Configure project
-description: Establishes or updates project-wide purpose and shared guidance.
-primary_role: /roles/project-steward/role.md
-mode: mutation
+title: Audit project context
+description: Audits a bounded project-context scope.
+primary_role: /.ava/base/roles/project-steward/role.md
+mode: suggestion
 status: stable
 ---
 
-# Configure project
+# Audit project context
 
 ## Purpose
 
-Configure a bounded part of the project's shared guidance from approved user decisions.
+Audit a bounded project-context scope and propose prioritized maintenance.
 
 ## Inputs
 
 ### `scope`
 
 - Required: yes
-- Description: Project-wide topic or set of files to configure.
-
-### `include_examples`
-
-- Required: no
-- Description: Whether changed guidance should include illustrative examples.
-- Default: no
-
-## Required context
-
-- [Document metadata](/shared/instructions/document-metadata.md)
+- Description: Project-wide files, directories, indexes, or concern to inspect.
 
 ## Procedure
 
-1. Inspect the approved scope and existing authoritative project guidance.
-2. Identify material ambiguity before changing policy or authority.
-3. Apply the smallest coherent project-wide change.
-4. Update affected discovery and scoped history when required.
+1. Inspect only the approved scope and its nearest discovery context.
+2. Record evidence for supported maintenance findings.
+3. Rank proposed actions without modifying project files.
 
 ## Expected output
 
-Return the files changed, the validation performed, and any unresolved decision. Apply approved changes because this workflow uses `mutation` mode.
+Return prioritized findings, evidence, responsible owners, and unresolved decisions. Do not apply changes because this workflow uses `suggestion` mode.
 ```
 
 # Invalid and ambiguous examples
@@ -254,14 +304,15 @@ Return the files changed, the validation performed, and any unresolved decision.
 The following are invalid:
 
 - `primary_role` is a list or points to a role `index.md` rather than one `role.md`
-- `primary_role` points to an unregistered or deprecated role
+- `primary_role` points to an unregistered, deprecated, or managed pre-routing role
 - `mode: write` uses an unsupported mode
 - a `read-only` workflow tells the agent to update files
 - the workflow declares `supporting_role` or instructs the primary role to delegate
 - an optional input omits `Default`
 - `Procedure` is replaced by copied role instructions
-- a workflow exists beneath `/workflows/` but is omitted from its registry index
+- a workflow exists beneath a managed or project-owned workflow root but is omitted from its registry index
 - a deprecated workflow is executed or automatically redirected
+- a workflow only renames ordinary role work without adding a reusable procedure or outcome
 
 The following require clarification or correction before reliable invocation:
 

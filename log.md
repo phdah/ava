@@ -2,6 +2,14 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-08-03
+
+* **Workflow purpose boundary**: Defined workflows as optional explicit procedural scopes that require repeatable bounded value beyond ordinary free-form role work.
+* **Reduced built-in workflow catalog**: Reduced the managed catalog from ten workflows to four: batch inbox ingestion, bounded change review, complete role-catalog review, and bounded project-context audit.
+* **Free-form role work**: Removed command-like role lifecycle and routine stewardship workflows while retaining their behavior through direct Role Manager and Project Steward routing.
+* **Managed workflow routing**: Aligned workflow and primary-role resolution with managed `/.ava/base/` registries and project-owned extension registries, excluding the managed Upgrade Role from workflow routing.
+* **Workflow compatibility**: Defined managed workflow replacement, project-owned semantic migration, and pre-`1.0.0` direct-removal boundaries.
+
 ## 2026-07-31
 
 * **Release guidance contract**: Defined canonical installed `UPGRADE.md` guidance with validated source-to-target metadata, explicit changed contracts, affected project-owned concepts, required decisions, semantic procedures, completion criteria, rollback implications, and ordered multi-version composition.

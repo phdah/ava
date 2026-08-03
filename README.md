@@ -94,6 +94,8 @@ Ava distinguishes four public concepts:
 3. **Shared instructions** define routing, metadata, history, ownership, and other common contracts.
 4. **Knowledge** provides trusted project context that roles and workflows load when relevant.
 
+Workflows are optional explicit procedural scopes, not command aliases for ordinary role work. A free-form request selects a role directly. A workflow is justified only when it adds repeatable scope, meaningful inputs, an operating mode, procedure-specific constraints, or a standardized expected output.
+
 The intended relationship is:
 
 ```text
@@ -102,7 +104,7 @@ explicit workflow -> exactly one primary role
 role or workflow -> managed contracts plus relevant project context
 ```
 
-Roles and workflows remain ordinary Markdown. Deterministic installation, integrity verification, managed-file replacement, and mechanical migrations belong to release tooling rather than agent roles.
+Roles and workflows remain ordinary Markdown. Deterministic installation, integrity verification, managed-file replacement, mechanical migrations, and structural validation belong to release tooling rather than workflows or agent roles.
 
 ## Distribution through GitHub Releases
 

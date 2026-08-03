@@ -3,6 +3,9 @@ type: Agent Role
 title: Inbox Ingester
 description: Classifies and ingests untrusted or unclassified inbox material into structured project knowledge.
 tags: [ava, role, inbox-ingester, ingestion]
+generated:
+  by: agent:openai-chatgpt
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Purpose
@@ -16,7 +19,9 @@ Select this role when the user asks to:
 - inspect, classify, or ingest pending material from `inbox/`
 - ingest one selected inbox source
 - merge unclassified source material into relevant project documents
-- run `ingest-inbox` or `ingest-selected-source`
+- run `ingest-inbox` to process every pending direct inbox source
+
+A request to ingest one selected source is ordinary free-form role work and does not require a separate workflow.
 
 Do not select this role for general maintenance of existing trusted knowledge, role definition, or independent review.
 
