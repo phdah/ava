@@ -7,7 +7,7 @@ This log records major conceptual and structural changes to Ava's internal devel
 * **Release responsibility separation**: Established `/distribution/` for public contracts and schemas, `/templates/` for release payload and scaffold sources, and `/internal/release/` for maintainer-only publication procedures.
 * **Publication procedure**: Added explicit maintainer preparation, approval, draft publication, post-publication verification, and immutable-release correction boundaries without duplicating deterministic release automation.
 * **Boundary validator**: Added a POSIX repository check for required contract locations, schema identifiers, template-root restrictions, stale references, and internal-content exclusion.
-* **Roadmap advance**: Completed the repository-boundary task and set the thin installer and updater as the next active task.
+* **Roadmap priority**: Completed the repository-boundary task, returned active work to Phase 3, and ordered workflow trigger portability before workflow lifecycle ownership. Installer work remains paused until both are complete.
 
 ## 2026-07-31
 
