@@ -13,7 +13,7 @@ AMBIGUOUS_PROJECT_PATH_RE = re.compile(
     r"(?<![.A-Za-z0-9_:/-])"
     r"(/(?:AGENTS\.md|\.ava(?=/|\b)|roles/|workflows/|shared/|knowledge/|inbox/|index\.md|log\.md))"
 )
-ROOT_LINK_RE = re.compile(r"\]\((\./[^)#\s]+)(?:#[^)]+)?\)")
+PROJECT_PATH_RE = re.compile(r"\./[A-Za-z0-9._/-]+")
 GENERATED_ROOTS = (
     "./.ava/state/",
     "./.ava/guidance/",
@@ -78,14 +78,17 @@ def source_for_installed_path(root: Path, value: str) -> Path | None:
         return root / "templates/project-scaffolds" / value.removeprefix("./")
     if value.startswith(PROJECT_EXTENSION_ROOTS):
         return root / "templates/project-scaffolds" / value.removeprefix("./")
-    raise ValueError(f"unclassified project-root link: {value}")
+    raise ValueError(f"unclassified project-root path: {value}")
 
 
-def unresolved_router_links(root: Path) -> list[str]:
+def router_project_paths(root: Path) -> list[str]:
     router = root / "templates/base/AGENTS.md"
-    values = ROOT_LINK_RE.findall(router.read_text())
+    return sorted(set(PROJECT_PATH_RE.findall(router.read_text())))
+
+
+def unresolved_router_paths(root: Path) -> list[str]:
     unresolved: list[str] = []
-    for value in values:
+    for value in router_project_paths(root):
         try:
             source = source_for_installed_path(root, value)
         except ValueError:
@@ -98,7 +101,10 @@ def unresolved_router_links(root: Path) -> list[str]:
 
 def validate(root: Path) -> list[str]:
     errors = [finding.format(root) for finding in ambiguous_findings(root)]
-    errors.extend(f"templates/base/AGENTS.md: unresolved project-root link {value!r}" for value in unresolved_router_links(root))
+    errors.extend(
+        f"templates/base/AGENTS.md: unresolved project-root path {value!r}"
+        for value in unresolved_router_paths(root)
+    )
 
     router = (root / "templates/base/AGENTS.md").read_text()
     regression = "./.ava/base/shared/instructions/upgrade-state-and-routing.md"
