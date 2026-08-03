@@ -3,100 +3,54 @@ type: Internal Development Task
 title: Implement Installer and Updater
 description: Implement the thin POSIX shell entry point for fresh installation and explicit versioned upgrades.
 tags: [internal, roadmap, shell, installer, updater]
-status: pending
+status: complete
 phase: 4
 order: 7
 generated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T10:00:00+02:00
+  at: 2026-08-03T16:30:00+02:00
 ---
 
 # Implement Installer and Updater
 
-This task begins only after Phase 3 is complete. Finish [workflow trigger portability](../03-workflows/05-define-workflow-trigger-portability.md) and [workflow lifecycle ownership](../03-workflows/06-define-workflow-lifecycle-ownership.md) before starting installer implementation.
+This task is complete.
 
-Implement the accepted [distribution and ownership contract](/distribution/ownership.md). The repository source tree must not be copied verbatim into a project.
+## Implemented
 
-## Release assembly
+- deterministic release assembly through [`internal/release/build-assets.sh`](../../../release/build-assets.sh)
+- one generated POSIX shell entry point from [`templates/installer/ava-install.sh`](../../../../templates/installer/ava-install.sh)
+- an auditable manifest-driven engine packaged inside the verified base archive
+- explicit source-to-installed mapping for the managed router, base roles, workflows, shared instructions, state, optional bootstraps, and create-if-absent project scaffolds
+- latest-stable and pinned-version URL behavior through immutable release identity embedded during assembly
+- convenience and GitHub immutable-release verified bootstrap modes
+- target selection, dry-run planning, explicit `/AGENTS.md` adoption, and optional host bootstrap selection
+- archive, checksum, identity, path, symlink, collision, managed-file, transition, and semantic-state validation
+- direct declared upgrades, explicit intermediate-release refusal for chained paths, deterministic migration execution, and post-apply validation
+- target-root transaction staging, managed-file backup, rollback on failure, and manifest-last commit
+- separate installed `ava_version`, semantic compatibility, durable `upgrade.json`, and Upgrade Role handoff
+- normalized `AVA_PLAN`, `AVA_RESULT`, `AVA_HANDOFF`, and `AVA_ERROR` output
 
-Before installation, produce a complete release manifest that maps every source file to:
+## Validation
 
-- exact installed destination
-- ownership class
-- checksum
-- file role
-- create, replace, create-if-absent, or migration behavior
+[`internal/release/test-installer.sh`](../../../release/test-installer.sh) builds two prerelease fixture distributions and verifies:
 
-The release assembly must map at least:
+- dry-run without target mutation
+- clean installation
+- explicit direct upgrade
+- project-owned scaffold preservation
+- locally modified managed-file refusal
+- existing router refusal and explicit adoption
+- unrecognized `/.ava/` refusal
+- unsafe destination rejection without out-of-root writes
 
-- `templates/base/AGENTS.md` to `/AGENTS.md`
-- managed default roles, workflows, shared instructions, and base navigation to `/.ava/base/`
-- release state to `/.ava/state/`
-- release guidance to `/.ava/guidance/`
-- minimal project scaffolds to project-root extension paths as create-if-absent, immediately project-owned content
-- explicitly selected host bootstrap files to their host-specific root paths as Ava-managed thin pointers
+[`internal/release/validate-boundaries.sh`](../../../release/validate-boundaries.sh) validates shell syntax, compiled installer-engine source, release-source boundaries, required files, and canonical schema locations.
 
-Either reorganize repository sources into explicit managed and project-scaffold roots or generate a mechanically complete mapping from the current source tree. Source location alone must never imply installed ownership.
+## Portability and trust
 
-## Implement
+The implementation requires a POSIX shell and Python 3.10 or later. `curl` is required for downloads, a SHA-256 utility is required for integrity checks, and GitHub CLI is required only for verified immutable-release mode.
 
-- one POSIX shell entry point that handles fresh installation and existing-project upgrades
-- latest stable and explicit version selection
-- target-directory selection with the current directory as the default
-- convenience and verified bootstrap flows defined by the release contract
-- release asset download, integrity checks, and authenticity verification where requested
-- manifest creation and installed `ava_version` detection at `/.ava/state/manifest.json`
-- active upgrade state at `/.ava/state/upgrade.json`
-- managed base installation under `/.ava/base/`
-- release guidance installation under `/.ava/guidance/`
-- root `/AGENTS.md` installation as the canonical Ava-managed router
-- optional host bootstrap selection and reporting without duplicating router semantics
-- create-if-absent project scaffolding that is never added to the managed manifest
-- managed-file comparison and safe replacement
-- deterministic migration execution
-- existing-project eligibility checks and the approved adoption, collision, abort, and explicit-resolution behavior
-- canonical path normalization for every managed operation
-- rejection of absolute paths, parent traversal, symlink escapes, and archive entries that resolve outside the selected target root
-- staged grouped changes with atomic apply or rollback behavior where the platform permits it
-- expected checksum or version checks before replacing, moving, or deleting existing managed files
-- dry-run output that reports every planned create, replace, move, and delete operation, its reason, resulting ownership, detected conflicts, and expected validation effects
-- validation before apply and after staged changes, before committing the transaction
-- clear, normalized failure reporting suitable for both humans and automation
-- installation of pending semantic upgrade guidance and separate semantic-compatibility state
-- recording of the active upgrade transaction so normal Ava routing remains blocked until semantic completion, rollback, or another defined terminal state
-- clear handoff instructions for activating the dedicated Upgrade Role after deterministic work succeeds
+The complete implementation contract and usage are documented in [Ava Installer and Updater](../../../../distribution/installer.md).
 
-## Adoption behavior
+## Next task
 
-The installer must:
-
-- preserve pre-existing `/index.md`, `/log.md`, `/roles/`, `/workflows/`, `/shared/`, `/knowledge/`, and `/inbox/` as project-owned
-- skip create-if-absent scaffolds when their paths already exist
-- abort on a pre-existing `/AGENTS.md` until an explicit adoption decision preserves or discards its project-specific meaning
-- abort on an unrecognized `/.ava/` until an approved adoption or recovery procedure applies
-- treat a supported manifest as an installed Ava project and enter the upgrade protocol
-- abort on conflicting host bootstrap files unless they exactly match the expected managed file or are explicitly resolved
-- migrate unversioned Ava projects only through an explicit plan that separates mixed root defaults from project-owned context
-- never classify ownership from timestamps, creation order, Git history, or similarity alone
-
-## Keep it thin
-
-The script should orchestrate standard filesystem, archive, state-recording, and verification operations. It must not become a general Ava CLI, role navigator, semantic editor, or persistent runtime. Semantic project-owned changes remain the responsibility of the explicit Upgrade Role.
-
-## Completion criteria
-
-- support a clean install into an eligible empty or compatible existing project
-- support explicit adoption or safe refusal for pre-existing Ava-like or conflicting project structures
-- support an explicit upgrade to a chosen version
-- support latest stable through the documented convenience path
-- support a separately verified pinned-version path
-- install only paths declared by the release manifest
-- prove that managed and project-owned paths are never conflated by source location
-- fail safely on path collisions, managed-file conflicts, incomplete assets, checksum errors, authenticity failures, unsupported transitions, unsafe archive paths, and out-of-root filesystem resolution
-- prove that no installer, updater, migration, rollback, or cleanup operation can modify a path outside the selected target root
-- preserve grouped logical changes and avoid partial application when staging, validation, or final apply fails
-- clearly distinguish installed `ava_version` from semantic compatibility
-- preserve the active-upgrade state and prevent normal operation until the Upgrade Role completes or the protocol exits through another defined terminal state
-- report bootstrap discovery as native, host-bootstrap, explicit-only, or unsupported
-- remain readable, auditable, and usable through standard shell tooling
-- document required system commands, portability assumptions, and trust assumptions
+[Implement validation, conformance, and upgrade fixtures](08-implement-validation-and-upgrade-fixtures.md).
