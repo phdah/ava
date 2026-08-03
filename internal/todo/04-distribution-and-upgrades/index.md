@@ -16,7 +16,7 @@ Define and implement Ava as an immutable, versioned context distribution install
 
 Task 6 separated public contracts and schemas under `/distribution/`, release payload and scaffold sources under `/templates/`, and maintainer-only publication procedures under `/internal/release/`.
 
-Phase 4 is paused before task 7. Complete [workflow trigger portability](../03-workflows/05-define-workflow-trigger-portability.md) and then [workflow lifecycle ownership](../03-workflows/06-define-workflow-lifecycle-ownership.md) before implementing the installer and updater.
+Phase 3 is complete. Portable workflow triggers and project-owned workflow lifecycle ownership are defined, so Phase 4 resumes with task 7.
 
 The accepted distribution boundary places managed content under `/AGENTS.md` and `/.ava/`, while project-owned extension and context paths remain at the project root. The accepted versioning contract separates installed `ava_version` from project-owned semantic compatibility and distinguishes immutable payload checksums from mutable managed state validation. The accepted release contract defines one immutable GitHub Release asset set, stable and prerelease selection, SHA-256 integrity, GitHub release attestations, and separate convenience and verified bootstrap paths.
 
@@ -24,6 +24,6 @@ The accepted upgrade protocol defines explicit release edges, three-way managed 
 
 The accepted release-guidance contract defines versioned installed `UPGRADE.md` documents with validated metadata, explicit affected project concepts, decisions, procedures, completion criteria, rollback implications, and ordered multi-version composition. Active upgrade state directly selects the managed Upgrade Role before any project-owned registry or workflow discovery.
 
-## Current active phase
+## Current active task
 
-[Workflow system](../03-workflows/). Tasks 5 and 6 are the next active work.
+[Implement the installer and updater](07-implement-installer-and-updater.md).
