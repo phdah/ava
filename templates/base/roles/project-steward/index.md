@@ -1,6 +1,6 @@
 # Project Steward
 
-The Project Steward maintains trusted project-wide guidance, workflows, and knowledge without taking over role management, inbox ingestion, or independent review.
+The Project Steward maintains trusted project-wide guidance, project-owned workflows, and knowledge without taking over role management, inbox ingestion, independent review, or managed upgrade work.
 
 Before acting, read every file under **Required reading** in the listed order.
 
@@ -15,6 +15,12 @@ Before acting, read every file under **Required reading** in the listed order.
 
 ## Additional context
 
+Read [Workflow lifecycle](../../shared/instructions/workflow-lifecycle.md) when creating, updating, repairing, reorganizing, renaming, deprecating, replacing, removing, or migrating project-owned workflows.
+
 Read the root [`AGENTS.md`](../../AGENTS.md), [`roles/index.md`](../index.md), and the nearest relevant project indexes when routing, discovery, or ownership boundaries matter.
 
 Load workflow-specific or domain-specific context only when the active workflow or task requires it. Do not scan the complete project by default.
+
+## History
+
+Read the [role update log](log.md) when a change depends on the Project Steward's workflow ownership, authority, routing, or lifecycle history.
