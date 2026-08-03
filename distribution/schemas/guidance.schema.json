@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/phdah/ava/blob/main/distribution/schemas/guidance.schema.json",
+  "title": "Ava upgrade guidance metadata",
+  "description": "Schema for the parsed YAML frontmatter of an Ava-managed UPGRADE.md guidance document.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["type", "title", "description", "guidance_schema", "guidance_id", "from_version", "to_version", "semantic_review_required", "migration_ids", "supersedes"],
+  "properties": {
+    "type": {"const": "Ava Upgrade Guidance"},
+    "title": {"type": "string", "minLength": 1},
+    "description": {"type": "string", "minLength": 1},
+    "guidance_schema": {"const": 1},
+    "guidance_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+    "from_version": {"$ref": "#/$defs/version"},
+    "to_version": {"$ref": "#/$defs/version"},
+    "semantic_review_required": {"type": "boolean"},
+    "migration_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"}},
+    "supersedes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"}}
+  },
+  "$defs": {
+    "version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-(alpha|beta|rc)\\.[1-9][0-9]*)?$"}
+  }
+}

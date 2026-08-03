@@ -16,7 +16,7 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Separate distribution contracts and release procedures](todo/04-distribution-and-upgrades/06-separate-distribution-contracts-and-release-procedures.md).
+[Implement the installer and updater](todo/04-distribution-and-upgrades/07-implement-installer-and-updater.md).
 
 ## Working rule
 

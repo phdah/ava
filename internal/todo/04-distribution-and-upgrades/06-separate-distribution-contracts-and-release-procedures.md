@@ -1,115 +1,65 @@
 ---
 type: Internal Development Task
 title: Separate Distribution Contracts and Release Procedures
-description: Separate public distribution contracts, release payload sources, and internal maintainer release procedures into explicit repository boundaries.
-tags: [internal, roadmap, distribution, structure, releases, maintainers]
-status: pending
+description: Separate public distribution contracts, release payload sources, and maintainer-only publication procedures.
+tags: [internal, roadmap, distribution, releases, repository-structure]
+status: complete
 phase: 4
 order: 6
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T14:09:00+02:00
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Separate Distribution Contracts and Release Procedures
 
-## Goal
+This task establishes a repository boundary without changing installed paths, ownership classes, versioning, trust, upgrade behavior, or semantic guidance.
 
-Make the repository structure express three distinct responsibilities:
-
-1. public contracts that define what a valid Ava distribution is
-2. authored source material that is assembled into release payloads
-3. internal procedures used by the Ava Internal Maintainer and release automation to build and publish releases
-
-This is a repository-source reorganization. It must not change the accepted installed-project path, ownership, versioning, compatibility, trust, or upgrade contracts.
-
-## Target structure
-
-Use this structure unless implementation reveals a material conflict:
+## Implemented structure
 
 ```text
 /
-├── distribution/
-│   ├── index.md
-│   ├── ownership.md
-│   ├── versioning.md
-│   ├── releases.md
-│   └── schemas/
-│       ├── index.md
-│       ├── manifest.schema.json
-│       └── release.schema.json
-├── templates/
-│   ├── index.md
-│   └── base/
-└── internal/
-    ├── index.md
-    ├── release/
-    │   ├── index.md
-    │   └── procedure.md
-    └── roles/ava-internal/
+├── distribution/        # public contracts and schemas
+├── templates/           # release payload and scaffold sources only
+└── internal/release/    # maintainer-only publication procedures
 ```
 
-The exact internal release-procedure filenames may be refined when the publication workflow is implemented, but their authority boundary must remain explicit.
+Public contracts now use concise canonical paths:
 
-## Responsibility boundaries
+- `/distribution/ownership.md`
+- `/distribution/versioning.md`
+- `/distribution/releases.md`
+- `/distribution/upgrades.md`
+- `/distribution/guidance.md`
+- `/distribution/schemas/`
 
-### Public distribution contracts
+## Accepted boundaries
 
-`/distribution/` contains authoritative repository-level contracts and machine-readable schemas that define:
+- Public distribution contracts are repository-level authority but are not automatically installed into projects.
+- Release assembly includes only paths explicitly declared by the release manifest.
+- `/templates/` contains authored managed payload and create-if-absent scaffold sources, not public release policy or internal procedures.
+- `/internal/release/` coordinates maintainers around approval and publication while deterministic automation owns assembly, validation, integrity, attestation, and immutable publication mechanics.
+- No file under `/internal/` may be included in a release payload or required by installed Ava behavior.
+- Existing installed path, ownership, compatibility, trust, and upgrade contracts remain unchanged.
 
-- installed ownership and source-to-installed mapping
-- Ava SemVer and compatibility state
-- GitHub Release identity, assets, channels, integrity, authenticity, and retention
-- release and installed-state schemas
+## Repository changes
 
-These files are public Ava contracts but are not automatically installed into projects. Release assembly includes only files explicitly declared by the release manifest.
+- Moved and renamed public distribution contracts from `/templates/` into `/distribution/`.
+- Moved public JSON Schemas into `/distribution/schemas/` and updated their canonical `$id` values.
+- Reduced `/templates/` navigation to release payload and scaffold sources under `/templates/base/`.
+- Added maintainer publication guidance and a POSIX repository-boundary validator under `/internal/release/`.
+- Updated repository, template, task, and public-contract links to canonical paths.
+- Updated root and internal conceptual logs and advanced the roadmap.
 
-### Release payload sources
+## Validation
 
-`/templates/` contains only authored source material intended for release assembly, including:
+`internal/release/validate-boundaries.sh` checks:
 
-- Ava-managed router and base context
-- default roles, workflows, and shared instructions
-- create-if-absent project scaffolds
-- selected host bootstrap source files when introduced
+- required public contracts and schemas exist
+- obsolete template contract locations are absent
+- `/templates/` has no unexpected direct children
+- schema identifiers use canonical `/distribution/schemas/` paths
+- current repository files contain no stale template-contract references
+- release source files do not depend on internal repository content
 
-Repository location alone must still never imply installed destination or ownership.
-
-### Internal release procedures
-
-`/internal/release/` contains repository-only operating instructions for:
-
-- the Ava Internal Maintainer's release responsibilities
-- preparation and approval boundaries
-- invoking and supervising release automation
-- required pre-publication and post-publication verification
-- failure, correction, and recovery procedures
-- repository settings and permissions required for publication
-
-The Ava Internal Maintainer coordinates release work and maintains the contracts. GitHub Actions or equivalent deterministic automation builds, validates, attests, and publishes assets. Internal procedures are never distributed to installed Ava projects.
-
-## Implement
-
-- create the top-level `/distribution/` index and schema index
-- move the distribution ownership, versioning, and GitHub release asset contracts from `/templates/` into `/distribution/`
-- move release and installed-state schemas from `/templates/schemas/` into `/distribution/schemas/`
-- reduce `/templates/` to release payload and scaffold source material
-- add `/internal/release/` navigation and a bounded maintainer-facing publication procedure
-- update root, template, internal, roadmap, README, contract, schema `$id`, and cross-document links
-- update release assembly and validation references to use the new authoritative paths
-- verify no internal procedure is included in release payloads
-- verify public contracts are not installed merely because they live outside `/internal/`
-- preserve Git history through file moves where practical
-
-## Completion criteria
-
-- `/distribution/` is the clear authoritative home for public distribution contracts and schemas
-- `/templates/` contains only release payload or create-if-absent scaffold sources
-- `/internal/release/` contains maintainer and automation publication procedures only
-- the Ava Internal Maintainer remains responsible for coordinating release creation without making the public release format an internal implementation detail
-- all indexes enumerate only direct children and all links resolve
-- schema identifiers and documentation reference the new canonical paths
-- release assembly includes content only through explicit manifest mapping
-- installed-project paths and ownership semantics remain unchanged
-- no `/internal/` content can enter a release bundle
-- validation covers the repository boundary between contracts, payload sources, and internal procedures
+The next task is [Implement Installer and Updater](07-implement-installer-and-updater.md).

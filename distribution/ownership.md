@@ -5,38 +5,44 @@ description: Defines repository source mapping, installed paths, release ownersh
 tags: [ava, distribution, ownership, installation, adoption, bootstrap]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T12:08:00+02:00
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Ava Distribution and Ownership Boundary
 
 This document defines the repository, release, installation, and upgrade boundary between Ava-managed distribution content and project-owned context.
 
-It is a release and assembly contract, not the complete instruction loaded by agents during ordinary project work. Installed agent behavior is defined separately by [Ownership and mutation authority](base/shared/instructions/ownership-and-mutation.md), which release assembly installs under `/.ava/base/shared/instructions/`. Manifest fields, payload checksums, mutable state, and compatibility are defined by [Ava Versioning and Compatibility](versioning-and-compatibility.md).
+It is a release and assembly contract, not the complete instruction loaded by agents during ordinary project work. Installed agent behavior is defined separately by [Ownership and mutation authority](../templates/base/shared/instructions/ownership-and-mutation.md), which release assembly installs under `/.ava/base/shared/instructions/`. Manifest fields, payload checksums, mutable state, and compatibility are defined by [Ava Versioning and Compatibility](versioning.md).
 
 # Repository source model
 
-The Ava repository remains a development repository:
+The Ava repository separates public contracts, release payload sources, and internal release procedures:
 
 ```text
 /
 ├── README.md
 ├── index.md
 ├── log.md
-├── internal/                 # repository-only development context
-└── templates/
-    ├── index.md
-    ├── distribution-and-ownership.md
-    ├── versioning-and-compatibility.md
-    ├── schemas/
-    └── base/                 # authored managed-base and scaffold source material
+├── distribution/             # public distribution contracts and schemas
+│   ├── index.md
+│   ├── ownership.md
+│   ├── versioning.md
+│   ├── releases.md
+│   ├── upgrades.md
+│   ├── guidance.md
+│   └── schemas/
+├── templates/
+│   ├── index.md
+│   └── base/                 # authored managed-base and scaffold source material
+└── internal/
+    └── release/              # repository-only publication procedures
 ```
+
+`distribution/` defines public repository-level contracts. Its files are not automatically installed into projects. Release assembly includes only content explicitly declared by the release manifest.
 
 `internal/` is never distributed.
 
 `templates/base/` is source material, not a directory copied verbatim into a project. Release assembly must map each source file to an explicit installed destination and ownership class. Repository location, source age, and Git history do not determine installed ownership.
-
-Before the first release, release assembly may reorganize `templates/base/` into clearer managed-payload and create-if-absent scaffold sources. Such repository-only reorganization does not itself change the installed path contract.
 
 # Installed-project layout
 
@@ -100,7 +106,7 @@ The standard extension roots are:
 
 Pre-existing content accepted during installation remains project-owned unless an explicit adoption decision assigns an exact path to the managed release set. The installer must never infer ownership from timestamps, creation order, filenames alone, or similarity to an Ava default.
 
-The operational meaning of these classes, including the distinction between ownership and role mutation authority, belongs to the installed [Ownership and mutation authority](base/shared/instructions/ownership-and-mutation.md) contract.
+The operational meaning of these classes, including the distinction between ownership and role mutation authority, belongs to the installed [Ownership and mutation authority](../templates/base/shared/instructions/ownership-and-mutation.md) contract.
 
 # Manifest authority
 
@@ -256,7 +262,7 @@ The intended mapping is:
 | minimal project scaffold sources | project root extension paths | Project-owned, create-if-absent only |
 | selected host bootstrap source | host-specific project-root path | Ava-managed |
 
-Task 06 must either reorganize repository template sources before packaging or provide a release manifest that makes this mapping complete and mechanically verifiable. No release may treat repository source location alone as ownership metadata.
+Release assembly must provide a complete, mechanically verifiable manifest for this mapping. No release may treat repository source location alone as ownership metadata.
 
 # Removed architecture concepts
 
