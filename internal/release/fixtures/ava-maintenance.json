@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "roles": {
+    "maintenance": "./.ava/base/roles/ava-maintenance/role.md",
+    "upgrade": "./.ava/base/roles/upgrade-role/role.md"
+  },
+  "cases": [
+    {
+      "id": "healthy-report",
+      "request": "Report the installed Ava status",
+      "state": {
+        "journal_status": "idle",
+        "journal_stage": "idle",
+        "allowed_operations": ["normal"],
+        "semantic_status": "complete",
+        "managed_integrity": "clean"
+      },
+      "expected_role": "maintenance",
+      "expected_report_fields": [
+        "ava_version",
+        "release.tag",
+        "release.channel",
+        "release.source_revision",
+        "okf_version",
+        "semantic_compatibility.compatible_through",
+        "semantic_compatibility.target_version",
+        "semantic_compatibility.status",
+        "journal.status",
+        "journal.stage",
+        "host_integration",
+        "managed_integrity"
+      ],
+      "expected_outcome": "report"
+    },
+    {
+      "id": "missing-managed-file",
+      "request": "Check installation health",
+      "state": {
+        "journal_status": "idle",
+        "semantic_status": "complete",
+        "managed_integrity": "missing"
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "report-conflict",
+      "automatic_repair": false
+    },
+    {
+      "id": "modified-managed-file",
+      "request": "Repair Ava",
+      "state": {
+        "journal_status": "idle",
+        "semantic_status": "complete",
+        "managed_integrity": "modified"
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "require-explicit-resolution",
+      "automatic_repair": false
+    },
+    {
+      "id": "corrupt-state-file",
+      "request": "Why is Ava unavailable?",
+      "state": {
+        "manifest_state": "malformed",
+        "journal_state": "readable"
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "minimal-read-only-recovery",
+      "ordinary_routing": false
+    },
+    {
+      "id": "unexpected-managed-file",
+      "request": "Check Ava integrity",
+      "state": {
+        "journal_status": "idle",
+        "semantic_status": "complete",
+        "managed_integrity": "unexpected-content"
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "report-unclassified-content",
+      "automatic_delete": false
+    },
+    {
+      "id": "interrupted-planning-abort",
+      "request": "Abort the interrupted Ava upgrade",
+      "state": {
+        "journal_status": "active",
+        "journal_stage": "planning",
+        "allowed_operations": ["inspect", "abort"]
+      },
+      "expected_role": "maintenance",
+      "expected_operation": "abort",
+      "mechanism": "existing-installer"
+    },
+    {
+      "id": "interrupted-preflight-resume",
+      "request": "Resume the Ava upgrade",
+      "state": {
+        "journal_status": "blocked",
+        "journal_stage": "preflight",
+        "allowed_operations": ["inspect", "resolve", "resume", "abort"]
+      },
+      "expected_role": "maintenance",
+      "expected_operation": "resume",
+      "mechanism": "existing-installer"
+    },
+    {
+      "id": "interrupted-live-rollback",
+      "request": "Roll back the interrupted Ava upgrade",
+      "state": {
+        "journal_status": "blocked",
+        "journal_stage": "validating",
+        "live_mutation_started": true,
+        "allowed_operations": ["inspect", "resume", "rollback"]
+      },
+      "expected_role": "maintenance",
+      "expected_operation": "rollback",
+      "mechanism": "existing-installer"
+    },
+    {
+      "id": "semantic-reconciliation-route",
+      "request": "Reconcile this project's context with the installed Ava version",
+      "state": {
+        "journal_status": "active",
+        "journal_stage": "semantic",
+        "semantic_status": "pending",
+        "allowed_operations": ["inspect", "reconcile-semantic", "rollback"]
+      },
+      "expected_role": "upgrade",
+      "expected_operation": "reconcile-semantic"
+    },
+    {
+      "id": "semantic-status-inspection-route",
+      "request": "Explain why Ava is blocked",
+      "state": {
+        "journal_status": "active",
+        "journal_stage": "semantic",
+        "semantic_status": "pending",
+        "allowed_operations": ["inspect", "reconcile-semantic", "rollback"]
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "report-semantic-handoff"
+    },
+    {
+      "id": "semantic-finalization-route",
+      "request": "Finalize the completed Ava upgrade",
+      "state": {
+        "journal_status": "active",
+        "journal_stage": "semantic",
+        "semantic_status": "complete",
+        "allowed_operations": ["inspect", "reconcile-semantic", "rollback"]
+      },
+      "expected_role": "maintenance",
+      "expected_operation": "finalize",
+      "mechanism": "existing-installer-protocol"
+    },
+    {
+      "id": "unavailable-host-capability",
+      "request": "Resume the Ava upgrade",
+      "state": {
+        "journal_status": "active",
+        "journal_stage": "staged",
+        "allowed_operations": ["inspect", "resume", "abort"],
+        "host_process_execution": false
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "report-exact-user-command",
+      "claim_completed": false
+    },
+    {
+      "id": "opencode-accessible",
+      "request": "Can OpenCode read Ava?",
+      "state": {
+        "journal_status": "idle",
+        "semantic_status": "complete",
+        "opencode": {
+          "permission": {
+            "read": {".ava/**": "allow"},
+            "edit": {".ava/**": "ask"}
+          }
+        }
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "managed-context-readable"
+    },
+    {
+      "id": "opencode-permission-missing",
+      "request": "Can OpenCode read Ava?",
+      "state": {
+        "journal_status": "idle",
+        "semantic_status": "complete",
+        "opencode": {"permission": {}}
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "report-minimal-merge",
+      "automatic_project_config_edit": false
+    },
+    {
+      "id": "uninstall-healthy",
+      "request": "Remove Ava from this project",
+      "state": {
+        "journal_status": "idle",
+        "journal_stage": "idle",
+        "semantic_status": "complete",
+        "managed_integrity": "clean",
+        "router_integrity": "unchanged"
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "remove",
+      "removed": ["./.ava/", "./AGENTS.md"],
+      "preserved": ["./roles/", "./workflows/", "./shared/", "./knowledge/", "./inbox/", "./index.md", "./log.md", "./opencode.json", "./opencode.jsonc"]
+    },
+    {
+      "id": "uninstall-active-deterministic",
+      "request": "Remove Ava from this project",
+      "state": {
+        "journal_status": "active",
+        "journal_stage": "migrating",
+        "semantic_status": "complete"
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "refuse-active-transaction"
+    },
+    {
+      "id": "uninstall-active-semantic",
+      "request": "Remove Ava from this project",
+      "state": {
+        "journal_status": "active",
+        "journal_stage": "semantic",
+        "semantic_status": "partial"
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "refuse-active-semantic-work"
+    },
+    {
+      "id": "uninstall-modified-router",
+      "request": "Remove Ava from this project",
+      "state": {
+        "journal_status": "idle",
+        "semantic_status": "complete",
+        "managed_integrity": "conflict",
+        "router_integrity": "modified"
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "refuse-uncertain-content",
+      "automatic_delete": false
+    },
+    {
+      "id": "uninstall-modified-managed-directory",
+      "request": "Remove Ava from this project",
+      "state": {
+        "journal_status": "idle",
+        "semantic_status": "complete",
+        "managed_integrity": "modified-or-unexpected"
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "refuse-uncertain-content",
+      "automatic_delete": false
+    },
+    {
+      "id": "uninstall-preserves-project-owned",
+      "request": "Remove Ava from this project",
+      "state": {
+        "journal_status": "idle",
+        "semantic_status": "complete",
+        "managed_integrity": "clean"
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "remove",
+      "preserved": ["./roles/", "./workflows/", "./shared/", "./knowledge/", "./inbox/", "./index.md", "./log.md", "./CODEX.md", "./CLAUDE.md", "./.github/copilot-instructions.md", "./opencode.json", "./opencode.jsonc"]
+    },
+    {
+      "id": "uninstall-stale-host-entrypoint",
+      "request": "Remove Ava from this project",
+      "state": {
+        "journal_status": "idle",
+        "semantic_status": "complete",
+        "managed_integrity": "clean",
+        "host_integration": {
+          "entrypoint": "./CODEX.md",
+          "ownership": "project-owned",
+          "references_agents": true
+        }
+      },
+      "expected_role": "maintenance",
+      "expected_outcome": "remove-and-report-stale-reference",
+      "preserved": ["./CODEX.md"],
+      "automatic_host_edit": false
+    }
+  ]
+}
