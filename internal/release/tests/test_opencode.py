@@ -143,10 +143,13 @@ class OpenCodeHostTests(unittest.TestCase):
         managed_links = [link for link in links if link.startswith("./.ava/")]
 
         self.assertGreater(len(managed_links), 5)
+        optional_directories = {"./.ava/guidance/"}
         for link in managed_links:
             path = (self.target / link[2:]).resolve()
             self.assertTrue(path.is_relative_to(self.target.resolve()), link)
-            self.assertTrue(path.exists(), link)
+            if link in optional_directories:
+                continue
+            self.assertTrue(path.is_file(), link)
 
     def test_managed_edit_blocks_upgrade_and_preserves_project_context(self) -> None:
         project_files = {}
