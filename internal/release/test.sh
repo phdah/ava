@@ -12,4 +12,5 @@ python3 "$ROOT/internal/release/validate-installed-paths.py" --root "$ROOT"
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_installed_paths \
   internal.release.tests.test_installer \
-  internal.release.tests.test_host_config
+  internal.release.tests.test_host_config \
+  internal.release.tests.test_ava_maintenance

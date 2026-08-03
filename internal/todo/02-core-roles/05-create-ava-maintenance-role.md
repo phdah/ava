@@ -3,12 +3,15 @@ type: Internal Development Task
 title: Create the Ava Maintenance Role
 description: Add the agent-facing role responsible for understanding installed Ava state, coordinating deterministic lifecycle operations, and safely removing Ava without introducing status, repair, or uninstall command surfaces.
 tags: [internal, roadmap, roles, maintenance, status, recovery, uninstall]
-status: pending
+status: completed
 phase: 2
 order: 5
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-03T21:47:00+02:00
 ---
 
 # Create the Ava Maintenance Role
@@ -113,3 +116,13 @@ Add fixtures covering:
 - uninstall removes all Ava-managed routing and state while preserving project-owned content
 - the public Ava Maintenance role cannot be confused with or load the internal Ava Internal Maintainer role
 - role catalog, router, state contracts, tests, indexes, and conceptual documentation remain aligned
+
+## Implemented
+
+- Added the complete managed `ava-maintenance` role with deterministic required reading.
+- Split managed pre-routing between deterministic maintenance and semantic reconciliation.
+- Narrowed Upgrade Role activation to project-owned semantic reconciliation.
+- Defined agent-first status, integrity, recovery, host-access, explicit-upgrade, finalization, and bounded removal procedures.
+- Kept manifest, journal, payload replacement, resume, abort, rollback, and finalization mutations inside existing deterministic tooling.
+- Added machine-readable Ava Maintenance fixtures and focused tests for routing, integrity, host capability, OpenCode access, and removal preservation.
+- Advanced the roadmap to the final validation, conformance, and upgrade-fixture task.

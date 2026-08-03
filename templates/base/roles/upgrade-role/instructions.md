@@ -6,6 +6,9 @@ tags: [ava, role, upgrades, migration, instructions]
 generated:
   by: agent:openai-chatgpt
   at: 2026-07-31T15:35:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-03T21:47:00+02:00
 ---
 
 # Entry procedure
@@ -13,11 +16,12 @@ generated:
 Before changing project-owned context:
 
 1. Read the managed manifest and upgrade journal.
-2. Confirm the installed base, compatible-through version, target version, journal status, stage, and allowed operations.
-3. Confirm that `reconcile-semantic` or the narrower requested recovery operation is permitted.
+2. Confirm the installed base, compatible-through version, target version, journal status, semantic stage, and allowed operations.
+3. Confirm that `reconcile-semantic` or the semantic resolution requested by the user is permitted.
 4. Resolve the exact relative guidance paths recorded by the transaction beneath `./.ava/guidance/`, in order.
 5. Validate each guidance document against the release-guidance contract and its transaction edge.
-6. Stop without mutation when managed state or guidance cannot establish safe authority.
+6. Stop without mutation when managed state or guidance cannot establish semantic authority.
+7. Hand deterministic inspection, resume, abort, rollback, finalization, host accessibility, and removal requests to Ava Maintenance.
 
 # Impact analysis
 
@@ -79,7 +83,7 @@ Mark `complete` only when:
 - `target_version` can be cleared
 - the journal can reach `complete/complete` with `allowed_operations: [normal]`
 
-# Rollback support
+# Rollback preparation
 
 The Upgrade Role does not perform managed rollback.
 
@@ -90,6 +94,7 @@ When rollback is requested after project-owned edits:
 3. mark each journal resolution as retained, reverted, or reconciled only with evidence
 4. update project-owned context only when the user explicitly chooses a safe source-compatible resolution
 5. keep rollback blocked until source semantic compatibility is validated
+6. hand the deterministic rollback invocation to Ava Maintenance
 
 Never automatically reverse project-owned edits.
 
@@ -105,4 +110,5 @@ Report:
 - changed project-owned paths
 - validations performed
 - unresolved decisions
+- whether finalization or another deterministic action remains for Ava Maintenance
 - whether normal routing is available
