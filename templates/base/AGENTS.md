@@ -1,11 +1,14 @@
 ---
 type: Agent Router
 title: Ava Agent Router
-description: Root instructions for managed upgrade routing, explicit workflows, and semantic role selection.
-tags: [ava, agent-router, upgrades, roles, workflows]
+description: Root instructions for deterministic maintenance routing, semantic upgrade routing, explicit workflows, and semantic role selection.
+tags: [ava, agent-router, maintenance, upgrades, roles, workflows]
 generated:
   by: agent:openai-chatgpt
   at: 2026-07-31T15:35:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-03T21:47:00+02:00
 ---
 
 # Ava
@@ -16,16 +19,21 @@ All paths beginning with `./` are resolved from the project root.
 
 Before reading any project-owned registry or performing ordinary routing:
 
-1. Read [Upgrade state and routing](./.ava/base/shared/instructions/upgrade-state-and-routing.md).
+1. Read [Maintenance and upgrade state routing](./.ava/base/shared/instructions/upgrade-state-and-routing.md).
 2. Perform its minimal check of `./.ava/state/upgrade.json` and `./.ava/state/manifest.json`.
-3. When upgrade mode is required, activate [Upgrade Role](./.ava/base/roles/upgrade-role/role.md) directly.
-4. Read the Upgrade Role's [`index.md`](./.ava/base/roles/upgrade-role/index.md) and every document it marks as required.
-5. Announce `Active role: Upgrade Role`.
-6. Enforce the managed operation allowlist, resolve recorded relative guidance paths beneath `./.ava/guidance/`, and load only those documents.
-7. Keep ordinary workflow and role routing blocked until the upgrade protocol permits `normal` operations.
-8. When managed state is malformed or unsupported, enter minimal recovery mode rather than consulting project-owned routing.
+3. When managed state is missing, malformed, unsupported, contradictory, or requires deterministic transaction handling, activate [Ava Maintenance](./.ava/base/roles/ava-maintenance/role.md) directly.
+4. When managed state requires project-owned semantic reconciliation and the request is to perform that reconciliation, activate [Upgrade Role](./.ava/base/roles/upgrade-role/role.md) directly.
+5. Read the selected managed role's `index.md` and every document it marks as required.
+6. Announce `Active role: Ava Maintenance` or `Active role: Upgrade Role` after its complete required reading has been loaded.
+7. Enforce the recorded operation allowlist and keep ordinary workflow and role routing blocked until the maintenance and upgrade contract permits `normal` operations.
+8. Resolve installed guidance only after Upgrade Role activation and only from exact relative paths recorded beneath `./.ava/guidance/`.
 
-The Upgrade Role is not invoked as a workflow and is not selected through semantic role routing. Project-owned roles, workflows, indexes, and instructions become migration inputs only after managed upgrade authority is active.
+Ava Maintenance and Upgrade Role have different managed authority:
+
+- Ava Maintenance owns installation inspection, deterministic recovery coordination, explicit upgrade invocation, host accessibility reporting, and safe removal.
+- Upgrade Role owns project-owned semantic reconciliation and its bounded compatibility state transitions.
+
+The Upgrade Role is not invoked as a workflow and is not selected through ordinary semantic role routing. Ava Maintenance remains eligible for ordinary role selection when normal operation is permitted.
 
 When the pre-routing check permits normal operation:
 
@@ -50,4 +58,4 @@ Exactly one role may be active at a time. Roles do not inherit, compose, activat
 
 Ask the user when no ordinary role clearly matches, multiple roles would materially change authority or the result, a workflow name is ambiguous, or an active conflict cannot be resolved by explicit scope.
 
-Do not infer permissions, capabilities, authority, workflow identity, upgrade authority, or instructions from missing documentation.
+Do not infer permissions, capabilities, authority, workflow identity, maintenance authority, upgrade authority, or instructions from missing documentation.

@@ -21,18 +21,15 @@ The focused implementation suite covers clean installation, create-if-absent pre
 
 Task 8 establishes `./...` as the canonical agent-facing project-root path form, preserves typed machine path identifiers for deterministic tooling, canonicalizes host entrypoint metadata, and blocks ambiguous leading-slash references during release validation.
 
-Task 9 keeps `./.ava/` as the hidden managed directory and adds a minimal project-owned OpenCode configuration by default. The installer supports `--host none`, never overwrites existing OpenCode configuration, continues installation when configuration already exists, and prints the required manual merge block. Broader host runtime conformance remains part of task 10.
+Task 9 keeps `./.ava/` as the hidden managed directory and adds a minimal project-owned OpenCode configuration by default. The installer supports `--host none`, never overwrites existing OpenCode configuration, continues installation when configuration already exists, and prints the required manual merge block.
 
-Before task 10 begins, also complete:
+The document update metadata contract and Ava Maintenance role prerequisites are complete. Ava Maintenance now owns agent-facing installed-state reporting, deterministic recovery coordination, host accessibility, explicit upgrade invocation, finalization, and safe removal. Upgrade Role remains responsible only for project-owned semantic reconciliation.
 
-- [document update metadata](../01-format-contract/04-define-document-update-metadata.md)
-- [the Ava Maintenance role](../02-core-roles/05-create-ava-maintenance-role.md)
+## Current active task
 
-Task 10 then freezes the full structural, operational, host, installation, recovery, and upgrade conformance matrix required before release qualification.
+[Implement validation, conformance, and upgrade fixtures](10-implement-validation-and-upgrade-fixtures.md).
 
-## Current roadmap handoff
-
-The current active task is [Define document update metadata](../01-format-contract/04-define-document-update-metadata.md). After that, create [the Ava Maintenance role](../02-core-roles/05-create-ava-maintenance-role.md) before returning to task 10.
+Task 10 freezes the full structural, operational, host, installation, recovery, removal, and upgrade conformance matrix required before release qualification.
 
 ## Next phase
 
