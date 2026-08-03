@@ -4,6 +4,8 @@ This log records major conceptual and structural changes to Ava's internal devel
 
 ## 2026-08-03
 
+* **OpenCode support decision**: Established OpenCode as Ava's first supported host through native root `AGENTS.md` discovery and direct project-local reads under the retained `./.ava/` managed namespace.
+* **Host configuration ownership**: Kept OpenCode project and global configuration outside Ava management because native discovery requires no generated integration file or installer mutation.
 * **Installed path convention**: Standardized agent-facing project-root paths on explicit `./...` notation and reserved leading-slash logical identifiers for typed deterministic-tooling fields.
 * **Path validation**: Added release-source validation, router-resolution fixtures, host-entrypoint normalization, and a regression test for the observed `/.ava/base/shared/instructions/upgrade-state-and-routing.md` failure.
 * **Workflow lifecycle ownership**: Assigned project-owned workflow lifecycle to the Project Steward and retained role lifecycle, independent review, active upgrade migration, and deterministic mechanics under their existing owners.
