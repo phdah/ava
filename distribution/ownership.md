@@ -1,8 +1,8 @@
 ---
 type: Distribution Contract
 title: Ava Distribution and Ownership Boundary
-description: Defines repository source mapping, installed paths, release ownership, adoption, managed-file conflicts, and bootstrap discovery.
-tags: [ava, distribution, ownership, installation, adoption, bootstrap]
+description: Defines repository source mapping, installed paths, release ownership, adoption, managed-file conflicts, and project-provided host integration.
+tags: [ava, distribution, ownership, installation, adoption, host-integration]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
@@ -16,7 +16,7 @@ It is a release and assembly contract, not the complete instruction loaded by ag
 
 # Repository source model
 
-The Ava repository separates public contracts, release payload sources, and internal release procedures:
+The Ava repository separates public contracts, release payload sources, project scaffold sources, and internal release procedures:
 
 ```text
 /
@@ -24,25 +24,21 @@ The Ava repository separates public contracts, release payload sources, and inte
 ├── index.md
 ├── log.md
 ├── distribution/             # public distribution contracts and schemas
-│   ├── index.md
-│   ├── ownership.md
-│   ├── versioning.md
-│   ├── releases.md
-│   ├── upgrades.md
-│   ├── guidance.md
-│   └── schemas/
 ├── templates/
 │   ├── index.md
-│   └── base/                 # authored managed-base and scaffold source material
+│   ├── base/                 # authored managed-base and format-reference material
+│   └── project-scaffolds/    # project-owned create-if-absent material
 └── internal/
-    └── release/              # repository-only publication procedures
+    └── release/              # repository-only publication and installer implementation
 ```
 
-`distribution/` defines public repository-level contracts. Its files are not automatically installed into projects. Release assembly includes only content explicitly declared by the release manifest.
+`distribution/` defines public repository-level contracts. Its files are not automatically installed into projects.
 
 `internal/` is never distributed.
 
-`templates/base/` is source material, not a directory copied verbatim into a project. Release assembly must map each source file to an explicit installed destination and ownership class. Repository location, source age, and Git history do not determine installed ownership.
+`templates/base/` and `templates/project-scaffolds/` are source material, not directories copied verbatim into a project. Release assembly maps each distributed source file to an explicit installed destination and ownership class. Repository location, source age, and Git history do not determine installed ownership.
+
+Host-specific instruction files are not Ava template sources. They are supplied and owned by adopting projects.
 
 # Installed-project layout
 
@@ -64,10 +60,13 @@ The accepted installed layout is:
 ├── index.md                          # project-owned when present
 ├── roles/                            # project-owned role extensions
 ├── workflows/                        # project-owned workflow extensions
-├── shared/                           # project-owned shared instructions and context
+├── shared/                           # project-owned shared context
 ├── knowledge/                        # project-owned trusted knowledge
-└── inbox/                            # project-owned source intake
+├── inbox/                            # project-owned source intake
+└── CODEX.md                          # optional project-owned host entrypoint example
 ```
+
+The final host entrypoint name and location are chosen by the project owner. Other examples include `CLAUDE.md` and `/.github/copilot-instructions.md`.
 
 Project-owned paths may exist before installation, be created by create-if-absent scaffolding, or be added later. Creation time never changes their ownership.
 
@@ -86,14 +85,13 @@ It includes:
 - `/.ava/state/manifest.json`
 - `/.ava/state/upgrade.json`
 - all files under `/.ava/guidance/`
-- any selected host-specific bootstrap file
 - deterministic migration support installed by the release
 
 Ava-managed files must not contain project-specific customization. A local edit does not convert a managed file into project-owned content.
 
 ## Project-owned
 
-Project-owned content includes project-specific roles, workflows, instructions, knowledge, source material, indexes, logs, and other project context outside declared managed paths.
+Project-owned content includes project-specific roles, workflows, instructions, knowledge, source material, indexes, logs, host-specific instruction files, and other project context outside declared managed paths.
 
 The standard extension roots are:
 
@@ -104,22 +102,34 @@ The standard extension roots are:
 - `/inbox/`
 - `/index.md` and `/log.md` when present
 
-Pre-existing content accepted during installation remains project-owned unless an explicit adoption decision assigns an exact path to the managed release set. The installer must never infer ownership from timestamps, creation order, filenames alone, or similarity to an Ava default.
+Project-owned host entrypoints may exist elsewhere outside `/AGENTS.md` and `/.ava/`. Their exact paths may be recorded as host integration metadata, but that metadata does not transfer ownership to Ava.
 
-The operational meaning of these classes, including the distinction between ownership and role mutation authority, belongs to the installed [Ownership and mutation authority](../templates/base/shared/instructions/ownership-and-mutation.md) contract.
+Pre-existing content accepted during installation remains project-owned unless an explicit adoption decision assigns an exact path to the managed release set. The installer must never infer ownership from timestamps, creation order, filenames alone, or similarity to an Ava default.
 
 # Manifest authority
 
-`/.ava/state/manifest.json` is the installed ownership record for Ava-managed files. It records at least the installed Ava version, release identity, installed path, managed-file role, and whether the path is immutable payload or mutable managed state. Payload entries record an expected checksum. State entries are validated through their schema and allowed transitions and do not contain self-checksums.
+`/.ava/state/manifest.json` is the installed ownership record for Ava-managed files. It records at least the installed Ava version, release identity, installed managed paths, managed-file roles, and whether each path is immutable payload or mutable managed state. Payload entries record expected checksums. State entries are validated through their schema and allowed transitions and do not contain self-checksums.
 
 A path is Ava-managed only when all of these agree:
 
 1. the path is allowed by this contract
-2. the installed manifest declares it
+2. the installed manifest declares it in `managed_files`
 3. the file was installed or explicitly adopted under an approved release transaction
 4. the owning authority remains Ava rather than the project
 
-The manifest must never claim project-owned extension roots or arbitrary pre-existing files.
+The manifest must never claim project-owned extension roots or arbitrary pre-existing files as managed.
+
+The manifest may separately record bounded host integration metadata:
+
+```json
+{
+  "entrypoint": "/CODEX.md",
+  "ownership": "project-owned",
+  "discovery": "project-provided"
+}
+```
+
+This record is descriptive. The entrypoint does not appear in `managed_files`, has no Ava checksum, and is never mutated by deterministic Ava tooling.
 
 # Managed-file conflicts
 
@@ -150,13 +160,13 @@ The router discovers:
 - project-owned shared instructions and context through explicit links under `/shared/`
 - project-owned knowledge and inbox content only when required by the selected role, workflow, or task
 
-Managed and project-owned registries are separate extension points. A project must not edit the managed registries to add project-specific entries.
+Managed and project-owned registries are separate extension points. A project must not edit managed registries to add project-specific entries.
 
 Canonical paths remain the identity for roles and workflows. An explicit name that resolves to more than one registered workflow or role must be reported as ambiguous rather than resolved by ownership precedence.
 
-# Bootstrap discovery
+# Host integration and discovery
 
-Ava supports three discovery outcomes.
+Ava supports three relevant discovery outcomes.
 
 ## Native `AGENTS.md` discovery
 
@@ -164,19 +174,26 @@ A host is natively supported when its documented and validated behavior loads th
 
 Ava must not claim native support for a named host until that behavior has a maintained conformance fixture or documented verification.
 
-## Host-specific bootstrap
+## Project-provided host entrypoint
 
-A release may provide an optional host-specific bootstrap file when a host uses another recognized instruction filename.
+A project may contain an instruction file recognized by its chosen host. The project owner may identify that existing file to the installer with `--host-entrypoint PATH`.
 
-Such a file:
+The installer must:
 
-- is selected explicitly by installer option or validated host detection
-- is Ava-managed and recorded in the manifest
-- contains only a thin instruction to load and follow `/AGENTS.md`
-- must not duplicate routing, role, workflow, ownership, or upgrade semantics
-- must not contain project-specific customization
+- validate that the path resolves to an existing regular file inside the selected project root
+- reject `/AGENTS.md`, `/.ava/`, and paths below `/.ava/`
+- preserve the file byte-for-byte
+- record only its normalized project-owned integration metadata
+- preserve that metadata across upgrades unless explicitly changed
 
-A host-specific file does not create a third ownership class or a second canonical router.
+The installer must not:
+
+- create the host file
+- inspect or validate its prose
+- add it to release assets or `managed_files`
+- replace, delete, back up, restore, migrate, or roll it back
+
+The project owner is responsible for instructing the host file to load and follow `/AGENTS.md`. The host file may contain additional project-specific instructions.
 
 ## Explicit activation
 
@@ -186,7 +203,7 @@ When automatic discovery is unavailable or unverified, Ava remains usable throug
 Read ./AGENTS.md and follow it as the root instructions for this project.
 ```
 
-Installation and validation must report whether discovery is native, provided through a selected bootstrap, explicit-only, or unsupported because the host cannot reliably load repository instructions.
+Installation and validation report discovery as `native`, `project-provided`, `explicit-only`, or `unsupported`. The initial installer reports only `project-provided` or `explicit-only`; it does not claim native support.
 
 # Fresh installation
 
@@ -197,10 +214,11 @@ A project is eligible for fresh installation when:
 - `/.ava/` is absent
 - `/AGENTS.md` is absent, or an explicit adoption plan has been approved
 - every create-if-absent project scaffold can be created or skipped without modifying existing content
+- any supplied host entrypoint already exists as a normal project-owned file outside managed paths
 
 The installer creates managed content and may create minimal project-owned scaffolding only when the target path is absent. Scaffold files are project-owned immediately and are never added to the managed manifest.
 
-Existing `/index.md`, `/log.md`, `/roles/`, `/workflows/`, `/shared/`, `/knowledge/`, and `/inbox/` content remains untouched and project-owned.
+Existing `/index.md`, `/log.md`, `/roles/`, `/workflows/`, `/shared/`, `/knowledge/`, `/inbox/`, and host-specific instruction files remain untouched and project-owned.
 
 # Adoption of existing projects
 
@@ -211,6 +229,7 @@ The installer first produces a dry-run classification of every relevant path:
 - proposed Ava-managed path
 - existing project-owned path
 - recognized prior Ava-managed path
+- optional project-provided host entrypoint
 - unresolved collision
 - explicit adoption or migration decision required
 
@@ -223,7 +242,7 @@ No existing path is claimed, replaced, moved, or merged without a decision that 
 | `/AGENTS.md` | Abort | Preserve its project-specific meaning in a project-owned path, then explicitly authorize installation of the managed router |
 | `/.ava/` without a supported manifest | Abort | Run an approved unversioned-adoption or recovery procedure |
 | `/.ava/` with a supported manifest | Treat as installed Ava | Continue only through the defined upgrade protocol |
-| Selected host bootstrap path | Abort unless it exactly matches the expected managed file | Explicitly preserve or replace it |
+| Requested host entrypoint does not exist or is unsafe | Abort | Supply an existing normal project-owned file inside the target root |
 | `/index.md` or `/log.md` | Preserve as project-owned | No ownership transfer required |
 | `/roles/`, `/workflows/`, `/shared/`, `/knowledge/`, or `/inbox/` | Preserve as project-owned and skip colliding scaffolds | Resolve only structural incompatibilities explicitly |
 | Locally modified managed file | Abort upgrade | Restore, discard, or migrate customization explicitly |
@@ -234,20 +253,19 @@ The current unversioned template layout is not the final installed layout. Exist
 
 Adopting such a project requires an explicit migration that:
 
-1. inventories the existing files without assuming which are defaults
+1. inventories existing files without assuming which are defaults
 2. identifies project-specific behavior and preserves it in project-owned paths
 3. installs the selected release's defaults under `/.ava/base/`
 4. replaces the root router only after project-specific router content has been preserved or deliberately discarded
 5. creates the managed manifest and records every adopted managed path
-6. reports unresolved files whose ownership or semantic intent cannot be determined safely
+6. records any selected host entrypoint as project-owned metadata only
+7. reports unresolved files whose ownership or semantic intent cannot be determined safely
 
 Similarity to a historical template may be evidence for a suggested classification, but it is never sufficient for silent ownership transfer.
 
 # Source-to-installed mapping
 
-The first release assembler and installer must implement an explicit mapping rather than copying `templates/base/` as a project root.
-
-The intended mapping is:
+The release assembler and installer implement an explicit mapping rather than copying `templates/base/` as a project root.
 
 | Repository source | Installed destination | Ownership |
 |---|---|---|
@@ -255,14 +273,13 @@ The intended mapping is:
 | managed base index and contracts | `/.ava/base/` | Ava-managed |
 | default roles | `/.ava/base/roles/` | Ava-managed |
 | default workflows | `/.ava/base/workflows/` | Ava-managed |
-| `templates/base/shared/instructions/ownership-and-mutation.md` | `/.ava/base/shared/instructions/ownership-and-mutation.md` | Ava-managed |
-| other managed shared instructions | `/.ava/base/shared/` | Ava-managed |
+| managed shared instructions | `/.ava/base/shared/` | Ava-managed |
 | release-generated manifest and state | `/.ava/state/` | Ava-managed |
 | release upgrade guidance | `/.ava/guidance/` | Ava-managed |
-| minimal project scaffold sources | project root extension paths | Project-owned, create-if-absent only |
-| selected host bootstrap source | host-specific project-root path | Ava-managed |
+| `templates/project-scaffolds/` | project root extension paths | Project-owned, create-if-absent only |
+| project-supplied host entrypoint | unchanged project path | Project-owned metadata reference only |
 
-Release assembly must provide a complete, mechanically verifiable manifest for this mapping. No release may treat repository source location alone as ownership metadata.
+Release assembly must provide a complete, mechanically verifiable manifest for distributed mappings. No release may treat repository source location alone as ownership metadata, and no release may package a project-specific host entrypoint.
 
 # Removed architecture concepts
 

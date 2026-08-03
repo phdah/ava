@@ -5,7 +5,12 @@
   "description": "Machine-readable identity, asset inventory, installed mapping, explicit upgrade edges, migration descriptors, and compatibility declarations for one immutable Ava GitHub Release.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["release_schema", "ava_version", "tag", "channel", "source_repository", "source_revision", "published_at", "installer_protocol", "okf_version", "manifest_schema", "semantic_review_required", "assets", "installed_files", "upgrade_paths", "guidance", "migrations"],
+  "required": [
+    "release_schema", "ava_version", "tag", "channel", "source_repository",
+    "source_revision", "published_at", "installer_protocol", "okf_version",
+    "manifest_schema", "semantic_review_required", "assets", "installed_files",
+    "upgrade_paths", "guidance", "migrations"
+  ],
   "properties": {
     "release_schema": {"const": 1},
     "ava_version": {"$ref": "#/$defs/version"},
@@ -65,7 +70,11 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["name", "role", "media_type"],
-      "properties": {"name": {"type": "string"}, "role": {"type": "string"}, "media_type": {"type": "string"}}
+      "properties": {
+        "name": {"type": "string"},
+        "role": {"type": "string"},
+        "media_type": {"type": "string"}
+      }
     },
     "installerAsset": {"allOf": [{"$ref": "#/$defs/hashedAsset"}, {"properties": {"name": {"const": "ava-install.sh"}, "role": {"const": "installer"}, "media_type": {"const": "text/x-shellscript"}}}]},
     "baseAsset": {"allOf": [{"$ref": "#/$defs/hashedAsset"}, {"properties": {"name": {"const": "ava-base.tar.gz"}, "role": {"const": "base"}, "media_type": {"const": "application/gzip"}}}]},
@@ -84,11 +93,11 @@
         "destination": {"type": "string", "pattern": "^/"},
         "ownership": {"enum": ["ava-managed", "project-owned"]},
         "operation": {"enum": ["replace-managed", "create-if-absent"]},
-        "role": {"enum": ["router", "base", "bootstrap", "state", "scaffold"]},
+        "role": {"enum": ["router", "base", "state", "scaffold"]},
         "sha256": {"$ref": "#/$defs/sha256"}
       },
       "allOf": [
-        {"if": {"properties": {"ownership": {"const": "ava-managed"}}, "required": ["ownership"]}, "then": {"properties": {"operation": {"const": "replace-managed"}}}},
+        {"if": {"properties": {"ownership": {"const": "ava-managed"}}, "required": ["ownership"]}, "then": {"properties": {"operation": {"const": "replace-managed"}, "role": {"enum": ["router", "base", "state"]}}}},
         {"if": {"properties": {"ownership": {"const": "project-owned"}}, "required": ["ownership"]}, "then": {"properties": {"operation": {"const": "create-if-absent"}, "role": {"const": "scaffold"}}}}
       ]
     },

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/phdah/ava/blob/main/distribution/schemas/manifest.schema.json",
   "title": "Ava installed manifest",
-  "description": "Schema for the Ava-managed /.ava/state/manifest.json file.",
+  "description": "Schema for the Ava-managed /.ava/state/manifest.json file, including optional project-owned host integration metadata.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -12,51 +12,23 @@
     "installed_at",
     "release",
     "managed_files",
+    "host_integration",
     "semantic_compatibility"
   ],
   "properties": {
-    "manifest_schema": {
-      "const": 1
-    },
-    "ava_version": {
-      "$ref": "#/$defs/semver"
-    },
-    "okf_version": {
-      "type": "string",
-      "minLength": 1
-    },
-    "installed_at": {
-      "type": "string",
-      "format": "date-time"
-    },
+    "manifest_schema": {"const": 1},
+    "ava_version": {"$ref": "#/$defs/semver"},
+    "okf_version": {"type": "string", "minLength": 1},
+    "installed_at": {"type": "string", "format": "date-time"},
     "release": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "tag",
-        "channel",
-        "source_revision",
-        "release_manifest_sha256"
-      ],
+      "required": ["tag", "channel", "source_revision", "release_manifest_sha256"],
       "properties": {
-        "tag": {
-          "type": "string",
-          "pattern": "^v(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-(?:alpha|beta|rc)\\.(?:0|[1-9][0-9]*))?$"
-        },
-        "channel": {
-          "enum": [
-            "stable",
-            "rc",
-            "beta",
-            "alpha"
-          ]
-        },
-        "source_revision": {
-          "$ref": "#/$defs/gitSha"
-        },
-        "release_manifest_sha256": {
-          "$ref": "#/$defs/sha256"
-        }
+        "tag": {"type": "string", "pattern": "^v(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-(?:alpha|beta|rc)\\.(?:0|[1-9][0-9]*))?$"},
+        "channel": {"enum": ["stable", "rc", "beta", "alpha"]},
+        "source_revision": {"$ref": "#/$defs/gitSha"},
+        "release_manifest_sha256": {"$ref": "#/$defs/sha256"}
       }
     },
     "managed_files": {
@@ -65,276 +37,105 @@
       "uniqueItems": true,
       "items": {
         "oneOf": [
-          {
-            "$ref": "#/$defs/payloadFile"
-          },
-          {
-            "$ref": "#/$defs/stateFile"
-          }
+          {"$ref": "#/$defs/payloadFile"},
+          {"$ref": "#/$defs/stateFile"}
         ]
       },
       "allOf": [
-        {
-          "contains": {
-            "type": "object",
-            "required": [
-              "path",
-              "kind"
-            ],
-            "properties": {
-              "path": {
-                "const": "/AGENTS.md"
-              },
-              "kind": {
-                "const": "payload"
-              }
-            }
-          }
-        },
-        {
-          "contains": {
-            "type": "object",
-            "required": [
-              "path",
-              "kind"
-            ],
-            "properties": {
-              "path": {
-                "const": "/.ava/state/manifest.json"
-              },
-              "kind": {
-                "const": "state"
-              }
-            }
-          }
-        },
-        {
-          "contains": {
-            "type": "object",
-            "required": [
-              "path",
-              "kind"
-            ],
-            "properties": {
-              "path": {
-                "const": "/.ava/state/upgrade.json"
-              },
-              "kind": {
-                "const": "state"
-              }
-            }
-          }
-        }
+        {"contains": {"type": "object", "required": ["path", "kind"], "properties": {"path": {"const": "/AGENTS.md"}, "kind": {"const": "payload"}}}},
+        {"contains": {"type": "object", "required": ["path", "kind"], "properties": {"path": {"const": "/.ava/state/manifest.json"}, "kind": {"const": "state"}}}},
+        {"contains": {"type": "object", "required": ["path", "kind"], "properties": {"path": {"const": "/.ava/state/upgrade.json"}, "kind": {"const": "state"}}}}
+      ]
+    },
+    "host_integration": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/hostIntegration"}
       ]
     },
     "semantic_compatibility": {
       "oneOf": [
-        {
-          "$ref": "#/$defs/completeCompatibility"
-        },
-        {
-          "$ref": "#/$defs/pendingCompatibility"
-        },
-        {
-          "$ref": "#/$defs/partialCompatibility"
-        },
-        {
-          "$ref": "#/$defs/blockedCompatibility"
-        }
+        {"$ref": "#/$defs/completeCompatibility"},
+        {"$ref": "#/$defs/pendingCompatibility"},
+        {"$ref": "#/$defs/partialCompatibility"},
+        {"$ref": "#/$defs/blockedCompatibility"}
       ]
     }
   },
   "$defs": {
-    "semver": {
+    "semver": {"type": "string", "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-(?:alpha|beta|rc)\\.(?:0|[1-9][0-9]*))?$"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "gitSha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "projectPath": {
       "type": "string",
-      "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-(?:alpha|beta|rc)\\.(?:0|[1-9][0-9]*))?$"
+      "pattern": "^/(?:[^/\\0]+/)*[^/\\0]+$",
+      "not": {"pattern": "^/(?:AGENTS\\.md|\\.ava(?:/|$))"}
     },
-    "sha256": {
-      "type": "string",
-      "pattern": "^[a-f0-9]{64}$"
-    },
-    "gitSha": {
-      "type": "string",
-      "pattern": "^[a-f0-9]{40}$"
-    },
-    "managedRole": {
-      "enum": [
-        "router",
-        "base",
-        "guidance",
-        "migration",
-        "bootstrap",
-        "state"
-      ]
-    },
+    "managedRole": {"enum": ["router", "base", "guidance", "migration", "state"]},
     "payloadFile": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "path",
-        "role",
-        "kind",
-        "sha256"
-      ],
+      "required": ["path", "role", "kind", "sha256"],
       "properties": {
-        "path": {
-          "type": "string",
-          "pattern": "^/(?:[^/\\0]+/)*[^/\\0]+$"
-        },
-        "role": {
-          "$ref": "#/$defs/managedRole"
-        },
-        "kind": {
-          "const": "payload"
-        },
-        "sha256": {
-          "$ref": "#/$defs/sha256"
-        }
+        "path": {"type": "string", "pattern": "^/(?:[^/\\0]+/)*[^/\\0]+$"},
+        "role": {"$ref": "#/$defs/managedRole"},
+        "kind": {"const": "payload"},
+        "sha256": {"$ref": "#/$defs/sha256"}
       }
     },
     "stateFile": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "path",
-        "role",
-        "kind"
-      ],
+      "required": ["path", "role", "kind"],
       "properties": {
-        "path": {
-          "enum": [
-            "/.ava/state/manifest.json",
-            "/.ava/state/upgrade.json"
-          ]
-        },
-        "role": {
-          "const": "state"
-        },
-        "kind": {
-          "const": "state"
-        }
+        "path": {"enum": ["/.ava/state/manifest.json", "/.ava/state/upgrade.json"]},
+        "role": {"const": "state"},
+        "kind": {"const": "state"}
+      }
+    },
+    "hostIntegration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entrypoint", "ownership", "discovery"],
+      "properties": {
+        "entrypoint": {"$ref": "#/$defs/projectPath"},
+        "ownership": {"const": "project-owned"},
+        "discovery": {"const": "project-provided"}
       }
     },
     "compatibilityBase": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "compatible_through",
-        "target_version",
-        "status",
-        "unresolved_decisions"
-      ],
+      "required": ["compatible_through", "target_version", "status", "unresolved_decisions"],
       "properties": {
-        "compatible_through": {
-          "$ref": "#/$defs/semver"
-        },
-        "target_version": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/semver"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "status": {
-          "enum": [
-            "complete",
-            "pending",
-            "partial",
-            "blocked"
-          ]
-        },
-        "unresolved_decisions": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
+        "compatible_through": {"$ref": "#/$defs/semver"},
+        "target_version": {"anyOf": [{"$ref": "#/$defs/semver"}, {"type": "null"}]},
+        "status": {"enum": ["complete", "pending", "partial", "blocked"]},
+        "unresolved_decisions": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
       }
     },
     "completeCompatibility": {
       "allOf": [
-        {
-          "$ref": "#/$defs/compatibilityBase"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "target_version": {
-              "type": "null"
-            },
-            "status": {
-              "const": "complete"
-            },
-            "unresolved_decisions": {
-              "maxItems": 0
-            }
-          }
-        }
+        {"$ref": "#/$defs/compatibilityBase"},
+        {"type": "object", "properties": {"target_version": {"type": "null"}, "status": {"const": "complete"}, "unresolved_decisions": {"maxItems": 0}}}
       ]
     },
     "pendingCompatibility": {
       "allOf": [
-        {
-          "$ref": "#/$defs/compatibilityBase"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "target_version": {
-              "$ref": "#/$defs/semver"
-            },
-            "status": {
-              "const": "pending"
-            },
-            "unresolved_decisions": {
-              "maxItems": 0
-            }
-          }
-        }
+        {"$ref": "#/$defs/compatibilityBase"},
+        {"type": "object", "properties": {"target_version": {"$ref": "#/$defs/semver"}, "status": {"const": "pending"}, "unresolved_decisions": {"maxItems": 0}}}
       ]
     },
     "partialCompatibility": {
       "allOf": [
-        {
-          "$ref": "#/$defs/compatibilityBase"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "target_version": {
-              "$ref": "#/$defs/semver"
-            },
-            "status": {
-              "const": "partial"
-            }
-          }
-        }
+        {"$ref": "#/$defs/compatibilityBase"},
+        {"type": "object", "properties": {"target_version": {"$ref": "#/$defs/semver"}, "status": {"const": "partial"}}}
       ]
     },
     "blockedCompatibility": {
       "allOf": [
-        {
-          "$ref": "#/$defs/compatibilityBase"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "target_version": {
-              "$ref": "#/$defs/semver"
-            },
-            "status": {
-              "const": "blocked"
-            },
-            "unresolved_decisions": {
-              "minItems": 1
-            }
-          }
-        }
+        {"$ref": "#/$defs/compatibilityBase"},
+        {"type": "object", "properties": {"target_version": {"$ref": "#/$defs/semver"}, "status": {"const": "blocked"}, "unresolved_decisions": {"minItems": 1}}}
       ]
     }
   }
