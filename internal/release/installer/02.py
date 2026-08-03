@@ -1,7 +1,26 @@
+def validate_host_integration(value: Any) -> None:
+    if value is None:
+        return
+    if not isinstance(value, dict):
+        raise AvaError("INVALID_INSTALLED_STATE", "host_integration must be null or an object")
+    require_exact_keys(value, {"entrypoint", "ownership", "discovery"}, "host integration")
+    entrypoint = value.get("entrypoint")
+    if not isinstance(entrypoint, str):
+        raise AvaError("INVALID_INSTALLED_STATE", "host entrypoint must be a project-root path")
+    destination_relative(entrypoint)
+    if entrypoint == "/AGENTS.md" or entrypoint == "/.ava" or entrypoint.startswith("/.ava/"):
+        raise AvaError("INVALID_INSTALLED_STATE", "host entrypoint must be project-owned and outside Ava-managed paths")
+    if value.get("ownership") != "project-owned" or value.get("discovery") != "project-provided":
+        raise AvaError("INVALID_INSTALLED_STATE", "invalid host integration ownership or discovery mode")
+
+
 def validate_installed_manifest(manifest: Any) -> None:
     if not isinstance(manifest, dict):
         raise AvaError("INVALID_INSTALLED_STATE", "installed manifest must be an object")
-    required = {"manifest_schema", "ava_version", "okf_version", "installed_at", "release", "managed_files", "semantic_compatibility"}
+    required = {
+        "manifest_schema", "ava_version", "okf_version", "installed_at", "release",
+        "managed_files", "host_integration", "semantic_compatibility",
+    }
     require_exact_keys(manifest, required, "installed manifest")
     if manifest["manifest_schema"] != 1:
         raise AvaError("UNSUPPORTED_SCHEMA", "unsupported installed manifest schema")
@@ -36,6 +55,7 @@ def validate_installed_manifest(manifest: Any) -> None:
             raise AvaError("INVALID_INSTALLED_STATE", f"invalid managed kind: {item.get('kind')}")
     if "/AGENTS.md" not in paths or state_paths != {"/.ava/state/manifest.json", "/.ava/state/upgrade.json"}:
         raise AvaError("INVALID_INSTALLED_STATE", "required managed paths are missing")
+    validate_host_integration(manifest["host_integration"])
     compatibility = manifest["semantic_compatibility"]
     required_compatibility = {"compatible_through", "target_version", "status", "unresolved_decisions"}
     if not isinstance(compatibility, dict) or set(compatibility) != required_compatibility:
