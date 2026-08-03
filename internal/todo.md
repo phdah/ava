@@ -5,7 +5,7 @@ description: Stable entry point for Ava's ordered internal development roadmap a
 tags: [internal, planning, roadmap, todo]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T13:52:00+02:00
+  at: 2026-08-03T14:20:00+02:00
 ---
 
 # Ava Internal To-Do List
