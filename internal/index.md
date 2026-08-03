@@ -12,6 +12,10 @@ Content under this directory is internal to the Ava repository. It must not be i
 
 * [Internal to-do roadmap](todo.md) - Stable entry point into the active roadmap, numbered phase indexes, and individual task files.
 
+# Release operations
+
+* [Maintainer release procedures](release/) - Repository-only preparation, approval, publication, and verification guidance.
+
 # History
 
 * [Internal update log](log.md) - Records major conceptual and structural changes within the internal development scope.

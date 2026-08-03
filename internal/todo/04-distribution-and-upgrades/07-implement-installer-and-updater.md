@@ -8,12 +8,12 @@ phase: 4
 order: 7
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T14:09:00+02:00
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Implement Installer and Updater
 
-This task begins after completion of the preceding design and repository-boundary tasks.
+This task begins only after Phase 3 is complete. Finish [workflow trigger portability](../03-workflows/05-define-workflow-trigger-portability.md) and [workflow lifecycle ownership](../03-workflows/06-define-workflow-lifecycle-ownership.md) before starting installer implementation.
 
 Implement the accepted [distribution and ownership contract](/distribution/ownership.md). The repository source tree must not be copied verbatim into a project.
 

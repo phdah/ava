@@ -4,11 +4,12 @@ okf_version: "0.2"
 
 # Ava Knowledge Bundle
 
-* [Repository agent instructions](AGENTS.md) - Activates the Ava Internal Maintainer role for repository sessions.
-* [Project overview](README.md) - Purpose, versioned distribution model, upgrade architecture, design goals, and boundaries for Ava.
-* [Distributed project templates](templates/) - Source files packaged into versioned Ava release bundles for installation into projects.
-* [Internal development](internal/) - Repository-only roles, roadmap, and instructions used to develop Ava itself.
+* [Repository agent instructions](AGENTS.md) - Routing and instruction entry point for agents working in this repository.
+* [Project overview](README.md) - Purpose, architecture, installation model, ownership, versioning, and roadmap direction.
+* [Distribution contracts](distribution/) - Public distribution, versioning, release, upgrade, guidance, and schema contracts.
+* [Release sources](templates/) - Authored managed payload and project-scaffold source material.
+* [Internal development](internal/) - Repository-only roles, planning, release procedures, and implementation context.
 
 # History
 
-* [Repository update log](log.md) - Major conceptual and structural changes across the repository.
+* [Repository update log](log.md) - Major conceptual and structural changes across Ava.

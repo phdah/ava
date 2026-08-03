@@ -5,14 +5,14 @@ description: Defines deterministic base upgrades, durable transaction state, mig
 tags: [ava, distribution, upgrades, migrations, transactions, compatibility]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-07-31T14:43:00+02:00
+  at: 2026-08-03T10:00:00+02:00
 ---
 
 # Ava Upgrade and Migration Protocol
 
 This contract defines supported release transitions without silently overwriting managed conflicts or treating a new managed base as completed migration of project-owned context.
 
-It implements [Ava Distribution and Ownership Boundary](distribution-and-ownership.md), [Ava Versioning and Compatibility](versioning-and-compatibility.md), and [Ava GitHub Release Assets](github-release-assets.md). The updater owns deterministic stages. The managed Upgrade Role owns the project-owned semantic stage.
+It implements [Ava Distribution and Ownership Boundary](ownership.md), [Ava Versioning and Compatibility](versioning.md), and [Ava GitHub Release Assets](releases.md). The updater owns deterministic stages. The managed Upgrade Role owns the project-owned semantic stage.
 
 # Invariants
 
@@ -223,7 +223,7 @@ Before ordinary workflow, role, instruction, or project-registry discovery, root
 6. enforce the operation allowlist
 7. read project-owned registries only afterward, as migration inputs
 
-The next release-guidance task defines the canonical managed Upgrade Role path and guidance entry point. Both must be reachable entirely from managed files.
+The [release guidance contract](guidance.md) defines the canonical managed Upgrade Role path and guidance entry point. Both must be reachable entirely from managed files.
 
 Malformed managed upgrade state enters minimal recovery mode rather than normal routing. Missing, corrupt, or incompatible project-owned routing cannot prevent inspect, resume, abort, rollback, or semantic reconciliation.
 

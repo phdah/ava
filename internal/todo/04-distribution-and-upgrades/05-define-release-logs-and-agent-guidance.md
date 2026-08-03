@@ -13,7 +13,7 @@ generated:
 
 # Define Release Guidance and Upgrade Role
 
-The accepted public guidance contract is documented in [Ava Release Guidance](/templates/release-guidance.md). Parsed guidance metadata is validated by [guidance.schema.json](/templates/schemas/guidance.schema.json).
+The accepted public guidance contract is documented in [Ava Release Guidance](/distribution/guidance.md). Parsed guidance metadata is validated by [guidance.schema.json](/distribution/schemas/guidance.schema.json).
 
 The managed pre-routing behavior is defined by [Upgrade State and Routing](/templates/base/shared/instructions/upgrade-state-and-routing.md), and the complete managed role is defined under [`templates/base/roles/upgrade-role/`](/templates/base/roles/upgrade-role/).
 

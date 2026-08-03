@@ -13,7 +13,7 @@ generated:
 
 # Define Distribution and Ownership Boundary
 
-The accepted public contract is documented in [Ava Distribution and Ownership Boundary](/templates/distribution-and-ownership.md).
+The accepted public contract is documented in [Ava Distribution and Ownership Boundary](/distribution/ownership.md).
 
 ## Accepted decisions
 

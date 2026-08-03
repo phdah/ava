@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/phdah/ava/blob/main/templates/schemas/manifest.schema.json",
+  "$id": "https://github.com/phdah/ava/blob/main/distribution/schemas/manifest.schema.json",
   "title": "Ava installed manifest",
   "description": "Schema for the Ava-managed /.ava/state/manifest.json file.",
   "type": "object",

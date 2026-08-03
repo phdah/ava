@@ -15,14 +15,14 @@ The built-in catalog now contains four reusable procedures: batch inbox ingestio
 
 Routine role lifecycle, project configuration, knowledge curation, and instruction tightening remain free-form role work. Deterministic release mechanics remain tooling, and semantic Ava version reconciliation directly activates the managed Upgrade Role.
 
+## Current sequence
+
+1. Define workflow trigger portability.
+2. Define workflow lifecycle ownership.
+3. Resume [Versioned distribution and upgrades](../04-distribution-and-upgrades/) with installer task 7.
+
+Phase 3 remains active until both pending workflow tasks are complete.
+
 ## Previous phase
 
 [Core roles for initialized projects](../02-core-roles/).
-
-## Next active phase
-
-[Versioned distribution and upgrades](../04-distribution-and-upgrades/) resumes with task 6, separating distribution contracts and release procedures.
-
-## Remaining workflow work
-
-Workflow trigger portability and lifecycle ownership remain pending and do not replace the current distribution task.
