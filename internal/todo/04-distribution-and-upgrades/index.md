@@ -12,7 +12,7 @@ Define and implement Ava as an immutable, versioned context distribution install
 6. [x] [Separate distribution contracts and release procedures](06-separate-distribution-contracts-and-release-procedures.md)
 7. [x] [Implement the installer and updater](07-implement-installer-and-updater.md)
 8. [x] [Normalize installed project paths](08-normalize-installed-project-paths.md)
-9. [ ] [Implement OpenCode support and decide managed directory discoverability](09-implement-opencode-host-support.md)
+9. [x] [Implement OpenCode support and decide managed directory discoverability](09-implement-opencode-host-support.md)
 10. [ ] [Implement validation, conformance, and upgrade fixtures](10-implement-validation-and-upgrade-fixtures.md)
 
 Task 7 implements deterministic release assembly and one thin POSIX installer/updater with embedded structured-data handling. It supports fresh installation, explicit adoption, direct and chained upgrades, three-way managed reconciliation, restricted deterministic migrations, durable recovery, semantic upgrade blocking, and project-owned host entrypoint metadata.
@@ -21,9 +21,9 @@ The focused implementation suite covers clean installation, create-if-absent pre
 
 Task 8 establishes `./...` as the canonical agent-facing project-root path form, preserves typed machine path identifiers for deterministic tooling, canonicalizes host entrypoint metadata, and blocks ambiguous leading-slash references during release validation.
 
-Local installation testing also exposed a pre-release host requirement: OpenCode must be able to load managed context reliably under the selected managed-directory strategy. Task 9 resolves that requirement.
+Task 9 keeps `./.ava/` as the managed namespace and supports OpenCode through native root `AGENTS.md` discovery, direct project-local managed reads, preserved project and global configuration, host-neutral portability fixtures, and pinned live CLI startup validation.
 
-Before task 10 begins, also complete:
+Before task 10 begins, complete:
 
 - [document update metadata](../01-format-contract/04-define-document-update-metadata.md)
 - [the Ava Maintenance role](../02-core-roles/05-create-ava-maintenance-role.md)
@@ -32,7 +32,7 @@ Task 10 then freezes the full structural, operational, host, installation, recov
 
 ## Current active task
 
-[Implement OpenCode support and decide managed directory discoverability](09-implement-opencode-host-support.md).
+[Define document update metadata](../01-format-contract/04-define-document-update-metadata.md).
 
 ## Next phase
 
