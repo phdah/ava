@@ -5,7 +5,7 @@ description: Stable entry point for Ava's ordered internal development roadmap a
 tags: [internal, planning, roadmap, todo]
 generated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T10:00:00+02:00
+  at: 2026-08-03T14:20:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -16,9 +16,9 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Define workflow trigger portability](todo/03-workflows/05-define-workflow-trigger-portability.md).
+[Define workflow lifecycle ownership](todo/03-workflows/06-define-workflow-lifecycle-ownership.md).
 
-Complete Phase 3 task 5, then [workflow lifecycle ownership](todo/03-workflows/06-define-workflow-lifecycle-ownership.md), before resuming Phase 4 installer work.
+Complete Phase 3 task 6 before resuming Phase 4 installer work.
 
 ## Working rule
 
