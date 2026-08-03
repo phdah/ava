@@ -20,7 +20,7 @@ MARKDOWN_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 PROJECT_PATH_RE = re.compile(r"^\./(?:[^/]+/)*[^/]+$")
 MANAGED_PATH_RE = re.compile(r"^/(?:[^/]+/)*[^/]+$")
 
-RESERVED_MARKDOWN = {"README.md", "AGENTS.md", "index.md", "log.md"}
+RESERVED_MARKDOWN = {"index.md", "log.md"}
 ROLE_REQUIRED_FILES = {"index.md", "role.md", "instructions.md", "capabilities.md", "constraints.md"}
 REPOSITORY_REQUIRED = (
     "distribution/index.md",
