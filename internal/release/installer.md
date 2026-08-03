@@ -75,7 +75,7 @@ Assembly maps:
 
 The `knowledge/` and `inbox/` examples under `templates/base/` are not inferred as managed merely because of their source location. Installed ownership is determined only by the generated release mapping.
 
-Host-specific project files are not release sources. Ava does not package `CODEX.md`, `CLAUDE.md`, Copilot instructions, or similar host entrypoints.
+Host-specific project files are not release sources. Ava does not package `CODEX.md`, `CLAUDE.md`, Copilot instructions, `opencode.json`, `opencode.jsonc`, or similar host configuration and entrypoint files.
 
 # Install and upgrade
 
@@ -109,13 +109,21 @@ A pre-existing root `AGENTS.md` blocks installation. After its project-specific 
 sh ava-install.sh --adopt-existing-agents
 ```
 
+# OpenCode native discovery
+
+OpenCode is Ava's first explicitly supported host. It discovers the installed project-root `AGENTS.md` natively and reads managed context through direct project-local `./.ava/...` paths.
+
+Ava installation requires no `opencode.json`, `opencode.jsonc`, global configuration change, `.opencode/` content, or `--host-entrypoint` option. The installer preserves all such project and user configuration because none of it belongs to the managed release set.
+
+The complete support and permission contract is [OpenCode host support](../../distribution/opencode.md). Maintained release checks are documented in [OpenCode release validation](opencode.md).
+
 # Project-provided host entrypoint
 
-A project may already contain a host-specific instruction file, for example:
+A project may already contain a host-specific instruction file for another host or a custom setup, for example:
 
 ```text
-/CODEX.md
-/.github/copilot-instructions.md
+./CODEX.md
+./.github/copilot-instructions.md
 ```
 
 The project owner may record one such file during installation:
@@ -127,21 +135,21 @@ sh ava-install.sh --host-entrypoint CODEX.md
 The installer:
 
 - requires the path to resolve to an existing normal file inside the selected project root
-- rejects `/AGENTS.md`, `/.ava/`, and paths below `/.ava/`
+- rejects `./AGENTS.md`, `./.ava/`, and paths below `./.ava/`
 - records the normalized path as `project-owned` and `project-provided` host integration metadata
 - preserves the metadata across upgrades unless another entrypoint is explicitly supplied
 - never reads, rewrites, creates, deletes, checksums, backs up, or rolls back the project file
 - never adds the file to the release inventory or `managed_files`
 
-The project owner remains responsible for ensuring that the host file directs the host to load and follow `/AGENTS.md`. Ava records the integration point but does not interpret its prose.
+The project owner remains responsible for ensuring that the host file directs the host to load and follow `./AGENTS.md`. Ava records the integration point but does not interpret its prose.
 
-Without recorded host integration, discovery is reported as `explicit-only`. No host is reported as natively supported by this implementation.
+Hosts without verified native discovery and without recorded project integration remain `explicit-only`. OpenCode needs no recorded `host_integration`, so its installed manifest normally keeps that field `null`.
 
-The installed manifest representation is either `null` or:
+The project-provided manifest representation is either `null` or:
 
 ```json
 {
-  "entrypoint": "/CODEX.md",
+  "entrypoint": "./CODEX.md",
   "ownership": "project-owned",
   "discovery": "project-provided"
 }
@@ -233,6 +241,6 @@ Run the focused implementation suite with:
 sh internal/release/test.sh
 ```
 
-The suite covers clean installation, explicit adoption, project-owned preservation, managed conflicts, checksum failures, unsafe archives, symlink escapes, project-provided host entrypoints, direct and chained upgrades, declarative migrations, semantic blocking, rollback, and post-upgrade rollback conflicts.
+The suite covers clean installation, explicit adoption, project-owned preservation, managed conflicts, checksum failures, unsafe archives, symlink escapes, project-provided host entrypoints, direct and chained upgrades, declarative migrations, semantic blocking, rollback, post-upgrade rollback conflicts, and OpenCode host fixtures.
 
-Broader conformance matrices and compatibility fixtures remain Phase 4 task 8.
+Broader conformance matrices and compatibility fixtures remain Phase 4 task 10.
