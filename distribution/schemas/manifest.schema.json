@@ -69,11 +69,13 @@
     "projectPath": {
       "type": "string",
       "description": "Canonical project-root-relative path for host-facing metadata. The literal ./ prefix is required.",
-      "pattern": "^\\./(?:[^/\\\\\\x00]+/)*[^/\\\\\\x00]+$",
+      "pattern": "^\\./(?:[^/]+/)*[^/]+$",
       "not": {
         "anyOf": [
           {"pattern": "^\\./(?:AGENTS\\.md|\\.ava(?:/|$))"},
-          {"pattern": "^\\./(?:[^/]+/)*(?:\\.|\\.\\.)(?:/|$)"}
+          {"pattern": "^\\./(?:[^/]+/)*(?:\\.|\\.\\.)(?:/|$)"},
+          {"pattern": "\\\\"},
+          {"pattern": "\\u0000"}
         ]
       }
     },
@@ -86,8 +88,14 @@
         "path": {
           "type": "string",
           "description": "Root-anchored logical project path identifier consumed only by deterministic Ava tooling. It is not an operating-system absolute path.",
-          "pattern": "^/(?:[^/\\\\\\x00]+/)*[^/\\\\\\x00]+$",
-          "not": {"pattern": "^/(?:[^/]+/)*(?:\\.|\\.\\.)(?:/|$)"}
+          "pattern": "^/(?:[^/]+/)*[^/]+$",
+          "not": {
+            "anyOf": [
+              {"pattern": "^/(?:[^/]+/)*(?:\\.|\\.\\.)(?:/|$)"},
+              {"pattern": "\\\\"},
+              {"pattern": "\\u0000"}
+            ]
+          }
         },
         "role": {"$ref": "#/$defs/managedRole"},
         "kind": {"const": "payload"},
