@@ -54,7 +54,6 @@ class InstallerTests(unittest.TestCase):
         for directory in ("roles", "workflows", "shared", "knowledge", "inbox"):
             (scaffolds / directory / "index.md").write_text(f"# {directory}\n")
         (scaffolds / "inbox/processed/index.md").write_text("# Processed\n")
-        (self.repo / "templates/host-bootstraps").mkdir(parents=True)
 
     def run_command(self, *args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
         result = subprocess.run(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -69,7 +68,6 @@ class InstallerTests(unittest.TestCase):
         upgrade_from: list[str] | None = None,
         semantic: bool = False,
         guidance: bool = False,
-        host_bootstrap: str | None = None,
         migrations_dir: Path | None = None,
         destination: Path | None = None,
     ) -> Path:
@@ -92,8 +90,6 @@ class InstallerTests(unittest.TestCase):
             guidance_dir.mkdir()
             (guidance_dir / "UPGRADE.md").write_text(f"# Upgrade to {version}\n")
             args.extend(("--guidance-dir", str(guidance_dir)))
-        if host_bootstrap:
-            args.extend(("--host-bootstrap", host_bootstrap))
         if migrations_dir:
             args.extend(("--migrations-dir", str(migrations_dir)))
         self.run_command(*args)
@@ -123,6 +119,7 @@ class InstallerTests(unittest.TestCase):
         self.assertEqual((self.target / "knowledge/index.md").read_text(), "# Existing knowledge\n")
         managed = {item["path"] for item in self.manifest()["managed_files"]}
         self.assertNotIn("/knowledge/index.md", managed)
+        self.assertIsNone(self.manifest()["host_integration"])
         self.assertEqual(self.journal()["status"], "idle")
 
     def test_existing_agents_requires_explicit_adoption(self) -> None:
@@ -242,14 +239,44 @@ class InstallerTests(unittest.TestCase):
         self.assertEqual(self.manifest()["ava_version"], "0.2.0")
         self.assertEqual((self.target / "AGENTS.md").read_text(), "# Router 0.2.0\n")
 
-    def test_selected_host_bootstrap_is_managed(self) -> None:
-        bootstrap = self.repo / "templates/host-bootstraps/CODEX.md"
-        bootstrap.write_text("Read and follow ./AGENTS.md.\n")
-        assets = self.build("0.1.0", host_bootstrap="CODEX.md=/CODEX.md")
-        self.install(assets, "--host-bootstrap", "/CODEX.md")
-        self.assertTrue((self.target / "CODEX.md").is_file())
-        item = next(item for item in self.manifest()["managed_files"] if item["path"] == "/CODEX.md")
-        self.assertEqual(item["role"], "bootstrap")
+    def test_project_owned_host_entrypoint_is_recorded_not_managed(self) -> None:
+        content = "Read and follow ./AGENTS.md.\nAdditional project instructions remain here.\n"
+        (self.target / "CODEX.md").write_text(content)
+        assets = self.build("0.1.0")
+        self.install(assets, "--host-entrypoint", "CODEX.md")
+        self.assertEqual((self.target / "CODEX.md").read_text(), content)
+        self.assertEqual(self.manifest()["host_integration"], {
+            "entrypoint": "/CODEX.md",
+            "ownership": "project-owned",
+            "discovery": "project-provided",
+        })
+        managed = {item["path"] for item in self.manifest()["managed_files"]}
+        self.assertNotIn("/CODEX.md", managed)
+        release = json.loads((assets / "ava-release.json").read_text())
+        self.assertNotIn("/CODEX.md", {item["destination"] for item in release["installed_files"]})
+
+    def test_host_entrypoint_is_preserved_across_upgrade(self) -> None:
+        (self.target / ".github").mkdir()
+        entrypoint = self.target / ".github/copilot-instructions.md"
+        entrypoint.write_text("Read ../../AGENTS.md.\n")
+        first = self.build("0.1.0")
+        self.install(first, "--host-entrypoint", ".github/copilot-instructions.md")
+        (self.repo / "templates/base/AGENTS.md").write_text("# Router 0.2.0\n")
+        second = self.build("0.2.0", upgrade_from=["0.1.0"])
+        self.install(second)
+        self.assertEqual(self.manifest()["host_integration"]["entrypoint"], "/.github/copilot-instructions.md")
+        self.assertEqual(entrypoint.read_text(), "Read ../../AGENTS.md.\n")
+
+    def test_invalid_host_entrypoint_is_rejected_without_mutation(self) -> None:
+        assets = self.build("0.1.0")
+        missing = self.install(assets, "--host-entrypoint", "CODEX.md", check=False)
+        self.assertNotEqual(missing.returncode, 0)
+        self.assertIn("INVALID_HOST_ENTRYPOINT", missing.stderr)
+        reserved = self.install(assets, "--host-entrypoint", ".ava/host.md", check=False)
+        self.assertNotEqual(reserved.returncode, 0)
+        self.assertIn("INVALID_HOST_ENTRYPOINT", reserved.stderr)
+        self.assertFalse((self.target / ".ava").exists())
+        self.assertFalse((self.target / "AGENTS.md").exists())
 
     def test_chained_upgrade_verifies_each_adjacent_edge(self) -> None:
         first = self.build("0.1.0")
