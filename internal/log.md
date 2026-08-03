@@ -4,6 +4,10 @@ This log records major conceptual and structural changes to Ava's internal devel
 
 ## 2026-08-03
 
+* **Workflow lifecycle ownership**: Assigned project-owned workflow lifecycle to the Project Steward and retained role lifecycle, independent review, active upgrade migration, and deterministic mechanics under their existing owners.
+* **Workflow role decision**: Rejected a dedicated Workflow Manager because workflow lifecycle shares the Project Steward's existing authority, trusted context, and project-wide discovery boundary.
+* **Workflow phase completion**: Completed Phase 3 without adding workflow-maintenance or semantic-upgrade workflows that would duplicate durable role instructions or managed pre-routing.
+* **Roadmap advance**: Reactivated Phase 4 and set the thin POSIX installer and updater as the next task.
 * **Release responsibility separation**: Established `/distribution/` for public contracts and schemas, `/templates/` for release payload and scaffold sources, and `/internal/release/` for maintainer-only publication procedures.
 * **Publication procedure**: Added explicit maintainer preparation, approval, draft publication, post-publication verification, and immutable-release correction boundaries without duplicating deterministic release automation.
 * **Boundary validator**: Added a POSIX repository check for required contract locations, schema identifiers, template-root restrictions, stale references, and internal-content exclusion.
