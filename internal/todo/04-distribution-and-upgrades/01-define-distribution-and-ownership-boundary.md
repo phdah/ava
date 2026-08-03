@@ -42,10 +42,26 @@ The accepted public contract is documented in [Ava Distribution and Ownership Bo
 
 ## Repository impact
 
-The public contract now lives under `/distribution/`, release payload and scaffold sources remain under `/templates/base/`, and maintainer-only release procedures live under `/internal/release/`. The repository still does not resemble an installed project, and release assembly must map every source explicitly.
+This task defines release output and source mapping. It does not make the Ava repository itself resemble an installed project.
+
+- `/internal/` remains repository-only development context.
+- `/templates/base/` remains current authored format and release source material during the design phase.
+- Release assembly must map source files to explicit installed paths and ownership classes rather than copying `templates/base/` verbatim.
+- The installer implementation task must either reorganize source templates or generate a complete release manifest that performs this mapping mechanically.
 
 ## Validation
 
-The contract covers exact installed ownership paths, routing and extension discovery, manifest authority, managed-file conflicts, installation and adoption, unversioned migration, host discovery, and source-to-installed mapping.
+The contract covers:
+
+- exact installed ownership paths
+- separation between distribution ownership and role mutation authority
+- router and extension discovery
+- manifest authority
+- managed-file conflict detection
+- fresh installation eligibility
+- existing-project adoption and collision behavior
+- unversioned Ava migration
+- native, host-bootstrap, explicit-only, and unsupported discovery outcomes
+- repository-source to installed-path mapping
 
 The incompatible public path decision was approved by the user before implementation.
