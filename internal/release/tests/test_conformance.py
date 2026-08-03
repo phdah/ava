@@ -51,7 +51,7 @@ class ConformanceTests(unittest.TestCase):
                 self.write(path, "# placeholder\n")
             elif path.endswith(".sh"):
                 self.write(path, "#!/bin/sh\n")
-            elif path.endswith("AGENTS.md") or path.endswith("index.md"):
+            elif path.endswith("index.md"):
                 self.write(path, f"# {Path(path).stem}\n")
             else:
                 self.write(path, self.public_doc(Path(path).stem))
