@@ -27,30 +27,30 @@ GitHub Release
 - Project-owned upgrade changes happen through one explicit request that loads installed release guidance.
 - Active upgrade state directly selects the managed Upgrade Role before ordinary workflow or role routing.
 - OpenCode is Ava's first installer-supported host configuration. Ava keeps `./.ava/` hidden, creates project-owned OpenCode permissions by default when possible, preserves existing configuration, and defers broader runtime conformance to the final conformance task.
+- Document creation provenance and latest meaningful-update provenance are separate. `generated` remains immutable creation provenance, while canonical `updated` records only the latest meaningful mutation.
 - No pre-`1.0.0` Ava installation is a supported user state. Historical unversioned Ava migration is therefore outside the v1 roadmap; unknown historical layouts must be refused safely.
 - Public distribution contracts, release payload sources, and internal publication procedures are separate repository concerns.
 - Internal Ava development roles remain separate from every distributed project bundle.
 
 ## Active roadmap
 
-1. [Format contract and base structure](01-format-contract/) - 3 of 4 complete; active with document update metadata next
-2. [Core roles for initialized projects](02-core-roles/) - 4 of 5 complete; Ava Maintenance follows document update metadata
+1. [Format contract and base structure](01-format-contract/) - 4 of 4 complete
+2. [Core roles for initialized projects](02-core-roles/) - 4 of 5 complete; active with Ava Maintenance next
 3. [Workflow system](03-workflows/) - 6 of 6 complete
-4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 9 of 10 complete; final conformance waits on the remaining format and role blockers
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 9 of 10 complete; final conformance waits on Ava Maintenance
 5. [V1 release qualification](05-release-qualification/) - 0 of 5 complete; begins after conformance readiness
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
 
 The ordered path to the first stable release is:
 
-1. complete document update metadata
-2. create the Ava Maintenance role
-3. implement the full validation, conformance, and upgrade matrix
-4. define alpha acceptance and prerelease upgrade policy
-5. publish `1.0.0-alpha.1`
-6. dogfood the alpha and add bounded fix tasks for discovered defects
-7. publish a release candidate only after alpha blockers are resolved
-8. qualify and publish `1.0.0`
+1. create the Ava Maintenance role
+2. implement the full validation, conformance, and upgrade matrix
+3. define alpha acceptance and prerelease upgrade policy
+4. publish `1.0.0-alpha.1`
+5. dogfood the alpha and add bounded fix tasks for discovered defects
+6. publish a release candidate only after alpha blockers are resolved
+7. qualify and publish `1.0.0`
 
 Additional `alpha.N`, beta, or RC releases may be inserted when findings require them. The first alpha is a testable distribution, not a promise that the v1 feature set is defect-free.
 
