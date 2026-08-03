@@ -1,7 +1,7 @@
 ---
 type: Distribution Contract
 title: Ava Distribution and Ownership Boundary
-description: Defines repository source mapping, installed paths, release ownership, adoption, managed-file conflicts, and project-provided host integration.
+description: Defines repository source mapping, installed paths, release ownership, adoption, managed-file conflicts, and native or project-provided host integration.
 tags: [ava, distribution, ownership, installation, adoption, host-integration]
 generated:
   by: agent:openai-chatgpt
@@ -38,7 +38,7 @@ The Ava repository separates public contracts, release payload sources, project 
 
 `templates/base/` and `templates/project-scaffolds/` are source material, not directories copied verbatim into a project. Release assembly maps each distributed source file to an explicit installed destination and ownership class. Repository location, source age, and Git history do not determine installed ownership.
 
-Host-specific instruction files are not Ava template sources. They are supplied and owned by adopting projects.
+Host-specific instruction and configuration files are not Ava template sources. They are supplied and owned by adopting projects or users.
 
 # Installed-project layout
 
@@ -91,7 +91,7 @@ Ava-managed files must not contain project-specific customization. A local edit 
 
 ## Project-owned
 
-Project-owned content includes project-specific roles, workflows, instructions, knowledge, source material, indexes, logs, host-specific instruction files, and other project context outside declared managed paths.
+Project-owned content includes project-specific roles, workflows, instructions, knowledge, source material, indexes, logs, host-specific instruction files, host-specific project configuration, and other project context outside declared managed paths.
 
 The standard extension roots are:
 
@@ -123,13 +123,13 @@ The manifest may separately record bounded host integration metadata:
 
 ```json
 {
-  "entrypoint": "/CODEX.md",
+  "entrypoint": "./CODEX.md",
   "ownership": "project-owned",
   "discovery": "project-provided"
 }
 ```
 
-This record is descriptive. The entrypoint does not appear in `managed_files`, has no Ava checksum, and is never mutated by deterministic Ava tooling.
+This record is descriptive. The entrypoint does not appear in `managed_files`, has no Ava checksum, and is never mutated by deterministic Ava tooling. Native host discovery requires no host integration record.
 
 # Managed-file conflicts
 
@@ -174,6 +174,8 @@ A host is natively supported when its documented and validated behavior loads th
 
 Ava must not claim native support for a named host until that behavior has a maintained conformance fixture or documented verification.
 
+OpenCode is Ava's first natively supported host. It loads root `AGENTS.md` and treats direct `./.ava/...` reads as project-local workspace access. OpenCode support does not require or authorize Ava to create or modify `opencode.json`, `opencode.jsonc`, global configuration, or `.opencode/` content. The complete contract is [OpenCode host support](opencode.md).
+
 ## Project-provided host entrypoint
 
 A project may contain an instruction file recognized by its chosen host. The project owner may identify that existing file to the installer with `--host-entrypoint PATH`.
@@ -181,7 +183,7 @@ A project may contain an instruction file recognized by its chosen host. The pro
 The installer must:
 
 - validate that the path resolves to an existing regular file inside the selected project root
-- reject `/AGENTS.md`, `/.ava/`, and paths below `/.ava/`
+- reject `./AGENTS.md`, `./.ava/`, and paths below `./.ava/`
 - preserve the file byte-for-byte
 - record only its normalized project-owned integration metadata
 - preserve that metadata across upgrades unless explicitly changed
@@ -193,7 +195,7 @@ The installer must not:
 - add it to release assets or `managed_files`
 - replace, delete, back up, restore, migrate, or roll it back
 
-The project owner is responsible for instructing the host file to load and follow `/AGENTS.md`. The host file may contain additional project-specific instructions.
+The project owner is responsible for instructing the host file to load and follow `./AGENTS.md`. The host file may contain additional project-specific instructions.
 
 ## Explicit activation
 
@@ -203,7 +205,9 @@ When automatic discovery is unavailable or unverified, Ava remains usable throug
 Read ./AGENTS.md and follow it as the root instructions for this project.
 ```
 
-Installation and validation report discovery as `native`, `project-provided`, `explicit-only`, or `unsupported`. The initial installer reports only `project-provided` or `explicit-only`; it does not claim native support.
+Validation classifies supported discovery as `native`, `project-provided`, `explicit-only`, or `unsupported`. The installer records only project-provided integration metadata. Native OpenCode installations normally retain `host_integration: null` because discovery does not depend on a project-owned entrypoint.
+
+Instruction text cannot grant host filesystem permissions. A host or project configuration remains responsible for allowing, asking for, or denying file operations.
 
 # Fresh installation
 
@@ -218,7 +222,7 @@ A project is eligible for fresh installation when:
 
 The installer creates managed content and may create minimal project-owned scaffolding only when the target path is absent. Scaffold files are project-owned immediately and are never added to the managed manifest.
 
-Existing `/index.md`, `/log.md`, `/roles/`, `/workflows/`, `/shared/`, `/knowledge/`, `/inbox/`, and host-specific instruction files remain untouched and project-owned.
+Existing `/index.md`, `/log.md`, `/roles/`, `/workflows/`, `/shared/`, `/knowledge/`, `/inbox/`, host-specific instruction files, and host-specific project configuration remain untouched and project-owned.
 
 # Adoption of existing projects
 
@@ -279,7 +283,7 @@ The release assembler and installer implement an explicit mapping rather than co
 | `templates/project-scaffolds/` | project root extension paths | Project-owned, create-if-absent only |
 | project-supplied host entrypoint | unchanged project path | Project-owned metadata reference only |
 
-Release assembly must provide a complete, mechanically verifiable manifest for distributed mappings. No release may treat repository source location alone as ownership metadata, and no release may package a project-specific host entrypoint.
+Release assembly must provide a complete, mechanically verifiable manifest for distributed mappings. No release may treat repository source location alone as ownership metadata, and no release may package a project-specific host entrypoint or host configuration file.
 
 # Removed architecture concepts
 
