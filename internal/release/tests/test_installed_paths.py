@@ -77,6 +77,16 @@ class InstalledPathTests(unittest.TestCase):
             )
             self.assertEqual(validator.ambiguous_findings(root), [])
 
+    def test_placeholder_relative_paths_are_not_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "templates/base/roles").mkdir(parents=True)
+            (root / "templates/project-scaffolds").mkdir(parents=True)
+            (root / "templates/base/AGENTS.md").write_text(
+                "Read `roles/<role>/index.md` and `workflows/{workflow}/index.md`.\n"
+            )
+            self.assertEqual(validator.ambiguous_findings(root), [])
+
     def test_manifest_schema_path_contracts(self) -> None:
         schema = json.loads(
             (SOURCE_ROOT / "distribution/schemas/manifest.schema.json").read_text()
