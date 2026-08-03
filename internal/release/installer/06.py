@@ -10,6 +10,7 @@ def apply_transaction(
     scaffolds: list[dict[str, Any]],
     semantic: dict[str, Any],
     migration_steps: list[dict[str, Any]],
+    host_integration: dict[str, str] | None,
 ) -> None:
     fresh = installed is None
     transaction_id = uuid.uuid4().hex
@@ -27,7 +28,7 @@ def apply_transaction(
     for path, item in target_payload.items():
         copy_candidate(Path(item["source"]), workspace, path, item["sha256"])
     completed_migrations = execute_migrations(workspace, migration_steps, target_payload)
-    manifest = target_manifest(target, target_payload, semantic)
+    manifest = target_manifest(target, target_payload, semantic, host_integration)
     validate_installed_manifest(manifest)
     candidate_manifest = workspace / "manifest.json"
     atomic_json(candidate_manifest, manifest)
@@ -171,10 +172,6 @@ def apply_transaction(
         raise
 
 
-def discovery_outcome(selected_bootstraps: set[str]) -> str:
-    return "host-bootstrap" if selected_bootstraps else "explicit-only"
-
-
 def perform_install(args: argparse.Namespace) -> None:
     root = args.target.expanduser().resolve()
     root.mkdir(parents=True, exist_ok=True)
@@ -194,6 +191,8 @@ def perform_install(args: argparse.Namespace) -> None:
     if installed and installed["semantic_compatibility"]["status"] != "complete":
         raise AvaError("SEMANTIC_STATE_BLOCKED", "semantic compatibility is incomplete; reconcile or rollback before another upgrade")
 
+    host_integration = resolve_host_integration(root, installed, args.host_entrypoint)
+
     embedded = os.environ.get("AVA_VERSION", "")
     if args.version:
         target_version = canonical_version(args.version)
@@ -207,6 +206,20 @@ def perform_install(args: argparse.Namespace) -> None:
             live = safe_live_path(root, path, permit_missing=False)
             if not live.is_file() or sha256_file(live) != item["sha256"]:
                 raise AvaError("MANAGED_CONFLICT", f"installed file is not intact: {path}")
+        if installed["host_integration"] != host_integration:
+            if args.json:
+                record = {"type": "host-integration", "operation": "update"}
+                record.update(host_integration or {"entrypoint": None, "discovery": "explicit-only"})
+                print(json.dumps(record, sort_keys=True))
+            elif host_integration is None:
+                print("HOST      explicit-only")
+            else:
+                print(f"HOST      {host_integration['entrypoint']} [project-owned, project-provided]")
+            if args.dry_run:
+                return
+            installed["host_integration"] = host_integration
+            atomic_json(root / ".ava/state/manifest.json", installed)
+            print("Updated project-owned host integration metadata.")
         print(f"Ava {target_version} is already installed and valid.")
         return
 
@@ -215,17 +228,31 @@ def perform_install(args: argparse.Namespace) -> None:
     try:
         bundles, edges = resolve_bundles(source_version, target_version, args, work_root)
         target = bundles[-1]
-        selected_bootstraps = select_bootstraps(target, installed, args.host_bootstrap)
-        target_payload, _, migration_steps = construct_target_payload(bundles, edges, selected_bootstraps)
+        target_payload, _, migration_steps = construct_target_payload(bundles, edges)
         operations = plan_operations(root, installed, target_payload, args.adopt_existing_agents)
         scaffolds = plan_scaffolds(root, target, installed is None)
         semantic = build_semantic_state(installed, target, edges)
-        discovery = discovery_outcome(selected_bootstraps)
-        print_plan(operations, scaffolds, semantic, discovery, args.json)
+        print_plan(operations, scaffolds, semantic, host_integration, args.json)
         if args.dry_run:
             return
-        apply_transaction(root, installed, upgrade, target, bundles, edges, target_payload, operations, scaffolds, semantic, migration_steps)
-        print(f"Bootstrap discovery: {discovery}")
+        apply_transaction(
+            root,
+            installed,
+            upgrade,
+            target,
+            bundles,
+            edges,
+            target_payload,
+            operations,
+            scaffolds,
+            semantic,
+            migration_steps,
+            host_integration,
+        )
+        if host_integration is None:
+            print("Host discovery: explicit-only")
+        else:
+            print(f"Host entrypoint: {host_integration['entrypoint']} [project-owned]")
     finally:
         shutil.rmtree(work_root, ignore_errors=True)
 
