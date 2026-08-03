@@ -13,10 +13,12 @@ Follow the linked indexes progressively instead of scanning the complete source 
 ## Contents
 
 - [Agent router source](AGENTS.md) - Source for the Ava-managed root router.
-- [Inbox format](inbox/) - Current project-owned inbox structure used as scaffold and format reference.
-- [Knowledge format](knowledge/) - Current project-owned knowledge structure used as scaffold and format reference.
+- [Managed base index source](base-index.md) - Source installed at `/.ava/base/index.md`.
 - [Default roles](roles/) - Ava-managed role sources for the installed base catalog.
 - [Default workflows](workflows/) - Ava-managed workflow sources for the installed base catalog.
 - [Shared context](shared/) - Ava-managed shared instruction sources and current project-format context.
+- [Project scaffold sources](scaffold/) - Minimal create-if-absent project-owned extension files.
+- [Inbox format](inbox/) - Project-owned inbox scaffold and format reference.
+- [Knowledge format](knowledge/) - Project-owned knowledge scaffold and format reference.
 
-Release assembly must classify each source file explicitly. Repository location under `templates/base/` alone does not make a file Ava-managed.
+Release assembly must classify each installed source file explicitly. Repository location under `templates/base/` alone does not make a file Ava-managed.
