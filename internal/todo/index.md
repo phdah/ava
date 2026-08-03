@@ -32,11 +32,11 @@ GitHub Release
 1. [Format contract and base structure](01-format-contract/) - 3 of 4 complete; document update metadata remains as a follow-up
 2. [Core roles for initialized projects](02-core-roles/) - 4 of 4 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
-4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 6 of 9 complete; active with installer implementation next
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 7 of 9 complete; active with validation and conformance next
 
-Phase 3 is complete. Project-owned workflow lifecycle belongs to the Project Steward, managed workflow replacement remains deterministic release work, and active semantic upgrade migration remains with the Upgrade Role.
+The release assembler and thin installer/updater now implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, and optional host bootstraps.
 
-Resume Phase 4 with the thin POSIX installer and updater.
+Continue Phase 4 with validation, conformance, and upgrade fixtures before publishing the first immutable release.
 
 The format metadata follow-up remains pending without replacing the current Phase 4 sequence.
 

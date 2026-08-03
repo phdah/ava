@@ -10,20 +10,14 @@ Define and implement Ava as an immutable, versioned context distribution install
 4. [x] [Define the upgrade and migration protocol](04-define-upgrade-and-migration-protocol.md)
 5. [x] [Define release guidance and the Upgrade Role](05-define-release-logs-and-agent-guidance.md)
 6. [x] [Separate distribution contracts and release procedures](06-separate-distribution-contracts-and-release-procedures.md)
-7. [ ] [Implement the installer and updater](07-implement-installer-and-updater.md)
+7. [x] [Implement the installer and updater](07-implement-installer-and-updater.md)
 8. [ ] [Implement validation, conformance, and upgrade fixtures](08-implement-validation-and-upgrade-fixtures.md)
 9. [ ] [Publish the first versioned Ava release](09-publish-first-versioned-release.md)
 
-Task 6 separated public contracts and schemas under `/distribution/`, release payload and scaffold sources under `/templates/`, and maintainer-only publication procedures under `/internal/release/`.
+Task 7 implements deterministic release assembly and one thin POSIX installer/updater with embedded structured-data handling. It supports fresh installation, explicit adoption, direct and chained upgrades, three-way managed reconciliation, restricted deterministic migrations, durable recovery, semantic upgrade blocking, and optional managed host bootstraps.
 
-Phase 3 is complete. Portable workflow triggers and project-owned workflow lifecycle ownership are defined, so Phase 4 resumes with task 7.
-
-The accepted distribution boundary places managed content under `/AGENTS.md` and `/.ava/`, while project-owned extension and context paths remain at the project root. The accepted versioning contract separates installed `ava_version` from project-owned semantic compatibility and distinguishes immutable payload checksums from mutable managed state validation. The accepted release contract defines one immutable GitHub Release asset set, stable and prerelease selection, SHA-256 integrity, GitHub release attestations, and separate convenience and verified bootstrap paths.
-
-The accepted upgrade protocol defines explicit release edges, three-way managed reconciliation, a durable `upgrade.json` transaction journal, ordered idempotent migrations, manifest-last commit semantics, managed pre-routing upgrade mode, and rollback that never silently reverses project-owned edits.
-
-The accepted release-guidance contract defines versioned installed `UPGRADE.md` documents with validated metadata, explicit affected project concepts, decisions, procedures, completion criteria, rollback implications, and ordered multi-version composition. Active upgrade state directly selects the managed Upgrade Role before any project-owned registry or workflow discovery.
+The focused implementation suite covers clean installation, create-if-absent preservation, managed conflicts, checksum failures, unsafe archives, symlink escapes, host bootstrap selection, migration execution, chained upgrades, semantic state, and rollback. The broader conformance and compatibility matrix remains task 8.
 
 ## Current active task
 
-[Implement the installer and updater](07-implement-installer-and-updater.md).
+[Implement validation, conformance, and upgrade fixtures](08-implement-validation-and-upgrade-fixtures.md).

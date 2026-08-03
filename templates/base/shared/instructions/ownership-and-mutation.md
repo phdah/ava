@@ -27,7 +27,6 @@ Ava-managed content belongs to the installed Ava release. It includes:
 - `/.ava/state/manifest.json`
 - `/.ava/state/upgrade.json`
 - all files under `/.ava/guidance/`
-- any selected host-specific bootstrap file
 - deterministic migration support installed by the release
 
 Ava-managed files provide the canonical router, default roles, default workflows, shared contracts, state, and release guidance. Ordinary semantic roles must not customize them.
@@ -44,6 +43,9 @@ Project-owned content contains project-specific context outside declared managed
 - `/shared/`
 - `/knowledge/`
 - `/inbox/`
+- host-specific instruction files such as `/CODEX.md`, `/CLAUDE.md`, or `/.github/copilot-instructions.md`
+
+A host-specific instruction file remains project-owned even when its path is recorded in `host_integration` metadata. It is not part of the managed-file inventory and deterministic Ava tooling must not create, replace, checksum, back up, restore, migrate, or roll it back.
 
 Project-owned content may predate Ava installation, be created as create-if-absent scaffolding, or be added later. Creation time does not change ownership.
 

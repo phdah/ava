@@ -31,19 +31,39 @@ for path in \
   distribution/schemas/guidance.schema.json \
   templates/index.md \
   templates/base/index.md \
+  templates/project-scaffolds/index.md \
   internal/release/index.md \
-  internal/release/procedure.md
+  internal/release/procedure.md \
+  internal/release/installer.md \
+  internal/release/assemble.sh \
+  internal/release/assemble.py \
+  internal/release/ava-install.sh \
+  internal/release/installer/00.py \
+  internal/release/installer/01.py \
+  internal/release/installer/02.py \
+  internal/release/installer/03.py \
+  internal/release/installer/04.py \
+  internal/release/installer/05.py \
+  internal/release/installer/06.py \
+  internal/release/installer/07.py \
+  internal/release/test.sh \
+  internal/release/tests/test_installer.py
 do
   require_file "$path"
 done
 
-require_dir templates/base
+for path in templates/base templates/project-scaffolds internal/release/installer
+do
+  require_dir "$path"
+done
 
 for path in "$ROOT"/templates/* "$ROOT"/templates/.[!.]* "$ROOT"/templates/..?*
 do
   [ -e "$path" ] || continue
   case "$path" in
-    "$ROOT/templates/index.md"|"$ROOT/templates/base") ;;
+    "$ROOT/templates/index.md"|\
+    "$ROOT/templates/base"|\
+    "$ROOT/templates/project-scaffolds") ;;
     *) fail "unexpected templates root entry: ${path#"$ROOT/"}" ;;
   esac
 done
@@ -54,7 +74,8 @@ for old_path in \
   templates/github-release-assets.md \
   templates/upgrade-and-migration.md \
   templates/release-guidance.md \
-  templates/schemas
+  templates/schemas \
+  templates/host-bootstraps
 do
   [ ! -e "$ROOT/$old_path" ] || fail "obsolete distribution location remains: $old_path"
 done
@@ -78,12 +99,20 @@ do
   fi
 done
 
-find "$ROOT/templates/base" -type f -print | while IFS= read -r file
+for source_root in templates/base templates/project-scaffolds
 do
-  if grep -En '\]\([^)]*internal/|resource:[[:space:]]*/?internal/' "$file" >/dev/null 2>&1; then
-    printf 'ERROR: release source depends on internal content: %s\n' "${file#"$ROOT/"}" >&2
-    exit 1
-  fi
+  find "$ROOT/$source_root" -type f -print | while IFS= read -r file
+  do
+    if grep -En '\]\([^)]*internal/|resource:[[:space:]]*/?internal/' "$file" >/dev/null 2>&1; then
+      printf 'ERROR: release source depends on internal content: %s\n' "${file#"$ROOT/"}" >&2
+      exit 1
+    fi
+  done
 done
+
+sh -n "$ROOT/internal/release/assemble.sh"
+sh -n "$ROOT/internal/release/ava-install.sh"
+sh -n "$ROOT/internal/release/test.sh"
+python3 -m py_compile "$ROOT/internal/release/assemble.py"
 
 printf 'Repository boundaries valid.\n'
