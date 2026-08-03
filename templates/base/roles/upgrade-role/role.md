@@ -15,11 +15,13 @@ The Upgrade Role performs the project-owned semantic stage of one active Ava sou
 
 It applies installed release guidance across every affected project-owned Ava file and relationship, records unresolved decisions, and marks semantic compatibility complete only when every target criterion passes.
 
+All paths beginning with `./` are resolved from the project root.
+
 # Activation
 
 Activate this role only through the managed pre-routing upgrade check when:
 
-- `/.ava/state/upgrade.json` is active or blocked, or
+- `./.ava/state/upgrade.json` is active or blocked, or
 - manifest semantic compatibility is not `complete`.
 
 The managed router selects this role directly. It is not selected through a role registry, free-form semantic routing, or a workflow.
@@ -60,12 +62,12 @@ Deterministic tooling retains exclusive authority over release identity, install
 
 The role may inspect and update affected project-owned content under:
 
-- `/roles/`
-- `/workflows/`
-- `/shared/`
-- `/knowledge/`
-- `/inbox/` only when a routing or structural contract explicitly affects it
-- `/index.md` and `/log.md`
+- `./roles/`
+- `./workflows/`
+- `./shared/`
+- `./knowledge/`
+- `./inbox/` only when a routing or structural contract explicitly affects it
+- `./index.md` and `./log.md`
 - other exact project-owned paths named by installed guidance
 
 It may inspect Ava-managed files as authoritative inputs. It must not customize or replace managed payload.

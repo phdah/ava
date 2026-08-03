@@ -2,7 +2,7 @@
 type: Workflow
 title: Review change
 description: Performs a bounded read-only semantic review of a proposed or completed project change.
-primary_role: /.ava/base/roles/change-reviewer/role.md
+primary_role: ./.ava/base/roles/change-reviewer/role.md
 mode: read-only
 status: stable
 generated:

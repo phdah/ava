@@ -2,7 +2,7 @@
 type: Workflow
 title: Review role catalog
 description: Performs a read-only semantic review of the complete registered role catalog as one routing and authority system.
-primary_role: /.ava/base/roles/change-reviewer/role.md
+primary_role: ./.ava/base/roles/change-reviewer/role.md
 mode: read-only
 status: stable
 generated:

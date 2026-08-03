@@ -16,25 +16,27 @@ Workflow routing is deterministic. Ava does not infer a workflow from semantic s
 
 Portable trigger discovery and executor ownership follow [Workflow triggers](workflow-triggers.md).
 
+All paths beginning with `./` are resolved from the project root.
+
 # Workflow registries
 
 The managed workflow registry begins at:
 
 ```text
-/.ava/base/workflows/index.md
+./.ava/base/workflows/index.md
 ```
 
-The project-owned workflow registry begins at `/workflows/index.md` when present.
+The project-owned workflow registry begins at `./workflows/index.md` when present.
 
 A managed workflow is registered only when all of these conditions hold:
 
-- it is a non-reserved Markdown document with `type: Workflow` beneath `/.ava/base/workflows/`
-- it is reachable by following workflow discovery links from `/.ava/base/workflows/index.md`
+- it is a non-reserved Markdown document with `type: Workflow` beneath `./.ava/base/workflows/`
+- it is reachable by following workflow discovery links from `./.ava/base/workflows/index.md`
 - every traversed `index.md` lists only its direct child files and directories
 - the workflow follows the shared [Workflow format](workflow-format.md)
 - its path is unique within the managed registry
 
-A project-owned workflow is registered only when the equivalent conditions hold beneath `/workflows/` and it is reachable from `/workflows/index.md`.
+A project-owned workflow is registered only when the equivalent conditions hold beneath `./workflows/` and it is reachable from `./workflows/index.md`.
 
 A workflow file that exists beneath either workflow root but is not reachable from its corresponding registry is unregistered and must not be invoked.
 
@@ -59,7 +61,7 @@ A validator must detect broken index links, duplicate links to the same workflow
 
 A request explicitly invokes a workflow only when it supplies one of these identifiers as the workflow to run:
 
-1. a canonical bundle-root-relative workflow path, such as `/.ava/base/workflows/review-change.md` or `/workflows/review-deployment.md`
+1. a canonical project-root-relative workflow path, such as `./.ava/base/workflows/review-change.md` or `./workflows/review-deployment.md`
 2. a lowercase kebab-case workflow name matching the workflow filename stem, such as `review-change`
 
 A canonical path always identifies at most one workflow.
@@ -119,8 +121,8 @@ The workflow remains the active procedural scope for the duration of the invocat
 
 For a request without an explicit workflow invocation, the router must:
 
-1. read the managed role registry at `/.ava/base/roles/index.md`
-2. read the project-owned role registry at `/roles/index.md` when present
+1. read the managed role registry at `./.ava/base/roles/index.md`
+2. read the project-owned role registry at `./roles/index.md` when present
 3. exclude roles whose activation contract reserves direct managed activation
 4. semantically compare the request with the registered ordinary roles' stated purposes and activation conditions
 5. resolve exactly one active role or ask the user when the choice is materially ambiguous
@@ -130,15 +132,15 @@ A free-form request may have the same intent as a known workflow without invokin
 
 # Registered role resolution
 
-A managed role is registered when its direct child directory is linked from `/.ava/base/roles/index.md` and its role index exposes the required role documents.
+A managed role is registered when its direct child directory is linked from `./.ava/base/roles/index.md` and its role index exposes the required role documents.
 
-A project-owned role is registered when the equivalent conditions hold beneath `/roles/` and it is linked from `/roles/index.md`.
+A project-owned role is registered when the equivalent conditions hold beneath `./roles/` and it is linked from `./roles/index.md`.
 
 A workflow `primary_role` must:
 
-- be one bundle-root-relative path
+- be one project-root-relative path
 - point directly to a `role.md` document
-- remain beneath `/.ava/base/roles/` or `/roles/`
+- remain beneath `./.ava/base/roles/` or `./roles/`
 - resolve to a role registered through the corresponding role registry
 - resolve to a role whose status is not `deprecated`
 - resolve to an ordinary role whose activation is valid during normal routing
@@ -180,7 +182,7 @@ When a direct replacement exists, the deprecated workflow may declare:
 
 ```yaml
 status: deprecated
-replaced_by: /.ava/base/workflows/new-workflow.md
+replaced_by: ./.ava/base/workflows/new-workflow.md
 ```
 
 `replaced_by` must resolve to one registered workflow whose status is not `deprecated`.
@@ -204,7 +206,7 @@ Removing a deprecated workflow is an explicit compatibility decision. Do not rem
 
 Treat these as errors or blocking findings:
 
-- missing `/.ava/base/workflows/index.md`
+- missing `./.ava/base/workflows/index.md`
 - a workflow path that is not reachable through its corresponding workflow registry
 - a workflow registry link that is broken, duplicated, escapes its workflow root, or bypasses direct-child indexing
 - an explicit workflow name resolving to zero or multiple registered workflows
@@ -235,23 +237,23 @@ Semantic ambiguity involving authority, policy, destructive action, or compatibi
 Given these registered workflows:
 
 ```text
-/.ava/base/workflows/review-change.md
-/workflows/review-deployment.md
+./.ava/base/workflows/review-change.md
+./workflows/review-deployment.md
 ```
 
 These invocations are valid:
 
 ```text
-/.ava/base/workflows/review-change.md
+./.ava/base/workflows/review-change.md
 review-change
-/workflows/review-deployment.md
+./workflows/review-deployment.md
 review-deployment
 ```
 
 An external executor that discovers a matching trigger should retain and invoke the canonical path:
 
 ```text
-/.ava/base/workflows/review-change.md
+./.ava/base/workflows/review-change.md
 ```
 
 It must not infer another workflow from the event payload or invoke a title.
@@ -259,10 +261,10 @@ It must not infer another workflow from the event payload or invoke a title.
 If both of these exist:
 
 ```text
-/.ava/base/workflows/review-change.md
-/workflows/review-change.md
+./.ava/base/workflows/review-change.md
+./workflows/review-change.md
 ```
 
 then `review-change` is ambiguous. The caller must use one canonical path.
 
-If `/.ava/base/workflows/old-audit.md` is deprecated and replaced by `/.ava/base/workflows/audit-project-context.md`, the router reports the replacement and stops. It does not invoke the replacement automatically.
+If `./.ava/base/workflows/old-audit.md` is deprecated and replaced by `./.ava/base/workflows/audit-project-context.md`, the router reports the replacement and stops. It does not invoke the replacement automatically.

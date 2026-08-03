@@ -14,16 +14,18 @@ This instruction governs the state check that occurs before ordinary workflow or
 
 Its purpose is to keep upgrade inspection, semantic reconciliation, resume, abort, and rollback reachable even when project-owned routing or context is missing, corrupt, or incompatible with the installed base.
 
+All paths beginning with `./` are resolved from the project root.
+
 # Managed inputs
 
 Use only these managed inputs to decide the routing mode:
 
-- `/.ava/state/upgrade.json`
-- `/.ava/state/manifest.json`
-- `/.ava/base/roles/upgrade-role/index.md`
-- the exact relative guidance paths recorded in the upgrade transaction, resolved beneath `/.ava/guidance/`
+- `./.ava/state/upgrade.json`
+- `./.ava/state/manifest.json`
+- `./.ava/base/roles/upgrade-role/index.md`
+- the exact relative guidance paths recorded in the upgrade transaction, resolved beneath `./.ava/guidance/`
 
-Do not read `/roles/index.md`, `/workflows/index.md`, or other project-owned routing files before upgrade-mode activation is resolved.
+Do not read `./roles/index.md`, `./workflows/index.md`, or other project-owned routing files before upgrade-mode activation is resolved.
 
 # Minimal pre-routing check
 
@@ -43,11 +45,11 @@ A journal state must never broaden its `allowed_operations` beyond the upgrade p
 
 In upgrade mode:
 
-1. Confirm that `/.ava/base/roles/upgrade-role/role.md` declares `activation_mode: managed-pre-routing`, then activate it directly.
-2. Read `/.ava/base/roles/upgrade-role/index.md` and every document it marks as required.
+1. Confirm that `./.ava/base/roles/upgrade-role/role.md` declares `activation_mode: managed-pre-routing`, then activate it directly.
+2. Read `./.ava/base/roles/upgrade-role/index.md` and every document it marks as required.
 3. Announce `Active role: Upgrade Role`.
 4. Compare the requested operation with `allowed_operations`.
-5. Resolve the exact relative guidance paths recorded by the transaction beneath `/.ava/guidance/`, in transaction order.
+5. Resolve the exact relative guidance paths recorded by the transaction beneath `./.ava/guidance/`, in transaction order.
 6. Treat project-owned registries, indexes, roles, workflows, shared instructions, and knowledge only as migration inputs after the role is active.
 
 A role declaring `activation_mode: managed-pre-routing` is ineligible for free-form selection and must not be used as a workflow `primary_role`. Do not resolve a workflow, perform free-form role selection, or use ownership precedence to select another role while upgrade mode remains active.
@@ -82,11 +84,11 @@ A user request cannot broaden this allowlist.
 
 # Guidance discovery
 
-The Upgrade Role loads only relative guidance paths recorded in the journal's resolved upgrade path, resolving each beneath `/.ava/guidance/`.
+The Upgrade Role loads only relative guidance paths recorded in the journal's resolved upgrade path, resolving each beneath `./.ava/guidance/`.
 
 For each path it must verify:
 
-- the file is beneath `/.ava/guidance/`
+- the file is beneath `./.ava/guidance/`
 - the file is present in the installed managed manifest
 - its metadata follows the release-guidance contract
 - its source and target versions match the relevant path edge

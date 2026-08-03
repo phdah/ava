@@ -14,6 +14,8 @@ This instruction defines how an active Ava role or workflow interprets file owne
 
 Ownership controls release lifecycle, manifest membership, canonical baselines, and automatic replacement. Mutation authority controls whether the active role may change a file for the current task. These are separate concepts.
 
+All paths beginning with `./` are resolved from the project root.
+
 # Installed ownership classes
 
 Ava has exactly two ownership classes.
@@ -22,11 +24,11 @@ Ava has exactly two ownership classes.
 
 Ava-managed content belongs to the installed Ava release. It includes:
 
-- `/AGENTS.md`
-- all files under `/.ava/base/`
-- `/.ava/state/manifest.json`
-- `/.ava/state/upgrade.json`
-- all files under `/.ava/guidance/`
+- `./AGENTS.md`
+- all files under `./.ava/base/`
+- `./.ava/state/manifest.json`
+- `./.ava/state/upgrade.json`
+- all files under `./.ava/guidance/`
 - deterministic migration support installed by the release
 
 Ava-managed files provide the canonical router, default roles, default workflows, shared contracts, state, and release guidance. Ordinary semantic roles must not customize them.
@@ -37,13 +39,13 @@ Managed files change only through deterministic release tooling or another narro
 
 Project-owned content contains project-specific context outside declared managed paths. Standard project-owned locations include:
 
-- `/index.md` and `/log.md` when present
-- `/roles/`
-- `/workflows/`
-- `/shared/`
-- `/knowledge/`
-- `/inbox/`
-- host-specific instruction files such as `/CODEX.md`, `/CLAUDE.md`, or `/.github/copilot-instructions.md`
+- `./index.md` and `./log.md` when present
+- `./roles/`
+- `./workflows/`
+- `./shared/`
+- `./knowledge/`
+- `./inbox/`
+- host-specific instruction files such as `./CODEX.md`, `./CLAUDE.md`, or `./.github/copilot-instructions.md`
 
 A host-specific instruction file remains project-owned even when its path is recorded in `host_integration` metadata. It is not part of the managed-file inventory and deterministic Ava tooling must not create, replace, checksum, back up, restore, migrate, or roll it back.
 
@@ -102,8 +104,8 @@ Semantic changes to project-owned context happen through an active Ava role unde
 
 Managed and project-owned registries are separate extension points.
 
-- managed default roles and workflows live under `/.ava/base/`
-- project-specific roles and workflows live under `/roles/` and `/workflows/`
+- managed default roles and workflows live under `./.ava/base/`
+- project-specific roles and workflows live under `./roles/` and `./workflows/`
 - adding a project concept must not require editing a managed registry
 - ownership does not provide name precedence when a role or workflow identifier is ambiguous
 

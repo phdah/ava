@@ -4,6 +4,8 @@ This log records major conceptual and structural changes to Ava's internal devel
 
 ## 2026-08-03
 
+* **Installed path convention**: Standardized agent-facing project-root paths on explicit `./...` notation and reserved leading-slash logical identifiers for typed deterministic-tooling fields.
+* **Path validation**: Added release-source validation, router-resolution fixtures, host-entrypoint normalization, and a regression test for the observed `/.ava/base/shared/instructions/upgrade-state-and-routing.md` failure.
 * **Workflow lifecycle ownership**: Assigned project-owned workflow lifecycle to the Project Steward and retained role lifecycle, independent review, active upgrade migration, and deterministic mechanics under their existing owners.
 * **Workflow role decision**: Rejected a dedicated Workflow Manager because workflow lifecycle shares the Project Steward's existing authority, trusted context, and project-wide discovery boundary.
 * **Workflow phase completion**: Completed Phase 3 without adding workflow-maintenance or semantic-upgrade workflows that would duplicate durable role instructions or managed pre-routing.

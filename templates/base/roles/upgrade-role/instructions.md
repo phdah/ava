@@ -15,7 +15,7 @@ Before changing project-owned context:
 1. Read the managed manifest and upgrade journal.
 2. Confirm the installed base, compatible-through version, target version, journal status, stage, and allowed operations.
 3. Confirm that `reconcile-semantic` or the narrower requested recovery operation is permitted.
-4. Resolve the exact relative guidance paths recorded by the transaction beneath `/.ava/guidance/`, in order.
+4. Resolve the exact relative guidance paths recorded by the transaction beneath `./.ava/guidance/`, in order.
 5. Validate each guidance document against the release-guidance contract and its transaction edge.
 6. Stop without mutation when managed state or guidance cannot establish safe authority.
 
