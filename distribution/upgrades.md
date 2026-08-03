@@ -1,18 +1,21 @@
 ---
 type: Distribution Contract
 title: Ava Upgrade and Migration Protocol
-description: Defines deterministic base upgrades, durable transaction state, migration ordering, managed upgrade routing, rollback, and semantic completion.
-tags: [ava, distribution, upgrades, migrations, transactions, compatibility]
+description: Defines deterministic base upgrades, durable transaction state, maintenance and semantic routing, rollback, and semantic completion.
+tags: [ava, distribution, upgrades, migrations, transactions, compatibility, maintenance]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-03T21:47:00+02:00
 ---
 
 # Ava Upgrade and Migration Protocol
 
 This contract defines supported release transitions without silently overwriting managed conflicts or treating a new managed base as completed migration of project-owned context.
 
-It implements [Ava Distribution and Ownership Boundary](ownership.md), [Ava Versioning and Compatibility](versioning.md), and [Ava GitHub Release Assets](releases.md). The updater owns deterministic stages. The managed Upgrade Role owns the project-owned semantic stage.
+It implements [Ava Distribution and Ownership Boundary](ownership.md), [Ava Versioning and Compatibility](versioning.md), and [Ava GitHub Release Assets](releases.md). The updater owns deterministic state mutation. Ava Maintenance interprets and invokes deterministic lifecycle operations. Upgrade Role owns project-owned semantic reconciliation.
 
 # Invariants
 
@@ -26,6 +29,8 @@ It implements [Ava Distribution and Ownership Boundary](ownership.md), [Ava Vers
 8. Immutable release metadata must declare every supported source-to-target transition.
 9. Resume and rollback use durable recorded state, never filesystem guesses.
 10. Automatic rollback never reverses project-owned edits.
+11. Ava Maintenance may invoke deterministic operations but must not reproduce or bypass their protected state transitions.
+12. Upgrade Role may update semantic state but must not perform deterministic installation administration.
 
 # Managed state
 
@@ -45,12 +50,12 @@ The updater replaces the live manifest last. The new manifest records the target
 - staging, backup, and candidate-manifest locations
 - managed-file classifications and operations
 - resolved migrations and verified completion records
-- project-owned paths later changed by the Upgrade Role
+- project-owned paths later changed by Upgrade Role
 - current failure and permitted operations
 
 The updater writes and validates the journal before live mutation. Each transition uses temporary-file write, flush, and atomic rename.
 
-Terminal states may remain for reporting. Normal routing requires both a terminal journal state and `semantic_compatibility.status: complete`.
+Terminal states may remain for reporting. Normal routing requires both a safe terminal journal state and `semantic_compatibility.status: complete`.
 
 # Explicit release graph
 
@@ -105,7 +110,7 @@ Conflict reports include path, expected state, actual state, target operation, a
 
 Deterministic upgrades never create, replace, delete, move, or merge project-owned content.
 
-Release entries marked `project-owned` and `create-if-absent` apply only to fresh installation or explicit adoption. During upgrade, new recommended project-owned files are described by guidance and created only by the managed Upgrade Role through the explicit semantic migration request.
+Release entries marked `project-owned` and `create-if-absent` apply only to fresh installation or explicit adoption. During upgrade, new recommended project-owned files are described by guidance and created only by Upgrade Role through the explicit semantic migration request.
 
 # Deterministic migrations
 
@@ -141,6 +146,8 @@ Permitted: inspect, abort.
 
 Exit: complete release path and assets recorded.
 
+Ava Maintenance owns agent-facing inspection and may invoke abort through the updater.
+
 ## Preflight
 
 Actions: validate manifest and journal, current managed files, three-way plan, release assets, migration graph, guidance inventory, filesystem requirements, and unresolved semantic carry rules.
@@ -150,6 +157,8 @@ Permitted: inspect, resolve, resume, abort.
 Conflict: `blocked/preflight`.
 
 Exit: deterministic conflict-free plan.
+
+Ava Maintenance explains the conflict and invokes only the deterministic operation permitted by the journal. It does not resolve semantic ambiguity or reconstruct managed state manually.
 
 ## Staging
 
@@ -193,15 +202,15 @@ After manifest replacement, the journal becomes `base-installed`, then `complete
 
 ## Semantic migration
 
-Only the Ava-managed Upgrade Role performs this stage. It may inspect and modify project-owned files only after managed activation establishes source-to-target authority.
+Only Upgrade Role performs project-owned semantic reconciliation. It may inspect and modify project-owned files only after managed activation establishes source-to-target authority.
 
-Permitted: inspect, reconcile semantic context, record changed paths, capture decisions, update semantic state, resume, request rollback.
+Permitted: inspect, reconcile semantic context, record changed paths, capture decisions, update semantic state, and prepare project-owned rollback resolution.
 
-Normal operations remain blocked until semantic state is complete or rollback reaches a safe source terminal state.
+Ava Maintenance remains responsible for deterministic status explanation, finalization, and invocation of managed rollback. Normal operations remain blocked until semantic state is complete and finalization reaches a safe terminal state, or rollback reaches a safe source terminal state.
 
 ## Completion
 
-After full validation and semantic completion:
+After full validation and semantic completion, the deterministic finalization mechanism records:
 
 ```json
 {
@@ -211,47 +220,63 @@ After full validation and semantic completion:
 }
 ```
 
+Ava Maintenance may invoke finalization only after the manifest reports semantic compatibility complete and the updater proves the journal finalizable.
+
 # Managed pre-routing mode
 
 Before ordinary workflow, role, instruction, or project-registry discovery, root `/AGENTS.md` must:
 
 1. minimally validate `/.ava/state/upgrade.json`
 2. validate the supported envelope of `manifest.json`
-3. enter upgrade mode when journal status is `active` or `blocked`, or semantic status is not `complete`
-4. load the managed Upgrade Role directly, without project-owned or combined registry resolution
-5. load exact installed guidance paths recorded by the transaction
-6. enforce the operation allowlist
-7. read project-owned registries only afterward, as migration inputs
+3. activate Ava Maintenance when state is malformed, contradictory, in a deterministic stage, or the request is installation inspection or deterministic recovery
+4. activate Upgrade Role only when semantic reconciliation is required and the requested outcome changes or validates project-owned context
+5. keep unrelated ordinary requests blocked while deterministic or semantic work remains incomplete
+6. load exact installed guidance paths only after Upgrade Role activation
+7. enforce the operation allowlist and role authority boundary
+8. read project-owned registries only after normal routing is permitted, or as bounded migration inputs after Upgrade Role activation
 
-The [release guidance contract](guidance.md) defines the canonical managed Upgrade Role path and guidance entry point. Both must be reachable entirely from managed files.
+Both managed roles must be reachable entirely from managed files.
 
-Malformed managed upgrade state enters minimal recovery mode rather than normal routing. Missing, corrupt, or incompatible project-owned routing cannot prevent inspect, resume, abort, rollback, or semantic reconciliation.
+Malformed managed state enters read-only Ava Maintenance recovery rather than normal routing. Missing, corrupt, or incompatible project-owned routing cannot prevent installation inspection, deterministic recovery coordination, or semantic reconciliation.
+
+# Role ownership by state and request
+
+| Managed condition | Requested outcome | Active role |
+|---|---|---|
+| missing, malformed, unsupported, or contradictory state | inspect or explain recovery | Ava Maintenance |
+| active or blocked deterministic stage | inspect, resume, abort, rollback, finalize, or explain | Ava Maintenance |
+| semantic status incomplete | reconcile project-owned context | Upgrade Role |
+| semantic status incomplete | inspect status, explain blockage, finalize, or invoke rollback | Ava Maintenance |
+| safe terminal state and semantic complete | ordinary project work | ordinary routing |
+| safe terminal state and semantic complete | installation health, host access, explicit upgrade, or removal | Ava Maintenance through ordinary routing |
+
+The role selected for an explanation does not gain mutation authority owned by the other role or deterministic tooling.
 
 # Permitted operations
 
-| State | Operations | Normal routing |
-|---|---|---|
-| `idle` | normal | only with semantic complete |
-| `active/planning` | inspect, abort | blocked |
-| `active/preflight` | inspect, resolve, resume, abort | blocked |
-| `blocked/preflight` | inspect, resolve, resume, abort | blocked |
-| `active/staged` | inspect, resume, abort | blocked |
-| `active/migrating` | inspect, resume, abort or rollback by commit boundary | blocked |
-| `blocked/migrating` | inspect, resolve, resume, rollback | blocked |
-| `active/validating` | inspect, resume, abort or rollback by commit boundary | blocked |
-| `blocked/validating` | inspect, resolve, resume, rollback | blocked |
-| `active/base-installed` | inspect, resume semantic migration, rollback | blocked unless semantic complete |
-| `active/semantic` | inspect, reconcile, resolve, resume, rollback | blocked |
-| `blocked/semantic` | inspect, capture decisions, resolve, resume, rollback | blocked |
-| `active/rollback` | inspect, resolve, resume rollback | blocked |
-| `blocked/rollback` | inspect, capture decisions, resolve, resume rollback | blocked |
-| `complete` | normal | allowed |
-| `aborted` | normal | only with unchanged source state |
-| `rolled-back` | normal | only after source compatibility validation |
+| State | Operations | Owning interface | Normal routing |
+|---|---|---|---|
+| `idle` | normal | ordinary routing or Ava Maintenance request | only with semantic complete |
+| `active/planning` | inspect, abort | Ava Maintenance invoking updater | blocked |
+| `active/preflight` | inspect, resolve, resume, abort | Ava Maintenance and deterministic resolver | blocked |
+| `blocked/preflight` | inspect, resolve, resume, abort | Ava Maintenance and deterministic resolver | blocked |
+| `active/staged` | inspect, resume, abort | Ava Maintenance invoking updater | blocked |
+| `active/migrating` | inspect, resume, abort or rollback by commit boundary | Ava Maintenance invoking updater | blocked |
+| `blocked/migrating` | inspect, resolve, resume, rollback | Ava Maintenance and deterministic resolver | blocked |
+| `active/validating` | inspect, resume, abort or rollback by commit boundary | Ava Maintenance invoking updater | blocked |
+| `blocked/validating` | inspect, resolve, resume, rollback | Ava Maintenance and deterministic resolver | blocked |
+| `active/base-installed` | inspect, semantic handoff, rollback | Ava Maintenance, then Upgrade Role for reconciliation | blocked unless semantic complete and finalized |
+| `active/semantic` | inspect, reconcile, resolve, rollback preparation | Upgrade Role for project context, Ava Maintenance for deterministic actions | blocked |
+| `blocked/semantic` | inspect, capture decisions, resolve, rollback preparation | Upgrade Role for project context, Ava Maintenance for deterministic actions | blocked |
+| `active/rollback` | inspect, resolve, resume rollback | Ava Maintenance invoking updater | blocked |
+| `blocked/rollback` | inspect, prepare project resolution, resume rollback | Upgrade Role for project resolution, Ava Maintenance for updater invocation | blocked |
+| `complete` | normal | ordinary routing | allowed |
+| `aborted` | normal | ordinary routing | only with unchanged source state and semantic complete |
+| `rolled-back` | normal | ordinary routing | only after source compatibility validation |
 
-The journal may narrow this operation set for a failure but never broaden it.
+The journal may narrow this operation set for a failure but never broaden it. Finalization remains a protocol-derived updater operation rather than a new journal permission value.
 
-# Abort, rollback, and resume
+# Abort, rollback, resume, and finalization
 
 Before live managed mutation, abort removes staging, leaves the source manifest authoritative, records `aborted`, and permits normal routing when source semantics are complete.
 
@@ -261,21 +286,40 @@ Rollback restores only the source release recorded by the transaction; it is not
 
 Before project-owned semantic edits, validated restoration may become terminal `rolled-back`.
 
-After project-owned edits, automatic rollback still restores managed state but never edits project files. The transaction remains `blocked/rollback` and reports every changed project path. The user must explicitly retain and prove compatibility, revert through version control or editing, or reconcile for the source release. Only then may rollback become terminal and normal routing resume.
+After project-owned edits, automatic rollback still restores managed state but never edits project files. The transaction remains `blocked/rollback` and reports every changed project path. The user must explicitly retain and prove compatibility, revert through version control or editing, or reconcile for the source release through Upgrade Role. Only then may Ava Maintenance invoke managed rollback to reach a terminal state.
 
 A fresh invocation resumes by validating the source manifest, journal, workspace, planned paths, recorded migration checksums, and completed postconditions. It continues from the earliest unverified operation. If safe continuation cannot be proven, it blocks and offers rollback.
+
+After Upgrade Role marks semantic compatibility complete, Ava Maintenance may invoke the existing finalization operation. Finalization removes retained transaction material, records `complete/complete`, and enables normal routing. Neither role manually edits those deterministic fields.
+
+# Role-led removal
+
+Removal is not an upgrade transaction and does not add an uninstall command mode.
+
+Ava Maintenance may remove an installation only after explicit user intent and proof that:
+
+- the manifest identifies a supported Ava installation
+- no deterministic transaction is active or blocked
+- semantic compatibility is complete with no unresolved work
+- every deleted path is recorded as Ava-managed
+- the root router still matches its recorded checksum
+- no modified, missing, corrupt, non-regular, or unexpected managed content would be discarded ambiguously
+
+A successful removal deletes `/.ava/` and the unchanged managed `/AGENTS.md`. It preserves every project-owned role, workflow, shared instruction, knowledge item, inbox item, index, log, OpenCode configuration, and host entrypoint.
+
+A modified router or unexpected content beneath `/.ava/` blocks automatic removal until the user resolves the conflict explicitly. Project-owned host entrypoints are never modified; Ava Maintenance reports any reference that becomes stale after removal.
 
 # Examples
 
 ## PATCH: 1.2.3 to 1.2.4
 
-A direct edge, no migrations, and no semantic review. The updater validates, commits the target manifest last, advances both installed and compatible-through versions, and completes without semantic mode.
+A direct edge, no migrations, and no semantic review. Ava Maintenance may initiate the updater, which validates, commits the target manifest last, advances both installed and compatible-through versions, and completes without semantic mode.
 
 ## MINOR: 1.2.4 to 1.3.0
 
 An opt-in managed capability is proven unreachable by existing projects. The transition follows the PATCH path. Compatibility proof is release evidence, not runtime semantic work.
 
-A recommended project scaffold is not created by the updater. Guidance may offer it through the Upgrade Role and must declare semantic review when action is required.
+A recommended project scaffold is not created by the updater. Guidance may offer it through Upgrade Role and must declare semantic review when action is required.
 
 ## MAJOR: 1.3.0 to 2.0.0
 
@@ -292,7 +336,7 @@ Upgrade journal: active/semantic
 Normal operations: blocked
 ```
 
-A fresh agent reads managed state first and reaches the managed Upgrade Role even when `/roles/index.md` or `/workflows/index.md` is incompatible. Completion requires every affected project file, registry, index, link, and decision to be reconciled.
+A status request reaches Ava Maintenance. A request to reconcile project-owned context reaches Upgrade Role. After semantic completion, Ava Maintenance invokes finalization before normal routing resumes.
 
 ## Chained: 1.0.0 to 2.0.0 through 1.5.0
 
@@ -311,5 +355,9 @@ Implementations and fixtures must cover:
 - rollback before and after commit
 - rollback after project edits remaining blocked until explicit resolution
 - normal-routing blocks for pending, partial, and blocked semantics
+- deterministic pre-routing to Ava Maintenance
+- semantic pre-routing to Upgrade Role
 - managed recovery with missing or incompatible project registries
 - separate installed-base and semantic-compatibility reporting
+- host capability and OpenCode managed-context accessibility reporting
+- role-led removal that preserves project-owned content and refuses uncertain ownership
