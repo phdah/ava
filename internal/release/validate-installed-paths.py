@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 AMBIGUOUS_PROJECT_PATH_RE = re.compile(
-    r"(?<![.A-Za-z0-9_:/-])"
+    r"(?<![.A-Za-z0-9_:/>{}-])"
     r"(/(?:AGENTS\.md|\.ava(?=/|\b)|roles/|workflows/|shared/|knowledge/|inbox/|index\.md|log\.md))"
 )
 PROJECT_PATH_RE = re.compile(r"\./[A-Za-z0-9._/-]+")
