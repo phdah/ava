@@ -11,7 +11,10 @@ role-manager
 project-steward
 inbox-ingester
 change-reviewer
+ava-maintenance
 ```
+
+The Ava Maintenance role owns agent-facing understanding of the installed Ava distribution and its operational lifecycle. It is distinct from the repository-only Ava Internal Maintainer and from the managed Upgrade Role used during semantic reconciliation.
 
 ## Tasks
 
@@ -19,6 +22,9 @@ change-reviewer
 2. [x] [Create the Project Steward role](02-create-project-steward.md)
 3. [x] [Create the Inbox Ingester role and inbox convention](03-create-inbox-ingester.md)
 4. [x] [Create the Change Reviewer role](04-create-change-reviewer.md)
+5. [ ] [Create the Ava Maintenance role](05-create-ava-maintenance-role.md)
+
+Task 5 is sequenced after installed path and OpenCode decisions, and before the final conformance matrix and first alpha.
 
 ## Previous phase
 

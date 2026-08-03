@@ -9,7 +9,7 @@ Finalize the stable format boundaries before implementation establishes public b
 3. [x] [Define instruction precedence and composition](03-define-instruction-precedence-and-composition.md)
 4. [ ] [Define document update metadata](04-define-document-update-metadata.md)
 
-Task 4 is a metadata-contract follow-up. It does not replace the currently prioritized SemVer and compatibility task.
+Task 4 is a v1 format blocker. Complete it after installed paths and OpenCode access are settled, and before the final conformance matrix freezes metadata behavior for the first alpha.
 
 ## Next phase
 
