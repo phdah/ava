@@ -6,6 +6,9 @@ tags: [ava, instructions, ownership, mutation, authority, upgrades]
 generated:
   by: agent:openai-chatgpt
   at: 2026-07-31T11:56:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-03T21:29:00+02:00
 ---
 
 # Purpose
@@ -76,7 +79,8 @@ Before changing a project file:
 3. refuse ordinary semantic customization of Ava-managed files
 4. apply project-owned changes only within the current task scope
 5. preserve required metadata, provenance, indexes, links, and scoped history
-6. stop and ask the user when ownership, destination, authority, or intended semantics remain materially ambiguous
+6. preserve creation provenance and maintain latest meaningful-update provenance according to [Document metadata](document-metadata.md)
+7. stop and ask the user when ownership, destination, authority, or intended semantics remain materially ambiguous
 
 Do not infer permission from the file being writable or from its location alone when the manifest or active instructions indicate otherwise.
 
@@ -119,4 +123,5 @@ After changing project-owned context, verify that:
 - the active role had authority for every mutation
 - no managed file was customized outside a defined managed mechanism
 - required metadata, provenance, indexes, links, and logs remain valid
+- creation provenance was preserved and meaningful mutations advanced canonical `updated` metadata
 - unresolved ownership or semantic decisions are reported rather than hidden
