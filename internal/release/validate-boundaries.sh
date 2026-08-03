@@ -32,7 +32,6 @@ for path in \
   templates/index.md \
   templates/base/index.md \
   templates/project-scaffolds/index.md \
-  templates/host-bootstraps/index.md \
   internal/release/index.md \
   internal/release/procedure.md \
   internal/release/installer.md \
@@ -53,7 +52,7 @@ do
   require_file "$path"
 done
 
-for path in templates/base templates/project-scaffolds templates/host-bootstraps internal/release/installer
+for path in templates/base templates/project-scaffolds internal/release/installer
 do
   require_dir "$path"
 done
@@ -64,8 +63,7 @@ do
   case "$path" in
     "$ROOT/templates/index.md"|\
     "$ROOT/templates/base"|\
-    "$ROOT/templates/project-scaffolds"|\
-    "$ROOT/templates/host-bootstraps") ;;
+    "$ROOT/templates/project-scaffolds") ;;
     *) fail "unexpected templates root entry: ${path#"$ROOT/"}" ;;
   esac
 done
@@ -76,7 +74,8 @@ for old_path in \
   templates/github-release-assets.md \
   templates/upgrade-and-migration.md \
   templates/release-guidance.md \
-  templates/schemas
+  templates/schemas \
+  templates/host-bootstraps
 do
   [ ! -e "$ROOT/$old_path" ] || fail "obsolete distribution location remains: $old_path"
 done
@@ -100,7 +99,7 @@ do
   fi
 done
 
-for source_root in templates/base templates/project-scaffolds templates/host-bootstraps
+for source_root in templates/base templates/project-scaffolds
 do
   find "$ROOT/$source_root" -type f -print | while IFS= read -r file
   do
