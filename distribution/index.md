@@ -6,6 +6,7 @@ These files define release, installation, upgrade, and compatibility behavior. T
 
 ## Contracts
 
+- [Project-root path conventions](paths.md)
 - [Distribution and ownership](ownership.md)
 - [Versioning and compatibility](versioning.md)
 - [GitHub release assets](releases.md)

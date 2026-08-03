@@ -11,7 +11,7 @@ Define and implement Ava as an immutable, versioned context distribution install
 5. [x] [Define release guidance and the Upgrade Role](05-define-release-logs-and-agent-guidance.md)
 6. [x] [Separate distribution contracts and release procedures](06-separate-distribution-contracts-and-release-procedures.md)
 7. [x] [Implement the installer and updater](07-implement-installer-and-updater.md)
-8. [ ] [Normalize installed project paths](08-normalize-installed-project-paths.md)
+8. [x] [Normalize installed project paths](08-normalize-installed-project-paths.md)
 9. [ ] [Implement OpenCode support and decide managed directory discoverability](09-implement-opencode-host-support.md)
 10. [ ] [Implement validation, conformance, and upgrade fixtures](10-implement-validation-and-upgrade-fixtures.md)
 
@@ -19,7 +19,9 @@ Task 7 implements deterministic release assembly and one thin POSIX installer/up
 
 The focused implementation suite covers clean installation, create-if-absent preservation, managed conflicts, checksum failures, unsafe archives, symlink escapes, project-provided host entrypoints, migration execution, chained upgrades, semantic state, and rollback.
 
-Local installation testing exposed two pre-release portability requirements: installed instructions must use unambiguous project-root-relative paths, and OpenCode must be able to load managed context reliably under the selected managed-directory strategy. Tasks 8 and 9 resolve those requirements.
+Task 8 establishes `./...` as the canonical agent-facing project-root path form, preserves typed machine path identifiers for deterministic tooling, canonicalizes host entrypoint metadata, and blocks ambiguous leading-slash references during release validation.
+
+Local installation testing also exposed a pre-release host requirement: OpenCode must be able to load managed context reliably under the selected managed-directory strategy. Task 9 resolves that requirement.
 
 Before task 10 begins, also complete:
 
@@ -30,7 +32,7 @@ Task 10 then freezes the full structural, operational, host, installation, recov
 
 ## Current active task
 
-[Normalize installed project paths](08-normalize-installed-project-paths.md).
+[Implement OpenCode support and decide managed directory discoverability](09-implement-opencode-host-support.md).
 
 ## Next phase
 

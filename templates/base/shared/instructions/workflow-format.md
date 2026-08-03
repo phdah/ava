@@ -16,6 +16,8 @@ A workflow must remain readable as ordinary Markdown while exposing enough stabl
 
 Workflow registration, invocation identity, routing precedence, role resolution, and deprecation follow [Workflow registry and routing](workflow-routing.md). Portable trigger intent and executor boundaries follow [Workflow triggers](workflow-triggers.md).
 
+All paths beginning with `./` are resolved from the project root.
+
 # Workflow admission criteria
 
 Add or retain a workflow only when all of these conditions hold:
@@ -100,7 +102,7 @@ Every workflow must follow [Document metadata](document-metadata.md) and include
 type: Workflow
 title: Audit project context
 description: Audits a bounded project-context scope.
-primary_role: /.ava/base/roles/project-steward/role.md
+primary_role: ./.ava/base/roles/project-steward/role.md
 mode: suggestion
 status: stable
 ---
@@ -110,12 +112,12 @@ Rules:
 
 - `type` must be `Workflow`.
 - `title` and `description` must be non-empty strings.
-- `primary_role` must be a bundle-root-relative path to exactly one registered, non-deprecated ordinary `role.md` document.
+- `primary_role` must be an explicit project-root-relative path to exactly one registered, non-deprecated ordinary `role.md` document.
 - A role using `activation_mode: managed-pre-routing` is invalid as a workflow `primary_role`.
 - `mode` must be `read-only`, `suggestion`, or `mutation`.
 - `status` follows the shared lifecycle contract and remains optional.
 - `triggers` is optional and follows [Workflow triggers](workflow-triggers.md).
-- A deprecated workflow may declare one bundle-root-relative `replaced_by` workflow path, but routing must not follow it automatically.
+- A deprecated workflow may declare one explicit project-root-relative `replaced_by` workflow path, but routing must not follow it automatically.
 - Unknown valid metadata must be preserved for forward compatibility.
 
 # Operating modes
@@ -184,13 +186,13 @@ Input rules:
 
 The optional `Required context` section lists procedure-specific files that must be loaded in addition to the primary role's required reading.
 
-Use normal Markdown links with bundle-root-relative targets:
+Use normal Markdown links with project-root-relative targets:
 
 ```markdown
 ## Required context
 
-- [Project terminology](/knowledge/work/project-terminology.md)
-- [Writing convention](/shared/instructions/writing-convention.md)
+- [Project terminology](./knowledge/work/project-terminology.md)
+- [Writing convention](./shared/instructions/writing-convention.md)
 ```
 
 Every required-context link must resolve. Context links activate only the referenced context for this workflow and must not activate another role.
@@ -242,7 +244,7 @@ Treat these as errors:
 
 - missing or malformed required workflow metadata
 - a workflow file that is not registered through the correct managed or project-owned workflow registry
-- a `primary_role` that is absent, unresolved, not bundle-root-relative, deprecated, reserved for managed pre-routing, or does not identify exactly one registered `role.md`
+- a `primary_role` that is absent, unresolved, not project-root-relative, deprecated, reserved for managed pre-routing, or does not identify exactly one registered `role.md`
 - a missing or unsupported `mode`
 - malformed trigger metadata under the workflow-trigger contract
 - a missing, duplicate, empty, or incorrectly ordered required body section
@@ -276,7 +278,7 @@ Semantic ambiguity requiring authority, policy, routing, compatibility, or destr
 type: Workflow
 title: Audit project context
 description: Audits a bounded project-context scope.
-primary_role: /.ava/base/roles/project-steward/role.md
+primary_role: ./.ava/base/roles/project-steward/role.md
 mode: suggestion
 status: stable
 triggers:

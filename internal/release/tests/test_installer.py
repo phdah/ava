@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import io
 import json
-import os
 import shutil
 import subprocess
 import tarfile
@@ -58,7 +57,10 @@ class InstallerTests(unittest.TestCase):
     def run_command(self, *args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
         result = subprocess.run(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if check and result.returncode != 0:
-            self.fail(f"command failed ({result.returncode}): {' '.join(args)}\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}")
+            self.fail(
+                f"command failed ({result.returncode}): {' '.join(args)}\n"
+                f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+            )
         return result
 
     def build(
@@ -74,12 +76,18 @@ class InstallerTests(unittest.TestCase):
         output = destination or self.assets / f"v{version}"
         output.mkdir(parents=True, exist_ok=True)
         args = [
-            "python3", str(self.repo / "internal/release/assemble.py"),
-            "--root", str(self.repo),
-            "--output", str(output),
-            "--version", version,
-            "--source-revision", REVISION,
-            "--source-date-epoch", "1700000000",
+            "python3",
+            str(self.repo / "internal/release/assemble.py"),
+            "--root",
+            str(self.repo),
+            "--output",
+            str(output),
+            "--version",
+            version,
+            "--source-revision",
+            REVISION,
+            "--source-date-epoch",
+            "1700000000",
         ]
         for source in upgrade_from or []:
             args.extend(("--upgrade-from", source))
@@ -97,9 +105,12 @@ class InstallerTests(unittest.TestCase):
 
     def install(self, assets: Path, *extra: str, check: bool = True) -> subprocess.CompletedProcess[str]:
         return self.run_command(
-            "sh", str(assets / "ava-install.sh"),
-            "--target", str(self.target),
-            "--asset-dir", str(assets),
+            "sh",
+            str(assets / "ava-install.sh"),
+            "--target",
+            str(self.target),
+            "--asset-dir",
+            str(assets),
             *extra,
             check=check,
         )
@@ -206,7 +217,14 @@ class InstallerTests(unittest.TestCase):
                 item["size"] = path.stat().st_size
         manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
         lines = []
-        for name in ("ava-install.sh", "ava-base.tar.gz", "ava-guidance.tar.gz", "ava-migrations.tar.gz", "ava-release.json", "ava-release-notes.md"):
+        for name in (
+            "ava-install.sh",
+            "ava-base.tar.gz",
+            "ava-guidance.tar.gz",
+            "ava-migrations.tar.gz",
+            "ava-release.json",
+            "ava-release-notes.md",
+        ):
             lines.append(f"{hashlib.sha256((assets / name).read_bytes()).hexdigest()}  {name}\n")
         (assets / "SHA256SUMS").write_text("".join(lines))
 
@@ -218,22 +236,26 @@ class InstallerTests(unittest.TestCase):
         (migrations / "steps").mkdir(parents=True)
         (migrations / "steps/router.txt").write_text("# Router 0.2.0\n")
         router_sha = hashlib.sha256((migrations / "steps/router.txt").read_bytes()).hexdigest()
-        (migrations / "steps/apply.json").write_text(json.dumps({
-            "operations": [{"operation": "write", "path": "/AGENTS.md", "source": "steps/router.txt"}]
-        }))
-        (migrations / "steps/verify.json").write_text(json.dumps({
-            "checks": [{"path": "/AGENTS.md", "exists": True, "sha256": router_sha}]
-        }))
-        (migrations / "router.json").write_text(json.dumps({
-            "id": "rewrite-router",
-            "from": "0.1.0",
-            "to": "0.2.0",
-            "order": 0,
-            "depends_on": [],
-            "apply_path": "steps/apply.json",
-            "verify_path": "steps/verify.json",
-            "idempotent": True,
-        }))
+        (migrations / "steps/apply.json").write_text(
+            json.dumps({"operations": [{"operation": "write", "path": "/AGENTS.md", "source": "steps/router.txt"}]})
+        )
+        (migrations / "steps/verify.json").write_text(
+            json.dumps({"checks": [{"path": "/AGENTS.md", "exists": True, "sha256": router_sha}]})
+        )
+        (migrations / "router.json").write_text(
+            json.dumps(
+                {
+                    "id": "rewrite-router",
+                    "from": "0.1.0",
+                    "to": "0.2.0",
+                    "order": 0,
+                    "depends_on": [],
+                    "apply_path": "steps/apply.json",
+                    "verify_path": "steps/verify.json",
+                    "idempotent": True,
+                }
+            )
+        )
         second = self.build("0.2.0", upgrade_from=["0.1.0"], migrations_dir=migrations)
         self.install(second)
         self.assertEqual(self.manifest()["ava_version"], "0.2.0")
@@ -245,11 +267,14 @@ class InstallerTests(unittest.TestCase):
         assets = self.build("0.1.0")
         self.install(assets, "--host-entrypoint", "CODEX.md")
         self.assertEqual((self.target / "CODEX.md").read_text(), content)
-        self.assertEqual(self.manifest()["host_integration"], {
-            "entrypoint": "/CODEX.md",
-            "ownership": "project-owned",
-            "discovery": "project-provided",
-        })
+        self.assertEqual(
+            self.manifest()["host_integration"],
+            {
+                "entrypoint": "./CODEX.md",
+                "ownership": "project-owned",
+                "discovery": "project-provided",
+            },
+        )
         managed = {item["path"] for item in self.manifest()["managed_files"]}
         self.assertNotIn("/CODEX.md", managed)
         release = json.loads((assets / "ava-release.json").read_text())
@@ -264,7 +289,10 @@ class InstallerTests(unittest.TestCase):
         (self.repo / "templates/base/AGENTS.md").write_text("# Router 0.2.0\n")
         second = self.build("0.2.0", upgrade_from=["0.1.0"])
         self.install(second)
-        self.assertEqual(self.manifest()["host_integration"]["entrypoint"], "/.github/copilot-instructions.md")
+        self.assertEqual(
+            self.manifest()["host_integration"]["entrypoint"],
+            "./.github/copilot-instructions.md",
+        )
         self.assertEqual(entrypoint.read_text(), "Read ../../AGENTS.md.\n")
 
     def test_invalid_host_entrypoint_is_rejected_without_mutation(self) -> None:
@@ -275,6 +303,9 @@ class InstallerTests(unittest.TestCase):
         reserved = self.install(assets, "--host-entrypoint", ".ava/host.md", check=False)
         self.assertNotEqual(reserved.returncode, 0)
         self.assertIn("INVALID_HOST_ENTRYPOINT", reserved.stderr)
+        absolute = self.install(assets, "--host-entrypoint", "/tmp/CODEX.md", check=False)
+        self.assertNotEqual(absolute.returncode, 0)
+        self.assertIn("INVALID_HOST_ENTRYPOINT", absolute.stderr)
         self.assertFalse((self.target / ".ava").exists())
         self.assertFalse((self.target / "AGENTS.md").exists())
 

@@ -16,9 +16,9 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Normalize installed project paths](todo/04-distribution-and-upgrades/08-normalize-installed-project-paths.md).
+[Implement OpenCode support and decide managed directory discoverability](todo/04-distribution-and-upgrades/09-implement-opencode-host-support.md).
 
-The installer and updater are implemented. Resolve project-root path ambiguity first, then establish tested OpenCode support and managed-directory access. Before broad conformance work, complete the document-update metadata contract and add the agent-facing Ava Maintenance role. Release qualification then proceeds through alpha publication, real-project dogfooding, an RC gate, and the stable `1.0.0` release.
+The installer and updater are implemented, and installed project paths now use an explicit project-root convention. Establish tested OpenCode support and managed-directory access next. Before broad conformance work, complete the document-update metadata contract and add the agent-facing Ava Maintenance role. Release qualification then proceeds through alpha publication, real-project dogfooding, an RC gate, and the stable `1.0.0` release.
 
 Alpha findings may add bounded fix tasks before release-candidate or stable publication. The roadmap must reflect those tasks rather than treating the first prerelease as feature-complete by definition.
 

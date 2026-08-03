@@ -12,14 +12,16 @@ generated:
 
 This project uses Ava-managed contracts, default roles, and workflows together with project-owned extensions.
 
+All paths beginning with `./` are resolved from the project root.
+
 Before reading any project-owned registry or performing ordinary routing:
 
-1. Read [Upgrade state and routing](/.ava/base/shared/instructions/upgrade-state-and-routing.md).
-2. Perform its minimal check of `/.ava/state/upgrade.json` and `/.ava/state/manifest.json`.
-3. When upgrade mode is required, activate [Upgrade Role](/.ava/base/roles/upgrade-role/role.md) directly.
-4. Read the Upgrade Role's [`index.md`](/.ava/base/roles/upgrade-role/index.md) and every document it marks as required.
+1. Read [Upgrade state and routing](./.ava/base/shared/instructions/upgrade-state-and-routing.md).
+2. Perform its minimal check of `./.ava/state/upgrade.json` and `./.ava/state/manifest.json`.
+3. When upgrade mode is required, activate [Upgrade Role](./.ava/base/roles/upgrade-role/role.md) directly.
+4. Read the Upgrade Role's [`index.md`](./.ava/base/roles/upgrade-role/index.md) and every document it marks as required.
 5. Announce `Active role: Upgrade Role`.
-6. Enforce the managed operation allowlist, resolve recorded relative guidance paths beneath `/.ava/guidance/`, and load only those documents.
+6. Enforce the managed operation allowlist, resolve recorded relative guidance paths beneath `./.ava/guidance/`, and load only those documents.
 7. Keep ordinary workflow and role routing blocked until the upgrade protocol permits `normal` operations.
 8. When managed state is malformed or unsupported, enter minimal recovery mode rather than consulting project-owned routing.
 
@@ -27,19 +29,19 @@ The Upgrade Role is not invoked as a workflow and is not selected through semant
 
 When the pre-routing check permits normal operation:
 
-1. Read [Instruction resolution](/.ava/base/shared/instructions/instruction-resolution.md).
-2. Read [Ownership and mutation authority](/.ava/base/shared/instructions/ownership-and-mutation.md).
-3. Read [Workflow registry and routing](/.ava/base/shared/instructions/workflow-routing.md).
+1. Read [Instruction resolution](./.ava/base/shared/instructions/instruction-resolution.md).
+2. Read [Ownership and mutation authority](./.ava/base/shared/instructions/ownership-and-mutation.md).
+3. Read [Workflow registry and routing](./.ava/base/shared/instructions/workflow-routing.md).
 4. Determine whether the request explicitly invokes a registered managed or project-owned workflow by canonical path or unambiguous workflow name.
-5. For an explicit workflow invocation, resolve it through the managed registry at `/.ava/base/workflows/index.md` and the project registry at `/workflows/index.md` when present. Validate it and resolve its single declared `primary_role`.
+5. For an explicit workflow invocation, resolve it through the managed registry at `./.ava/base/workflows/index.md` and the project registry at `./workflows/index.md` when present. Validate it and resolve its single declared `primary_role`.
 6. Do not infer a workflow from semantic similarity, redirect through `replaced_by`, or fall back to role selection when workflow resolution fails.
-7. Without an explicit workflow, inspect the managed role registry at `/.ava/base/roles/index.md` and the project role registry at `/roles/index.md` when present, excluding roles whose activation contract reserves direct managed activation.
+7. Without an explicit workflow, inspect the managed role registry at `./.ava/base/roles/index.md` and the project role registry at `./roles/index.md` when present, excluding roles whose activation contract reserves direct managed activation.
 8. Select exactly one role whose purpose and activation conditions best match the request.
 9. Read the selected role's `index.md` and every document it marks as required.
 10. Announce the selected role using `Active role: <role title>` after its complete required reading has been loaded.
 11. Read the workflow prompt, resolve its inputs, and load its required context when a workflow is active.
 12. Load additional task-specific instructions or context only when the active root, role, workflow, or task explicitly requires them.
-13. Before modifying project files, read [Scoped history](/.ava/base/shared/instructions/scoped-history.md) and determine whether the change requires a log entry.
+13. Before modifying project files, read [Scoped history](./.ava/base/shared/instructions/scoped-history.md) and determine whether the change requires a log entry.
 14. Resolve the complete active instruction set by activation scope before acting.
 
 Instruction scope comes from explicit activation, not directory depth. Narrower ordinary instructions may refine broader ordinary instructions for their bounded scope, but they must not grant undeclared capabilities or weaken broader constraints.

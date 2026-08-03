@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Normalize Installed Project Paths
 description: Replace filesystem-root-looking references with an explicit project-root-relative path convention throughout installed Ava content and release tooling.
 tags: [internal, roadmap, paths, portability, routing, installer]
-status: pending
+status: completed
 phase: 4
 order: 8
 generated:
@@ -15,33 +15,43 @@ generated:
 
 The first local installation test showed that managed instructions such as `/.ava/base/shared/instructions/...` are interpreted by some hosts as absolute filesystem paths. The files exist at `.ava/...` below the selected project root, so the host first attempts to read the wrong location and only recovers after inspecting the project.
 
-This task must establish one unambiguous path convention before the first release.
+This task establishes one unambiguous path convention before the first release.
 
-## Decide and document
+## Decision
 
-- define how Ava represents paths rooted at the installed project
-- distinguish project-root-relative references from operating-system absolute paths
-- decide whether canonical prose should use `.ava/...`, `./.ava/...`, or another explicit project-root notation
-- distinguish human-facing instruction paths from manifest destinations and installer-internal normalized paths
-- define whether a leading slash is ever valid in installed prose, metadata, indexes, role required reading, workflow references, provenance links, or guidance
-- preserve portability across hosts whose file tools interpret leading slashes differently
+- Agent-facing installed prose and metadata use an explicit `./` project-root prefix.
+- A leading slash is invalid for a project-local reference in distributed prose or metadata.
+- Document-relative Markdown links remain relative to the containing document.
+- Typed release manifest, installed manifest, and upgrade journal path fields retain leading-slash root-anchored logical identifiers for deterministic tooling only.
+- Host entrypoint metadata uses canonical `./...` paths.
 
-## Implement
+The authoritative contract is [Ava Project-Root Path Conventions](../../../distribution/paths.md).
 
-- audit all release payload sources for project paths beginning with `/`
-- update the root `AGENTS.md`, managed role files, workflow files, shared instructions, indexes, and project-owned scaffolds to use the chosen convention
-- update distribution contracts and examples so the convention is explicit
-- review release manifest and installed manifest schemas separately from prose references, changing them only when their path semantics would otherwise be ambiguous
-- update the installer, assembler, validators, and tests where they compare, emit, or consume installed paths
-- ensure host-entrypoint metadata remains clearly project-root-relative without being mistaken for an operating-system path
-- add fixtures proving that a newly installed project can resolve every required-reading path directly from the project root without a failed absolute-path attempt
-- add a regression fixture based on the observed `/.ava/base/shared/instructions/upgrade-state-and-routing.md` failure
+## Implementation
+
+- normalized the managed router, role catalog, workflow catalog, shared instructions, workflows, roles, and project-owned scaffolds
+- documented the distinction between agent-facing paths and machine-only path identifiers
+- canonicalized installer host entrypoints as `./...` and rejected operating-system absolute paths
+- added a release-source validator that rejects ambiguous leading-slash project references
+- made release assembly and boundary validation run the path validator
+- added root-router resolution, installer, manifest-stability, and regression fixtures
+
+## Validation
+
+The focused suite validates:
+
+- the observed `/.ava/base/shared/instructions/upgrade-state-and-routing.md` regression
+- resolution of every static project-root link in the managed root router
+- rejection of ambiguous leading-slash references in fresh release sources
+- acceptance of ordinary document-relative links
+- preservation of machine manifest path identifiers
+- canonical `./...` host entrypoint storage and absolute-path rejection
 
 ## Completion criteria
 
-- installed instructions never cause a conforming host to interpret project files as filesystem-root files
-- one documented project-root path convention is used consistently across all distributed content
-- manifest path semantics are explicit and cannot be confused with prose or host-tool paths
-- every required role, workflow, instruction, state, and provenance reference resolves from the selected project root
-- fresh-install and upgrade fixtures reject reintroduction of ambiguous leading-slash references
-- the first release remains blocked until the convention is implemented and validated
+- [x] installed instructions never direct a conforming host to an operating-system root path
+- [x] one documented `./...` convention is used across distributed agent-facing content
+- [x] manifest path semantics are explicit and distinct from prose and host-tool paths
+- [x] required root-router references resolve from the selected project root
+- [x] fresh-install and upgrade sources reject reintroduction of ambiguous references
+- [x] the release pipeline blocks assembly when the convention is violated

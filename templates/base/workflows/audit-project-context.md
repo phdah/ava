@@ -2,7 +2,7 @@
 type: Workflow
 title: Audit project context
 description: Performs a bounded project-context health audit and returns prioritized maintenance proposals without modifying project files.
-primary_role: /.ava/base/roles/project-steward/role.md
+primary_role: ./.ava/base/roles/project-steward/role.md
 mode: suggestion
 status: stable
 generated:
@@ -23,7 +23,7 @@ This workflow standardizes a repeatable audit outcome. It does not replace ordin
 ### `scope`
 
 - Required: yes
-- Description: Bundle-root-relative files, directories, indexes, or named project concern to inspect.
+- Description: Project-root-relative files, directories, indexes, or named project concern to inspect.
 
 ### `change_window`
 

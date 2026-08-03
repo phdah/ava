@@ -6,7 +6,7 @@ okf_version: "0.2"
 
 This directory contains the current authored Ava-managed release payload plus project-format references retained for design context.
 
-It is not copied verbatim to an installed project. Release assembly maps the root router and managed base content into `/AGENTS.md` and `/.ava/base/`. Project-owned create-if-absent sources live separately under [`templates/project-scaffolds/`](../project-scaffolds/).
+It is not copied verbatim to an installed project. Release assembly maps the root router and managed base content into `./AGENTS.md` and `./.ava/base/`. Project-owned create-if-absent sources live separately under [`templates/project-scaffolds/`](../project-scaffolds/).
 
 Follow the linked indexes progressively instead of scanning the complete source tree.
 
