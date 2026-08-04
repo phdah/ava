@@ -5,6 +5,7 @@ This log records major conceptual and structural changes to Ava's internal relea
 ## 2026-08-04
 
 - **Executable alpha qualification**: Added a frozen readiness gate for `1.0.0-alpha.1`, stable defect classes, protected-state blocker impacts, exact version-and-revision publication approval, reproducible assembly proof, explicit first-alpha no-source policy, and tested prerelease upgrade-edge declarations through RC and stable.
+- **Release preparation automation**: Added release-please version and changelog management, Conventional Commit pull-request title enforcement, bounded first-alpha bootstrap, immutable tag and draft-release preparation, exact-SHA qualification, reproducible assembly, release conformance, artifact attestation, and non-clobbering draft asset upload while retaining explicit publication approval.
 
 ## 2026-08-03
 

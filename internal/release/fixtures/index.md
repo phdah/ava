@@ -4,5 +4,6 @@ Machine-readable fixtures that freeze public contract examples and release quali
 
 - [Conformance matrix](conformance-matrix.json) - Structural, metadata, discovery, installation, filesystem safety, transaction, migration, maintenance, uninstall, semantic, role-routing, host, trust, upgrade-graph, and publication cases.
 - [Alpha qualification](alpha-qualification.json) - Required alpha gates, finding classes, protected impacts, prerelease support boundaries, upgrade transitions, and publication approval scope.
+- [Release-please policy](release-please-policy.json) - First-alpha bootstrap identity, Conventional Commit title classification, changelog visibility, and alpha, RC, and stable channel settings.
 - [Document update metadata](document-update-metadata.json) - Creation, meaningful mutation, trivial mutation, repeated mutation, legacy metadata, malformed metadata, temporal consistency, verification staleness, and reserved-document cases.
 - [Ava Maintenance](ava-maintenance.json) - Installation reporting, managed integrity, deterministic recovery routing, semantic handoff, host capability and OpenCode access, and safe role-led removal cases.

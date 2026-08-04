@@ -18,6 +18,12 @@ require_dir() {
 }
 
 for path in \
+  CHANGELOG.md \
+  version.txt \
+  release-please-config.json \
+  .release-please-manifest.json \
+  .github/workflows/conventional-pr-title.yml \
+  .github/workflows/release-please.yml \
   distribution/index.md \
   distribution/paths.md \
   distribution/ownership.md \
@@ -35,6 +41,7 @@ for path in \
   templates/project-scaffolds/index.md \
   internal/release/index.md \
   internal/release/procedure.md \
+  internal/release/release-please.md \
   internal/release/installer.md \
   internal/release/conformance.md \
   internal/release/assemble.sh \
@@ -45,6 +52,7 @@ for path in \
   internal/release/conformance_installed.py \
   internal/release/conformance_release.py \
   internal/release/validate-installed-paths.py \
+  internal/release/validate_pr_title.py \
   internal/release/ava-install.sh \
   internal/release/installer/00.py \
   internal/release/installer/01.py \
@@ -56,11 +64,13 @@ for path in \
   internal/release/installer/07.py \
   internal/release/test.sh \
   internal/release/fixtures/conformance-matrix.json \
+  internal/release/fixtures/release-please-policy.json \
   internal/release/tests/test_installed_paths.py \
   internal/release/tests/test_installer.py \
   internal/release/tests/test_installer_conformance.py \
   internal/release/tests/test_conformance.py \
-  internal/release/tests/test_conformance_matrix.py
+  internal/release/tests/test_conformance_matrix.py \
+  internal/release/tests/test_release_please.py
 do
   require_file "$path"
 done
@@ -133,7 +143,8 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_repository.py" \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/conformance_release.py" \
-  "$ROOT/internal/release/validate-installed-paths.py"
+  "$ROOT/internal/release/validate-installed-paths.py" \
+  "$ROOT/internal/release/validate_pr_title.py"
 python3 "$ROOT/internal/release/validate-installed-paths.py" --root "$ROOT"
 python3 "$ROOT/internal/release/conformance.py" --root "$ROOT" --mode repository --format text
 
