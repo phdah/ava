@@ -60,6 +60,7 @@ class ReleasePleasePolicyTests(unittest.TestCase):
 
     def test_release_pr_title_uses_parseable_default(self) -> None:
         self.assertNotIn("pull-request-title-pattern", self.config)
+        self.assertNotIn("release-as", self.config)
         package = self.config["packages"]["."]
         self.assertEqual(package["component"], "ava")
         self.assertEqual(package["package-name"], "ava")
