@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-04T14:28:00+02:00
+  at: 2026-08-04T16:20:00+02:00
 ---
 
 # Publish `1.0.0-alpha.1`
@@ -20,6 +20,7 @@ This task begins only after the alpha acceptance and prerelease upgrade policy i
 
 ## Prepare
 
+- require release-please to generate the exact `1.0.0-alpha.1` release pull request; the bounded first-alpha bootstrap may use a one-shot `release-as` override because its post-bootstrap history contains no releasable unit
 - freeze the alpha candidate's public base bundle, role catalog, workflow catalog, schemas, path conventions, and OpenCode support documentation
 - build all required release assets twice from one clean source revision and require identical digests
 - validate the exact asset inventory, release identity, checksums, archive safety, guidance, migrations, and notes
@@ -34,6 +35,7 @@ This task begins only after the alpha acceptance and prerelease upgrade policy i
 
 - obtain explicit approval for version `1.0.0-alpha.1` and the exact source revision
 - use the release-please-prepared version, tag, changelog, and draft GitHub Release as the release identity
+- remove the one-shot first-alpha `release-as` override after the release pull request is merged and before later release planning
 - attach exactly the required release assets
 - mark the GitHub Release as a prerelease and never as `latest`
 - publish only after draft assets and metadata match the locally verified outputs
