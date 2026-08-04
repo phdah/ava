@@ -3,7 +3,6 @@
   "bootstrap-sha": "8e41b99b90000ce684aac589cb1ef25217598956",
   "release-type": "simple",
   "initial-version": "1.0.0-alpha.1",
-  "release-as": "1.0.0-alpha.1",
   "include-v-in-tag": true,
   "include-component-in-tag": false,
   "draft": true,
