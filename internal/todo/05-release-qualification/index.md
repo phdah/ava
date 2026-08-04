@@ -6,7 +6,7 @@ A prerelease is a real immutable Ava release, but it is not the first supported 
 
 ## Tasks
 
-1. [ ] [Define alpha acceptance and prerelease upgrade policy](01-define-alpha-acceptance-and-upgrade-policy.md)
+1. [x] [Define alpha acceptance and prerelease upgrade policy](01-define-alpha-acceptance-and-upgrade-policy.md)
 2. [ ] [Publish `1.0.0-alpha.1`](02-publish-first-alpha-release.md)
 3. [ ] [Dogfood the alpha and track findings](03-dogfood-alpha-and-track-findings.md)
 4. [ ] [Publish the `1.0.0` release candidate](04-publish-release-candidate.md)
@@ -15,6 +15,12 @@ A prerelease is a real immutable Ava release, but it is not the first supported 
 Alpha findings may add bounded task files to this phase. Insert blocking fixes before task 4 and update this index rather than treating the original five tasks as immutable.
 
 Additional `alpha.N`, beta, or RC releases may be added when the findings require another published validation cycle. Each added release must have its own bounded task and declared upgrade policy.
+
+## Qualification policy
+
+The [alpha qualification policy](../../release/alpha-qualification.md) and its machine-readable fixture define the required gates, defect classes, protected impacts, prerelease support boundary, and exact publication approval for `1.0.0-alpha.1`.
+
+The first alpha has no supported earlier Ava source. Later supported transitions must be explicit release-manifest upgrade edges and must preserve a tested path from the latest supported prerelease through RC to stable `1.0.0`.
 
 ## Entry conditions
 
@@ -30,7 +36,7 @@ All entry conditions are complete.
 
 ## Current active task
 
-[Define alpha acceptance and prerelease upgrade policy](01-define-alpha-acceptance-and-upgrade-policy.md).
+[Publish `1.0.0-alpha.1`](02-publish-first-alpha-release.md).
 
 ## Previous phase
 
