@@ -6,6 +6,9 @@ tags: [internal, releases, automation, release-please, conventional-commits]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-04T14:40:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-04T16:20:00+02:00
 ---
 
 # Ava Release Automation
@@ -38,9 +41,10 @@ The first managed release is `1.0.0-alpha.1`.
 - `bootstrap-sha` is the full `main` revision immediately before this integration.
 - `.release-please-manifest.json` starts empty.
 - `version.txt` contains the non-release sentinel `0.0.0` until the first release pull request updates it.
-- `initial-version` forces the first proposal to `1.0.0-alpha.1` without treating older repository history as unreleased product changes.
+- `initial-version` remains aligned with the first managed release identity.
+- `release-as` is a one-shot bootstrap override that forces the exact `1.0.0-alpha.1` proposal even though the bounded post-bootstrap history intentionally contains no releasable unit.
 
-After the first release pull request is merged, `bootstrap-sha` is ignored and may be removed in a later maintenance change. The manifest becomes the authoritative release-please version record.
+After the first release pull request is merged, `bootstrap-sha` is ignored and may be removed in a later maintenance change. Remove the one-shot `release-as` override before later release planning. The manifest then becomes the authoritative release-please version record.
 
 ## Release channels
 

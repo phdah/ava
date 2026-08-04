@@ -8,7 +8,7 @@ A prerelease is a real immutable Ava release, but it is not the first supported 
 
 1. [x] [Define alpha acceptance and prerelease upgrade policy](01-define-alpha-acceptance-and-upgrade-policy.md)
 2. [x] [Integrate release-please](02-integrate-release-please.md)
-3. [ ] [Publish `1.0.0-alpha.1`](03-publish-first-alpha-release.md)
+3. [x] [Publish `1.0.0-alpha.1`](03-publish-first-alpha-release.md)
 4. [ ] [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md)
 5. [ ] [Publish the `1.0.0` release candidate](05-publish-release-candidate.md)
 6. [ ] [Qualify and publish `1.0.0`](06-qualify-and-publish-v1.md)
@@ -25,7 +25,7 @@ The first alpha has no supported earlier Ava source. Later supported transitions
 
 ## Release automation boundary
 
-The [release automation contract](../../release/release-please.md) now establishes Conventional Commit classification, version proposals, changelog updates, one release pull request, immutable tags, draft release preparation, exact-SHA qualification, reproducible assembly, attestation, and non-clobbering asset upload.
+The [release automation contract](../../release/release-please.md) establishes Conventional Commit classification, version proposals, changelog updates, one release pull request, immutable tags, draft release preparation, exact-SHA qualification, reproducible assembly, attestation, and non-clobbering asset upload.
 
 Release automation does not replace qualification, deterministic assembly, source-revision binding, or explicit publication approval.
 
@@ -43,7 +43,7 @@ All entry conditions are complete.
 
 ## Current active task
 
-[Publish `1.0.0-alpha.1`](03-publish-first-alpha-release.md).
+[Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
 ## Previous phase
 
