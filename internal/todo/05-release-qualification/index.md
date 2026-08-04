@@ -26,6 +26,12 @@ Phase 5 begins only after:
 - the Ava Maintenance role is implemented
 - the complete validation, conformance, recovery, uninstall, and upgrade matrix passes
 
+All entry conditions are complete.
+
+## Current active task
+
+[Define alpha acceptance and prerelease upgrade policy](01-define-alpha-acceptance-and-upgrade-policy.md).
+
 ## Previous phase
 
 [Versioned distribution and upgrades](../04-distribution-and-upgrades/).

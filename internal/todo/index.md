@@ -27,7 +27,7 @@ GitHub Release
 - Semantic compatibility of project-owned content is tracked separately from `ava_version`.
 - Project-owned upgrade changes happen through one explicit request that loads installed release guidance.
 - Managed pre-routing selects Ava Maintenance for deterministic or malformed state and Upgrade Role for semantic reconciliation.
-- OpenCode is Ava's first installer-supported host configuration. Ava keeps `./.ava/` hidden, creates project-owned OpenCode permissions by default when possible, preserves existing configuration, and defers broader runtime conformance to the final conformance task.
+- OpenCode is Ava's first installer-supported host configuration. Ava keeps `./.ava/` hidden, creates project-owned OpenCode permissions by default when possible, preserves existing configuration, and validates maintained host behavior through the conformance suite.
 - Document creation provenance and latest meaningful-update provenance are separate. `generated` remains immutable creation provenance, while canonical `updated` records only the latest meaningful mutation.
 - No pre-`1.0.0` Ava installation is a supported user state. Historical unversioned Ava migration is therefore outside the v1 roadmap; unknown historical layouts must be refused safely.
 - Public distribution contracts, release payload sources, and internal publication procedures are separate repository concerns.
@@ -38,21 +38,22 @@ GitHub Release
 1. [Format contract and base structure](01-format-contract/) - 4 of 4 complete
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
-4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 9 of 10 complete; active with final conformance next
-5. [V1 release qualification](05-release-qualification/) - 0 of 5 complete; begins after conformance readiness
+4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
+5. [V1 release qualification](05-release-qualification/) - 0 of 5 complete; active with prerelease policy next
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
 
-The managed Ava Maintenance role now provides the agent-facing interface for installed identity, integrity, deterministic recovery coordination, host accessibility, explicit upgrades, finalization, and safe removal. Upgrade Role remains isolated to semantic reconciliation of project-owned context.
+The managed Ava Maintenance role provides the agent-facing interface for installed identity, integrity, deterministic recovery coordination, host accessibility, explicit upgrades, finalization, and safe removal. Upgrade Role remains isolated to semantic reconciliation of project-owned context.
+
+The unified conformance suite validates repository structure, installed managed state, semantic routing gates, filesystem safety, transaction rollback, host support, release integrity, trust evidence, and immutable publication requirements through stable machine-readable findings and an indexed fixture matrix.
 
 The ordered path to the first stable release is:
 
-1. implement the full validation, conformance, and upgrade matrix
-2. define alpha acceptance and prerelease upgrade policy
-3. publish `1.0.0-alpha.1`
-4. dogfood the alpha and add bounded fix tasks for discovered defects
-5. publish a release candidate only after alpha blockers are resolved
-6. qualify and publish `1.0.0`
+1. define alpha acceptance and prerelease upgrade policy
+2. publish `1.0.0-alpha.1`
+3. dogfood the alpha and add bounded fix tasks for discovered defects
+4. publish a release candidate only after alpha blockers are resolved
+5. qualify and publish `1.0.0`
 
 Additional `alpha.N`, beta, or RC releases may be inserted when findings require them. The first alpha is a testable distribution, not a promise that the v1 feature set is defect-free.
 
