@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-alpha.3](https://github.com/phdah/ava/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2026-08-04)
+
+
+### Bug Fixes
+
+* **release:** repair qualification validation ([#44](https://github.com/phdah/ava/issues/44)) ([1bac03c](https://github.com/phdah/ava/commit/1bac03ca9cb1e23698fada56611db6ececbe0347))
+
 ## [1.0.0-alpha.2](https://github.com/phdah/ava/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2026-08-04)
 
 
