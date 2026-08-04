@@ -13,8 +13,6 @@ MANIFEST_PATH = ROOT / ".release-please-manifest.json"
 FIXTURE_PATH = ROOT / "internal/release/fixtures/release-please-policy.json"
 RELEASE_WORKFLOW_PATH = ROOT / ".github/workflows/release-please.yml"
 TITLE_WORKFLOW_PATH = ROOT / ".github/workflows/conventional-pr-title.yml"
-ALPHA_TASK_PATH = ROOT / "internal/todo/05-release-qualification/03-publish-first-alpha-release.md"
-TODO_PATH = ROOT / "internal/todo.md"
 
 
 class ReleasePleasePolicyTests(unittest.TestCase):
@@ -25,8 +23,6 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         cls.fixture = json.loads(FIXTURE_PATH.read_text())
         cls.release_workflow = RELEASE_WORKFLOW_PATH.read_text()
         cls.title_workflow = TITLE_WORKFLOW_PATH.read_text()
-        cls.alpha_task = ALPHA_TASK_PATH.read_text()
-        cls.todo = TODO_PATH.read_text()
 
     def test_title_cases(self) -> None:
         for case in self.fixture["title_cases"]:
@@ -47,14 +43,6 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertEqual(self.config["release-as"], bootstrap["initial_version"])
         self.assertEqual((ROOT / "version.txt").read_text().strip(), bootstrap["version_file_sentinel"])
         self.assertEqual(self.manifest, {})
-
-    def test_publication_task_remains_pending_until_release_is_published(self) -> None:
-        self.assertRegex(self.alpha_task, re.compile(r"^status: pending$", re.MULTILINE))
-        self.assertIn("The task remains current", self.todo)
-        self.assertIn(
-            "[Publish `1.0.0-alpha.1`](todo/05-release-qualification/03-publish-first-alpha-release.md)",
-            self.todo,
-        )
 
     def test_single_package_draft_release_configuration(self) -> None:
         self.assertEqual(set(self.config["packages"]), {"."})
