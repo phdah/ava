@@ -30,6 +30,9 @@ GitHub Release
 - OpenCode is Ava's first installer-supported host configuration. Ava keeps `./.ava/` hidden, creates project-owned OpenCode permissions by default when possible, preserves existing configuration, and validates maintained host behavior through the conformance suite.
 - Document creation provenance and latest meaningful-update provenance are separate. `generated` remains immutable creation provenance, while canonical `updated` records only the latest meaningful mutation.
 - No pre-`1.0.0` Ava installation is a supported user state. Historical unversioned Ava migration is therefore outside the v1 roadmap; unknown historical layouts must be refused safely.
+- `1.0.0-alpha.1` has no supported earlier release source. Later prerelease transitions are supported only through explicit release-manifest upgrade edges.
+- Alpha publication is gated by reproducible assembly, the maintained conformance evidence, stable defect classes, protected-state blocker impacts, and explicit approval for the exact version and source revision.
+- Stable support guarantees begin with `1.0.0`, not with alpha, beta, or RC publication.
 - Public distribution contracts, release payload sources, and internal publication procedures are separate repository concerns.
 - Internal Ava development roles remain separate from every distributed project bundle.
 
@@ -39,7 +42,7 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 0 of 5 complete; active with prerelease policy next
+5. [V1 release qualification](05-release-qualification/) - 1 of 5 complete; active with first alpha publication next
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
 
@@ -47,13 +50,14 @@ The managed Ava Maintenance role provides the agent-facing interface for install
 
 The unified conformance suite validates repository structure, installed managed state, semantic routing gates, filesystem safety, transaction rollback, host support, release integrity, trust evidence, and immutable publication requirements through stable machine-readable findings and an indexed fixture matrix.
 
+The alpha qualification policy composes that conformance evidence with roadmap completion, reproducible release assembly, defect classification, prerelease upgrade declarations, and exact publication approval.
+
 The ordered path to the first stable release is:
 
-1. define alpha acceptance and prerelease upgrade policy
-2. publish `1.0.0-alpha.1`
-3. dogfood the alpha and add bounded fix tasks for discovered defects
-4. publish a release candidate only after alpha blockers are resolved
-5. qualify and publish `1.0.0`
+1. publish `1.0.0-alpha.1` after every alpha gate passes
+2. dogfood the alpha and add bounded fix tasks for discovered defects
+3. publish a release candidate only after alpha blockers are resolved
+4. qualify and publish `1.0.0`
 
 Additional `alpha.N`, beta, or RC releases may be inserted when findings require them. The first alpha is a testable distribution, not a promise that the v1 feature set is defect-free.
 
