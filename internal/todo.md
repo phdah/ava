@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T21:47:00+02:00
+  at: 2026-08-03T22:30:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -19,9 +19,9 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Implement validation, conformance, and upgrade fixtures](todo/04-distribution-and-upgrades/10-implement-validation-and-upgrade-fixtures.md).
+[Define alpha acceptance and prerelease upgrade policy](todo/05-release-qualification/01-define-alpha-acceptance-and-upgrade-policy.md).
 
-The installer, updater, installed project-root convention, default OpenCode permissions, document update metadata, and agent-facing Ava Maintenance role are complete. Freeze the full structural, operational, host, installation, recovery, removal, and upgrade conformance matrix next. Release qualification then proceeds through alpha publication, real-project dogfooding, an RC gate, and the stable `1.0.0` release.
+The format contract, core roles, workflow system, versioned distribution, OpenCode support, Ava Maintenance role, and complete conformance matrix are implemented. Release qualification now proceeds through prerelease policy, alpha publication, real-project dogfooding, an RC gate, and the stable `1.0.0` release.
 
 Alpha findings may add bounded fix tasks before release-candidate or stable publication. The roadmap must reflect those tasks rather than treating the first prerelease as feature-complete by definition.
 

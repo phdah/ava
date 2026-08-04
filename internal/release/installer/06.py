@@ -169,6 +169,11 @@ def apply_transaction(
                 shutil.rmtree(root / ".ava", ignore_errors=True)
         finally:
             shutil.rmtree(transaction_root, ignore_errors=True)
+            if fresh:
+                try:
+                    transaction_root.parent.rmdir()
+                except OSError:
+                    pass
         raise
 
 
@@ -269,5 +274,4 @@ def load_active_plan(root: Path, journal: dict[str, Any]) -> tuple[Path, dict[st
     plan_path = transaction_root / "plan.json"
     plan = read_json(plan_path, "NO_ROLLBACK")
     return transaction_root, plan
-
 

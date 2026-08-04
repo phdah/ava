@@ -36,8 +36,14 @@ for path in \
   internal/release/index.md \
   internal/release/procedure.md \
   internal/release/installer.md \
+  internal/release/conformance.md \
   internal/release/assemble.sh \
   internal/release/assemble.py \
+  internal/release/conformance.py \
+  internal/release/conformance_common.py \
+  internal/release/conformance_repository.py \
+  internal/release/conformance_installed.py \
+  internal/release/conformance_release.py \
   internal/release/validate-installed-paths.py \
   internal/release/ava-install.sh \
   internal/release/installer/00.py \
@@ -49,13 +55,17 @@ for path in \
   internal/release/installer/06.py \
   internal/release/installer/07.py \
   internal/release/test.sh \
+  internal/release/fixtures/conformance-matrix.json \
   internal/release/tests/test_installed_paths.py \
-  internal/release/tests/test_installer.py
+  internal/release/tests/test_installer.py \
+  internal/release/tests/test_installer_conformance.py \
+  internal/release/tests/test_conformance.py \
+  internal/release/tests/test_conformance_matrix.py
 do
   require_file "$path"
 done
 
-for path in templates/base templates/project-scaffolds internal/release/installer
+for path in templates/base templates/project-scaffolds internal/release/installer internal/release/fixtures
 do
   require_dir "$path"
 done
@@ -118,7 +128,13 @@ sh -n "$ROOT/internal/release/ava-install.sh"
 sh -n "$ROOT/internal/release/test.sh"
 python3 -m py_compile \
   "$ROOT/internal/release/assemble.py" \
+  "$ROOT/internal/release/conformance.py" \
+  "$ROOT/internal/release/conformance_common.py" \
+  "$ROOT/internal/release/conformance_repository.py" \
+  "$ROOT/internal/release/conformance_installed.py" \
+  "$ROOT/internal/release/conformance_release.py" \
   "$ROOT/internal/release/validate-installed-paths.py"
 python3 "$ROOT/internal/release/validate-installed-paths.py" --root "$ROOT"
+python3 "$ROOT/internal/release/conformance.py" --root "$ROOT" --mode repository --format text
 
 printf 'Repository boundaries valid.\n'
