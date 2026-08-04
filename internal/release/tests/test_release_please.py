@@ -58,6 +58,18 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertFalse(self.config["include-component-in-tag"])
         self.assertNotIn("skip-github-release", self.config)
 
+    def test_release_pr_title_uses_parseable_default(self) -> None:
+        self.assertNotIn("pull-request-title-pattern", self.config)
+        package = self.config["packages"]["."]
+        self.assertEqual(package["component"], "ava")
+        self.assertEqual(package["package-name"], "ava")
+
+        title = "chore(main): release ava 1.0.0-alpha.1"
+        classification = classify(title)
+        self.assertEqual(classification.type, "chore")
+        self.assertEqual(classification.scope, "main")
+        self.assertIsNone(classification.release_level)
+
     def test_current_channel_and_planned_transitions(self) -> None:
         channels = {item["name"]: item for item in self.fixture["channels"]}
         self.assertRegex(channels["alpha"]["example"], r"^1\.0\.0-alpha\.[1-9][0-9]*$")
