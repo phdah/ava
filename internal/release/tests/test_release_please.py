@@ -51,7 +51,10 @@ class ReleasePleasePolicyTests(unittest.TestCase):
     def test_publication_task_remains_pending_until_release_is_published(self) -> None:
         self.assertRegex(self.alpha_task, re.compile(r"^status: pending$", re.MULTILINE))
         self.assertIn("The task remains current", self.todo)
-        self.assertNotIn("Dogfood the alpha and track findings](todo/05-release-qualification/04", self.todo)
+        self.assertIn(
+            "[Publish `1.0.0-alpha.1`](todo/05-release-qualification/03-publish-first-alpha-release.md)",
+            self.todo,
+        )
 
     def test_single_package_draft_release_configuration(self) -> None:
         self.assertEqual(set(self.config["packages"]), {"."})
