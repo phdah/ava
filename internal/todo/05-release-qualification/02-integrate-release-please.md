@@ -3,12 +3,15 @@ type: Internal Development Task
 title: Integrate release-please
 description: Configure release-please, Conventional Commit release classification, version and changelog management, and draft release orchestration before the first Ava alpha.
 tags: [internal, roadmap, releases, automation, release-please, conventional-commits]
-status: pending
+status: completed
 phase: 5
 order: 2
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-04T14:28:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-04T14:40:00+02:00
 ---
 
 # Integrate `release-please`
@@ -28,38 +31,34 @@ Introduce release automation before `1.0.0-alpha.1` so Ava versions and changelo
 - bootstrap the first managed prerelease as `1.0.0-alpha.1` without interpreting the complete historical repository as unreleased product history
 - never treat merging a release pull request, creating a tag, or preparing a draft release as authorization to publish
 
-## Implementation requirements
+## Implemented result
 
-- add the release-please action workflow and repository configuration for Ava's single-package release model
-- add the maintained version file and changelog expected by the selected release strategy
-- configure prerelease handling for the alpha, later prereleases, release candidate, and stable `1.0.0`
-- add a pull-request check that rejects titles which cannot be classified according to the accepted Conventional Commit policy
-- document the supported title types, breaking-change notation, and how internal-only work avoids an unintended release
-- ensure the repository merge strategy preserves the validated pull-request title as the canonical commit consumed by release-please
-- ensure release-please prepares a draft release rather than bypassing Ava's exact publication approval boundary
-- connect a prepared release to the existing qualification, reproducible assembly, asset validation, attestation, and upload procedure
-- use credentials or workflow structure that allow required validation and asset workflows to run for release-please-created pull requests and releases
-- prevent duplicate tags, mutable replacement, or release creation from an unqualified source revision
+- added a single-package `simple` release-please configuration, empty manifest, bootstrap version file, and changelog
+- bounded first-run history to commit `8e41b99b90000ce684aac589cb1ef25217598956` and selected `1.0.0-alpha.1` as the initial managed version
+- added Conventional Commit pull-request title validation and machine-readable title, changelog, and channel policy fixtures
+- configured release-please to maintain one release pull request and create `v<version>` tags plus draft GitHub Releases
+- bound draft preparation to the exact release-please SHA, complete release tests, two identical assemblies, release conformance, asset attestation, draft-state verification, and non-clobbering asset upload
+- documented the required token, branch protection, squash-title preservation, alpha-to-RC-to-stable transitions, and explicit publication boundary
 
 ## Validation
 
-Cover at least:
+Covered:
 
-- `feat`, `fix`, breaking-change, documentation-only, and internal-only pull-request titles
-- expected version selection for prerelease and stable examples
-- changelog generation from representative merged pull requests
-- creation or update of one release pull request rather than competing release pull requests
-- draft release preparation without final publication
-- handoff of the exact tag and source revision to Ava qualification and deterministic assembly
-- failure when a title, version transition, source revision, or release state conflicts with Ava's release contracts
+- `feat`, `fix`, breaking-change, documentation-only, internal-only, malformed, and unknown pull-request titles
+- first alpha, later prerelease, RC, and stable channel examples
+- visible and hidden changelog classification
+- a single root package and one maintained release pull request
+- draft-only release creation and the absence of any publish command
+- exact tag and source-revision handoff to qualification and deterministic assembly
+- workflow guards for identity mismatch, non-draft state, duplicate asset upload, invalid title, and unsupported prerelease form
 
 ## Completion criteria
 
-- release-please configuration and workflows are committed and validated
-- pull requests have an enforced Conventional Commit title contract at the merge boundary
-- release-please can prepare the `1.0.0-alpha.1` release pull request from the intended baseline
-- the resulting version, changelog, tag, and draft release identity agree with Ava's release manifest model
-- Ava's qualification and asset-building workflows run against the exact prepared source revision
-- final publication still requires explicit approval for the exact canonical version and full source revision
-- no alpha release is published as part of this task
-- the roadmap advances to publishing `1.0.0-alpha.1`
+- [x] release-please configuration and workflows are committed and validated
+- [x] pull requests have an enforced Conventional Commit title contract at the merge boundary
+- [x] release-please can prepare the `1.0.0-alpha.1` release pull request from the intended baseline
+- [x] the resulting version, changelog, tag, and draft release identity are checked before qualification and upload
+- [x] Ava's qualification and asset-building workflow runs against the exact prepared source revision
+- [x] final publication still requires explicit approval for the exact canonical version and full source revision
+- [x] no alpha release is published as part of this task
+- [x] the roadmap advances to publishing `1.0.0-alpha.1`
