@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-08-04
+
+- **Executable alpha qualification**: Added a frozen readiness gate for `1.0.0-alpha.1`, stable defect classes, protected-state blocker impacts, exact version-and-revision publication approval, reproducible assembly proof, explicit first-alpha no-source policy, and tested prerelease upgrade-edge declarations through RC and stable.
+
 ## 2026-08-03
 
 - **Deterministic release assembly**: Added reproducible construction of the exact seven GitHub Release assets, explicit source-to-installed mapping, checksums, embedded identity, guidance and migration inventories, and create-if-absent project scaffolds.
