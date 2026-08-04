@@ -95,3 +95,11 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertEqual(self.release_workflow.count("internal/release/assemble.sh"), 1)
         self.assertIn("for output in release-a release-b", self.release_workflow)
         self.assertIn("actions/attest@v4", self.release_workflow)
+        self.assertIn("gh release upload", self.release_workflow)
+        self.assertNotIn("--clobber", self.release_workflow)
+        self.assertIn("--json isDraft", self.release_workflow)
+        self.assertNotRegex(self.release_workflow, re.compile(r"gh release (?:edit|create).*--draft=false"))
+
+
+if __name__ == "__main__":
+    unittest.main()
