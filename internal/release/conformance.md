@@ -6,6 +6,9 @@ tags: [internal, release, validation, conformance, fixtures]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T22:30:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-04T09:21:00+02:00
 ---
 
 # Purpose
@@ -57,6 +60,22 @@ Host-access findings do not silently mutate project-owned configuration. Ava Mai
 # Publication evidence
 
 Before publication, missing `publication.json` is a recommendation. Release qualification uses `--require-publication-evidence`, which requires evidence that immutable releases are enabled, the release is immutable, and attestation verification succeeded.
+
+# Alpha qualification
+
+The [alpha qualification policy](alpha-qualification.md) composes repository, installed, and release conformance with roadmap completion, reproducible assembly, prerelease support declarations, defect classification, and exact publication approval.
+
+[alpha-qualification.json](fixtures/alpha-qualification.json) freezes the required gates and their conformance evidence. [test_alpha_qualification.py](tests/test_alpha_qualification.py) proves that:
+
+- every evidence reference resolves
+- Phase 1 through Phase 4 tasks are complete
+- the first alpha assembles reproducibly
+- `1.0.0-alpha.1` declares no supported source release
+- later intended prerelease transitions are represented as release-manifest upgrade edges
+- historical unversioned sources are rejected
+- publication approval is bound to both version and source revision
+
+Passing individual conformance modes is necessary but not sufficient for alpha publication. Every alpha gate must pass and the exact publication transaction must be approved.
 
 # Fixture matrix
 
