@@ -1,6 +1,6 @@
 ---
 type: Internal Development Task
-title: Integrate Release Please
+title: Integrate release-please
 description: Configure release-please, Conventional Commit release classification, version and changelog management, and draft release orchestration before the first Ava alpha.
 tags: [internal, roadmap, releases, automation, release-please, conventional-commits]
 status: pending
