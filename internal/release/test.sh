@@ -2,6 +2,8 @@
 set -eu
 
 ROOT=$(CDPATH= cd "$(dirname "$0")/../.." && pwd)
+export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
+cd "$ROOT"
 
 sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
