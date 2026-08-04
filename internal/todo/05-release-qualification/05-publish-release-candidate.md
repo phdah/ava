@@ -5,10 +5,13 @@ description: Freeze the intended v1 public behavior and publish an immutable rel
 tags: [internal, roadmap, releases, rc, publishing, compatibility]
 status: pending
 phase: 5
-order: 4
+order: 5
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-04T14:28:00+02:00
 ---
 
 # Publish the `1.0.0` Release Candidate
@@ -37,7 +40,7 @@ Do not begin until:
 ## Publish
 
 - obtain explicit approval for the exact RC version and source revision
-- create the immutable tag and draft GitHub Release
+- create the immutable tag and draft GitHub Release through the maintained release automation
 - mark it as a prerelease and never as `latest`
 - upload and verify exactly the required asset set
 - publish once all local and draft-release checks agree

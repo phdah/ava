@@ -5,10 +5,13 @@ description: Exercise the published alpha through real Ava and OpenCode usage, c
 tags: [internal, roadmap, alpha, dogfooding, defects, opencode]
 status: pending
 phase: 5
-order: 3
+order: 4
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-04T14:28:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings

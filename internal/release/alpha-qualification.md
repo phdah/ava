@@ -6,6 +6,9 @@ tags: [internal, release, qualification, alpha, prerelease, upgrades]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-04T09:21:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-04T14:28:00+02:00
 ---
 
 # Purpose
@@ -209,4 +212,4 @@ This policy is executable through:
 - [the alpha qualification fixture](fixtures/alpha-qualification.json)
 - [the alpha qualification tests](tests/test_alpha_qualification.py)
 
-The next roadmap task may prepare and publish `1.0.0-alpha.1` only after these checks pass for the selected source revision and the exact publication transaction is approved.
+After release-please integration is complete, the alpha publication task may prepare and publish `1.0.0-alpha.1` only after these checks pass for the selected source revision and the exact publication transaction is approved.
