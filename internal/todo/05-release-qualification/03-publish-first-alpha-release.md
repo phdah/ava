@@ -11,12 +11,18 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-04T16:20:00+02:00
+  at: 2026-08-04T16:31:00+02:00
 ---
 
 # Publish `1.0.0-alpha.1`
 
 This task begins only after the alpha acceptance and prerelease upgrade policy is complete, release-please integration is complete, and every alpha blocker passes.
+
+## Current progress
+
+The release-please integration is complete, but the first release pull request was not generated because the bounded post-bootstrap history contained no releasable unit. The current implementation change adds the one-shot exact-version bootstrap required to generate that pull request.
+
+This task remains pending until the generated release pull request is reviewed and merged, the exact tagged revision and draft assets are qualified, explicit publication approval is obtained for the version and full source revision, and the published release passes post-publication verification. The roadmap must not advance to dogfooding before those completion criteria are met.
 
 ## Prepare
 
