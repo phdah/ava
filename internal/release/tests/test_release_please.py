@@ -39,6 +39,8 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertRegex(bootstrap["baseline_sha"], r"^[0-9a-f]{40}$")
         self.assertEqual(self.config["bootstrap-sha"], bootstrap["baseline_sha"])
         self.assertEqual(self.config["initial-version"], bootstrap["initial_version"])
+        self.assertEqual(self.config["release-as"], bootstrap["release_as"])
+        self.assertEqual(self.config["release-as"], bootstrap["initial_version"])
         self.assertEqual((ROOT / "version.txt").read_text().strip(), bootstrap["version_file_sentinel"])
         self.assertEqual(self.manifest, {})
 
