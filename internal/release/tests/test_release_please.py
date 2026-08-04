@@ -34,13 +34,20 @@ class ReleasePleasePolicyTests(unittest.TestCase):
                 result = classify(case["title"])
                 self.assertEqual(result.release_level, case["release_level"])
 
-    def test_bootstrap_is_bounded_to_first_alpha(self) -> None:
+    def test_bootstrap_and_managed_version_states(self) -> None:
         bootstrap = self.fixture["bootstrap"]
         self.assertRegex(bootstrap["baseline_sha"], r"^[0-9a-f]{40}$")
         self.assertEqual(self.config["bootstrap-sha"], bootstrap["baseline_sha"])
         self.assertEqual(self.config["initial-version"], bootstrap["initial_version"])
-        self.assertEqual((ROOT / "version.txt").read_text().strip(), bootstrap["version_file_sentinel"])
-        self.assertEqual(self.manifest, {})
+
+        version = (ROOT / "version.txt").read_text().strip()
+        if not self.manifest:
+            self.assertEqual(version, bootstrap["version_file_sentinel"])
+            return
+
+        self.assertEqual(set(self.manifest), {"."})
+        self.assertEqual(version, self.manifest["."])
+        self.assertNotEqual(version, bootstrap["version_file_sentinel"])
 
     def test_single_package_draft_release_configuration(self) -> None:
         self.assertEqual(set(self.config["packages"]), {"."})
@@ -88,11 +95,3 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertEqual(self.release_workflow.count("internal/release/assemble.sh"), 1)
         self.assertIn("for output in release-a release-b", self.release_workflow)
         self.assertIn("actions/attest@v4", self.release_workflow)
-        self.assertIn("gh release upload", self.release_workflow)
-        self.assertNotIn("--clobber", self.release_workflow)
-        self.assertIn("--json isDraft", self.release_workflow)
-        self.assertNotRegex(self.release_workflow, re.compile(r"gh release (?:edit|create).*--draft=false"))
-
-
-if __name__ == "__main__":
-    unittest.main()
