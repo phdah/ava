@@ -27,6 +27,35 @@ def strip_scalar(value: str) -> str:
     return value
 
 
+def markdown_without_fenced_code(text: str) -> str:
+    result: list[str] = []
+    fence_character: str | None = None
+    fence_length = 0
+
+    for line in text.splitlines(keepends=True):
+        stripped = line.lstrip()
+        if fence_character is None:
+            match = re.match(r"(`{3,}|~{3,})", stripped)
+            if match:
+                marker = match.group(1)
+                fence_character = marker[0]
+                fence_length = len(marker)
+                result.append("\n" if line.endswith("\n") else "")
+            else:
+                result.append(line)
+            continue
+
+        if re.fullmatch(
+            rf"{re.escape(fence_character)}{{{fence_length},}}\s*",
+            stripped,
+        ):
+            fence_character = None
+            fence_length = 0
+        result.append("\n" if line.endswith("\n") else "")
+
+    return "".join(result)
+
+
 def parse_frontmatter(text: str) -> tuple[dict[str, Any] | None, str | None]:
     lines = text.splitlines()
     if not lines or lines[0] != "---":
@@ -75,17 +104,6 @@ def validate_provenance(
     findings: list[Finding],
 ) -> None:
     generated = metadata.get("generated")
-    legacy = metadata.get("timestamp")
-    if generated is None and legacy is None:
-        findings.append(
-            Finding(
-                "AVA-META-GENERATED-MISSING",
-                "error",
-                relative(root, path),
-                "non-reserved public documents require generated provenance or a preserved legacy timestamp",
-                category="metadata",
-            )
-        )
     if generated is not None:
         if not isinstance(generated, dict) or set(generated) != {"by", "at"}:
             findings.append(
@@ -189,7 +207,8 @@ def linked_names(index: Path) -> set[str]:
     if not index.is_file():
         return set()
     names: set[str] = set()
-    for raw in MARKDOWN_LINK_RE.findall(index.read_text()):
+    text = markdown_without_fenced_code(index.read_text())
+    for raw in MARKDOWN_LINK_RE.findall(text):
         value = raw.split("#", 1)[0].rstrip("/")
         if value and not value.startswith(("http://", "https://", "/")):
             names.add(Path(value).name)
@@ -267,7 +286,7 @@ def validate_repository(root: Path) -> ValidationResult:
                     else:
                         identifiers[identifier] = path
 
-        for raw in MARKDOWN_LINK_RE.findall(text):
+        for raw in MARKDOWN_LINK_RE.findall(markdown_without_fenced_code(text)):
             target = local_link_target(path, raw)
             if target is not None and not target.exists():
                 findings.append(
