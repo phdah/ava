@@ -7,7 +7,7 @@ A prerelease is a real immutable Ava release, but it is not the first supported 
 ## Tasks
 
 1. [x] [Define alpha acceptance and prerelease upgrade policy](01-define-alpha-acceptance-and-upgrade-policy.md)
-2. [ ] [Integrate release-please](02-integrate-release-please.md)
+2. [x] [Integrate release-please](02-integrate-release-please.md)
 3. [ ] [Publish `1.0.0-alpha.1`](03-publish-first-alpha-release.md)
 4. [ ] [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md)
 5. [ ] [Publish the `1.0.0` release candidate](05-publish-release-candidate.md)
@@ -25,7 +25,7 @@ The first alpha has no supported earlier Ava source. Later supported transitions
 
 ## Release automation boundary
 
-The release-please integration task must establish consistent Conventional Commit classification, version proposals, changelog updates, release pull requests, tags, and draft release preparation before alpha publication begins.
+The [release automation contract](../../release/release-please.md) now establishes Conventional Commit classification, version proposals, changelog updates, one release pull request, immutable tags, draft release preparation, exact-SHA qualification, reproducible assembly, attestation, and non-clobbering asset upload.
 
 Release automation does not replace qualification, deterministic assembly, source-revision binding, or explicit publication approval.
 
@@ -43,7 +43,7 @@ All entry conditions are complete.
 
 ## Current active task
 
-[Integrate release-please](02-integrate-release-please.md).
+[Publish `1.0.0-alpha.1`](03-publish-first-alpha-release.md).
 
 ## Previous phase
 

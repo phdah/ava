@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "8e41b99b90000ce684aac589cb1ef25217598956",
+  "release-type": "simple",
+  "initial-version": "1.0.0-alpha.1",
+  "include-v-in-tag": true,
+  "include-component-in-tag": false,
+  "draft": true,
+  "prerelease": true,
+  "force-tag-creation": true,
+  "versioning": "prerelease",
+  "prerelease-type": "alpha",
+  "separate-pull-requests": false,
+  "always-update": true,
+  "pull-request-title-pattern": "chore${scope}: release ${version}",
+  "pull-request-header": "This pull request prepares an Ava release candidate. It does not authorize publication.",
+  "pull-request-footer": "Merging creates an immutable tag and a draft GitHub Release. Final publication still requires explicit approval for the exact version and source revision.",
+  "changelog-sections": [
+    {"type": "feat", "section": "Features"},
+    {"type": "fix", "section": "Bug Fixes"},
+    {"type": "perf", "section": "Performance"},
+    {"type": "revert", "section": "Reverts"},
+    {"type": "docs", "section": "Documentation", "hidden": true},
+    {"type": "refactor", "section": "Code Refactoring", "hidden": true},
+    {"type": "test", "section": "Tests", "hidden": true},
+    {"type": "build", "section": "Build", "hidden": true},
+    {"type": "ci", "section": "Continuous Integration", "hidden": true},
+    {"type": "style", "section": "Styles", "hidden": true},
+    {"type": "chore", "section": "Miscellaneous Chores", "hidden": true}
+  ],
+  "packages": {
+    ".": {
+      "component": "ava",
+      "package-name": "ava",
+      "version-file": "version.txt"
+    }
+  }
+}

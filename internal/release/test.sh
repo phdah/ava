@@ -12,7 +12,8 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_repository.py" \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/conformance_release.py" \
-  "$ROOT/internal/release/validate-installed-paths.py"
+  "$ROOT/internal/release/validate-installed-paths.py" \
+  "$ROOT/internal/release/validate_pr_title.py"
 python3 "$ROOT/internal/release/validate-installed-paths.py" --root "$ROOT"
 python3 "$ROOT/internal/release/conformance.py" \
   --root "$ROOT" \
@@ -27,4 +28,5 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_ava_maintenance \
   internal.release.tests.test_conformance \
   internal.release.tests.test_conformance_matrix \
-  internal.release.tests.test_alpha_qualification
+  internal.release.tests.test_alpha_qualification \
+  internal.release.tests.test_release_please

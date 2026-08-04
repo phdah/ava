@@ -32,6 +32,7 @@ GitHub Release
 - No pre-`1.0.0` Ava installation is a supported user state. Historical unversioned Ava migration is therefore outside the v1 roadmap; unknown historical layouts must be refused safely.
 - `1.0.0-alpha.1` has no supported earlier release source. Later prerelease transitions are supported only through explicit release-manifest upgrade edges.
 - Alpha publication is gated by reproducible assembly, the maintained conformance evidence, stable defect classes, protected-state blocker impacts, and explicit approval for the exact version and source revision.
+- Release-please prepares versions, changelog state, immutable tags, draft releases, qualified assets, and attestations, but never authorizes final publication.
 - Stable support guarantees begin with `1.0.0`, not with alpha, beta, or RC publication.
 - Public distribution contracts, release payload sources, and internal publication procedures are separate repository concerns.
 - Internal Ava development roles remain separate from every distributed project bundle.
@@ -42,7 +43,7 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 1 of 6 complete; active with release-please integration next
+5. [V1 release qualification](05-release-qualification/) - 2 of 6 complete; active with first alpha publication next
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
 
@@ -52,15 +53,14 @@ The unified conformance suite validates repository structure, installed managed 
 
 The alpha qualification policy composes that conformance evidence with roadmap completion, reproducible release assembly, defect classification, prerelease upgrade declarations, and exact publication approval.
 
-Before the first alpha is prepared, Ava will integrate release-please to enforce release classification at the merge boundary, maintain version and changelog state, prepare release pull requests, and coordinate tags and draft releases. That automation must hand off to Ava's existing qualification and deterministic asset process rather than replacing it.
+Release-please now enforces release classification at the merge boundary, maintains version and changelog state, keeps one release pull request current, creates immutable tags and draft releases, and hands the exact prepared SHA to qualification, reproducible assembly, release conformance, attestation, and non-clobbering asset upload.
 
 The ordered path to the first stable release is:
 
-1. integrate release-please without publishing an alpha
-2. publish `1.0.0-alpha.1` after every alpha gate passes
-3. dogfood the alpha and add bounded fix tasks for discovered defects
-4. publish a release candidate only after alpha blockers are resolved
-5. qualify and publish `1.0.0`
+1. publish `1.0.0-alpha.1` after every alpha gate passes and explicit publication approval is obtained
+2. dogfood the alpha and add bounded fix tasks for discovered defects
+3. publish a release candidate only after alpha blockers are resolved
+4. qualify and publish `1.0.0`
 
 Additional `alpha.N`, beta, or RC releases may be inserted when findings require them. The first alpha is a testable distribution, not a promise that the v1 feature set is defect-free.
 
