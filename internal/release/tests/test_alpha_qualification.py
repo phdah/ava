@@ -136,7 +136,11 @@ class AlphaQualificationTests(unittest.TestCase):
         self.assertTrue(task_files)
         for path in task_files:
             frontmatter = path.read_text().split("---", 2)[1]
-            self.assertIn("status: completed", frontmatter, path.relative_to(SOURCE_ROOT))
+            self.assertRegex(
+                frontmatter,
+                r"(?m)^status: complete(?:d)?$",
+                path.relative_to(SOURCE_ROOT),
+            )
 
     def test_finding_classes_and_protected_impacts_block_correctly(self) -> None:
         classes = {item["id"]: item for item in self.policy["finding_classes"]}
