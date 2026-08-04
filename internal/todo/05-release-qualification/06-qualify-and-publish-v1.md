@@ -5,10 +5,13 @@ description: Apply the stable acceptance gate, verify upgrade from the release c
 tags: [internal, roadmap, releases, stable, v1, publishing]
 status: pending
 phase: 5
-order: 5
+order: 6
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-04T14:28:00+02:00
 ---
 
 # Qualify and Publish `1.0.0`
@@ -42,7 +45,7 @@ Stable publication requires:
 ## Publish
 
 - obtain explicit approval for version `1.0.0` and the exact source revision
-- create the immutable `v1.0.0` tag and draft GitHub Release
+- create the immutable `v1.0.0` tag and draft GitHub Release through the maintained release automation
 - attach and verify exactly the required assets
 - publish the release as stable and set it as `latest` only after every check succeeds
 - verify GitHub reports the release as immutable

@@ -42,7 +42,7 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 1 of 5 complete; active with first alpha publication next
+5. [V1 release qualification](05-release-qualification/) - 1 of 6 complete; active with release-please integration next
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
 
@@ -52,12 +52,15 @@ The unified conformance suite validates repository structure, installed managed 
 
 The alpha qualification policy composes that conformance evidence with roadmap completion, reproducible release assembly, defect classification, prerelease upgrade declarations, and exact publication approval.
 
+Before the first alpha is prepared, Ava will integrate release-please to enforce release classification at the merge boundary, maintain version and changelog state, prepare release pull requests, and coordinate tags and draft releases. That automation must hand off to Ava's existing qualification and deterministic asset process rather than replacing it.
+
 The ordered path to the first stable release is:
 
-1. publish `1.0.0-alpha.1` after every alpha gate passes
-2. dogfood the alpha and add bounded fix tasks for discovered defects
-3. publish a release candidate only after alpha blockers are resolved
-4. qualify and publish `1.0.0`
+1. integrate release-please without publishing an alpha
+2. publish `1.0.0-alpha.1` after every alpha gate passes
+3. dogfood the alpha and add bounded fix tasks for discovered defects
+4. publish a release candidate only after alpha blockers are resolved
+5. qualify and publish `1.0.0`
 
 Additional `alpha.N`, beta, or RC releases may be inserted when findings require them. The first alpha is a testable distribution, not a promise that the v1 feature set is defect-free.
 

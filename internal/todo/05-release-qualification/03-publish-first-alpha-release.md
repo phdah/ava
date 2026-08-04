@@ -5,15 +5,18 @@ description: Build, verify, document, and publish the first immutable Ava prerel
 tags: [internal, roadmap, releases, alpha, publishing]
 status: pending
 phase: 5
-order: 2
+order: 3
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-04T14:28:00+02:00
 ---
 
 # Publish `1.0.0-alpha.1`
 
-This task begins only after the alpha acceptance and prerelease upgrade policy is complete and every alpha blocker passes.
+This task begins only after the alpha acceptance and prerelease upgrade policy is complete, release-please integration is complete, and every alpha blocker passes.
 
 ## Prepare
 
@@ -30,7 +33,7 @@ This task begins only after the alpha acceptance and prerelease upgrade policy i
 ## Publish
 
 - obtain explicit approval for version `1.0.0-alpha.1` and the exact source revision
-- create the immutable tag and draft GitHub Release
+- use the release-please-prepared version, tag, changelog, and draft GitHub Release as the release identity
 - attach exactly the required release assets
 - mark the GitHub Release as a prerelease and never as `latest`
 - publish only after draft assets and metadata match the locally verified outputs
