@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "bootstrap": {
+    "baseline_sha": "8e41b99b90000ce684aac589cb1ef25217598956",
+    "version_file_sentinel": "0.0.0",
+    "initial_version": "1.0.0-alpha.1"
+  },
+  "title_cases": [
+    {"title": "feat: add managed host support", "valid": true, "release_level": "minor", "section": "Features"},
+    {"title": "fix(installer): preserve existing state", "valid": true, "release_level": "patch", "section": "Bug Fixes"},
+    {"title": "feat!: replace the public manifest contract", "valid": true, "release_level": "major", "section": "Features"},
+    {"title": "docs: explain upgrade ownership", "valid": true, "release_level": null, "section": null},
+    {"title": "chore(internal): advance roadmap", "valid": true, "release_level": null, "section": null},
+    {"title": "update release docs", "valid": false, "release_level": null, "section": null},
+    {"title": "unknown: change something", "valid": false, "release_level": null, "section": null}
+  ],
+  "channels": [
+    {
+      "name": "alpha",
+      "example": "1.0.0-alpha.1",
+      "settings": {"prerelease": true, "versioning": "prerelease", "prerelease-type": "alpha"}
+    },
+    {
+      "name": "rc",
+      "example": "1.0.0-rc.1",
+      "settings": {"prerelease": true, "versioning": "prerelease", "prerelease-type": "rc"}
+    },
+    {
+      "name": "stable",
+      "example": "1.0.0",
+      "settings": {"prerelease": false, "versioning": "default", "prerelease-type": null}
+    }
+  ]
+}

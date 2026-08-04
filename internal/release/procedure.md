@@ -8,14 +8,14 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-04T09:21:00+02:00
+  at: 2026-08-04T14:40:00+02:00
 ---
 
 # Ava Release Publication Procedure
 
 This procedure coordinates maintainers around the public contracts under `/distribution/`. It does not replace deterministic release automation and must never be included in an Ava release payload.
 
-The first alpha and later prerelease gates are additionally constrained by the [Ava Alpha Qualification Policy](alpha-qualification.md).
+The [release automation contract](release-please.md) prepares versions, changelog entries, tags, draft releases, qualified assets, and attestations. The first alpha and later prerelease gates are additionally constrained by the [Ava Alpha Qualification Policy](alpha-qualification.md).
 
 # Preconditions
 
@@ -31,6 +31,15 @@ Before preparing a release:
 
 When deterministic assembly or verification automation is unavailable, publication is blocked rather than reproduced manually with weaker guarantees.
 
+# Release-please preparation
+
+1. Merge only pull requests whose title passes the Conventional Commit title check.
+2. Use squash merging with the pull-request title preserved as the canonical commit title.
+3. Review the single release-please pull request and confirm its version, changelog, version file, manifest, and channel match the active release task.
+4. Merging that release pull request may create the immutable tag and draft GitHub Release, but does not authorize publication.
+5. Require the same workflow run to bind the release-please tag and full source revision, run qualification, assemble twice, validate release conformance, attest the assets, confirm draft state, and upload without replacement.
+6. Treat any failure as a blocked draft. Never move the tag, overwrite an asset, or continue with a different source revision under the same version.
+
 # Preparation
 
 1. Run `internal/release/validate-boundaries.sh`.
@@ -39,15 +48,15 @@ When deterministic assembly or verification automation is unavailable, publicati
 4. Build every required asset twice and require identical digests.
 5. Validate schemas, archive safety, source-to-installed mapping, identity metadata, checksums, release notes, guidance, migrations, and upgrade declarations.
 6. For `1.0.0-alpha.1`, require an empty `upgrade_paths.edges` declaration and refuse historical unversioned sources.
-7. Prepare the canonical tag without moving or reusing an existing release tag.
-8. Create the GitHub Release as a draft and upload the exact required asset set without clobber behavior.
+7. Confirm the canonical tag is new and still points to the qualified source revision.
+8. Confirm the GitHub Release remains a draft and contains exactly the uploaded, attested asset set.
 9. Re-fetch the draft and compare filenames, sizes, digests, embedded identities, and target revision with local verified outputs.
 
 # Approval boundary
 
 A maintainer may prepare and validate a draft release under an approved implementation scope. Publishing a stable or prerelease release requires explicit approval for the exact version and source revision unless the user has already authorized that publication transaction.
 
-Approval to define policy, implement tooling, prepare assets, create a tag, or prepare a draft does not authorize publication. A source revision change invalidates earlier approval and requires complete requalification.
+Approval to define policy, implement tooling, merge a release pull request, prepare assets, create a tag, or prepare a draft does not authorize publication. A source revision change invalidates earlier approval and requires complete requalification.
 
 Approval to prepare a draft does not authorize changing public contracts, compatibility declarations, tag targets, release notes, or asset contents outside the reviewed change.
 
@@ -55,7 +64,7 @@ Approval to prepare a draft does not authorize changing public contracts, compat
 
 1. Confirm the tag still points to the verified source revision.
 2. Confirm repository release immutability is enabled.
-3. Confirm the draft contains exactly the validated assets.
+3. Confirm the draft contains exactly the validated and attested assets.
 4. Confirm the manifest, release notes, guidance, migrations, and installer metadata declare the same support boundary.
 5. Publish once, without replacement or post-publication editing.
 6. For a stable release, set or retain `latest` only when the release contract declares that outcome.
@@ -76,7 +85,7 @@ Record the release URL, source revision, verification result, supported upgrade 
 
 # Failure handling
 
-Before publication, correct or discard the draft and rerun the complete deterministic validation and qualification gate.
+Before publication, correct or discard the draft and rerun the complete deterministic validation and qualification gate using a new version if an immutable tag already exists.
 
 After publication, never edit assets, move or recreate the tag, or reuse the version. A failed post-publication verification is a release incident. Corrective work uses a new version or an explicit security withdrawal under the public release contract.
 
