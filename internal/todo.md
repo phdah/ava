@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-04T16:20:00+02:00
+  at: 2026-08-04T16:31:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -21,7 +21,7 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 [Publish `1.0.0-alpha.1`](todo/05-release-qualification/03-publish-first-alpha-release.md).
 
-The alpha qualification policy and release-please integration are complete. The next task is to generate and review the exact `1.0.0-alpha.1` release pull request, qualify its prepared revision and draft assets, obtain explicit publication approval for that version and full SHA, and publish the first prerelease.
+The alpha qualification policy and release-please integration are complete. The active publication task is not complete: the current implementation change fixes the first-alpha bootstrap so release-please can generate the exact `1.0.0-alpha.1` release pull request. The task remains current until that release pull request is reviewed and merged, its exact revision and draft assets are qualified, explicit publication approval is obtained for that version and full SHA, and the first prerelease is published and verified.
 
 The first-alpha bootstrap uses a one-shot exact-version override because its bounded post-bootstrap history intentionally contains no releasable unit. Remove that override after the release pull request is merged and before later release planning.
 
