@@ -45,6 +45,8 @@ All entry conditions are complete.
 
 [Publish `1.0.0-alpha.1`](03-publish-first-alpha-release.md).
 
+The task is still active rather than complete. The current implementation change fixes the release-please bootstrap required to generate the first-alpha release pull request; publication, exact-revision approval, and post-publication verification remain outstanding.
+
 ## Previous phase
 
 [Versioned distribution and upgrades](../04-distribution-and-upgrades/).
