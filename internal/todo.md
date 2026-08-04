@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T22:30:00+02:00
+  at: 2026-08-04T09:21:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -19,9 +19,9 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Define alpha acceptance and prerelease upgrade policy](todo/05-release-qualification/01-define-alpha-acceptance-and-upgrade-policy.md).
+[Publish `1.0.0-alpha.1`](todo/05-release-qualification/02-publish-first-alpha-release.md).
 
-The format contract, core roles, workflow system, versioned distribution, OpenCode support, Ava Maintenance role, and complete conformance matrix are implemented. Release qualification now proceeds through prerelease policy, alpha publication, real-project dogfooding, an RC gate, and the stable `1.0.0` release.
+The alpha qualification policy, defect classes, protected-state blockers, prerelease support boundary, reproducible assembly proof, and exact version-and-revision approval gate are implemented. The next task is to qualify one exact source revision, prepare the immutable assets, obtain publication approval, and publish the first prerelease.
 
 Alpha findings may add bounded fix tasks before release-candidate or stable publication. The roadmap must reflect those tasks rather than treating the first prerelease as feature-complete by definition.
 

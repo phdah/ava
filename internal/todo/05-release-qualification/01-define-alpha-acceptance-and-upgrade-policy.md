@@ -3,12 +3,15 @@ type: Internal Development Task
 title: Define Alpha Acceptance and Prerelease Upgrade Policy
 description: Define the exact readiness gate, test scope, defect policy, support boundary, and upgrade declarations required before publishing the first Ava alpha.
 tags: [internal, roadmap, releases, alpha, acceptance, upgrades]
-status: pending
+status: completed
 phase: 5
 order: 1
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-04T09:21:00+02:00
 ---
 
 # Define Alpha Acceptance and Prerelease Upgrade Policy
@@ -56,6 +59,13 @@ Every alpha finding that requires repository work must become a bounded task fil
 ## Define publication approval
 
 Publishing any prerelease requires explicit approval for the exact version and source revision. Approval to define this policy or prepare assets does not authorize publication.
+
+## Implemented result
+
+- [Alpha qualification policy](../../release/alpha-qualification.md) defines the two-state gate, required evidence, defect classes, protected impacts, prerelease support boundary, and approval scope.
+- [Alpha qualification fixture](../../release/fixtures/alpha-qualification.json) freezes the machine-readable gate and intended source-to-target transitions.
+- [Alpha qualification tests](../../release/tests/test_alpha_qualification.py) validate Phase 1 through Phase 4 completion, evidence references, reproducible assembly, the first-alpha empty upgrade-edge list, explicit later prerelease edges, refusal of unversioned sources, and revision-bound approval.
+- [Release publication procedure](../../release/procedure.md) now requires the applicable qualification gate before publication.
 
 ## Completion criteria
 
