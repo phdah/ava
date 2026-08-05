@@ -1,0 +1,43 @@
+name: Release PR policy
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate release PR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mark ordinary pull request as not applicable
+        if: ${{ github.head_ref != 'release-please--branches--main' }}
+        run: echo "Release PR policy does not apply to $GITHUB_HEAD_REF"
+
+      - name: Check out release pull request
+        if: ${{ github.head_ref == 'release-please--branches--main' }}
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        if: ${{ github.head_ref == 'release-please--branches--main' }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Validate release-only policy
+        if: ${{ github.head_ref == 'release-please--branches--main' }}
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -eu
+          previous_version=$(git show "${BASE_SHA}:version.txt")
+          PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
+            internal.release.tests.release_pr_policy_test
+          python3 internal/release/validate_release_pr.py \
+            --previous-version "$previous_version"
