@@ -112,6 +112,26 @@ class ReleasePleasePolicyTests(unittest.TestCase):
             self.release_workflow.index('gh release edit "$TAG" --draft=false'),
         )
 
+    def test_release_workflow_reads_upgrade_sources_file(self) -> None:
+        self.assertIn("internal/release/upgrade-sources.txt", self.release_workflow)
+        self.assertIn("--upgrade-from", self.release_workflow)
+        self.assertLess(
+            self.release_workflow.index("internal/release/upgrade-sources.txt"),
+            self.release_workflow.index("internal/release/assemble.sh"),
+        )
+
+    def test_upgrade_sources_file_contains_valid_versions(self) -> None:
+        import re
+        semver_re = re.compile(
+            r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-(alpha|beta|rc)\.[1-9][0-9]*)?$"
+        )
+        sources_path = ROOT / "internal/release/upgrade-sources.txt"
+        self.assertTrue(sources_path.exists(), "upgrade-sources.txt must exist")
+        lines = [line for line in sources_path.read_text().splitlines() if line.strip()]
+        self.assertTrue(lines, "upgrade-sources.txt must not be empty for a non-first-alpha release")
+        for version in lines:
+            self.assertRegex(version, semver_re, f"invalid version in upgrade-sources.txt: {version}")
+
 
 if __name__ == "__main__":
     unittest.main()
