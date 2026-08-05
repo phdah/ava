@@ -1,21 +1,21 @@
 ---
 type: Internal Release Procedure
 title: Ava Release Publication Procedure
-description: Defines maintainer preparation, approval, publication supervision, verification, and failure handling for immutable Ava releases.
+description: Defines maintainer preparation, release-PR approval, automatic publication, verification, and failure handling for immutable Ava releases.
 tags: [internal, releases, publication, verification, maintenance]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-04T14:40:00+02:00
+  at: 2026-08-05T09:13:00+02:00
 ---
 
 # Ava Release Publication Procedure
 
 This procedure coordinates maintainers around the public contracts under `/distribution/`. It does not replace deterministic release automation and must never be included in an Ava release payload.
 
-The [release automation contract](release-please.md) prepares versions, changelog entries, tags, draft releases, qualified assets, and attestations. The first alpha and later prerelease gates are additionally constrained by the [Ava Alpha Qualification Policy](alpha-qualification.md).
+The [release automation contract](release-please.md) prepares versions and changelog entries, runs pull-request qualification, creates immutable tags and draft releases, qualifies the exact tagged source, uploads verified assets, and publishes after every maintained gate succeeds. The first alpha and later prerelease gates are additionally constrained by the [Ava Alpha Qualification Policy](alpha-qualification.md).
 
 # Preconditions
 
@@ -25,7 +25,7 @@ Before preparing a release:
 2. The source revision is clean, reviewed, and suitable for an immutable tag.
 3. Public contracts and schemas under `/distribution/` are internally consistent.
 4. Release sources under `/templates/` contain no internal repository content.
-5. The repository-boundary validator passes.
+5. The repository-boundary validator and maintained pull-request qualification check pass.
 6. Required release automation, credentials, repository permissions, and immutable-release settings are available.
 7. For a prerelease, every required qualification gate for that stage passes and every repository-work finding has the required roadmap task and classification.
 
@@ -33,12 +33,12 @@ When deterministic assembly or verification automation is unavailable, publicati
 
 # Release-please preparation
 
-1. Merge only pull requests whose title passes the Conventional Commit title check.
+1. Merge only pull requests whose title passes the Conventional Commit title check and whose release qualification check passes.
 2. Use squash merging with the pull-request title preserved as the canonical commit title.
 3. Review the single release-please pull request and confirm its version, changelog, version file, manifest, and channel match the active release task.
-4. Merging that release pull request may create the immutable tag and draft GitHub Release, but does not authorize publication.
-5. Require the same workflow run to bind the release-please tag and full source revision, run qualification, assemble twice, validate release conformance, attest the assets, confirm draft state, and upload without replacement.
-6. Treat any failure as a blocked draft. Never move the tag, overwrite an asset, or continue with a different source revision under the same version.
+4. Merging that release pull request explicitly authorizes publication of the resulting tagged revision after the maintained workflow gates succeed.
+5. Require the same workflow run to bind the release-please tag and full source revision, rerun qualification, assemble twice, validate release conformance, attest the assets, confirm draft state, upload without replacement, and publish.
+6. Treat any failure before publication as a blocked draft. Never move the tag, overwrite an asset, or continue with a different source revision under the same version.
 
 # Preparation
 
@@ -49,25 +49,25 @@ When deterministic assembly or verification automation is unavailable, publicati
 5. Validate schemas, archive safety, source-to-installed mapping, identity metadata, checksums, release notes, guidance, migrations, and upgrade declarations.
 6. For `1.0.0-alpha.1`, require an empty `upgrade_paths.edges` declaration and refuse historical unversioned sources.
 7. Confirm the canonical tag is new and still points to the qualified source revision.
-8. Confirm the GitHub Release remains a draft and contains exactly the uploaded, attested asset set.
-9. Re-fetch the draft and compare filenames, sizes, digests, embedded identities, and target revision with local verified outputs.
+8. Confirm the GitHub Release remains a draft until the complete asset set has been validated, attested, and uploaded.
 
 # Approval boundary
 
-A maintainer may prepare and validate a draft release under an approved implementation scope. Publishing a stable or prerelease release requires explicit approval for the exact version and source revision unless the user has already authorized that publication transaction.
+A maintainer approves publication by reviewing and merging the release-please pull request. That merge authorizes only the exact version proposed by the pull request and the resulting immutable tagged revision produced by the merge.
 
-Approval to define policy, implement tooling, merge a release pull request, prepare assets, create a tag, or prepare a draft does not authorize publication. A source revision change invalidates earlier approval and requires complete requalification.
+The workflow must publish only after it has bound that tag to the source revision and all qualification, reproducibility, conformance, attestation, and asset-upload steps succeed. A failure leaves the draft unpublished. A source revision or version change requires a new release pull request and complete requalification.
 
-Approval to prepare a draft does not authorize changing public contracts, compatibility declarations, tag targets, release notes, or asset contents outside the reviewed change.
+Approval of ordinary implementation work, release tooling, policy, or an unmerged release proposal does not authorize publication. The release pull request remains the explicit publication boundary.
 
-# Publication supervision
+# Automated publication
 
-1. Confirm the tag still points to the verified source revision.
-2. Confirm repository release immutability is enabled.
-3. Confirm the draft contains exactly the validated and attested assets.
-4. Confirm the manifest, release notes, guidance, migrations, and installer metadata declare the same support boundary.
-5. Publish once, without replacement or post-publication editing.
-6. For a stable release, set or retain `latest` only when the release contract declares that outcome.
+1. Confirm the tag points to the exact revision reported by release-please.
+2. Confirm the release is still a draft before attaching assets.
+3. Confirm every maintained qualification and release-conformance check succeeds.
+4. Confirm the assembled outputs are reproducible and the attestation step succeeds.
+5. Upload the complete asset set without replacement.
+6. Publish the existing draft without moving the tag or recreating the release.
+7. Preserve prerelease and latest status established by the active channel configuration.
 
 # Post-publication verification
 
@@ -85,7 +85,7 @@ Record the release URL, source revision, verification result, supported upgrade 
 
 # Failure handling
 
-Before publication, correct or discard the draft and rerun the complete deterministic validation and qualification gate using a new version if an immutable tag already exists.
+Before publication, correct the defect and use a new version when an immutable tag already exists. Do not move or recreate the tag, overwrite an uploaded asset, or reuse the version.
 
 After publication, never edit assets, move or recreate the tag, or reuse the version. A failed post-publication verification is a release incident. Corrective work uses a new version or an explicit security withdrawal under the public release contract.
 
