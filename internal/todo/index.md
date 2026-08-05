@@ -43,7 +43,7 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 3 of 6 complete; active with alpha dogfooding next
+5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 1 pending blocker
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
 
@@ -57,9 +57,12 @@ Release-please enforces release classification at the merge boundary, maintains 
 
 The first alpha publication task is complete. The remaining ordered path to the first stable release is:
 
-1. dogfood the alpha and add bounded fix tasks for discovered defects
-2. publish a release candidate only after alpha blockers are resolved
-3. qualify and publish `1.0.0`
+1. work the [dogfood findings backlog](05-release-qualification/dogfood/) while continuing realistic prerelease use
+2. keep the dogfood umbrella active until the user explicitly declares it complete
+3. publish a release candidate only after dogfood blockers and required RC work are resolved
+4. qualify and publish `1.0.0`
+
+Dogfood findings are numbered independently from the six core Phase 5 gates. New findings may be added and resolved continuously without renumbering release stages. Completed findings remain as durable evidence, and an empty backlog does not automatically advance the roadmap.
 
 Additional `alpha.N`, beta, or RC releases may be inserted when findings require them. The first alpha is a testable distribution, not a promise that the v1 feature set is defect-free.
 
@@ -68,7 +71,7 @@ Additional `alpha.N`, beta, or RC releases may be inserted when findings require
 - `pending`: active roadmap work that has not met its completion criteria
 - `completed`: active roadmap work that has been implemented, indexed, validated, and committed
 
-Update a task's frontmatter and its active phase index together when its status changes.
+Update a task's frontmatter and its active phase index together when its status changes. Individual finding completion never completes the dogfood umbrella unless the user explicitly makes that decision.
 
 ## Shared completion work
 
