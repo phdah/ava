@@ -54,7 +54,7 @@ Implement findings in dependency order. When several findings require the same p
 
 This batching rule does not permit publication while a pending blocker is absent from the release or otherwise unresolved.
 
-Finding 02 has passing repository, assembly, and local-install evidence. It remains the current pending blocker until its implementing PR and corrected published-prerelease validation are recorded.
+Finding 02 has passing repository, assembly, and local-install evidence in implementing draft PR [#53](https://github.com/phdah/ava/pull/53). It remains the current pending blocker until corrected published-prerelease validation is recorded.
 
 ## Classification
 
