@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-alpha.6](https://github.com/phdah/ava/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2026-08-05)
+
+
+### Bug Fixes
+
+* **release:** validate installed context links ([#53](https://github.com/phdah/ava/issues/53)) ([3081008](https://github.com/phdah/ava/commit/30810083aabd149ee63e017dc2a2cd265683b1af))
+
 ## [1.0.0-alpha.5](https://github.com/phdah/ava/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2026-08-05)
 
 
