@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-alpha.4](https://github.com/phdah/ava/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2026-08-05)
+
+
+### Features
+
+* **release:** publish qualified releases automatically ([#46](https://github.com/phdah/ava/issues/46)) ([08f3523](https://github.com/phdah/ava/commit/08f3523559255508ef8efb866e4fea1fb209de47))
+
 ## [1.0.0-alpha.3](https://github.com/phdah/ava/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2026-08-04)
 
 
