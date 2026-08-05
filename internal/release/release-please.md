@@ -1,21 +1,21 @@
 ---
 type: Internal Release Procedure
 title: Ava Release Automation
-description: Defines release-please configuration, Conventional Commit classification, release-channel transitions, and the draft-release qualification handoff.
+description: Defines release-please configuration, Conventional Commit classification, pull-request qualification, release-channel transitions, and qualified automatic publication.
 tags: [internal, releases, automation, release-please, conventional-commits]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-04T14:40:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-04T16:20:00+02:00
+  at: 2026-08-05T09:13:00+02:00
 ---
 
 # Ava Release Automation
 
-Ava uses `release-please` as a single-package release coordinator. It proposes versions, maintains `CHANGELOG.md` and `version.txt`, keeps one release pull request current, creates immutable `v<version>` tags, and prepares draft GitHub Releases.
+Ava uses `release-please` as a single-package release coordinator. It proposes versions, maintains `CHANGELOG.md` and `version.txt`, keeps one release pull request current, creates immutable `v<version>` tags, prepares draft GitHub Releases, qualifies their exact source revision, uploads verified assets, and publishes only after every maintained gate succeeds.
 
-Release automation does not authorize publication. The [release publication procedure](procedure.md), [alpha qualification policy](alpha-qualification.md), deterministic assembler, conformance suite, and explicit approval for the exact version and full source revision remain authoritative.
+Reviewing and merging the release pull request is the explicit publication approval. The draft GitHub Release remains a temporary staging boundary so qualification, reproducible assembly, conformance, attestation, and asset upload complete before the release becomes public.
 
 ## Merge-boundary contract
 
@@ -64,13 +64,19 @@ The machine-readable fixture records representative alpha, RC, and stable identi
 
 ## Credentials and repository settings
 
-Create an Actions secret named `RELEASE_PLEASE_TOKEN` using a fine-grained token or GitHub App token that can write repository contents, pull requests, and issues. A separate token is required so release-please-created pull requests and release operations can trigger the maintained validation path.
+Create an Actions secret named `RELEASE_PLEASE_TOKEN` using a fine-grained token or GitHub App token that can write repository contents, pull requests, issues, and releases. A separate token is required so release-please-created pull requests and release operations can trigger the maintained validation path.
 
-Also enable Actions to create pull requests and protect `main` with the title and test checks. Do not permit direct pushes that bypass the validated merge title.
+Also enable Actions to create pull requests and protect `main` with the Conventional Commit title and release qualification checks. Do not permit direct pushes that bypass the validated merge title or qualification suite.
 
-## Draft release handoff
+## Pull request qualification
 
-When a release pull request is merged, the release workflow:
+The `release-qualification` workflow runs `internal/release/test.sh` for every pull request without requiring write permissions or repository secrets. This gives reviewers the same repository qualification entry point used again for the exact tagged release source.
+
+Pull-request success does not replace release-time qualification. The release workflow reruns the suite after the tag and draft release exist so the qualified source revision is exactly the revision that will be published.
+
+## Qualified release handoff
+
+When a release pull request is merged, the merge authorizes publication of the resulting tagged revision and the release workflow:
 
 1. creates the immutable tag and draft GitHub Release
 2. checks out the exact SHA reported by release-please
@@ -81,7 +87,6 @@ When a release pull request is merged, the release workflow:
 7. verifies the GitHub Release is still a draft
 8. attests the verified assets
 9. uploads assets without clobbering an existing filename
+10. publishes the qualified release
 
-Any mismatch fails before asset upload. Existing tags or assets are never moved, replaced, or reused.
-
-Publishing the draft remains a separate explicit transaction under `procedure.md`.
+Any mismatch or failed step leaves the release as a blocked draft. Existing tags or assets are never moved, replaced, or reused.
