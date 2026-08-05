@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import re
 import unittest
 from pathlib import Path
 
@@ -12,6 +11,7 @@ CONFIG_PATH = ROOT / "release-please-config.json"
 MANIFEST_PATH = ROOT / ".release-please-manifest.json"
 FIXTURE_PATH = ROOT / "internal/release/fixtures/release-please-policy.json"
 RELEASE_WORKFLOW_PATH = ROOT / ".github/workflows/release-please.yml"
+PYTHON_WORKFLOW_PATH = ROOT / ".github/workflows/python-tests.yml"
 TITLE_WORKFLOW_PATH = ROOT / ".github/workflows/conventional-pr-title.yml"
 
 
@@ -22,6 +22,7 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         cls.manifest = json.loads(MANIFEST_PATH.read_text())
         cls.fixture = json.loads(FIXTURE_PATH.read_text())
         cls.release_workflow = RELEASE_WORKFLOW_PATH.read_text()
+        cls.python_workflow = PYTHON_WORKFLOW_PATH.read_text()
         cls.title_workflow = TITLE_WORKFLOW_PATH.read_text()
 
     def test_title_cases(self) -> None:
@@ -86,7 +87,14 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertIn("validate_pr_title.py", self.title_workflow)
         self.assertIn("github.event.pull_request.title", self.title_workflow)
 
-    def test_release_workflow_preserves_publication_boundary(self) -> None:
+    def test_pull_requests_run_release_qualification(self) -> None:
+        self.assertIn("pull_request:", self.python_workflow)
+        self.assertIn("actions/checkout@v6", self.python_workflow)
+        self.assertIn("actions/setup-python@v6", self.python_workflow)
+        self.assertIn("internal/release/test.sh", self.python_workflow)
+        self.assertNotIn("python -m unittest discover", self.python_workflow)
+
+    def test_release_workflow_qualifies_then_publishes(self) -> None:
         self.assertIn("googleapis/release-please-action@v5", self.release_workflow)
         self.assertIn("secrets.RELEASE_PLEASE_TOKEN", self.release_workflow)
         self.assertIn("steps.release.outputs.sha", self.release_workflow)
@@ -98,7 +106,11 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertIn("gh release upload", self.release_workflow)
         self.assertNotIn("--clobber", self.release_workflow)
         self.assertIn("--json isDraft", self.release_workflow)
-        self.assertNotRegex(self.release_workflow, re.compile(r"gh release (?:edit|create).*--draft=false"))
+        self.assertIn('gh release edit "$TAG" --draft=false', self.release_workflow)
+        self.assertLess(
+            self.release_workflow.index("gh release upload"),
+            self.release_workflow.index('gh release edit "$TAG" --draft=false'),
+        )
 
 
 if __name__ == "__main__":

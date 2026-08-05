@@ -14,8 +14,8 @@
   "always-update": true,
   "pull-request-title-pattern": "chore${scope}: release${component} ${version}",
   "group-pull-request-title-pattern": "chore${scope}: release${component} ${version}",
-  "pull-request-header": "This pull request prepares an Ava release candidate. It does not authorize publication.",
-  "pull-request-footer": "Merging creates an immutable tag and a draft GitHub Release. Final publication still requires explicit approval for the exact version and source revision.",
+  "pull-request-header": "This pull request prepares an Ava release. Review the exact version and changelog before merging.",
+  "pull-request-footer": "Merging authorizes publication of the resulting tagged revision. The workflow publishes only after qualification, reproducible assembly, attestation, and asset upload succeed.",
   "changelog-sections": [
     {"type": "feat", "section": "Features"},
     {"type": "fix", "section": "Bug Fixes"},

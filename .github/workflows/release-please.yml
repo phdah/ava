@@ -112,3 +112,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
         run: gh release upload "${{ steps.identity.outputs.tag }}" release-a/*
+
+      - name: Publish qualified release
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          TAG: ${{ steps.identity.outputs.tag }}
+        run: gh release edit "$TAG" --draft=false

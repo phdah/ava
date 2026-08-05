@@ -32,7 +32,7 @@ GitHub Release
 - No pre-`1.0.0` Ava installation is a supported user state. Historical unversioned Ava migration is therefore outside the v1 roadmap; unknown historical layouts must be refused safely.
 - `1.0.0-alpha.1` has no supported earlier release source. Later prerelease transitions are supported only through explicit release-manifest upgrade edges.
 - Alpha publication is gated by reproducible assembly, the maintained conformance evidence, stable defect classes, protected-state blocker impacts, and explicit approval for the exact version and source revision.
-- Release-please prepares versions, changelog state, immutable tags, draft releases, qualified assets, and attestations, but never authorizes final publication.
+- Release-please prepares versions, changelog state, immutable tags, draft releases, qualified assets, and attestations. Merging the reviewed release pull request authorizes publication of the resulting tagged revision, and the workflow publishes only after all maintained gates pass.
 - Stable support guarantees begin with `1.0.0`, not with alpha, beta, or RC publication.
 - Public distribution contracts, release payload sources, and internal publication procedures are separate repository concerns.
 - Internal Ava development roles remain separate from every distributed project bundle.
@@ -53,7 +53,7 @@ The unified conformance suite validates repository structure, installed managed 
 
 The alpha qualification policy composes that conformance evidence with roadmap completion, reproducible release assembly, defect classification, prerelease upgrade declarations, and exact publication approval.
 
-Release-please enforces release classification at the merge boundary, maintains version and changelog state, keeps one release pull request current, creates immutable tags and draft releases, and hands the exact prepared SHA to qualification, reproducible assembly, release conformance, attestation, and non-clobbering asset upload.
+Release-please enforces release classification at the merge boundary, maintains version and changelog state, keeps one release pull request current, creates immutable tags and draft releases, and hands the exact prepared SHA to qualification, reproducible assembly, release conformance, attestation, non-clobbering asset upload, and automatic publication.
 
 The first alpha publication task is complete. The remaining ordered path to the first stable release is:
 
