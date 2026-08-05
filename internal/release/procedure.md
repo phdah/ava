@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-05T09:13:00+02:00
+  at: 2026-08-05T10:00:00+02:00
 ---
 
 # Ava Release Publication Procedure
@@ -48,8 +48,24 @@ When deterministic assembly or verification automation is unavailable, publicati
 4. Build every required asset twice and require identical digests.
 5. Validate schemas, archive safety, source-to-installed mapping, identity metadata, checksums, release notes, guidance, migrations, and upgrade declarations.
 6. For `1.0.0-alpha.1`, require an empty `upgrade_paths.edges` declaration and refuse historical unversioned sources.
-7. Confirm the canonical tag is new and still points to the qualified source revision.
-8. Confirm the GitHub Release remains a draft until the complete asset set has been validated, attested, and uploaded.
+7. For every later prerelease, confirm that `prerelease_support.transitions` in `alpha-qualification.json` and `prerelease_transitions` in `conformance-matrix.json` have been updated in a reviewed PR before assembly, and that the assembled `upgrade_paths.edges` contains exactly the declared supported sources. Qualification must fail when a planned later prerelease is assembled without its required edges.
+8. Confirm the canonical tag is new and still points to the qualified source revision.
+9. Confirm the GitHub Release remains a draft until the complete asset set has been validated, attested, and uploaded.
+
+# Release PR review
+
+When release-please opens a release pull request, the Ava Internal Maintainer works through this checklist before approving the merge. Merging is the explicit publication authorization, so the checklist must pass first. CI qualification and automated assembly run after the merge against the exact resulting tag; this review step handles the semantic and policy checks that automation cannot.
+
+Changes required by this checklist - fixture updates, upgrade-edge declarations, and similar release-preparation work - may be pushed directly to the release PR branch rather than through a separate implementation PR. While doing so, no new implementation commits should merge to main; a new commit on main causes release-please to rewrite the branch and will overwrite any changes pushed to it.
+
+1. Confirm the proposed version, channel, and SemVer classification match the active release task and approved roadmap state.
+2. Confirm the changelog accurately describes the releasable changes since the last release.
+3. Confirm all preconditions above are met for the intended version.
+4. For a prerelease, confirm the preparation checklist has been worked through: fixtures are updated, upgrade sources are declared, and the qualification suite passes on the current source.
+5. Confirm no open blocker finding targets this release stage.
+6. Confirm the release pull request contains no implementation changes beyond what release-please manages (version file, changelog, manifest). Implementation work belongs in separate reviewed pull requests merged before the release PR.
+
+If any item fails, keep the release PR as a draft, resolve the gap through a separate implementation PR, and re-run this checklist after it merges.
 
 # Approval boundary
 

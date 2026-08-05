@@ -70,4 +70,16 @@ The corrective prerelease must support direct upgrades from both `1.0.0-alpha.3`
 
 ## Resolution evidence
 
-Pending.
+Partial. The following completion criteria are addressed:
+
+- **Criteria 3 - PR qualification fails for missing edges:** `conformance_release.py` now emits `AVA-RELEASE-UPGRADE-EDGES` (error) when any release other than `1.0.0-alpha.1` has an empty `upgrade_paths.edges` list. Two new tests in `test_alpha_qualification.py` cover both the failing and the allowed case. The new case `release-manifest-upgrade-edges-missing` is registered in the conformance matrix and wired into the `contracts-consistent` gate.
+
+- **Criteria 4 - release qualification verifies edges before publication:** The same `conformance_release.py` check runs during `conformance.py --mode release`, which the release workflow invokes after double assembly. A release assembled without `--upgrade-from` will now fail qualification before publication.
+
+Supporting procedure changes were also made: `procedure.md` has a new Release PR review section and an explicit preparation step for fixture and edge declaration; `04-dogfood-alpha-and-track-findings.md` requires fixture updates before each additional prerelease; `instructions.md` documents the direct-push-to-release-branch pattern and the release PR review obligation.
+
+The following criteria remain open:
+
+- Criteria 1: the release workflow does not yet obtain upgrade sources from reviewed repository state; `--upgrade-from` is still not passed in `.github/workflows/release-please.yml`.
+- Criteria 2: the assembler therefore still receives no `--upgrade-from` argument for declared sources.
+- Criteria 5-9: the corrective prerelease (alpha.5) has not yet been published; dogfood evidence of successful upgrades from alpha.3 and alpha.4 is pending.

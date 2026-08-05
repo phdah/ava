@@ -87,6 +87,8 @@ Publish another `alpha.N` when completed fixes require validation through immuta
 - required guidance and migrations
 - the repeated dogfood scope
 
+Before assembling the release, update `prerelease_support.transitions` in `alpha-qualification.json` and `prerelease_transitions` in `conformance-matrix.json` in a reviewed PR to include every intended source-to-target edge. Qualification must fail when a planned later prerelease is assembled without its required edges.
+
 A beta may be introduced when useful, but it is not mandatory. The roadmap must describe its purpose and gate rather than using the label decoratively.
 
 ## Completion criteria
