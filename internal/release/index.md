@@ -8,6 +8,7 @@ This directory contains maintainer-only release assembly, installation implement
 - [Embedded installer Python fragments](installer/)
 - [Installer implementation guide](installer.md)
 - [Release automation and Conventional Commit contract](release-please.md)
+- [Release pull-request policy validator](validate_release_pr.py)
 - [Pull-request title validator](validate_pr_title.py)
 - [Alpha qualification policy](alpha-qualification.md)
 - [Conformance validation contract](conformance.md)
