@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-05T09:00:00+02:00
+  at: 2026-08-05T14:13:28+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,16 +23,17 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Restore supported prerelease upgrade paths](todo/05-release-qualification/dogfood/01-restore-prerelease-upgrade-paths.md).
+[Repair installed context link resolution](todo/05-release-qualification/dogfood/02-repair-installed-context-link-resolution.md).
 
-The alpha.4 release omitted upgrade edges from supported source prereleases, so projects installed on alpha.3 cannot upgrade through the published installer. Resolve this blocker before publishing another prerelease.
+The alpha.5 Inbox Ingester has a mandatory link that resolves in the repository source tree but not in an assembled installed project. Repair every affected cross-root link and make release qualification reject unresolved installed paths before publishing another prerelease.
 
 ## Dogfood backlog rule
 
 Use the [Alpha Dogfood Findings](todo/05-release-qualification/dogfood/) index as the queue for executable work during dogfooding.
 
 - add each new finding as a numbered bounded task
-- resolve the first pending finding before selecting later work unless the user reprioritizes it
+- work the first actionable pending finding in dependency order unless the user reprioritizes it
+- allow a finding whose implementation is complete but awaits shared prerelease validation to remain pending without blocking implementation of the next finding
 - update the finding task and backlog index together
 - keep completed findings as durable evidence
 - do not make release-candidate publication current merely because the backlog is temporarily empty
