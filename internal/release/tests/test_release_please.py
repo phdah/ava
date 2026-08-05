@@ -11,7 +11,7 @@ CONFIG_PATH = ROOT / "release-please-config.json"
 MANIFEST_PATH = ROOT / ".release-please-manifest.json"
 FIXTURE_PATH = ROOT / "internal/release/fixtures/release-please-policy.json"
 RELEASE_WORKFLOW_PATH = ROOT / ".github/workflows/release-please.yml"
-QUALIFICATION_WORKFLOW_PATH = ROOT / ".github/workflows/release-qualification.yml"
+PYTHON_WORKFLOW_PATH = ROOT / ".github/workflows/python-tests.yml"
 TITLE_WORKFLOW_PATH = ROOT / ".github/workflows/conventional-pr-title.yml"
 
 
@@ -22,7 +22,7 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         cls.manifest = json.loads(MANIFEST_PATH.read_text())
         cls.fixture = json.loads(FIXTURE_PATH.read_text())
         cls.release_workflow = RELEASE_WORKFLOW_PATH.read_text()
-        cls.qualification_workflow = QUALIFICATION_WORKFLOW_PATH.read_text()
+        cls.python_workflow = PYTHON_WORKFLOW_PATH.read_text()
         cls.title_workflow = TITLE_WORKFLOW_PATH.read_text()
 
     def test_title_cases(self) -> None:
@@ -88,10 +88,11 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertIn("github.event.pull_request.title", self.title_workflow)
 
     def test_pull_requests_run_release_qualification(self) -> None:
-        self.assertIn("pull_request:", self.qualification_workflow)
-        self.assertIn("actions/checkout@v4", self.qualification_workflow)
-        self.assertIn("actions/setup-python@v5", self.qualification_workflow)
-        self.assertIn("internal/release/test.sh", self.qualification_workflow)
+        self.assertIn("pull_request:", self.python_workflow)
+        self.assertIn("actions/checkout@v6", self.python_workflow)
+        self.assertIn("actions/setup-python@v6", self.python_workflow)
+        self.assertIn("internal/release/test.sh", self.python_workflow)
+        self.assertNotIn("python -m unittest discover", self.python_workflow)
 
     def test_release_workflow_qualifies_then_publishes(self) -> None:
         self.assertIn("googleapis/release-please-action@v5", self.release_workflow)
