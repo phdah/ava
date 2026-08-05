@@ -8,7 +8,7 @@ generated:
   at: 2026-08-04T09:21:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-04T14:28:00+02:00
+  at: 2026-08-05T14:49:04+02:00
 ---
 
 # Purpose
@@ -81,6 +81,8 @@ Unknown historical or unversioned Ava layouts must be refused. They are not supp
 ## Reproducible release assembly
 
 The exact source revision must be assembled twice in clean directories with identical inputs. Every generated release asset must have the same SHA-256 digest in both outputs.
+
+Before either assembly writes an asset, every distributed local inline Markdown link must resolve against the complete source-to-installed payload mapping without escaping the selected project. A repository source target that is excluded or installed at another destination does not satisfy this gate.
 
 The first alpha manifest must contain:
 

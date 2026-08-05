@@ -3,6 +3,7 @@
 set -eu
 
 ROOT=$(CDPATH= cd "$(dirname "$0")/../.." && pwd)
+export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
 
 fail() {
   printf 'ERROR: %s\n' "$*" >&2
@@ -113,7 +114,7 @@ done
 
 stale_pattern='templates/(distribution-and-ownership|versioning-and-compatibility|github-release-assets|upgrade-and-migration|release-guidance)\.md|templates/schemas/'
 
-find "$ROOT" -path "$ROOT/.git" -prune -o -type f -print | while IFS= read -r file
+find "$ROOT" \( -path "$ROOT/.git" -o -name __pycache__ \) -prune -o -type f -print | while IFS= read -r file
 do
   [ "$file" = "$ROOT/internal/release/validate-boundaries.sh" ] && continue
   if grep -En "$stale_pattern" "$file" >/dev/null 2>&1; then

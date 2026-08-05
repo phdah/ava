@@ -14,7 +14,7 @@ Before acting, read every file under **Required reading** in the listed order.
 
 ## Additional context
 
-Read the root [`AGENTS.md`](../../AGENTS.md) and [`roles/index.md`](../index.md) when routing, registry consistency, or overlap with another role matters.
+Read the root [`AGENTS.md`](./AGENTS.md) and [`roles/index.md`](../index.md) when routing, registry consistency, or overlap with another role matters.
 
 When modifying an existing role, read that role's complete required instruction set before proposing or applying changes.
 

@@ -73,7 +73,7 @@ A proposed workflow likely belongs in role instructions or deterministic tooling
 
 Managed workflows are Ava-managed release payloads and are installed or replaced deterministically with the rest of the managed base. Project-owned workflows remain project-owned and must not be overwritten by an Ava release.
 
-Adding, removing, renaming, or changing a workflow can affect invocation identity, ambiguity, primary-role resolution, required inputs, operating mode, trigger discovery, and intended behavior. These changes follow the [versioning and compatibility contract](../../../../distribution/versioning.md), release notes, and upgrade guidance.
+Adding, removing, renaming, or changing a workflow can affect invocation identity, ambiguity, primary-role resolution, required inputs, operating mode, trigger discovery, and intended behavior. These changes follow the Ava versioning and compatibility contract, release notes, and upgrade guidance.
 
 Ava defines and validates workflow documents. It does not provide a persistent workflow execution runtime, scheduler, event source, or workflow state service.
 

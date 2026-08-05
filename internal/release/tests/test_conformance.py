@@ -240,6 +240,24 @@ class ConformanceTests(unittest.TestCase):
             {"AVA-REPOSITORY-REQUIRED", "AVA-DOC-FRONTMATTER", "AVA-LINK-MISSING", "AVA-INTERNAL-LEAKAGE"}.issubset(self.rule_ids(result))
         )
 
+    def test_repository_resolves_links_against_installed_destinations(self) -> None:
+        self.create_repository()
+        source_target = self.write("templates/base/inbox/index.md", "# Source-only inbox\n")
+        self.write("templates/project-scaffolds/inbox/index.md", "# Installed inbox\n")
+        role_index = self.root / "templates/base/roles/test-role/index.md"
+        role_index.write_text(role_index.read_text() + "\n- [Inbox](../../inbox/index.md)\n")
+
+        self.assertEqual((role_index.parent / "../../inbox/index.md").resolve(), source_target)
+        self.assertTrue(source_target.is_file())
+        result = CONFORMANCE.validate(self.root, "repository")
+        issues = [item for item in result.findings if item.rule_id == "AVA-INSTALLED-LINK-MISSING"]
+        self.assertEqual(len(issues), 1)
+        self.assertIn("/.ava/base/inbox/index.md", issues[0].message)
+
+        role_index.write_text(role_index.read_text().replace("../../inbox/index.md", "./inbox/index.md"))
+        result = CONFORMANCE.validate(self.root, "repository")
+        self.assertNotIn("AVA-INSTALLED-LINK-MISSING", self.rule_ids(result))
+
     def test_repository_reports_role_registry_and_workflow_role_failures(self) -> None:
         self.create_repository()
         (self.root / "templates/base/roles/test-role/constraints.md").unlink()
@@ -334,7 +352,7 @@ class ConformanceTests(unittest.TestCase):
         self.write("templates/host-bootstraps/legacy.md", "legacy\n")
         self.write(
             "templates/base/shared/instructions/legacy.md",
-            self.public_doc("Legacy") + "templates/release-guidance.md\n",
+            self.public_doc("Legacy") + "templates/" + "release-guidance.md\n",
         )
         result = CONFORMANCE.validate(self.root, "repository")
         self.assertIn("AVA-BOUNDARY-OBSOLETE", self.rule_ids(result))

@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T22:30:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-04T09:21:00+02:00
+  at: 2026-08-05T14:49:04+02:00
 ---
 
 # Purpose
@@ -17,7 +17,7 @@ updated:
 
 # Validation modes
 
-- `repository` validates public contracts, release sources, metadata, links, indexes, role and workflow discovery, routing references, deprecated paths, and internal-content leakage.
+- `repository` validates public contracts, release sources, metadata, source and installed-destination inline links, indexes, role and workflow discovery, routing references, deprecated paths, and internal-content leakage.
 - `installed` validates the managed router, manifest, journal, managed payload integrity, semantic compatibility, routing gates, host metadata, and OpenCode access.
 - `release` validates the exact release asset inventory, checksums, release identity, channel consistency, and optional immutable-publication evidence.
 - `auto` selects a mode from the target root without mutating it.
@@ -80,3 +80,5 @@ Passing individual conformance modes is necessary but not sufficient for alpha p
 # Fixture matrix
 
 `fixtures/conformance-matrix.json` freezes required structural, installation, recovery, removal, host, semantic, upgrade, trust, and publication scenarios. Every matrix case names executable evidence in the test suite. New supported behavior must add or update a case before publication.
+
+Release-source link validation uses the assembler's complete source-to-installed payload mapping. It accepts local inline links only when their target is present in the assembled managed payload or create-if-absent project scaffold, so repository-only source paths cannot mask a broken installed role or context chain. Project-root and document-relative links that escape the selected project are rejected.

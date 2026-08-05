@@ -14,6 +14,6 @@ Before acting, read every file under **Required reading** in the listed order.
 
 ## Additional context
 
-Read the root [`AGENTS.md`](../../AGENTS.md) and [`roles/index.md`](../index.md) when routing, ownership boundaries, or role overlap matters.
+Read the root [`AGENTS.md`](./AGENTS.md) and [`roles/index.md`](../index.md) when routing, ownership boundaries, or role overlap matters.
 
 Read only the reviewed change, its applicable instructions, the nearest relevant indexes, and directly related role, workflow, policy, or knowledge documents. When a diff is available, inspect both the diff and the resulting documents. Do not scan the complete project by default.

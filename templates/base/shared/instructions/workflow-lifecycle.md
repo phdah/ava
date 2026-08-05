@@ -188,7 +188,7 @@ Only the Upgrade Role may update semantic compatibility state. Only deterministi
 
 # Compatibility
 
-Workflow changes follow [Ava Versioning and Compatibility](../../../../distribution/versioning.md) and [Ava Release Guidance](../../../../distribution/guidance.md).
+Workflow changes follow the Ava versioning and compatibility contract and Ava release guidance.
 
 For managed workflows after `1.0.0`:
 
