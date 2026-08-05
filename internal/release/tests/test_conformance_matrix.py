@@ -94,6 +94,8 @@ class ConformanceMatrixTests(unittest.TestCase):
             "repository-minimal-valid",
             "frontmatter-missing",
             "internal-link-missing",
+            "installed-link-missing",
+            "installed-link-root-escape",
             "role-required-file-missing",
             "workflow-primary-role-missing",
             "duplicate-identifier",

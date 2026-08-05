@@ -13,6 +13,9 @@ affected_version: 1.0.0-alpha.5
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-05T13:07:09+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-05T15:28:53+02:00
 ---
 
 # Repair Installed Context Link Resolution
@@ -56,4 +59,17 @@ Managed documents retain links authored for the repository source layout even wh
 
 ## Resolution evidence
 
-Pending.
+Repository implementation and local qualification are complete in the current worktree:
+
+- all 15 links that failed against the assembled alpha.5 layout now use installed-project targets or no longer link to repository-only contracts
+- `assemble.py` resolves every distributed local inline Markdown link through the complete payload destination map before writing release assets
+- both project-root and document-relative traversal beyond the selected project are rejected
+- repository conformance reports unresolved installed targets as `AVA-INSTALLED-LINK-MISSING`
+- the `installed-link-missing` fixture reproduces the source-resolving alpha.5 Inbox Ingester defect and proves that `./inbox/index.md` resolves through the project-owned scaffold mapping
+- the `installed-link-root-escape` fixture rejects excess document-relative traversal and `./../` project-root traversal while accepting an exact document-relative path to the root router
+- `internal/release/test.sh` passes all 129 tests
+- `internal/release/validate-boundaries.sh` reports `Repository boundaries valid.`
+- a local `1.0.0-alpha.1` assembly completed, installed into a clean temporary project, passed installed conformance with normal routing permitted, and contained the complete Inbox Ingester required-reading file set
+- implementing draft PR: [#53](https://github.com/phdah/ava/pull/53)
+
+The finding remains pending until a corrected prerelease is published and the Inbox Ingester required-reading chain is validated in a real project installed from that immutable release. The published version is not yet available.

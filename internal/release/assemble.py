@@ -9,6 +9,7 @@ import hashlib
 import io
 import json
 import os
+import posixpath
 import re
 import tarfile
 from dataclasses import dataclass
@@ -27,6 +28,7 @@ ASSET_NAMES = (
 )
 VERSION_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-(alpha|beta|rc)\.([1-9][0-9]*))?$")
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+URI_SCHEME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 
 
 class AssemblyError(RuntimeError):
@@ -41,6 +43,14 @@ class Payload:
     operation: str
     role: str
     data: bytes
+
+
+@dataclass(frozen=True)
+class InstalledLinkIssue:
+    archive_path: str
+    source_destination: str
+    raw_target: str
+    resolved_target: str
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -79,6 +89,220 @@ def iter_files(root: Path) -> Iterable[Path]:
     if not root.is_dir():
         return []
     return sorted((path for path in root.rglob("*") if path.is_file()), key=lambda p: p.relative_to(root).as_posix().encode())
+
+
+def markdown_without_code(text: str) -> str:
+    result: list[str] = []
+    fence_character: str | None = None
+    fence_length = 0
+
+    for line in text.splitlines(keepends=True):
+        stripped = line.lstrip()
+        if fence_character is None:
+            match = re.match(r"(`{3,}|~{3,})", stripped)
+            if match:
+                marker = match.group(1)
+                fence_character = marker[0]
+                fence_length = len(marker)
+                result.append("\n" if line.endswith("\n") else "")
+            else:
+                result.append(line)
+            continue
+
+        if re.fullmatch(
+            rf"{re.escape(fence_character)}{{{fence_length},}}\s*",
+            stripped,
+        ):
+            fence_character = None
+            fence_length = 0
+        result.append("\n" if line.endswith("\n") else "")
+
+    text = "".join(result)
+    result = []
+    position = 0
+    while position < len(text):
+        if text[position] != "`":
+            result.append(text[position])
+            position += 1
+            continue
+        marker_end = position
+        while marker_end < len(text) and text[marker_end] == "`":
+            marker_end += 1
+        marker = text[position:marker_end]
+        closing = text.find(marker, marker_end)
+        if closing == -1:
+            result.append(marker)
+            position = marker_end
+            continue
+        result.append(" " * (closing + len(marker) - position))
+        position = closing + len(marker)
+    return "".join(result)
+
+
+def markdown_link_target(raw: str) -> str | None:
+    value = raw.strip()
+    if not value or value.startswith("#") or URI_SCHEME_RE.match(value):
+        return None
+    value = value.split("#", 1)[0]
+    return value or None
+
+
+def markdown_inline_link_targets(text: str) -> list[str]:
+    def escaped(position: int) -> bool:
+        backslashes = 0
+        position -= 1
+        while position >= 0 and text[position] == "\\":
+            backslashes += 1
+            position -= 1
+        return backslashes % 2 == 1
+
+    targets: list[str] = []
+    search_from = 0
+    while True:
+        opening = text.find("](", search_from)
+        if opening == -1:
+            return targets
+        label_start = text.rfind("[", 0, opening)
+        while label_start != -1 and escaped(label_start):
+            label_start = text.rfind("[", 0, label_start)
+        if label_start == -1 or escaped(opening):
+            search_from = opening + 2
+            continue
+
+        content_start = opening + 2
+        cursor = content_start
+        depth = 1
+        quote: str | None = None
+        angle_destination = False
+        destination_started = False
+        destination_complete = False
+        while cursor < len(text):
+            character = text[cursor]
+            if character == "\\" and cursor + 1 < len(text):
+                cursor += 2
+                continue
+            if angle_destination:
+                if character == ">":
+                    angle_destination = False
+                    destination_complete = True
+                cursor += 1
+                continue
+            if quote:
+                if character == quote:
+                    quote = None
+                cursor += 1
+                continue
+            if character == "<" and depth == 1 and not destination_started:
+                angle_destination = True
+                destination_started = True
+            elif character.isspace() and depth == 1 and destination_started:
+                destination_complete = True
+            elif character in ("'", '"') and destination_complete:
+                quote = character
+            elif character == "(":
+                depth += 1
+            elif character == ")":
+                depth -= 1
+                if depth == 0:
+                    break
+            elif not character.isspace():
+                destination_started = True
+            cursor += 1
+
+        if depth != 0:
+            search_from = content_start
+            continue
+
+        content = text[content_start:cursor].lstrip()
+        if content.startswith("<"):
+            end = 1
+            while end < len(content):
+                if content[end] == "\\" and end + 1 < len(content):
+                    end += 2
+                    continue
+                if content[end] == ">":
+                    break
+                end += 1
+            target = content[1:end] if end < len(content) else ""
+        else:
+            end = 0
+            while end < len(content):
+                if content[end] == "\\" and end + 1 < len(content):
+                    end += 2
+                    continue
+                if content[end].isspace():
+                    break
+                end += 1
+            target = content[:end]
+        if target:
+            targets.append(re.sub(r"\\(.)", r"\1", target))
+        search_from = cursor + 1
+
+
+def document_link_escapes_root(source_directory: str, target: str) -> bool:
+    depth = len(PurePosixPath(source_directory).parts) - 1
+    for part in PurePosixPath(target).parts:
+        if part == "..":
+            if depth == 0:
+                return True
+            depth -= 1
+        elif part not in ("", "."):
+            depth += 1
+    return False
+
+
+def unresolved_installed_markdown_links(payloads: list[Payload]) -> list[InstalledLinkIssue]:
+    installed_files = {payload.destination for payload in payloads}
+    installed_directories = {"/"}
+    for destination in installed_files:
+        parent = PurePosixPath(destination).parent
+        while parent != PurePosixPath("/"):
+            installed_directories.add(parent.as_posix())
+            parent = parent.parent
+
+    issues: list[InstalledLinkIssue] = []
+    for payload in payloads:
+        if not payload.destination.endswith(".md"):
+            continue
+        text = markdown_without_code(payload.data.decode("utf-8"))
+        for raw in markdown_inline_link_targets(text):
+            target = markdown_link_target(raw)
+            if target is None:
+                continue
+            if target.startswith("./"):
+                project_target = target[2:]
+                if ".." in PurePosixPath(project_target).parts:
+                    resolved = "<outside installed project>"
+                else:
+                    resolved = posixpath.normpath(f"/{project_target}")
+            else:
+                source_directory = PurePosixPath(payload.destination).parent.as_posix()
+                if document_link_escapes_root(source_directory, target):
+                    resolved = "<outside installed project>"
+                else:
+                    resolved = posixpath.normpath(posixpath.join(source_directory, target))
+            if resolved not in installed_files and resolved not in installed_directories:
+                issues.append(
+                    InstalledLinkIssue(
+                        payload.archive_path,
+                        payload.destination,
+                        raw,
+                        resolved,
+                    )
+                )
+    return issues
+
+
+def validate_installed_markdown_links(payloads: list[Payload]) -> None:
+    issues = unresolved_installed_markdown_links(payloads)
+    if not issues:
+        return
+    details = "; ".join(
+        f"{issue.archive_path} installed at {issue.source_destination}: "
+        f"{issue.raw_target} -> {issue.resolved_target}"
+        for issue in issues
+    )
+    raise AssemblyError(f"unresolved installed Markdown links: {details}")
 
 
 def read_payloads(root: Path) -> list[Payload]:
@@ -223,6 +447,7 @@ def build(args: argparse.Namespace) -> None:
     published_at = args.published_at or datetime.fromtimestamp(epoch, timezone.utc).isoformat().replace("+00:00", "Z")
 
     payloads = read_payloads(root)
+    validate_installed_markdown_links(payloads)
     base_files = {"ava-asset.json": asset_identity("ava-base.tar.gz", "base", version, channel, args.source_revision)}
     for payload in payloads:
         base_files[payload.archive_path] = payload.data
