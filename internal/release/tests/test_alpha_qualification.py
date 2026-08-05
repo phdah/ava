@@ -176,19 +176,21 @@ class AlphaQualificationTests(unittest.TestCase):
         self.assertTrue(validate_release(first).valid)
 
     def test_prerelease_transitions_are_machine_readable_release_edges(self) -> None:
-        targets = [
-            ("1.0.0-alpha.2", "1.0.0-alpha.1", "alpha"),
-            ("1.0.0-rc.1", "1.0.0-alpha.2", "rc"),
-            ("1.0.0", "1.0.0-rc.1", "stable"),
-        ]
+        # Group declared transitions by target so releases with multiple sources
+        # (e.g. alpha.5 from both alpha.3 and alpha.4) are assembled correctly.
+        by_target: dict[str, list[dict]] = {}
+        for transition in self.policy["prerelease_support"]["transitions"]:
+            by_target.setdefault(transition["to"], []).append(transition)
+
         actual = []
-        for version, source, channel in targets:
+        for version, transitions in sorted(by_target.items()):
+            sources = [t["from"] for t in transitions]
+            channel = transitions[0]["channel"]
             output = self.root / version
-            self._build(version, output, upgrade_from=[source])
+            self._build(version, output, upgrade_from=sources)
             manifest = json.loads((output / "ava-release.json").read_text())
             self.assertEqual(manifest["channel"], channel)
-            self.assertEqual(
-                manifest["upgrade_paths"]["edges"],
+            expected_edges = sorted(
                 [
                     {
                         "from": source,
@@ -199,19 +201,20 @@ class AlphaQualificationTests(unittest.TestCase):
                         "migration_ids": [],
                         "guidance_paths": [],
                     }
+                    for source in sources
                 ],
+                key=lambda e: e["from"],
             )
-            actual.append(
-                {
-                    "from": source,
-                    "to": version,
-                    "channel": channel,
-                    "must_be_declared": True,
-                }
+            self.assertEqual(
+                sorted(manifest["upgrade_paths"]["edges"], key=lambda e: e["from"]),
+                expected_edges,
             )
+            for source in sources:
+                actual.append({"from": source, "to": version, "channel": channel, "must_be_declared": True})
 
-        self.assertEqual(actual, self.policy["prerelease_support"]["transitions"])
-        self.assertEqual(actual, self.matrix["prerelease_transitions"])
+        sort_key = lambda t: (t["to"], t["from"])  # noqa: E731
+        self.assertEqual(sorted(actual, key=sort_key), sorted(self.policy["prerelease_support"]["transitions"], key=sort_key))
+        self.assertEqual(sorted(actual, key=sort_key), sorted(self.matrix["prerelease_transitions"], key=sort_key))
 
     def test_historical_unversioned_source_is_rejected(self) -> None:
         result = self._build(
