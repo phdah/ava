@@ -8,7 +8,7 @@ generated:
   at: 2026-08-04T14:40:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-05T09:13:00+02:00
+  at: 2026-08-05T22:42:00+02:00
 ---
 
 # Ava Release Automation
@@ -66,11 +66,13 @@ The machine-readable fixture records representative alpha, RC, and stable identi
 
 Create an Actions secret named `RELEASE_PLEASE_TOKEN` using a fine-grained token or GitHub App token that can write repository contents, pull requests, issues, and releases. A separate token is required so release-please-created pull requests and release operations can trigger the maintained validation path.
 
-Also enable Actions to create pull requests and protect `main` with the Conventional Commit title and release qualification checks. Do not permit direct pushes that bypass the validated merge title or qualification suite.
+Also enable Actions to create pull requests and protect `main` with the Conventional Commit title, repository qualification, and `Release PR policy / Validate release PR` checks. Do not permit direct pushes that bypass the validated merge title or qualification suite.
 
 ## Pull request qualification
 
 The `release-qualification` workflow runs `internal/release/test.sh` for every pull request without requiring write permissions or repository secrets. This gives reviewers the same repository qualification entry point used again for the exact tagged release source.
+
+The separate `Release PR policy` workflow resolves successfully without checking release state for ordinary pull requests. Only the exact `release-please--branches--main` branch checks out the proposed release and runs `internal/release/validate_release_pr.py` plus its isolated tests. The validator reads the current `main` version from the pull request base revision and requires it to be declared as an upgrade source for the proposed version. For prereleases, `upgrade-sources.txt`, `alpha-qualification.json`, and `conformance-matrix.json` must declare the same exact source set.
 
 Pull-request success does not replace release-time qualification. The release workflow reruns the suite after the tag and draft release exist so the qualified source revision is exactly the revision that will be published.
 
