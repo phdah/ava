@@ -70,16 +70,19 @@ The corrective prerelease must support direct upgrades from both `1.0.0-alpha.3`
 
 ## Resolution evidence
 
-Partial. The following completion criteria are addressed:
+Criteria 1 and 2 addressed in PR #50 (`fix/release-workflow-upgrade-from-wiring`):
 
-- **Criteria 3 - PR qualification fails for missing edges:** `conformance_release.py` now emits `AVA-RELEASE-UPGRADE-EDGES` (error) when any release other than `1.0.0-alpha.1` has an empty `upgrade_paths.edges` list. Two new tests in `test_alpha_qualification.py` cover both the failing and the allowed case. The new case `release-manifest-upgrade-edges-missing` is registered in the conformance matrix and wired into the `contracts-consistent` gate.
+- `internal/release/upgrade-sources.txt` introduced as the reviewed source of truth for supported upgrade sources for the next release; currently declares `1.0.0-alpha.3` and `1.0.0-alpha.4` as sources for alpha.5.
+- `.github/workflows/release-please.yml` updated to read `upgrade-sources.txt` and pass one `--upgrade-from` argument per declared version to the assembler.
+- `procedure.md` step 7 and `04-dogfood-alpha-and-track-findings.md` updated to require `upgrade-sources.txt` updates alongside fixture updates before each prerelease.
+- `test_release_please.py` extended with two new tests: `test_release_workflow_reads_upgrade_sources_file` and `test_upgrade_sources_file_contains_valid_versions`.
+- Conformance matrix `prerelease_transitions` and `alpha-qualification.json` `transitions` updated to reflect the actual known path through alpha.5 and to alpha.2 -> alpha.3 intermediate.
+- `test_prerelease_transitions_are_machine_readable_release_edges` refactored to handle releases with multiple sources (alpha.5 from both alpha.3 and alpha.4) and to compare order-independently.
 
-- **Criteria 4 - release qualification verifies edges before publication:** The same `conformance_release.py` check runs during `conformance.py --mode release`, which the release workflow invokes after double assembly. A release assembled without `--upgrade-from` will now fail qualification before publication.
+Criteria 3 and 4 addressed in PR #49 (merged).
 
-Supporting procedure changes were also made: `procedure.md` has a new Release PR review section and an explicit preparation step for fixture and edge declaration; `04-dogfood-alpha-and-track-findings.md` requires fixture updates before each additional prerelease; `instructions.md` documents the direct-push-to-release-branch pattern and the release PR review obligation.
+The following criteria remain open pending alpha.5 publication and dogfood:
 
-The following criteria remain open:
-
-- Criteria 1: the release workflow does not yet obtain upgrade sources from reviewed repository state; `--upgrade-from` is still not passed in `.github/workflows/release-please.yml`.
-- Criteria 2: the assembler therefore still receives no `--upgrade-from` argument for declared sources.
-- Criteria 5-9: the corrective prerelease (alpha.5) has not yet been published; dogfood evidence of successful upgrades from alpha.3 and alpha.4 is pending.
+- Criteria 5: corrective alpha.5 prerelease has not yet been published.
+- Criteria 6-8: upgrade from alpha.3 and alpha.4 to alpha.5 not yet verified; managed file reconciliation and project-owned file preservation not yet confirmed against published assets.
+- Criteria 9: implementing PR, published version, and dogfood evidence to be recorded here before closing.

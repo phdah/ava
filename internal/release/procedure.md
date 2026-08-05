@@ -48,7 +48,7 @@ When deterministic assembly or verification automation is unavailable, publicati
 4. Build every required asset twice and require identical digests.
 5. Validate schemas, archive safety, source-to-installed mapping, identity metadata, checksums, release notes, guidance, migrations, and upgrade declarations.
 6. For `1.0.0-alpha.1`, require an empty `upgrade_paths.edges` declaration and refuse historical unversioned sources.
-7. For every later prerelease, confirm that `prerelease_support.transitions` in `alpha-qualification.json` and `prerelease_transitions` in `conformance-matrix.json` have been updated in a reviewed PR before assembly, and that the assembled `upgrade_paths.edges` contains exactly the declared supported sources. Qualification must fail when a planned later prerelease is assembled without its required edges.
+7. For every later prerelease, confirm that `prerelease_support.transitions` in `alpha-qualification.json`, `prerelease_transitions` in `conformance-matrix.json`, and `internal/release/upgrade-sources.txt` have been updated in a reviewed PR before assembly, and that the assembled `upgrade_paths.edges` contains exactly the declared supported sources. Qualification must fail when a planned later prerelease is assembled without its required edges.
 8. Confirm the canonical tag is new and still points to the qualified source revision.
 9. Confirm the GitHub Release remains a draft until the complete asset set has been validated, attested, and uploaded.
 
