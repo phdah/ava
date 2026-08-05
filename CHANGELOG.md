@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-alpha.5](https://github.com/phdah/ava/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2026-08-05)
+
+
+### Bug Fixes
+
+* **release:** wire upgrade-sources.txt into release workflow assembler call ([#50](https://github.com/phdah/ava/issues/50)) ([af7b258](https://github.com/phdah/ava/commit/af7b2587f756009ac743289e920488690091b0d3))
+
 ## [1.0.0-alpha.4](https://github.com/phdah/ava/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2026-08-05)
 
 
