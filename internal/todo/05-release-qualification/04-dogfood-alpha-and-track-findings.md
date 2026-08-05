@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-05T09:00:00+02:00
+  at: 2026-08-05T14:13:28+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -38,20 +38,46 @@ Only an explicit user decision may change this task to `completed` and advance t
 
 Exercise at least:
 
-- installation into an empty project
-- installation into a mature non-Ava project with existing project-owned Markdown and host configuration
-- a clean OpenCode startup and repeated sessions against the installed project
-- free-form role routing and every managed workflow
-- role creation, project context maintenance, inbox ingestion, and independent review
-- Ava Maintenance version and state explanation
-- modified, missing, and corrupt managed-file diagnosis
-- interrupted deterministic upgrade recovery through resume, abort, rollback, and finalize
-- semantic upgrade routing and completion through the Upgrade Role
-- role-led uninstall with project-owned content preserved
-- reinstall after uninstall
-- exact-version prerelease upgrades between every supported published transition
+- [ ] installation into an empty project
+- [x] installation into a mature non-Ava project with existing project-owned Markdown and host configuration
+- [ ] a clean OpenCode startup and repeated sessions against the installed project
+- [ ] free-form role routing and every managed workflow
+- [ ] role creation, project context maintenance, inbox ingestion, and independent review
+- [ ] Ava Maintenance version and state explanation
+- [ ] modified, missing, and corrupt managed-file diagnosis
+- [ ] interrupted deterministic upgrade recovery through resume, abort, rollback, and finalize
+- [ ] semantic upgrade routing and completion through the Upgrade Role
+- [x] role-led uninstall with project-owned content preserved
+- [ ] reinstall after uninstall
+- [ ] exact-version prerelease upgrades between every supported published transition
 
 Use realistic projects large enough to expose discovery, path, ambiguity, context-loading, and performance problems. Do not limit dogfooding to synthetic minimal fixtures.
+
+## Completed scenario evidence
+
+### Non-empty project installation
+
+On 2026-08-05, the version-pinned `1.0.0-alpha.4` installer completed successfully in a real non-empty project. It created the managed `/.ava/` payload and root `/AGENTS.md`, reported semantic compatibility complete through alpha.4, and left host discovery in the expected `explicit-only` state.
+
+The installer skipped the existing project-owned `/index.md`, `/inbox/`, `/knowledge/`, `/roles/`, `/shared/`, and `/workflows/` scaffold destinations rather than replacing them. It also detected the existing project-owned `/opencode.json`, left it unchanged, and reported the permission fragment available for optional manual integration.
+
+### Corrective prerelease upgrades
+
+On 2026-08-05, real installations upgraded successfully from both supported direct sources, `1.0.0-alpha.3` and `1.0.0-alpha.4`, to `1.0.0-alpha.5` using the version-pinned published installer. Both runs retained the byte-identical managed payload, advanced installed and semantic compatibility state through alpha.5, and preserved the existing project-owned OpenCode configuration.
+
+### Inbox ingestion and independent review
+
+On 2026-08-05, the alpha.5 Inbox Ingester processed realistic work notes from 2026-02-20 through 2026-07-01 in a non-empty Obsidian vault. It preserved 46 dated sources, correctly recognized 16 frontmatter-only files, linked all 30 substantive sources through destination `sources` metadata, and created 23 indexed canonical concepts under a progressively discoverable `knowledge/work/` scope.
+
+Independent review found that this file-level coverage did not satisfy the complete ingestion contract. The installed role had an unresolved mandatory link, substantial sections of one processed source had no canonical destination, an uncertain incident contributor was presented as a confirmed cause, several claims had incorrect or non-renderable attribution, completion counts were inaccurate, and the projects collection mixed stable subject classes in a hierarchy likely to become too flat.
+
+The scenario is exercised but not accepted as passing. Follow-up is tracked by [installed context link resolution](dogfood/02-repair-installed-context-link-resolution.md), [predictable knowledge hierarchy promotion](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md), and [faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md). The combined role and workflow checklist remains open because role creation and project context maintenance have not yet been qualified with this evidence.
+
+### Role-led uninstall
+
+On 2026-08-05, Ava Maintenance removed a real `1.0.0-alpha.5` installation after verifying all 54 managed payload files were unchanged. It removed `/.ava/`, including its 53 payload files and two state files, and the managed root `/AGENTS.md`.
+
+The operation confirmed that project-owned `/index.md`, `/inbox/`, `/knowledge/`, `/roles/`, `/shared/`, `/workflows/`, and `/opencode.json` remained present and unchanged. It also reported the now-inert `.ava/**` permission entries in `opencode.json` without modifying that project-owned file. Post-removal validation confirmed that both managed paths were absent and every listed project-owned path remained present.
 
 ## Backlog operation
 
@@ -64,9 +90,11 @@ For every finding:
 3. determine whether the failure is in contracts, templates, routing, host integration, release tooling, validation, documentation, or implementation
 4. create one bounded finding task when repository work or an explicit disposition is required
 5. add it to the findings index using the next unused number
-6. make the first pending finding the current next actionable task
+6. make the first actionable pending finding the current next task, respecting explicit dependencies
 
 The resolving implementation PR updates the finding task and findings index together. Completed findings remain as durable evidence and are never deleted or renumbered.
+
+When several findings require the same published-asset validation, implement them in dependency order and validate them through one corrective prerelease when practical. A finding whose repository implementation is complete but awaits that shared validation remains pending; it does not prevent implementation of the next dependency-ordered finding. Record the shared release and dogfood evidence in every finding it validates before marking those findings complete.
 
 Do not bury unresolved defects only in prose, issue comments, CI logs, release comments, or an informal checklist.
 
