@@ -224,6 +224,20 @@ class AlphaQualificationTests(unittest.TestCase):
         self.assertIn("invalid Ava version", result.stderr)
         self.assertFalse(self.policy["prerelease_support"]["historical_unversioned_supported"])
 
+    def test_non_first_release_with_empty_edges_fails_conformance(self) -> None:
+        output = self.root / "no-edges"
+        self._build("1.0.0-alpha.2", output)
+        result = validate_release(output)
+        rule_ids = {finding.rule_id for finding in result.findings}
+        self.assertIn("AVA-RELEASE-UPGRADE-EDGES", rule_ids)
+
+    def test_first_alpha_with_empty_edges_passes_conformance(self) -> None:
+        output = self.root / "first-alpha-edges"
+        self._build("1.0.0-alpha.1", output)
+        result = validate_release(output)
+        rule_ids = {finding.rule_id for finding in result.findings}
+        self.assertNotIn("AVA-RELEASE-UPGRADE-EDGES", rule_ids)
+
     def test_public_release_schema_requires_explicit_upgrade_edges(self) -> None:
         schema = json.loads(RELEASE_SCHEMA.read_text())
         self.assertIn("upgrade_paths", schema["required"])

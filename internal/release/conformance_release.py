@@ -67,6 +67,12 @@ def validate_release(root: Path, require_publication_evidence: bool = False) -> 
             elif (channel == "stable") != ("-" not in version):
                 findings.append(Finding("AVA-RELEASE-CHANNEL", "error", "ava-release.json", "release channel does not match version prerelease suffix", category="release"))
 
+        upgrade_paths = manifest.get("upgrade_paths")
+        if isinstance(upgrade_paths, dict):
+            edges = upgrade_paths.get("edges")
+            if isinstance(edges, list) and len(edges) == 0 and isinstance(version, str) and version != "1.0.0-alpha.1":
+                findings.append(Finding("AVA-RELEASE-UPGRADE-EDGES", "error", "ava-release.json", "release must declare at least one supported upgrade source; only 1.0.0-alpha.1 may have an empty edge list", category="release"))
+
         assets = manifest.get("assets")
         if not isinstance(assets, list):
             findings.append(Finding("AVA-RELEASE-ASSET-METADATA", "error", "ava-release.json", "release manifest assets must be a list", category="release"))

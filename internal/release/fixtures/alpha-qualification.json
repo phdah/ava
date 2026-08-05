@@ -24,7 +24,8 @@
         "internal-link-missing",
         "internal-content-leakage",
         "release-asset-inventory",
-        "release-manifest-asset-metadata"
+        "release-manifest-asset-metadata",
+        "release-manifest-upgrade-edges-missing"
       ],
       "documents": [
         "distribution/index.md",

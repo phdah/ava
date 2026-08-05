@@ -6,6 +6,9 @@ tags: [internal, instructions, development]
 generated:
   by: agent:openai-chatgpt
   at: 2026-07-30T15:26:00Z
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-05T10:00:00+02:00
 ---
 
 # Working model
@@ -13,6 +16,19 @@ generated:
 Treat the user's prompts and approved decisions as the source material for repository changes.
 
 Translate informal requirements into coherent repository changes and apply approved decisions consistently across documentation and implementation.
+
+# Working pattern
+
+Repository changes are typically made through draft pull requests opened directly in the repository. Implementation work accumulates across one or more draft PRs before any of them are merged.
+
+When working in this pattern:
+
+- keep each draft PR focused on a bounded concern
+- do not merge implementation PRs while a related release PR is under active review unless the implementation change is required to unblock the release checklist
+- when a release-please PR is open alongside draft implementation work, complete the [release PR review checklist](../../release/procedure.md#release-pr-review) before approving the release merge
+- changes required by the release checklist (fixture updates, upgrade-edge declarations, and similar release-preparation work) may be pushed directly to the release PR branch rather than through a separate implementation PR; this keeps the release branch self-contained and avoids a separate merge cycle
+- while working the release branch directly, no new implementation commits should merge to main; a new commit on main causes release-please to rewrite the branch and will overwrite any changes pushed to it
+- the release PR review is a semantic and policy check; CI qualification and automated assembly run after the merge against the resulting tag and are not a substitute for the review
 
 # Ambiguity and conflict
 
