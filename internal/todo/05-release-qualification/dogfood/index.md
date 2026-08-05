@@ -54,6 +54,8 @@ Implement findings in dependency order. When several findings require the same p
 
 This batching rule does not permit publication while a pending blocker is absent from the release or otherwise unresolved.
 
+Finding 02 has passing repository, assembly, and local-install evidence. It remains the current pending blocker until its implementing PR and corrected published-prerelease validation are recorded.
+
 ## Classification
 
 - `blocker`: prevents the next prerelease and every later release gate until resolved

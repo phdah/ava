@@ -6,6 +6,9 @@ tags: [ava, distribution, releases, github, integrity, authenticity, provenance]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-05T14:49:04+02:00
 ---
 
 # Ava GitHub Release Assets
@@ -303,6 +306,7 @@ A release candidate cannot be published unless automated validation proves:
 - complete and non-cyclic checksum coverage
 - safe and reproducible archives
 - complete source-to-installed ownership mapping
+- complete local inline Markdown link resolution against assembled installed destinations
 - declared direct or chained upgrade support
 - guidance and migration inventories consistent with their archives
 - SemVer rationale and semantic-review impact in release notes

@@ -175,6 +175,56 @@ class AlphaQualificationTests(unittest.TestCase):
         self.assertEqual(manifest["upgrade_paths"], {"edges": []})
         self.assertTrue(validate_release(first).valid)
 
+    def test_assembly_rejects_links_that_break_after_destination_mapping(self) -> None:
+        base = self.repo / "templates/base"
+        (base / "inbox").mkdir()
+        source_target = base / "inbox/index.md"
+        source_target.write_text("# Source-only inbox\n")
+        role_directory = base / "roles/inbox-ingester"
+        role_directory.mkdir()
+        role_index = role_directory / "index.md"
+        role_index.write_text("# Inbox Ingester\n\n[Inbox](../../inbox/index.md)\n")
+
+        self.assertEqual((role_index.parent / "../../inbox/index.md").resolve(), source_target)
+        self.assertTrue(source_target.is_file())
+        result = self._build("1.0.0-alpha.1", self.root / "broken-links", check=False)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("unresolved installed Markdown links", result.stderr)
+        self.assertIn("/.ava/base/inbox/index.md", result.stderr)
+
+        role_index.write_text(role_index.read_text().replace("../../inbox/index.md", "./inbox/index.md"))
+        self._build("1.0.0-alpha.1", self.root / "resolved-links")
+
+    def test_assembly_rejects_links_that_escape_the_installed_root(self) -> None:
+        base = self.repo / "templates/base"
+        role_directory = base / "roles/test-role"
+        role_directory.mkdir()
+        role_index = role_directory / "index.md"
+
+        role_index.write_text("# Test role\n\n[Router](../../../../../AGENTS.md)\n")
+        result = self._build("1.0.0-alpha.1", self.root / "document-escape", check=False)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("<outside installed project>", result.stderr)
+
+        role_index.write_text("# Test role\n\n[Router](./../AGENTS.md)\n")
+        result = self._build("1.0.0-alpha.1", self.root / "project-escape", check=False)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("<outside installed project>", result.stderr)
+
+        role_index.write_text("# Test role\n\n[Router](../../../../AGENTS.md)\n")
+        (base / "shared/instructions/target_(draft).md").write_text("# Draft target\n")
+        (base / "shared/instructions/target file.md").write_text("# Spaced target\n")
+        (base / "shared/instructions/target's.md").write_text("# Apostrophe target\n")
+        (base / "index.md").write_text(
+            "# Base\n\n"
+            "Example: `[Missing](missing.md)`\n\n"
+            "Escaped example: \\[Missing](missing.md)\n\n"
+            "[Draft](shared/instructions/target_(draft).md)\n\n"
+            "[Spaced](<shared/instructions/target file.md>)\n\n"
+            "[Apostrophe](shared/instructions/target's.md)\n"
+        )
+        self._build("1.0.0-alpha.1", self.root / "exact-root")
+
     def test_prerelease_transitions_are_machine_readable_release_edges(self) -> None:
         # Group declared transitions by target so releases with multiple sources
         # (e.g. alpha.5 from both alpha.3 and alpha.4) are assembled correctly.

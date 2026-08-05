@@ -22,6 +22,8 @@
         "repository-minimal-valid",
         "frontmatter-missing",
         "internal-link-missing",
+        "installed-link-missing",
+        "installed-link-root-escape",
         "internal-content-leakage",
         "release-asset-inventory",
         "release-manifest-asset-metadata",
@@ -81,7 +83,9 @@
       "required": true,
       "matrix_cases": [
         "release-asset-inventory",
-        "release-asset-checksum-mismatch"
+        "release-asset-checksum-mismatch",
+        "installed-link-missing",
+        "installed-link-root-escape"
       ],
       "documents": [
         "internal/release/assemble.py",

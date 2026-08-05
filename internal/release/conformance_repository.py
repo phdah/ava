@@ -7,9 +7,15 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from internal.release.assemble import (
+    AssemblyError,
+    markdown_inline_link_targets,
+    markdown_without_code,
+    read_payloads,
+    unresolved_installed_markdown_links,
+)
 from internal.release.conformance_common import (
     ACTOR_RE,
-    MARKDOWN_LINK_RE,
     OBSOLETE_PATHS,
     REPOSITORY_REQUIRED,
     RESERVED_MARKDOWN,
@@ -25,35 +31,6 @@ def strip_scalar(value: str) -> str:
     if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
         return value[1:-1]
     return value
-
-
-def markdown_without_fenced_code(text: str) -> str:
-    result: list[str] = []
-    fence_character: str | None = None
-    fence_length = 0
-
-    for line in text.splitlines(keepends=True):
-        stripped = line.lstrip()
-        if fence_character is None:
-            match = re.match(r"(`{3,}|~{3,})", stripped)
-            if match:
-                marker = match.group(1)
-                fence_character = marker[0]
-                fence_length = len(marker)
-                result.append("\n" if line.endswith("\n") else "")
-            else:
-                result.append(line)
-            continue
-
-        if re.fullmatch(
-            rf"{re.escape(fence_character)}{{{fence_length},}}\s*",
-            stripped,
-        ):
-            fence_character = None
-            fence_length = 0
-        result.append("\n" if line.endswith("\n") else "")
-
-    return "".join(result)
 
 
 def parse_frontmatter(text: str) -> tuple[dict[str, Any] | None, str | None]:
@@ -193,12 +170,12 @@ def public_markdown(root: Path) -> list[Path]:
     return sorted(set(paths), key=lambda path: relative(root, path).encode())
 
 
-def local_link_target(path: Path, raw: str) -> Path | None:
-    value = raw.strip().split(maxsplit=1)[0].strip("<>")
+def local_link_target(path: Path, raw: str, *, project_root_paths: bool = False) -> Path | None:
+    value = raw.strip()
     if not value or value.startswith(("#", "http://", "https://", "mailto:", "resource:")):
         return None
     value = value.split("#", 1)[0]
-    if not value or value.startswith("./.ava/") or value.startswith("/"):
+    if not value or value.startswith("/") or (project_root_paths and value.startswith("./")):
         return None
     return (path.parent / value).resolve()
 
@@ -207,8 +184,8 @@ def linked_names(index: Path) -> set[str]:
     if not index.is_file():
         return set()
     names: set[str] = set()
-    text = markdown_without_fenced_code(index.read_text())
-    for raw in MARKDOWN_LINK_RE.findall(text):
+    text = markdown_without_code(index.read_text())
+    for raw in markdown_inline_link_targets(text):
         value = raw.split("#", 1)[0].rstrip("/")
         if value and not value.startswith(("http://", "https://", "/")):
             names.add(Path(value).name)
@@ -243,6 +220,7 @@ def validate_repository(root: Path) -> ValidationResult:
             )
 
     identifiers: dict[str, Path] = {}
+    distributed_roots = (root / "templates/base", root / "templates/project-scaffolds")
     for path in public_markdown(root):
         text = path.read_text(errors="replace")
         if path.name not in RESERVED_MARKDOWN:
@@ -286,8 +264,12 @@ def validate_repository(root: Path) -> ValidationResult:
                     else:
                         identifiers[identifier] = path
 
-        for raw in MARKDOWN_LINK_RE.findall(markdown_without_fenced_code(text)):
-            target = local_link_target(path, raw)
+        for raw in markdown_inline_link_targets(markdown_without_code(text)):
+            target = local_link_target(
+                path,
+                raw,
+                project_root_paths=any(path.is_relative_to(source_root) for source_root in distributed_roots),
+            )
             if target is not None and not target.exists():
                 findings.append(
                     Finding(
@@ -298,6 +280,34 @@ def validate_repository(root: Path) -> ValidationResult:
                         category="discovery",
                     )
                 )
+
+    try:
+        installed_link_issues = unresolved_installed_markdown_links(read_payloads(root))
+    except (AssemblyError, UnicodeDecodeError) as exc:
+        findings.append(
+            Finding(
+                "AVA-ASSEMBLY-MAPPING",
+                "error",
+                "templates",
+                f"distributed source mapping cannot be validated: {exc}",
+                category="boundary",
+            )
+        )
+    else:
+        for issue in installed_link_issues:
+            if issue.archive_path.startswith("base/"):
+                source_path = f"templates/base/{issue.archive_path.removeprefix('base/')}"
+            else:
+                source_path = f"templates/project-scaffolds/{issue.archive_path.removeprefix('scaffolds/')}"
+            findings.append(
+                Finding(
+                    "AVA-INSTALLED-LINK-MISSING",
+                    "error",
+                    source_path,
+                    f"link {issue.raw_target} from {issue.source_destination} resolves to missing installed path {issue.resolved_target}",
+                    category="discovery",
+                )
+            )
 
     base = root / "templates/base"
     roles = base / "roles"

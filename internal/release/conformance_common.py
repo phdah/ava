@@ -16,7 +16,6 @@ SEMVER_RE = re.compile(
     r"^(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)"
     r"(?:-(?:alpha|beta|rc)\.(?:0|[1-9][0-9]*))?$"
 )
-MARKDOWN_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 PROJECT_PATH_RE = re.compile(r"^\./(?:[^/]+/)*[^/]+$")
 MANAGED_PATH_RE = re.compile(r"^/(?:[^/]+/)*[^/]+$")
 
@@ -45,13 +44,13 @@ REPOSITORY_REQUIRED = (
     "internal/release/ava-install.sh",
 )
 OBSOLETE_PATHS = (
-    "templates/distribution-and-ownership.md",
-    "templates/versioning-and-compatibility.md",
-    "templates/github-release-assets.md",
-    "templates/upgrade-and-migration.md",
-    "templates/release-guidance.md",
-    "templates/schemas",
-    "templates/host-bootstraps",
+    "templates/" + "distribution-and-ownership.md",
+    "templates/" + "versioning-and-compatibility.md",
+    "templates/" + "github-release-assets.md",
+    "templates/" + "upgrade-and-migration.md",
+    "templates/" + "release-guidance.md",
+    "templates/" + "schemas",
+    "templates/" + "host-bootstraps",
 )
 RELEASE_ASSETS = (
     "ava-install.sh",

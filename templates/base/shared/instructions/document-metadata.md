@@ -17,7 +17,7 @@ Ava projects follow Open Knowledge Format version 0.2 and add only the metadata 
 
 Keep metadata open and extensible. Agents should make the best semantic classification available from the project context instead of forcing every document into a closed Ava taxonomy.
 
-Installed ownership and path authority are defined by the [distribution and ownership contract](../../../../distribution/ownership.md). Ava release versions, semantic compatibility, and deprecation timelines are defined by the [versioning and compatibility contract](../../../../distribution/versioning.md). Document metadata must not be used to silently transfer ownership between Ava and the project.
+Installed ownership and path authority follow [Ownership and mutation authority](ownership-and-mutation.md). Ava release versions, semantic compatibility, and deprecation timelines follow Ava's public versioning contract; release-specific actions are supplied through installed guidance. Document metadata must not be used to silently transfer ownership between Ava and the project.
 
 All metadata paths beginning with `./` are resolved from the project root. A leading slash denotes an operating-system absolute path and is invalid for project-local metadata.
 
