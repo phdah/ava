@@ -94,8 +94,8 @@ jobs:
             done < internal/release/upgrade-sources.txt
           fi
           for output in release-a release-b; do
-            python3 internal/release/assemble_reviewed.py \
-              --root . \
+            AVA_UPGRADE_IMPACT=internal/release/upgrade-impact.json \
+              internal/release/assemble.sh \
               --output "$output" \
               --version "${{ steps.identity.outputs.version }}" \
               --channel "${{ steps.identity.outputs.channel }}" \
@@ -103,7 +103,6 @@ jobs:
               --source-date-epoch "${{ steps.identity.outputs.source_date_epoch }}" \
               --published-at "${{ steps.identity.outputs.published_at }}" \
               --release-notes CHANGELOG.md \
-              --upgrade-impact internal/release/upgrade-impact.json \
               "${upgrade_args[@]}"
           done
           (cd release-a && find . -type f -print0 | sort -z | xargs -0 sha256sum) > release-a.sha256
