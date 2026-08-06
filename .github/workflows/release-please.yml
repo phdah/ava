@@ -87,12 +87,6 @@ jobs:
         if: ${{ steps.release.outputs.release_created == 'true' }}
         run: |
           set -eu
-          upgrade_args=()
-          if [ -f internal/release/upgrade-sources.txt ]; then
-            while IFS= read -r ver || [ -n "$ver" ]; do
-              [ -n "$ver" ] && upgrade_args+=(--upgrade-from "$ver")
-            done < internal/release/upgrade-sources.txt
-          fi
           for output in release-a release-b; do
             AVA_UPGRADE_IMPACT=internal/release/upgrade-impact.json \
               internal/release/assemble.sh \
@@ -102,8 +96,7 @@ jobs:
               --source-revision "${{ steps.identity.outputs.source_revision }}" \
               --source-date-epoch "${{ steps.identity.outputs.source_date_epoch }}" \
               --published-at "${{ steps.identity.outputs.published_at }}" \
-              --release-notes CHANGELOG.md \
-              "${upgrade_args[@]}"
+              --release-notes CHANGELOG.md
           done
           (cd release-a && find . -type f -print0 | sort -z | xargs -0 sha256sum) > release-a.sha256
           (cd release-b && find . -type f -print0 | sort -z | xargs -0 sha256sum) > release-b.sha256
