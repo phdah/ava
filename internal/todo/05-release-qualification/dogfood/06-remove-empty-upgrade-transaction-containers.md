@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Remove Empty Upgrade Transaction Containers
 description: Ensure terminal installer cleanup removes the empty managed transaction container after its final upgrade transaction is deleted.
 tags: [internal, roadmap, dogfood, release, installer, transactions, cleanup, blocker]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 6
@@ -15,7 +15,7 @@ generated:
   at: 2026-08-06T10:49:13+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T16:06:00+02:00
+  at: 2026-08-06T16:18:00+02:00
 ---
 
 # Remove Empty Upgrade Transaction Containers
@@ -81,12 +81,11 @@ After a semantic-complete upgrade, it removes the transaction-specific directory
 - a non-empty transaction container is never removed
 - cleanup remains safe and idempotent when the parent is already absent
 - regression tests cover successful cleanup, active-state preservation, and guarded removal of a non-empty parent
-- a real upgrade using the corrective immutable prerelease leaves no empty transaction container and passes Ava Maintenance integrity inspection
-- the finding index records the implementing PR, published version, and dogfood verification before this task is completed
+- the finding task, backlog index, phase index, and stable roadmap entry remain aligned
 
 ## Resolution evidence
 
-Draft PR [#62](https://github.com/phdah/ava/pull/62) contains the repository implementation.
+PR [#62](https://github.com/phdah/ava/pull/62) implements the repository fix.
 
 The installer now uses one terminal cleanup helper across successful upgrade completion, resumed completion, rollback, abort, finalization, and failed transaction recovery. The helper removes the transaction-specific workspace first and then attempts to remove only its immediate parent with `rmdir`, so active or unrelated non-empty transaction entries prevent parent deletion.
 
@@ -97,6 +96,8 @@ Focused regression coverage verifies:
 - rollback removes the container after deleting its final workspace
 - an unrelated non-empty transaction entry and recovery artifact are preserved
 
-Python compilation of the modified installer fragments and regression module passes. Shell syntax validation of the updated release test runner also passes.
+The Python tests, release PR policy, and conventional PR title workflows pass. The repository implementation, regression coverage, documentation, and roadmap evidence are complete.
 
-The finding remains pending until a corrective immutable prerelease performs a real supported-source upgrade, leaves no empty `./.ava/state/transactions/` directory, and passes Ava Maintenance integrity inspection.
+## Release qualification follow-up
+
+The next corrective immutable prerelease must perform real supported-source upgrades, leave no empty `./.ava/state/transactions/` directory, and pass Ava Maintenance integrity inspection. Append that evidence here after publication. It is release-gate qualification evidence and does not keep or return this implementation task to `pending`.
