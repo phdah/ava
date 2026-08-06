@@ -13,6 +13,9 @@ affected_version: 1.0.0-alpha.7
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-06T10:49:13+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-06T16:06:00+02:00
 ---
 
 # Remove Empty Upgrade Transaction Containers
@@ -83,4 +86,17 @@ After a semantic-complete upgrade, it removes the transaction-specific directory
 
 ## Resolution evidence
 
-Pending implementation.
+Draft PR [#62](https://github.com/phdah/ava/pull/62) contains the repository implementation.
+
+The installer now uses one terminal cleanup helper across successful upgrade completion, resumed completion, rollback, abort, finalization, and failed transaction recovery. The helper removes the transaction-specific workspace first and then attempts to remove only its immediate parent with `rmdir`, so active or unrelated non-empty transaction entries prevent parent deletion.
+
+Focused regression coverage verifies:
+
+- a semantic-complete upgrade removes the final empty transaction container
+- an active semantic transaction retains its durable workspace until rollback
+- rollback removes the container after deleting its final workspace
+- an unrelated non-empty transaction entry and recovery artifact are preserved
+
+Python compilation of the modified installer fragments and regression module passes. Shell syntax validation of the updated release test runner also passes.
+
+The finding remains pending until a corrective immutable prerelease performs a real supported-source upgrade, leaves no empty `./.ava/state/transactions/` directory, and passes Ava Maintenance integrity inspection.
