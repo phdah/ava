@@ -23,11 +23,13 @@ Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded find
 
 Current findings:
 
-- 1 pending blocker
+- 2 pending blockers
 - 2 pending required-v1 findings
 - 1 completed finding
 
-Current next actionable finding: [Repair installed context link resolution](dogfood/02-repair-installed-context-link-resolution.md).
+Current next actionable finding: [Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md).
+
+[Repair installed context link resolution](dogfood/02-repair-installed-context-link-resolution.md) remains pending only for separate validation against published alpha.7 assets. Its repository implementation is complete, so it does not prevent the next actionable implementation finding from proceeding.
 
 The dogfood umbrella remains pending until the user explicitly declares it complete. Having no pending findings does not automatically make task 5 current.
 
@@ -61,13 +63,13 @@ Phase 5 begins only after:
 - the Ava Maintenance role is implemented
 - the complete validation, conformance, recovery, uninstall, and upgrade matrix passes
 
-These entry conditions allowed Phase 5 to begin. Subsequent alpha.5 dogfooding exposed an assembled installed-path defect tracked by [finding 02](dogfood/02-repair-installed-context-link-resolution.md). The new blocker does not rewind completed phases, but it must be resolved before another prerelease.
+These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed two pending release blockers: the assembled installed-path defect tracked by [finding 02](dogfood/02-repair-installed-context-link-resolution.md), whose implementation now awaits alpha.7 validation, and the stranded prerelease upgrade support tracked by [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md). These blockers do not rewind completed phases, but they must be resolved before another prerelease.
 
 ## Current active work
 
 The umbrella task is [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
-The current executable task is [Repair installed context link resolution](dogfood/02-repair-installed-context-link-resolution.md).
+The current executable implementation task is [Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md).
 
 ## Previous phase
 
