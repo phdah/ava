@@ -27,11 +27,13 @@ Current findings:
 - 2 pending required-v1 findings
 - 2 completed findings
 
-Current next actionable finding: [Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md).
+Current next actionable finding: [Make knowledge hierarchy promotion predictable](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md).
+
+[Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) has complete repository implementation in merged PR #60 and remains pending for corrective immutable-release validation.
+
+[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) has complete repository implementation in draft PR #62 and remains pending for real supported-source upgrade and Ava Maintenance validation.
 
 [Repair installed context link resolution](dogfood/02-repair-installed-context-link-resolution.md) is complete after immutable alpha.7 validation loaded the complete Inbox Ingester required-reading chain from exact installed-project paths.
-
-[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is the next pending blocker after finding 05 and should be included in the same corrective prerelease cycle when practical.
 
 The dogfood umbrella remains pending until the user explicitly declares it complete. Having no pending findings does not automatically make task 5 current.
 
@@ -65,13 +67,13 @@ Phase 5 begins only after:
 - the Ava Maintenance role is implemented
 - the complete validation, conformance, recovery, uninstall, and upgrade matrix passes
 
-These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). Two release blockers remain pending: stranded prerelease upgrade support in [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) and terminal transaction-container cleanup in [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md). These findings do not rewind completed phases, but both must be resolved before another prerelease.
+These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). Two release blockers remain pending for shared corrective-prerelease validation: stranded prerelease upgrade support in [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) and terminal transaction-container cleanup in [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md). Their repository implementations no longer block work on the required-v1 findings, but both must pass immutable release validation before another prerelease can qualify.
 
 ## Current active work
 
 The umbrella task is [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
-The current executable implementation task is [Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md).
+The current executable implementation task is [Make knowledge hierarchy promotion predictable](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md).
 
 ## Previous phase
 
