@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-alpha.7](https://github.com/phdah/ava/compare/v1.0.0-alpha.6...v1.0.0-alpha.7) (2026-08-05)
+
+
+### Bug Fixes
+
+* **release:** enforce release PR upgrade edges ([#56](https://github.com/phdah/ava/issues/56)) ([b5507bb](https://github.com/phdah/ava/commit/b5507bb5c96baf771aa98146c4cf583b123887f7))
+
 ## [1.0.0-alpha.6](https://github.com/phdah/ava/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2026-08-05)
 
 
