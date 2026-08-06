@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T19:00:00+02:00
+  at: 2026-08-06T19:12:00+02:00
 ---
 
 # Trust model
@@ -42,7 +42,7 @@ For each selected source:
 5. Compare the source with applicable trusted knowledge, policies, role boundaries, and user decisions.
 6. Stop that source and ask the user when a material contradiction, ambiguous destination, new authority, destructive action, or unresolved policy decision would change the result.
 7. Prefer merging into one clear authoritative destination. Create a focused new document only when no suitable destination exists.
-8. Apply the bounded hierarchy-promotion procedure when the target branch already contains a clear reusable semantic subgroup.
+8. When the target branch requires semantic hierarchy promotion, leave the source pending and request Project Steward reorganization before ingestion continues.
 9. Preserve the distinction between direct source claims, existing trusted context, and decisions explicitly approved by the user.
 10. Add OKF `sources` metadata that references the preserved source. Use source identifiers with Markdown footnotes when individual claims require precise attribution.
 11. Update affected indexes and links.
@@ -73,7 +73,7 @@ Create an independently useful meeting or event concept only when the event itse
 
 Do not create source-shaped sibling concepts merely because the source contains a heading or was produced by a recurring process.
 
-# Bounded hierarchy promotion
+# Hierarchy promotion gate
 
 Before adding another direct child to an established knowledge branch, inspect:
 
@@ -82,19 +82,18 @@ Before adding another direct child to an established knowledge branch, inspect:
 - whether those children represent independently useful durable subjects
 - whether a heading repeatedly answers one reusable classification question
 
-When a stable heading already groups multiple independently useful concepts and choosing that group is a useful routing decision, promote it to a child collection before adding another concept in the same class.
-
-A bounded promotion may be performed during ingestion when:
-
-- the semantic class and owning parent are clear from trusted project context
-- the affected concepts are within the selected source's destination scope
-- each concept keeps one clear primary location
-- affected indexes, links, metadata, and provenance can be updated coherently
-- the promotion does not require a new project policy or an ambiguous taxonomy decision
+When a stable heading already groups multiple independently useful concepts and choosing that group is a useful routing decision, the branch requires promotion to a child collection before another concept is added in the same class.
 
 Do not use document counts as the promotion rule. Do not create empty or speculative directories, and do not create one directory per subject unless that subject currently owns multiple independently maintained child concepts.
 
-Leave the source pending and request Project Steward follow-up when promotion requires broad unrelated reorganization, uncertain concept identity, disputed ownership, or a project-defined taxonomy decision. Do not avoid that handoff by continuing flat growth under a hidden index taxonomy.
+The Inbox Ingester must not move or broadly reorganize existing trusted concepts to satisfy this gate. Leave the source pending and request the Project Steward to:
+
+- confirm the project-owned semantic class and owning parent
+- move the affected concepts while preserving one primary location
+- update parent and child indexes, links, metadata, provenance, and required scoped history
+- validate the restructured branch
+
+After the Project Steward completes the bounded reorganization, ingestion may resume against the new canonical destination. Do not avoid the handoff by continuing flat growth under a hidden index taxonomy.
 
 # Provenance
 
@@ -129,7 +128,7 @@ Before marking a source processed, verify that:
 - every destination is clear and within the applied authority
 - material conflicts and ambiguities were surfaced
 - the target branch's stable headings and repeated semantic classes were considered before adding another sibling
-- any required bounded hierarchy promotion was completed, or the source remains pending with Project Steward follow-up identified
+- any required hierarchy promotion was completed by the Project Steward before ingestion resumed, or the source remains pending with that handoff identified
 - destination documents remain focused and discoverable
 - every changed non-reserved document follows the document metadata contract
 - OKF `sources` metadata is sufficient to trace material source-derived claims
