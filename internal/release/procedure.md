@@ -1,94 +1,120 @@
 ---
 type: Internal Release Procedure
 title: Ava Release Publication Procedure
-description: Defines maintainer preparation, release-PR approval, automatic publication, verification, and failure handling for immutable Ava releases.
+description: Defines release-please preparation, agent completion of release-specific upgrade state, approval, publication, verification, and failure handling for immutable Ava releases.
 tags: [internal, releases, publication, verification, maintenance]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T11:30:00+02:00
+  at: 2026-08-06T13:45:00+02:00
 ---
 
 # Ava Release Publication Procedure
 
 This procedure coordinates maintainers around the public contracts under `/distribution/`. It does not replace deterministic release automation and must never be included in an Ava release payload.
 
-The [release automation contract](release-please.md) prepares versions and changelog entries, runs pull-request qualification, creates immutable tags and draft releases, qualifies the exact tagged source, uploads verified assets, and publishes after every maintained gate succeeds. The first alpha and later prerelease gates are additionally constrained by the [Ava Alpha Qualification Policy](alpha-qualification.md).
+Ava has one release flow for alpha, beta, release candidate, and stable releases. The proposed version and channel come from the release-please pull request. Release-specific upgrade edges are never prepared in an ordinary implementation pull request.
 
-# Preconditions
+# Release chain
 
-Before preparing a release:
+1. A normal pull request containing a user-facing releasable change is merged to `main`.
+2. Release-please creates or updates `release-please--branches--main` with the proposed version, changelog, version file, and manifest state.
+3. The release pull request is expected to fail the `Release PR policy` check until its release-specific upgrade review has been completed.
+4. When an agent is asked to merge the release pull request, it first completes the release state directly on that release-please branch.
+5. The agent inspects every change included since each required source release, writes `internal/release/upgrade-impact.json`, validates the actual tagged source deltas, and pushes the completed release state.
+6. The release pull request may be merged only after all required checks pass.
+7. Merging the release pull request authorizes the exact proposed version and tagged source revision for qualification and publication.
+8. The release workflow creates the immutable tag and draft release, reruns qualification, assembles reproducibly, validates, attests, uploads, and publishes.
 
-1. The intended version, channel, SemVer rationale, compatibility impact, and upgrade paths are approved.
-2. The source revision is clean, reviewed, and suitable for an immutable tag.
-3. Public contracts and schemas under `/distribution/` are internally consistent.
-4. Release sources under `/templates/` contain no internal repository content.
-5. The repository-boundary validator and maintained pull-request qualification check pass.
-6. Required release automation, credentials, repository permissions, and immutable-release settings are available.
-7. For a prerelease, every required qualification gate for that stage passes and every repository-work finding has the required roadmap task and classification.
+# Channel configuration
 
-When deterministic assembly or verification automation is unavailable, publication is blocked rather than reproduced manually with weaker guarantees.
+The channel is derived from the proposed SemVer version:
 
-# Release-please preparation
+- `x.y.z-alpha.n` is alpha
+- `x.y.z-beta.n` is beta
+- `x.y.z-rc.n` is release candidate
+- `x.y.z` is stable
 
-1. Merge only pull requests whose title passes the Conventional Commit title check and whose release qualification check passes.
-2. Use squash merging with the pull-request title preserved as the canonical commit title.
-3. Review the single release-please pull request and confirm its version, changelog, version file, manifest, and channel match the active release task.
-4. Merging that release pull request explicitly authorizes publication of the resulting tagged revision after the maintained workflow gates succeed.
-5. Require the same workflow run to bind the release-please tag and full source revision, rerun qualification, assemble twice, validate release conformance, attest the assets, confirm draft state, upload without replacement, and publish.
-6. Treat any failure before publication as a blocked draft. Never move the tag, overwrite an asset, or continue with a different source revision under the same version.
+The release-please configuration must match that channel. Continuing within the current channel requires no configuration change. Moving to beta, release candidate, or stable requires a separate reviewed change to `release-please-config.json` before release-please proposes the first release in that channel.
 
-# Preparation
+# Required direct sources
 
-1. Run `internal/release/validate-boundaries.sh`.
-2. Run the complete maintained release test suite.
-3. Execute deterministic release assembly from one clean source revision.
-4. Build every required asset twice and require identical digests.
-5. Validate schemas, archive safety, source-to-installed mapping, identity metadata, checksums, release notes, guidance, migrations, and upgrade declarations.
-6. For `1.0.0-alpha.1`, require an empty `upgrade_paths.edges` declaration and refuse historical unversioned sources.
-7. For every later prerelease, update `prerelease_support.transitions` in `alpha-qualification.json`, `prerelease_transitions` in `conformance-matrix.json`, `internal/release/upgrade-sources.txt`, and `internal/release/upgrade-impact.json` together in a reviewed PR.
-8. For every declared source edge, compare its tagged managed payload with the target and record exact retained, replaced, created, and deleted managed paths; deterministic migration IDs; guidance paths; semantic-review requirement; and cumulative release-note versions.
-9. Keep every version listed in `protected_direct_sources` unless a reviewed support decision explicitly removes it. Qualification must fail when the current version or another protected installed prerelease would be stranded.
-10. Permit empty migration or guidance lists only with a non-empty reviewed explanation that normal managed reconciliation is sufficient and no project-owned semantic work is required.
-11. Require the assembled `upgrade_paths.edges` to contain exactly the declared source set and the reviewed migration and guidance lists for each source.
-12. Confirm the canonical tag is new and still points to the qualified source revision.
-13. Confirm the GitHub Release remains a draft until the complete asset set has been validated, attested, and uploaded.
+For every release after the first, qualification derives the minimum direct source set from:
 
-# Release PR review
+- the immediately previous published version
+- every direct source declared by the previous release
+- any source listed in `internal/release/fixtures/release-upgrade-policy.json`
 
-When release-please opens a release pull request, the Ava Internal Maintainer works through this checklist before approving the merge. Merging is the explicit publication authorization, so the checklist must pass first. CI qualification and automated assembly run after the merge against the exact resulting tag; this review step handles the semantic and policy checks that automation cannot.
+For older releases that predate `upgrade-impact.json`, qualification reads the legacy `upgrade-sources.txt` from the immutable previous tag. Current releases use only `upgrade-impact.json` as the source of truth.
 
-Changes required by this checklist, including fixture updates, source declarations, impact assessments, and cumulative notes, may be pushed directly to the release PR branch rather than through a separate implementation PR. While doing so, no new implementation commits should merge to main because release-please will rewrite the branch.
+A release pull request may retire an inherited source only by adding it to `retired_sources` with a non-empty reviewed reason. A protected source cannot be retired inside the release pull request. Its protection must first be changed through a separate ordinary pull request.
 
-1. Confirm the proposed version, channel, and SemVer classification match the active release task and approved roadmap state.
-2. Confirm the changelog accurately describes the releasable changes since the last release and contains every version required by each supported source assessment.
-3. Confirm all preconditions above are met for the intended version.
-4. For a prerelease, confirm the transition fixtures, protected source set, upgrade sources, and reviewed source impacts agree exactly.
-5. Confirm each source assessment matches the actual tagged source-to-target managed payload delta and explicitly resolves migration, guidance, semantic, and release-note obligations.
-6. Confirm no open blocker finding targets this release stage.
-7. Confirm the release pull request contains no implementation changes beyond what release-please manages and checklist-required release state. Other implementation work belongs in separate reviewed pull requests merged before the release PR.
+# Agent completion of a release pull request
 
-If any item fails, keep the release PR as a draft, resolve the gap through a separate implementation PR, and rerun this checklist after it merges.
+Before merging a release-please pull request, the Ava Internal Maintainer must:
+
+1. Confirm that `version.txt`, `.release-please-manifest.json`, the pull-request proposal, and release-please channel configuration agree.
+2. Confirm that the target is newer than the version on the pull-request base revision.
+3. Determine the required direct source set from immutable release history and the upgrade policy.
+4. Review all changes included between each source tag and the proposed target.
+5. Create or replace `internal/release/upgrade-impact.json` directly on the release-please branch.
+6. For every source, record exact retained, replaced, created, and deleted managed paths.
+7. Record the deterministic migration IDs and installed guidance paths required for that source.
+8. Record whether project-owned semantic review is required and explain the decision.
+9. Reference every changelog release after the source through the target. The validator requires exact cumulative coverage.
+10. Record any explicit source retirement and its reviewed reason.
+11. Run `validate_release_pr.py`, `validate_upgrade_impact.py`, and the complete maintained release test suite.
+12. Push the release state and confirm every required pull-request check passes.
+13. Merge the release pull request.
+
+Empty migration or guidance lists are valid only when their assessment explains why normal managed reconciliation is sufficient and no project-owned semantic work is required.
+
+# Release-specific impact format
+
+`internal/release/upgrade-impact.json` belongs to the release pull request and is the only current declaration used to build `upgrade_paths.edges`.
+
+It contains:
+
+- the exact target version
+- explicit retired sources and reasons
+- one reviewed assessment per direct source
+- managed payload deltas
+- migration and guidance references
+- semantic-review decisions
+- cumulative changelog versions
+
+The reviewed assembler derives the manifest edge source set directly from this file. A separate current source list is not maintained.
 
 # Approval boundary
 
-A maintainer approves publication by reviewing and merging the release-please pull request. That merge authorizes only the exact version proposed by the pull request and the resulting immutable tagged revision produced by the merge.
+Reviewing and merging the release-please pull request is the explicit publication approval. Approval of implementation work, release tooling, policy, or an unmerged release proposal does not authorize publication.
 
-The workflow must publish only after it has bound that tag to the source revision and all qualification, reproducibility, conformance, attestation, and asset-upload steps succeed. A failure leaves the draft unpublished. A source revision or version change requires a new release pull request and complete requalification.
+A release pull request remains blocked when:
 
-Approval of ordinary implementation work, release tooling, policy, or an unmerged release proposal does not authorize publication. The release pull request remains the explicit publication boundary.
+- the release-specific impact file is missing or targets another version
+- required inherited sources are omitted
+- a protected source is retired without a prior policy change
+- managed deltas disagree with the tagged source comparison
+- migration or guidance references are absent from the release assets
+- cumulative changelog references are incomplete
+- the release-please channel configuration disagrees with the proposed version
+- any maintained qualification check fails
 
 # Automated publication
 
-1. Confirm the tag points to the exact revision reported by release-please.
-2. Confirm the release is still a draft before attaching assets.
-3. Confirm every maintained qualification and release-conformance check succeeds.
-4. Confirm the assembled outputs are reproducible and the attestation step succeeds.
-5. Upload the complete asset set without replacement.
-6. Publish the existing draft without moving the tag or recreating the release.
-7. Preserve prerelease and latest status established by the active channel configuration.
+After the release pull request is merged, the workflow must:
+
+1. Bind the release-please tag, version, full source revision, and derived channel.
+2. Rerun release PR and upgrade-impact validation against the exact tagged source.
+3. Run the complete maintained qualification suite.
+4. Assemble every required asset twice from the reviewed impact and require identical digests.
+5. Validate release conformance and confirm the GitHub Release is still a draft.
+6. Attest and upload the complete asset set without replacement.
+7. Publish the existing draft without moving the tag or recreating the release.
+
+Any failure leaves publication blocked. Existing tags or uploaded assets are never moved, overwritten, or reused.
 
 # Post-publication verification
 
@@ -97,30 +123,15 @@ After publication, verify:
 - the release is immutable and no longer a draft
 - prerelease and latest status match the channel
 - the tag and release target match the verified source revision
-- the release attestation verifies
-- every retained local asset verifies against the release
-- `SHA256SUMS`, `ava-release.json`, embedded identities, and archive inventories agree
-- version-pinned download URLs resolve to the published assets
-- every declared source version upgrades successfully and preserves project-owned files byte-for-byte
+- every asset and checksum verifies
+- every declared direct source upgrades successfully
+- Ava-managed state advances correctly
+- project-owned files remain byte-for-byte preserved unless explicit semantic guidance requires user-approved changes
 
-Record the release URL, source revision, verification result, supported upgrade sources, per-source upgrade results, and any incident in the release workflow summary and repository history required by the public contracts.
+Record the release URL, source revision, supported sources, per-source results, and incidents in the required release history.
 
 # Failure handling
 
-Before publication, correct the defect and use a new version when an immutable tag already exists. Do not move or recreate the tag, overwrite an uploaded asset, or reuse the version.
+Before publication, correct the defect on the release pull request. If an immutable tag already exists, use a new version. Never move or recreate a tag, overwrite an asset, or reuse a published version.
 
-After publication, never edit assets, move or recreate the tag, or reuse the version. A failed post-publication verification is a release incident. Corrective work uses a new version or an explicit security withdrawal under the public release contract.
-
-Every prerelease finding that requires repository work becomes a bounded Phase 5 task before the next release gate it blocks.
-
-# Completion report
-
-A completed publication report states:
-
-- version, channel, tag, and source revision
-- release URL and immutable status
-- exact asset inventory
-- integrity and attestation verification result
-- supported source versions and semantic-review requirement
-- qualification result and finding classification summary
-- unresolved incidents or follow-up work
+After publication, a failed verification is a release incident. Corrective work uses a new release or an explicit security withdrawal under the public release contract.
