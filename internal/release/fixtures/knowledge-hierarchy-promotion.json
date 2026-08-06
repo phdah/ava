@@ -21,11 +21,13 @@
       "existing_branch": "knowledge/work/projects/",
       "existing_shape": "The index uses stable headings for Engineering Initiatives, External Integrations, and Meeting Notes while all concepts remain direct siblings.",
       "incoming_material": "Another durable external interface must be ingested beside existing independently maintained integration concepts.",
-      "expected_action": "promote-subgroup-before-ingestion",
+      "expected_action": "request-promotion-before-ingestion",
+      "required_follow_up": "Project Steward",
       "expected_collection": "knowledge/work/integrations/",
       "review_checks": [
         "The subgroup is a reusable semantic routing choice rather than presentation only.",
-        "Existing integration concepts move before another integration sibling is added.",
+        "Inbox Ingester leaves the source pending instead of extending the flat branch.",
+        "Project Steward moves existing integration concepts before another integration sibling is added.",
         "The parent index links only to the child collection and other direct children.",
         "The child index routes only to its direct canonical concepts.",
         "Moved concepts preserve metadata, provenance, and updated links."
