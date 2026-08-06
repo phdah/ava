@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T14:45:00+02:00
+  at: 2026-08-06T16:06:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,11 +23,13 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Remove empty upgrade transaction containers](todo/05-release-qualification/dogfood/06-remove-empty-upgrade-transaction-containers.md).
+[Make knowledge hierarchy promotion predictable](todo/05-release-qualification/dogfood/03-make-knowledge-hierarchy-promotion-predictable.md).
 
-A successful alpha.6 to alpha.7 upgrade leaves an empty `./.ava/state/transactions/` directory. The next task must remove that container after its final transaction workspace is deleted while preserving active, blocked, or non-empty transaction state.
+The next task must add generic semantic-promotion guidance so canonical knowledge follows durable subject identity, stable index groups become child collections when they are useful routing decisions, and project-owned taxonomy remains explicit without numeric split thresholds.
 
-[Restore complete prerelease upgrade coverage](todo/05-release-qualification/dogfood/05-restore-complete-prerelease-upgrade-coverage.md) has complete repository implementation in draft PR #60. It remains pending only until a corrective immutable release validates the required real source upgrades, and that shared release validation does not block implementation of finding 06.
+[Restore complete prerelease upgrade coverage](todo/05-release-qualification/dogfood/05-restore-complete-prerelease-upgrade-coverage.md) has complete repository implementation in merged PR #60 and remains pending only until a corrective immutable release validates the required real source upgrades.
+
+[Remove empty upgrade transaction containers](todo/05-release-qualification/dogfood/06-remove-empty-upgrade-transaction-containers.md) has complete repository implementation in draft PR #62 and remains pending only until a corrective immutable release leaves no empty transaction container after a supported-source upgrade and passes Ava Maintenance integrity inspection.
 
 [Repair installed context link resolution](todo/05-release-qualification/dogfood/02-repair-installed-context-link-resolution.md) is complete after real immutable alpha.7 validation loaded the complete Inbox Ingester required-reading chain from exact installed-project paths.
 
