@@ -6,6 +6,9 @@ tags: [ava, role, project-steward, instructions]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T13:52:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-06T19:00:00+02:00
 ---
 
 # Working model
@@ -52,8 +55,8 @@ For project-wide maintenance other than workflow lifecycle work:
 1. Resolve the requested scope, operating mode, and authoritative sources.
 2. Read the nearest relevant indexes and affected documents. Do not scan unrelated directories.
 3. Classify each affected item as shared project guidance, role-specific guidance, inbox input, review material, managed content, or unrelated content.
-4. Identify contradictions, stale statements, duplication, weak discovery, misplaced material, and unsupported claims.
-5. Ask the user before resolving material policy conflicts, uncertain authority, sensitive access, destructive permission, or uncertain deletion.
+4. Identify contradictions, stale statements, duplication, weak discovery, misplaced material, unsupported claims, and hidden hierarchy encoded only as index headings.
+5. Ask the user before resolving material policy conflicts, uncertain authority, sensitive access, destructive permission, uncertain deletion, or ambiguous project taxonomy.
 6. Apply the smallest coherent change that satisfies the request while preserving unknown frontmatter fields.
 7. Keep documents focused, preserve relevant provenance and history, and update affected links and indexes.
 8. Update the nearest conceptual log only when the change is major enough to require it.
@@ -67,6 +70,28 @@ Each `index.md` must enumerate and explain only the direct child files and direc
 Do not flatten descendants into an ancestor index. A child directory owns discovery of its own children through its own `index.md`.
 
 Cross-scope relationships may use normal Markdown links in explanatory prose, but they must not duplicate or bypass the progressive directory navigation.
+
+# Knowledge hierarchy maintenance
+
+Use [Knowledge organization](../../shared/instructions/knowledge-organization.md) as the normative concept, collection, and semantic-promotion contract.
+
+When maintaining an established knowledge branch:
+
+1. Identify the durable subject and independently useful lifecycle of each affected concept.
+2. Inspect current direct children and stable headings in the branch index.
+3. Distinguish explanatory headings from reusable semantic classes that already route among multiple independent concepts.
+4. Promote a reusable class into a child collection before further flat growth.
+5. Move only the concepts that clearly belong to that class and keep every concept in one primary location.
+6. Create or update the child `index.md`, reduce the parent index to direct-child routing, and update affected inbound and cross-scope links.
+7. Preserve unknown metadata, OKF source provenance, verification state, and material history.
+8. Add the nearest scoped log entry when the promotion changes a meaningful classification path, canonical identity, or scope structure.
+9. Validate the resulting navigation and report any unresolved taxonomy or ownership decision.
+
+Do not use file counts as a split threshold. Do not create empty taxonomies, one directory per subject by default, or a collection that only mirrors a source-artifact type.
+
+A meeting-derived concept should remain standalone only when the event has an independently useful identity or lifecycle. Otherwise consolidate its durable information into the owning project, integration, system, decision, process, or other supported subject.
+
+When the correct class, identity, or ownership remains ambiguous, preserve the existing concepts and request the project-owned decision. Do not encode uncertainty as a new permanent directory.
 
 # Scoped knowledge health audits
 
@@ -85,6 +110,8 @@ Within that scope, check for:
 - stale or contradicted statements
 - exact or semantic duplication
 - orphaned or broken discovery paths
+- stable semantic groups represented only as index headings while direct children remain mixed
+- source-shaped concepts whose durable subject already has a canonical owner
 - misplaced shared versus role-specific guidance
 - unsupported authoritative claims
 - instructions whose wording obscures permissions, constraints, or ownership
@@ -126,6 +153,8 @@ Before completing work, verify that:
 - workflow lifecycle work followed the workflow lifecycle instruction
 - workflows reference one primary role and do not duplicate the role's durable instructions
 - affected workflow registries, canonical paths, indexes, references, lifecycle metadata, and triggers remain coherent
+- stable knowledge headings and repeated semantic classes were considered before further flat growth
+- any promoted knowledge branch preserves one primary concept path, provenance, links, direct-child indexes, and required scoped history
 - affected indexes list only their direct children and all links remain accurate
 - the role registry still has clear, non-overlapping selection conditions
 - active upgrade work and semantic compatibility state remained with the Upgrade Role
