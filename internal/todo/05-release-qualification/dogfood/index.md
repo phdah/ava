@@ -10,24 +10,25 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 [Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md).
 
-Finding 02 remains pending only for its separate published alpha.7 installed-project validation. Its repository implementation is already complete, so the backlog rule permits the next actionable implementation finding to proceed.
+Finding 05 remains the first actionable pending blocker. [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) follows it and should be included in the same corrective prerelease cycle when practical.
 
 ## Backlog status
 
 - 4 pending findings
 - 2 pending blockers
 - 2 pending required-v1 findings
-- 1 completed finding
+- 2 completed findings
 
 ## Findings
 
 | ID | Status | Classification | Blocks | Finding |
 |---|---|---|---|---|
 | 01 | completed | blocker | next prerelease | [Restore supported prerelease upgrade paths](01-restore-prerelease-upgrade-paths.md) |
-| 02 | pending | blocker | next prerelease | [Repair installed context link resolution](02-repair-installed-context-link-resolution.md) |
+| 02 | completed | blocker | next prerelease | [Repair installed context link resolution](02-repair-installed-context-link-resolution.md) |
 | 03 | pending | required-v1 | release candidate | [Make knowledge hierarchy promotion predictable](03-make-knowledge-hierarchy-promotion-predictable.md) |
 | 04 | pending | required-v1 | release candidate | [Enforce faithful inbox ingestion completion](04-enforce-faithful-inbox-ingestion-completion.md) |
 | 05 | pending | blocker | next prerelease | [Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md) |
+| 06 | pending | blocker | next prerelease | [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) |
 
 ## Adding a finding
 
@@ -57,9 +58,11 @@ Implement findings in dependency order. When several findings require the same p
 
 This batching rule does not permit publication while a pending blocker is absent from the release or otherwise unresolved.
 
-Finding 02 has passing repository, assembly, and local-install evidence in implementing draft PR [#53](https://github.com/phdah/ava/pull/53). It remains pending until the complete Inbox Ingester required-reading chain is validated in a real project installed from immutable `1.0.0-alpha.7` assets. That validation stays within finding 02.
+Finding 02 is complete. PR [#53](https://github.com/phdah/ava/pull/53) supplied the repository implementation and local qualification, and immutable `1.0.0-alpha.7` validation on 2026-08-06 proved that the Inbox Ingester loaded its complete required-reading chain from exact installed-project paths without substitution or mutation.
 
 Finding 05 is the current actionable implementation blocker. It repairs the alpha.5 source stranded by alpha.6 and alpha.7 and requires the next corrective prerelease to account explicitly for managed changes, migrations, guidance, semantic impact, and cumulative release notes for every supported source.
+
+Finding 06 records the empty `./.ava/state/transactions/` directory left after a successful alpha.6 to alpha.7 upgrade. It requires terminal cleanup to remove the transaction container only after its final workspace is deleted, while preserving active or non-empty transaction state.
 
 ## Classification
 

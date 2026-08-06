@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Repair Installed Context Link Resolution
 description: Ensure every managed role and base link resolves against the installed project layout rather than the repository source layout.
 tags: [internal, roadmap, dogfood, release, links, validation, blocker]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 2
@@ -15,7 +15,7 @@ generated:
   at: 2026-08-05T13:07:09+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-05T15:28:53+02:00
+  at: 2026-08-06T10:49:13+02:00
 ---
 
 # Repair Installed Context Link Resolution
@@ -59,7 +59,7 @@ Managed documents retain links authored for the repository source layout even wh
 
 ## Resolution evidence
 
-Repository implementation and local qualification are complete in the current worktree:
+Repository implementation and local qualification were completed in PR [#53](https://github.com/phdah/ava/pull/53):
 
 - all 15 links that failed against the assembled alpha.5 layout now use installed-project targets or no longer link to repository-only contracts
 - `assemble.py` resolves every distributed local inline Markdown link through the complete payload destination map before writing release assets
@@ -67,9 +67,21 @@ Repository implementation and local qualification are complete in the current wo
 - repository conformance reports unresolved installed targets as `AVA-INSTALLED-LINK-MISSING`
 - the `installed-link-missing` fixture reproduces the source-resolving alpha.5 Inbox Ingester defect and proves that `./inbox/index.md` resolves through the project-owned scaffold mapping
 - the `installed-link-root-escape` fixture rejects excess document-relative traversal and `./../` project-root traversal while accepting an exact document-relative path to the root router
-- `internal/release/test.sh` passes all 129 tests
-- `internal/release/validate-boundaries.sh` reports `Repository boundaries valid.`
-- a local `1.0.0-alpha.1` assembly completed, installed into a clean temporary project, passed installed conformance with normal routing permitted, and contained the complete Inbox Ingester required-reading file set
-- implementing draft PR: [#53](https://github.com/phdah/ava/pull/53)
+- `internal/release/test.sh` passed all 129 tests
+- `internal/release/validate-boundaries.sh` reported `Repository boundaries valid.`
+- a local assembly installed into a clean temporary project, passed installed conformance with normal routing permitted, and contained the complete Inbox Ingester required-reading file set
 
-The finding remains pending until a corrected prerelease is published and the Inbox Ingester required-reading chain is validated in a real project installed from that immutable release. The published version is not yet available.
+Immutable published validation completed on 2026-08-06 against `1.0.0-alpha.7`, released from revision `8a23c44233572585b93ee56ac408fdc5c7227d0c` through release PR [#57](https://github.com/phdah/ava/pull/57):
+
+- a real project at `~/stuff/project-vault/` was freshly installed with the version-pinned alpha.6 installer and upgraded with the version-pinned alpha.7 installer
+- the upgrade retained all 54 recorded managed payload files and advanced installed and semantic compatibility state through alpha.7
+- normal routing was permitted and the existing project-owned OpenCode configuration was preserved
+- the agent activated `Inbox Ingester` through normal routing and loaded its role index before acting
+- all seven required-reading links resolved to existing readable installed-project paths and were loaded in declared order
+- the inbox convention resolved exactly to `./inbox/index.md`
+- the root router resolved exactly to `./AGENTS.md`
+- the managed role registry resolved exactly to `./.ava/base/roles/index.md`
+- document metadata and knowledge organization resolved under `./.ava/base/shared/instructions/`
+- no repository-source substitution, path guessing, inbox processing, or file mutation occurred
+
+The published installed-link validation passed. A separate empty transaction-container cleanup defect discovered during the accompanying Ava Maintenance inspection is tracked by [finding 06](06-remove-empty-upgrade-transaction-containers.md) and does not invalidate this finding's completed link-resolution criteria.
