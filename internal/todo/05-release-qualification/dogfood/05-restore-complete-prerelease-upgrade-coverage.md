@@ -70,7 +70,7 @@ Current release edges come only from `upgrade-impact.json`. Historical tags that
 - protected sources require a separate policy change before retirement
 - every declared source has reviewed managed-change, migration, guidance, semantic, and cumulative-note data
 - generated `migration_ids`, `guidance_paths`, and source edges exactly match the reviewed impact
-- no implementation or test hardcodes the next Ava release version
+- no production release logic hardcodes the next Ava release version
 - the eventual corrective release declares and validates the required real source edges
 - real version-pinned source installations upgrade successfully and preserve project-owned files byte-for-byte
 
