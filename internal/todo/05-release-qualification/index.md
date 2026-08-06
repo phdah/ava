@@ -23,15 +23,17 @@ Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded find
 
 Current findings:
 
-- 2 pending blockers
+- 0 pending blockers
 - 2 pending required-v1 findings
-- 2 completed findings
+- 4 completed findings
 
 Current next actionable finding: [Make knowledge hierarchy promotion predictable](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md).
 
-[Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) has complete repository implementation in merged PR #60 and remains pending for corrective immutable-release validation.
+[Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) is complete through merged PR #60.
 
-[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) has complete repository implementation in draft PR #62 and remains pending for real supported-source upgrade and Ava Maintenance validation.
+[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through PR #62.
+
+Both completed blocker findings still require corrective immutable-release evidence before the next prerelease can qualify. That evidence is a release-gate requirement and does not keep either implementation task pending.
 
 [Repair installed context link resolution](dogfood/02-repair-installed-context-link-resolution.md) is complete after immutable alpha.7 validation loaded the complete Inbox Ingester required-reading chain from exact installed-project paths.
 
@@ -44,6 +46,7 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 - post-v1 dispositions require explicit user approval and durable rationale
 - additional `alpha.N`, beta, or RC releases may be inserted when findings require another immutable validation cycle
 - every added release declares and tests its supported source prereleases
+- completed findings may still carry explicit release qualification follow-up without returning to pending status
 
 ## Qualification policy
 
@@ -67,7 +70,7 @@ Phase 5 begins only after:
 - the Ava Maintenance role is implemented
 - the complete validation, conformance, recovery, uninstall, and upgrade matrix passes
 
-These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). Two release blockers remain pending for shared corrective-prerelease validation: stranded prerelease upgrade support in [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) and terminal transaction-container cleanup in [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md). Their repository implementations no longer block work on the required-v1 findings, but both must pass immutable release validation before another prerelease can qualify.
+These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). The repository fixes for stranded prerelease upgrade support in completed [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) and terminal transaction-container cleanup in completed [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md) are implemented. Their real corrective-release checks remain mandatory qualification evidence before another prerelease can qualify, but they are not pending roadmap tasks.
 
 ## Current active work
 
