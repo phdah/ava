@@ -8,7 +8,7 @@ generated:
   at: 2026-07-31T15:35:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T21:47:00+02:00
+  at: 2026-08-06T16:10:00+02:00
 ---
 
 # Purpose
@@ -27,7 +27,10 @@ Use only these managed inputs to decide the pre-routing mode:
 - `./.ava/state/manifest.json`
 - `./.ava/base/roles/ava-maintenance/index.md`
 - `./.ava/base/roles/upgrade-role/index.md`
+- each selected journal edge's explicit `semantic_review_required` decision
 - the exact relative guidance paths recorded in the upgrade transaction, resolved beneath `./.ava/guidance/` after Upgrade Role activation
+
+The release-wide semantic-review declaration is only a release inventory summary. When selected journal edges contain explicit semantic decisions, routing uses those edge decisions and must not apply another edge's requirement to the current source path.
 
 Do not read `./roles/index.md`, `./workflows/index.md`, or other project-owned routing files before managed pre-routing is resolved.
 
@@ -40,9 +43,10 @@ Before ordinary instruction resolution:
 3. Enter Ava Maintenance mode when either managed state file is missing, malformed, unsupported, or internally contradictory.
 4. Enter Ava Maintenance mode when the journal is `active` or `blocked` and the request concerns deterministic inspection, resume, abort, rollback, finalization, recovery, host accessibility, or installation administration.
 5. Enter Ava Maintenance mode for active deterministic stages before semantic reconciliation, including planning, preflight, staged, migrating, validating, base-installed, and rollback.
-6. Enter Upgrade Role mode only when semantic compatibility is not `complete` or the journal stage is `semantic`, and the requested outcome is to reconcile or resolve project-owned semantic context.
-7. When semantic work blocks an unrelated request, activate Ava Maintenance to explain the blocked state and required handoff rather than performing ordinary routing.
-8. Enter normal routing only when the journal is in a protocol-defined safe terminal state and semantic compatibility is `complete`.
+6. Enter Upgrade Role mode only when selected journal edges require semantic review, carried semantic state remains incomplete, or the journal stage is `semantic`, and the requested outcome is to reconcile or resolve project-owned semantic context.
+7. Require every explicit semantic edge decision to agree with its guidance list: `true` requires one or more exact guidance paths and `false` requires none.
+8. When semantic work blocks an unrelated request, activate Ava Maintenance to explain the blocked state and required handoff rather than performing ordinary routing.
+9. Enter normal routing only when the journal is in a protocol-defined safe terminal state and semantic compatibility is `complete`.
 
 A journal state must never broaden its `allowed_operations` beyond the upgrade protocol.
 
@@ -68,8 +72,9 @@ In Upgrade Role mode:
 2. Read `./.ava/base/roles/upgrade-role/index.md` and every document it marks as required.
 3. Announce `Active role: Upgrade Role`.
 4. Confirm that the requested operation is semantic reconciliation or resolution permitted by managed state.
-5. Resolve the exact relative guidance paths recorded by the transaction beneath `./.ava/guidance/`, in transaction order.
-6. Treat project-owned registries, indexes, roles, workflows, shared instructions, and knowledge only as migration inputs after the role is active.
+5. Confirm that the selected journal path requires semantic review or carries unresolved semantic state.
+6. Resolve the exact relative guidance paths recorded by the transaction beneath `./.ava/guidance/`, in transaction order.
+7. Treat project-owned registries, indexes, roles, workflows, shared instructions, and knowledge only as migration inputs after the role is active.
 
 Upgrade Role is ineligible for free-form selection and must not be used as a workflow `primary_role`. It does not perform deterministic installer or updater operations.
 
@@ -82,7 +87,7 @@ It must:
 - report the malformed or missing managed path
 - avoid project-owned routing
 - avoid modifying project-owned context
-- avoid guessing transaction source, target, stage, ownership, or permitted operations
+- avoid guessing transaction source, target, stage, ownership, semantic impact, or permitted operations
 - identify the deterministic installer or updater evidence needed for recovery
 - keep normal routing blocked
 
@@ -108,13 +113,14 @@ Only Upgrade Role loads release guidance. It loads only relative guidance paths 
 
 For each path it must verify:
 
+- the relevant path edge explicitly requires semantic review, or unresolved semantic state is being carried under the protocol
 - the file is beneath `./.ava/guidance/`
 - the file is present in the installed managed manifest
 - its metadata follows the release-guidance contract
 - its source and target versions match the relevant path edge
 - its deterministic migration IDs agree with the transaction
 
-A missing, invalid, or mismatched guidance document blocks semantic reconciliation and remains reportable through Ava Maintenance.
+A missing, invalid, mismatched, or unrecorded guidance document blocks semantic reconciliation and remains reportable through Ava Maintenance. Neither routing nor Upgrade Role may derive additional guidance by comparing arbitrary managed files or reading unrelated release history.
 
 # Return to normal routing
 
@@ -139,6 +145,7 @@ Every maintenance or semantic report distinguishes:
 - semantic target version
 - semantic status
 - journal status and stage
+- selected edge semantic-review decisions and exact guidance paths
 - permitted operations
 - unresolved decisions
 - active owning role for the requested next action

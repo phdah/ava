@@ -5,24 +5,7 @@
   "description": "Schema for the Ava-managed /.ava/state/upgrade.json durable upgrade transaction journal.",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "upgrade_schema",
-    "transaction_id",
-    "status",
-    "stage",
-    "source",
-    "target",
-    "path",
-    "current_edge",
-    "created_at",
-    "updated_at",
-    "staging",
-    "migrations",
-    "managed_changes",
-    "project_changes",
-    "failure",
-    "allowed_operations"
-  ],
+  "required": ["upgrade_schema", "transaction_id", "status", "stage", "source", "target", "path", "current_edge", "created_at", "updated_at", "staging", "migrations", "managed_changes", "project_changes", "failure", "allowed_operations"],
   "properties": {
     "upgrade_schema": {"const": 1},
     "transaction_id": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
@@ -39,12 +22,7 @@
     "managed_changes": {"type": "array", "items": {"$ref": "#/$defs/managedChange"}},
     "project_changes": {"type": "array", "items": {"$ref": "#/$defs/projectChange"}},
     "failure": {"anyOf": [{"$ref": "#/$defs/failure"}, {"type": "null"}]},
-    "allowed_operations": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": {"enum": ["inspect", "resolve", "resume", "abort", "rollback", "reconcile-semantic", "normal"]}
-    }
+    "allowed_operations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["inspect", "resolve", "resume", "abort", "rollback", "reconcile-semantic", "normal"]}}
   },
   "$defs": {
     "version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-(alpha|beta|rc)\\.[1-9][0-9]*)?$"},
@@ -73,11 +51,14 @@
         "carry_unresolved_semantic_state": {"type": "boolean"},
         "migration_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"}},
         "guidance_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"}},
+        "semantic_review_required": {"type": "boolean"},
         "completed": {"type": "boolean"}
       },
       "allOf": [
         {"if": {"properties": {"mode": {"const": "direct"}}, "required": ["mode"]}, "then": {"properties": {"intermediates": {"maxItems": 0}}}},
-        {"if": {"properties": {"mode": {"const": "chained"}}, "required": ["mode"]}, "then": {"properties": {"intermediates": {"minItems": 1}}}}
+        {"if": {"properties": {"mode": {"const": "chained"}}, "required": ["mode"]}, "then": {"properties": {"intermediates": {"minItems": 1}}}},
+        {"if": {"properties": {"semantic_review_required": {"const": true}}, "required": ["semantic_review_required"]}, "then": {"properties": {"guidance_paths": {"minItems": 1}}}},
+        {"if": {"properties": {"semantic_review_required": {"const": false}}, "required": ["semantic_review_required"]}, "then": {"properties": {"guidance_paths": {"maxItems": 0}}}}
       ]
     },
     "stagingState": {
@@ -151,32 +132,8 @@
     }
   },
   "allOf": [
-    {
-      "if": {"properties": {"status": {"const": "idle"}}, "required": ["status"]},
-      "then": {"properties": {
-        "transaction_id": {"type": "null"},
-        "stage": {"const": "idle"},
-        "source": {"type": "null"},
-        "target": {"type": "null"},
-        "path": {"maxItems": 0},
-        "current_edge": {"type": "null"},
-        "created_at": {"type": "null"},
-        "staging": {"type": "null"},
-        "failure": {"type": "null"},
-        "allowed_operations": {"const": ["normal"]}
-      }}
-    },
-    {
-      "if": {"properties": {"status": {"enum": ["active", "blocked"]}}, "required": ["status"]},
-      "then": {"properties": {
-        "transaction_id": {"type": "string", "minLength": 1},
-        "source": {"$ref": "#/$defs/releaseState"},
-        "target": {"$ref": "#/$defs/releaseState"},
-        "path": {"minItems": 1},
-        "created_at": {"type": "string", "format": "date-time"},
-        "allowed_operations": {"not": {"contains": {"const": "normal"}}}
-      }}
-    },
+    {"if": {"properties": {"status": {"const": "idle"}}, "required": ["status"]}, "then": {"properties": {"transaction_id": {"type": "null"}, "stage": {"const": "idle"}, "source": {"type": "null"}, "target": {"type": "null"}, "path": {"maxItems": 0}, "current_edge": {"type": "null"}, "created_at": {"type": "null"}, "staging": {"type": "null"}, "failure": {"type": "null"}, "allowed_operations": {"const": ["normal"]}}}},
+    {"if": {"properties": {"status": {"enum": ["active", "blocked"]}}, "required": ["status"]}, "then": {"properties": {"transaction_id": {"type": "string", "minLength": 1}, "source": {"$ref": "#/$defs/releaseState"}, "target": {"$ref": "#/$defs/releaseState"}, "path": {"minItems": 1}, "created_at": {"type": "string", "format": "date-time"}, "allowed_operations": {"not": {"contains": {"const": "normal"}}}}}},
     {"if": {"properties": {"status": {"const": "blocked"}}, "required": ["status"]}, "then": {"properties": {"failure": {"$ref": "#/$defs/failure"}}}},
     {"if": {"properties": {"status": {"const": "complete"}}, "required": ["status"]}, "then": {"properties": {"stage": {"const": "complete"}, "failure": {"type": "null"}, "allowed_operations": {"const": ["normal"]}}}},
     {"if": {"properties": {"status": {"const": "aborted"}}, "required": ["status"]}, "then": {"properties": {"stage": {"const": "aborted"}, "allowed_operations": {"const": ["normal"]}}}},

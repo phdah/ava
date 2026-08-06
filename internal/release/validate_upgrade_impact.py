@@ -13,7 +13,7 @@ SEMVER_RE = re.compile(
     r"(?:-(alpha|beta|rc)\.([1-9][0-9]*))?$"
 )
 RETAINED_VALUE = "all-unlisted-managed-payload-files"
-SOURCE_FIELDS = {
+SOURCE_FIELDS_V1 = {
     "from",
     "managed_changes",
     "migration_ids",
@@ -24,7 +24,9 @@ SOURCE_FIELDS = {
     "release_note_versions",
     "release_note_assessment",
 }
+SOURCE_FIELDS_V2 = SOURCE_FIELDS_V1 | {"semantic_impact_evidence"}
 MANAGED_CHANGE_FIELDS = {"retained", "replaced", "created", "deleted"}
+SEMANTIC_EVIDENCE_FIELDS = {"managed_path", "project_owned_impact", "reason"}
 RETIREMENT_FIELDS = {"version", "reason"}
 POLICY_FIELDS = {"schema_version", "initial_release_version", "protected_direct_sources"}
 
@@ -94,14 +96,85 @@ def _string_list(value: object, location: str) -> list[str]:
     return list(value)
 
 
-def source_assessments(impact: dict[str, Any]) -> dict[str, dict[str, Any]]:
+def _installed_path(value: object, location: str) -> str:
+    if not isinstance(value, str) or not value:
+        raise UpgradeImpactValidationError(f"{location} must be a non-empty installed path")
+    candidate = PurePosixPath(value)
+    if not candidate.is_absolute() or ".." in candidate.parts:
+        raise UpgradeImpactValidationError(f"{location} contains unsafe installed path {value!r}")
+    return value
+
+
+def _semantic_evidence(
+    value: object,
+    location: str,
+    changed_paths: set[str],
+) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        raise UpgradeImpactValidationError(f"{location} must be a list")
+
+    evidence: list[dict[str, Any]] = []
+    paths: list[str] = []
+    for index, item in enumerate(value):
+        item_location = f"{location}[{index}]"
+        if not isinstance(item, dict) or set(item) != SEMANTIC_EVIDENCE_FIELDS:
+            raise UpgradeImpactValidationError(
+                f"{item_location} fields must be exactly {sorted(SEMANTIC_EVIDENCE_FIELDS)}"
+            )
+        path = _installed_path(item["managed_path"], f"{item_location}.managed_path")
+        impact = item["project_owned_impact"]
+        reason = item["reason"]
+        if not isinstance(impact, bool):
+            raise UpgradeImpactValidationError(
+                f"{item_location}.project_owned_impact must be boolean"
+            )
+        if not isinstance(reason, str) or not reason.strip():
+            raise UpgradeImpactValidationError(f"{item_location}.reason must be non-empty")
+        paths.append(path)
+        evidence.append(
+            {
+                "managed_path": path,
+                "project_owned_impact": impact,
+                "reason": reason,
+            }
+        )
+
+    if len(paths) != len(set(paths)):
+        raise UpgradeImpactValidationError(f"{location} contains duplicate managed paths")
+    evidence_paths = set(paths)
+    if evidence_paths != changed_paths:
+        missing = sorted(changed_paths - evidence_paths)
+        extra = sorted(evidence_paths - changed_paths)
+        details: list[str] = []
+        if missing:
+            details.append("missing=" + ", ".join(missing))
+        if extra:
+            details.append("unexpected=" + ", ".join(extra))
+        raise UpgradeImpactValidationError(
+            f"{location} must account for every created, replaced, or deleted managed path"
+            + (": " + "; ".join(details) if details else "")
+        )
+    return evidence
+
+
+def source_assessments(
+    impact: dict[str, Any],
+    *,
+    require_semantic_evidence: bool = False,
+) -> dict[str, dict[str, Any]]:
     allowed_fields = {"schema_version", "target_version", "retired_sources", "sources"}
     if set(impact) != allowed_fields:
         raise UpgradeImpactValidationError(
             f"upgrade-impact.json fields must be exactly {sorted(allowed_fields)}"
         )
-    if impact.get("schema_version") != 1:
-        raise UpgradeImpactValidationError("upgrade-impact.json.schema_version must be 1")
+    schema_version = impact.get("schema_version")
+    if schema_version not in {1, 2}:
+        raise UpgradeImpactValidationError("upgrade-impact.json.schema_version must be 1 or 2")
+    if require_semantic_evidence and schema_version != 2:
+        raise UpgradeImpactValidationError(
+            "current release upgrade-impact.json must use schema_version 2 with semantic impact evidence"
+        )
+
     target = impact.get("target_version")
     if not isinstance(target, str) or not SEMVER_RE.fullmatch(target):
         raise UpgradeImpactValidationError("upgrade-impact.json.target_version is invalid")
@@ -109,14 +182,15 @@ def source_assessments(impact: dict[str, Any]) -> dict[str, dict[str, Any]]:
     if not isinstance(values, list):
         raise UpgradeImpactValidationError("upgrade-impact.json.sources must be a list")
 
+    source_fields = SOURCE_FIELDS_V2 if schema_version == 2 else SOURCE_FIELDS_V1
     result: dict[str, dict[str, Any]] = {}
     for index, assessment in enumerate(values):
         location = f"upgrade-impact.json.sources[{index}]"
         if not isinstance(assessment, dict):
             raise UpgradeImpactValidationError(f"{location} must be an object")
-        if set(assessment) != SOURCE_FIELDS:
+        if set(assessment) != source_fields:
             raise UpgradeImpactValidationError(
-                f"{location} fields must be exactly {sorted(SOURCE_FIELDS)}"
+                f"{location} fields must be exactly {sorted(source_fields)}"
             )
         source = assessment["from"]
         if not isinstance(source, str) or not SEMVER_RE.fullmatch(source):
@@ -137,14 +211,16 @@ def source_assessments(impact: dict[str, Any]) -> dict[str, dict[str, Any]]:
             raise UpgradeImpactValidationError(
                 f"{location}.managed_changes.retained must be {RETAINED_VALUE!r}"
             )
+        changed_paths: set[str] = set()
         for name in ("replaced", "created", "deleted"):
             paths = _string_list(changes[name], f"{location}.managed_changes.{name}")
             for path in paths:
-                candidate = PurePosixPath(path)
-                if not candidate.is_absolute() or ".." in candidate.parts:
+                _installed_path(path, f"{location}.managed_changes.{name}")
+                if path in changed_paths:
                     raise UpgradeImpactValidationError(
-                        f"{location}.managed_changes.{name} contains unsafe installed path {path!r}"
+                        f"{location}.managed_changes declares {path!r} in more than one change class"
                     )
+                changed_paths.add(path)
             changes[name] = paths
 
         assessment["migration_ids"] = _string_list(
@@ -153,6 +229,12 @@ def source_assessments(impact: dict[str, Any]) -> dict[str, dict[str, Any]]:
         assessment["guidance_paths"] = _string_list(
             assessment["guidance_paths"], f"{location}.guidance_paths"
         )
+        for path in assessment["guidance_paths"]:
+            candidate = PurePosixPath(path)
+            if candidate.is_absolute() or ".." in candidate.parts:
+                raise UpgradeImpactValidationError(
+                    f"{location}.guidance_paths contains unsafe relative path {path!r}"
+                )
         for field in (
             "migration_assessment",
             "semantic_assessment",
@@ -164,6 +246,30 @@ def source_assessments(impact: dict[str, Any]) -> dict[str, dict[str, Any]]:
             raise UpgradeImpactValidationError(
                 f"{location}.semantic_review_required must be boolean"
             )
+
+        if schema_version == 2:
+            evidence = _semantic_evidence(
+                assessment["semantic_impact_evidence"],
+                f"{location}.semantic_impact_evidence",
+                changed_paths,
+            )
+            assessment["semantic_impact_evidence"] = evidence
+            evidenced_requirement = any(
+                item["project_owned_impact"] for item in evidence
+            )
+            if assessment["semantic_review_required"] != evidenced_requirement:
+                raise UpgradeImpactValidationError(
+                    f"{location}.semantic_review_required must equal the path-by-path semantic impact evidence"
+                )
+            if evidenced_requirement and not assessment["guidance_paths"]:
+                raise UpgradeImpactValidationError(
+                    f"{location} requires project-owned semantic review but declares no guidance_paths"
+                )
+            if not evidenced_requirement and assessment["guidance_paths"]:
+                raise UpgradeImpactValidationError(
+                    f"{location} declares guidance_paths without project-owned semantic impact"
+                )
+
         assessment["release_note_versions"] = _version_list(
             assessment["release_note_versions"],
             f"{location}.release_note_versions",
@@ -373,7 +479,7 @@ def validate_upgrade_impact(
 
     target = _read_version(root / "version.txt")
     impact = _read_json(root / "internal/release/upgrade-impact.json")
-    assessments = source_assessments(impact)
+    assessments = source_assessments(impact, require_semantic_evidence=True)
     retirements = retired_source_assessments(impact)
     policy = read_upgrade_policy(root)
 

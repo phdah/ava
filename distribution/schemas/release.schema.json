@@ -112,11 +112,14 @@
         "intermediates": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/version"}},
         "carry_unresolved_semantic_state": {"type": "boolean"},
         "migration_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/migrationId"}},
-        "guidance_paths": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/relativePath"}}
+        "guidance_paths": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/relativePath"}},
+        "semantic_review_required": {"type": "boolean"}
       },
       "allOf": [
         {"if": {"properties": {"mode": {"const": "direct"}}, "required": ["mode"]}, "then": {"properties": {"intermediates": {"maxItems": 0}}}},
-        {"if": {"properties": {"mode": {"const": "chained"}}, "required": ["mode"]}, "then": {"properties": {"intermediates": {"minItems": 1}}}}
+        {"if": {"properties": {"mode": {"const": "chained"}}, "required": ["mode"]}, "then": {"properties": {"intermediates": {"minItems": 1}}}},
+        {"if": {"properties": {"semantic_review_required": {"const": true}}, "required": ["semantic_review_required"]}, "then": {"properties": {"guidance_paths": {"minItems": 1}}}},
+        {"if": {"properties": {"semantic_review_required": {"const": false}}, "required": ["semantic_review_required"]}, "then": {"properties": {"guidance_paths": {"maxItems": 0}}}}
       ]
     },
     "archiveEntry": {

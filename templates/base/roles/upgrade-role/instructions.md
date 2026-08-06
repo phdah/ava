@@ -8,7 +8,7 @@ generated:
   at: 2026-07-31T15:35:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T21:47:00+02:00
+  at: 2026-08-06T16:10:00+02:00
 ---
 
 # Entry procedure
@@ -18,10 +18,13 @@ Before changing project-owned context:
 1. Read the managed manifest and upgrade journal.
 2. Confirm the installed base, compatible-through version, target version, journal status, semantic stage, and allowed operations.
 3. Confirm that `reconcile-semantic` or the semantic resolution requested by the user is permitted.
-4. Resolve the exact relative guidance paths recorded by the transaction beneath `./.ava/guidance/`, in order.
-5. Validate each guidance document against the release-guidance contract and its transaction edge.
-6. Stop without mutation when managed state or guidance cannot establish semantic authority.
-7. Hand deterministic inspection, resume, abort, rollback, finalization, host accessibility, and removal requests to Ava Maintenance.
+4. Confirm that each applicable selected edge explicitly requires semantic review, or that unresolved semantic state is being carried under the upgrade protocol.
+5. Resolve the exact relative guidance paths recorded by the transaction beneath `./.ava/guidance/`, in order.
+6. Validate each guidance document against the release-guidance contract and its transaction edge.
+7. Stop without mutation when an explicit edge decision and its guidance list disagree, when required guidance is absent, or when managed state cannot establish semantic authority.
+8. Hand deterministic inspection, resume, abort, rollback, finalization, host accessibility, and removal requests to Ava Maintenance.
+
+The release-wide semantic-review field is only an inventory summary. Use the selected installed edge decisions and exact journal guidance paths. Do not infer project-owned migrations from arbitrary managed-file differences, release history, logs, or unrecorded guidance.
 
 # Impact analysis
 
@@ -62,6 +65,8 @@ For every changed project path:
 5. append or update the path in `upgrade.json.project_changes`
 6. validate the changed document and its relationships
 
+The project change record must identify the exact path, change type, recorded time, and current resolution. Do not mark semantic compatibility complete while an affected project-owned path is missing from the journal or remains unresolved.
+
 A migration is not complete while any required role, workflow, registry, index, log, metadata field, link, filename, or structural convention remains inconsistent with the target contract.
 
 # Semantic state transitions
@@ -76,12 +81,16 @@ Use `partial` only when safe required work has been applied but completion crite
 
 Mark `complete` only when:
 
+- every exact installed guidance document has been applied in transaction order
 - every loaded guidance completion criterion passes
 - every affected project relationship is consistent
+- every changed project-owned path is recorded in `upgrade.json.project_changes`
 - `unresolved_decisions` is empty
 - `compatible_through` can advance exactly to installed `ava_version`
 - `target_version` can be cleared
-- the journal can reach `complete/complete` with `allowed_operations: [normal]`
+- the journal remains non-normal until deterministic finalization reaches `complete/complete` with `allowed_operations: [normal]`
+
+The Upgrade Role updates semantic compatibility but does not manually grant normal routing. Ava Maintenance invokes deterministic finalization after semantic completion.
 
 # Rollback preparation
 
@@ -106,8 +115,9 @@ Report:
 - source compatible-through version
 - semantic target
 - final semantic status
-- guidance documents applied
-- changed project-owned paths
+- selected edge semantic-review decisions
+- exact guidance documents applied
+- changed project-owned paths recorded in the journal
 - validations performed
 - unresolved decisions
 - whether finalization or another deterministic action remains for Ava Maintenance

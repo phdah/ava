@@ -35,23 +35,57 @@ class UpgradeImpactTests(unittest.TestCase):
         self.temp.cleanup()
 
     @staticmethod
-    def assessment(source: str, notes: list[str]) -> dict[str, object]:
-        return {
+    def assessment(
+        source: str,
+        notes: list[str],
+        *,
+        changed: dict[str, list[str]] | None = None,
+        impacted_paths: set[str] | None = None,
+        guidance_paths: list[str] | None = None,
+        schema_version: int = 2,
+    ) -> dict[str, object]:
+        changed = changed or {"replaced": [], "created": [], "deleted": []}
+        impacted_paths = impacted_paths or set()
+        guidance_paths = guidance_paths or []
+        all_changed = [
+            path
+            for kind in ("replaced", "created", "deleted")
+            for path in changed[kind]
+        ]
+        value: dict[str, object] = {
             "from": source,
             "managed_changes": {
                 "retained": "all-unlisted-managed-payload-files",
-                "replaced": [],
-                "created": [],
-                "deleted": [],
+                "replaced": list(changed["replaced"]),
+                "created": list(changed["created"]),
+                "deleted": list(changed["deleted"]),
             },
             "migration_ids": [],
             "migration_assessment": "Normal managed reconciliation is sufficient.",
-            "guidance_paths": [],
-            "semantic_review_required": False,
-            "semantic_assessment": "No project-owned semantic contracts change.",
+            "guidance_paths": list(guidance_paths),
+            "semantic_review_required": bool(impacted_paths),
+            "semantic_assessment": (
+                "Project-owned semantic work is required for the explicitly identified managed contracts."
+                if impacted_paths
+                else "No reviewed managed contract change requires project-owned semantic work."
+            ),
             "release_note_versions": notes,
             "release_note_assessment": "These are all cumulative releases after the source.",
         }
+        if schema_version == 2:
+            value["semantic_impact_evidence"] = [
+                {
+                    "managed_path": path,
+                    "project_owned_impact": path in impacted_paths,
+                    "reason": (
+                        "The managed contract changes a convention that project-owned files must adopt."
+                        if path in impacted_paths
+                        else "The managed change preserves all project-owned contracts and conventions."
+                    ),
+                }
+                for path in all_changed
+            ]
+        return value
 
     def write_policy(self, protected: list[str] | None = None) -> None:
         (self.root / "internal/release/fixtures/release-upgrade-policy.json").write_text(
@@ -85,7 +119,11 @@ class UpgradeImpactTests(unittest.TestCase):
                         "target_version": previous,
                         "retired_sources": [],
                         "sources": [
-                            self.assessment(source, [previous])
+                            self.assessment(
+                                source,
+                                [previous],
+                                schema_version=1,
+                            )
                             for source in prior_sources or []
                         ],
                     }
@@ -103,6 +141,7 @@ class UpgradeImpactTests(unittest.TestCase):
         *,
         retired: list[tuple[str, str]] | None = None,
         headings: list[str] | None = None,
+        assessments: list[dict[str, object]] | None = None,
     ) -> None:
         (self.root / "version.txt").write_text(f"{target}\n")
         headings = headings or [target]
@@ -112,13 +151,15 @@ class UpgradeImpactTests(unittest.TestCase):
         (self.root / "internal/release/upgrade-impact.json").write_text(
             json.dumps(
                 {
-                    "schema_version": 1,
+                    "schema_version": 2,
                     "target_version": target,
                     "retired_sources": [
                         {"version": version, "reason": reason}
                         for version, reason in retired or []
                     ],
-                    "sources": [self.assessment(source, notes) for source, notes in sources],
+                    "sources": assessments
+                    if assessments is not None
+                    else [self.assessment(source, notes) for source, notes in sources],
                 }
             )
         )
@@ -225,6 +266,106 @@ class UpgradeImpactTests(unittest.TestCase):
                 self.root, "2.0.0-alpha.2", verify_managed_delta=False
             )
 
+    def test_accepts_explicit_no_semantic_impact_with_path_evidence(self) -> None:
+        self.tag_previous("2.0.0")
+        changed = {
+            "replaced": ["/.ava/base/shared/instructions/test.md"],
+            "created": [],
+            "deleted": [],
+        }
+        assessment = self.assessment("2.0.0", ["2.0.1"], changed=changed)
+        self.write_target(
+            "2.0.1",
+            [("2.0.0", ["2.0.1"])],
+            assessments=[assessment],
+        )
+        validate_upgrade_impact(self.root, "2.0.0", verify_managed_delta=False)
+
+    def test_rejects_missing_semantic_evidence_for_changed_path(self) -> None:
+        self.tag_previous("2.0.0")
+        assessment = self.assessment(
+            "2.0.0",
+            ["2.0.1"],
+            changed={
+                "replaced": ["/.ava/base/shared/instructions/test.md"],
+                "created": [],
+                "deleted": [],
+            },
+        )
+        assessment["semantic_impact_evidence"] = []
+        self.write_target(
+            "2.0.1",
+            [("2.0.0", ["2.0.1"])],
+            assessments=[assessment],
+        )
+        with self.assertRaisesRegex(
+            UpgradeImpactValidationError,
+            "must account for every created, replaced, or deleted managed path",
+        ):
+            validate_upgrade_impact(self.root, "2.0.0", verify_managed_delta=False)
+
+    def test_rejects_false_decision_when_evidence_requires_semantic_work(self) -> None:
+        self.tag_previous("2.0.0")
+        path = "/.ava/base/shared/instructions/test.md"
+        assessment = self.assessment(
+            "2.0.0",
+            ["2.0.1"],
+            changed={"replaced": [path], "created": [], "deleted": []},
+            impacted_paths={path},
+            guidance_paths=["2.0.0-to-2.0.1/UPGRADE.md"],
+        )
+        assessment["semantic_review_required"] = False
+        self.write_target(
+            "2.0.1",
+            [("2.0.0", ["2.0.1"])],
+            assessments=[assessment],
+        )
+        with self.assertRaisesRegex(
+            UpgradeImpactValidationError,
+            "must equal the path-by-path semantic impact evidence",
+        ):
+            validate_upgrade_impact(self.root, "2.0.0", verify_managed_delta=False)
+
+    def test_rejects_semantic_work_without_guidance(self) -> None:
+        self.tag_previous("2.0.0")
+        path = "/.ava/base/shared/instructions/test.md"
+        assessment = self.assessment(
+            "2.0.0",
+            ["2.0.1"],
+            changed={"replaced": [path], "created": [], "deleted": []},
+            impacted_paths={path},
+        )
+        self.write_target(
+            "2.0.1",
+            [("2.0.0", ["2.0.1"])],
+            assessments=[assessment],
+        )
+        with self.assertRaisesRegex(
+            UpgradeImpactValidationError,
+            "declares no guidance_paths",
+        ):
+            validate_upgrade_impact(self.root, "2.0.0", verify_managed_delta=False)
+
+    def test_rejects_guidance_without_semantic_impact(self) -> None:
+        self.tag_previous("2.0.0")
+        path = "/.ava/base/shared/instructions/test.md"
+        assessment = self.assessment(
+            "2.0.0",
+            ["2.0.1"],
+            changed={"replaced": [path], "created": [], "deleted": []},
+            guidance_paths=["2.0.0-to-2.0.1/UPGRADE.md"],
+        )
+        self.write_target(
+            "2.0.1",
+            [("2.0.0", ["2.0.1"])],
+            assessments=[assessment],
+        )
+        with self.assertRaisesRegex(
+            UpgradeImpactValidationError,
+            "declares guidance_paths without project-owned semantic impact",
+        ):
+            validate_upgrade_impact(self.root, "2.0.0", verify_managed_delta=False)
+
     def test_managed_delta_maps_repository_sources_to_installed_paths(self) -> None:
         self.write_policy()
         base = self.root / "templates/base"
@@ -251,9 +392,10 @@ class UpgradeImpactTests(unittest.TestCase):
             },
         )
 
-    def test_reviewed_assembly_uses_impact_as_edge_source(self) -> None:
+    def test_reviewed_assembly_preserves_edge_decision_and_guidance(self) -> None:
         output = self.root / "output"
         output.mkdir()
+        guidance_path = "2.0.0-rc.1-to-2.0.0/UPGRADE.md"
         manifest = {
             "semantic_review_required": False,
             "upgrade_paths": {
@@ -267,7 +409,7 @@ class UpgradeImpactTests(unittest.TestCase):
                 ]
             },
             "migrations": {"steps": []},
-            "guidance": {"entries": []},
+            "guidance": {"entries": [{"path": guidance_path, "sha256": "0" * 64}]},
         }
         (output / "ava-release.json").write_text(json.dumps(manifest))
         for name in (
@@ -278,18 +420,30 @@ class UpgradeImpactTests(unittest.TestCase):
             "ava-release-notes.md",
         ):
             (output / name).write_text(name)
+        managed_path = "/.ava/base/shared/instructions/test.md"
+        assessment = self.assessment(
+            "2.0.0-rc.1",
+            ["2.0.0"],
+            changed={"replaced": [managed_path], "created": [], "deleted": []},
+            impacted_paths={managed_path},
+            guidance_paths=[guidance_path],
+        )
         impact = {
-            "schema_version": 1,
+            "schema_version": 2,
             "target_version": "2.0.0",
             "retired_sources": [],
-            "sources": [self.assessment("2.0.0-rc.1", ["2.0.0"])],
+            "sources": [assessment],
         }
         impact_path = self.root / "impact.json"
         impact_path.write_text(json.dumps(impact))
 
         apply_reviewed_impact(output, impact_path, "2.0.0")
         result = json.loads((output / "ava-release.json").read_text())
-        self.assertEqual(result["upgrade_paths"]["edges"][0]["migration_ids"], [])
+        edge = result["upgrade_paths"]["edges"][0]
+        self.assertEqual(edge["migration_ids"], [])
+        self.assertEqual(edge["guidance_paths"], [guidance_path])
+        self.assertIs(edge["semantic_review_required"], True)
+        self.assertIs(result["semantic_review_required"], True)
         expected = hashlib.sha256((output / "ava-release.json").read_bytes()).hexdigest()
         self.assertIn(f"{expected}  ava-release.json", (output / "SHA256SUMS").read_text())
 

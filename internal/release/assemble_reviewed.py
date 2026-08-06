@@ -23,7 +23,10 @@ def apply_reviewed_impact(output: Path, impact_path: Path, target_version: str) 
     except (OSError, json.JSONDecodeError) as exc:
         raise ReviewedAssemblyError(f"cannot read reviewed upgrade impact: {exc}") from exc
     try:
-        assessments = source_assessments(impact)
+        assessments = source_assessments(
+            impact,
+            require_semantic_evidence=True,
+        )
     except UpgradeImpactValidationError as exc:
         raise ReviewedAssemblyError(str(exc)) from exc
     if impact["target_version"] != target_version:
@@ -57,8 +60,9 @@ def apply_reviewed_impact(output: Path, impact_path: Path, target_version: str) 
                 + ", ".join(unknown_guidance)
             )
         edge = edge_by_source[source]
-        edge["migration_ids"] = sorted(assessment["migration_ids"])
-        edge["guidance_paths"] = sorted(assessment["guidance_paths"])
+        edge["migration_ids"] = list(assessment["migration_ids"])
+        edge["guidance_paths"] = list(assessment["guidance_paths"])
+        edge["semantic_review_required"] = assessment["semantic_review_required"]
 
     manifest["semantic_review_required"] = any(
         assessment["semantic_review_required"] for assessment in assessments.values()
@@ -96,7 +100,10 @@ def main(argv: list[str] | None = None) -> int:
     del args.upgrade_impact
     try:
         impact = json.loads(impact_path.read_text())
-        assessments = source_assessments(impact)
+        assessments = source_assessments(
+            impact,
+            require_semantic_evidence=True,
+        )
     except (OSError, json.JSONDecodeError, UpgradeImpactValidationError) as exc:
         raise ReviewedAssemblyError(f"cannot read reviewed upgrade impact: {exc}") from exc
 
