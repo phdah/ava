@@ -43,7 +43,7 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 4 pending findings and 2 completed findings
+5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 2 pending findings and 4 completed findings
 6. [Backlog.md integration](06-backlog-md/) - 0 of 2 complete; queued after release qualification
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
@@ -71,10 +71,10 @@ Phase 6 is queued after release qualification and does not block the v1 release 
 
 ## Task status
 
-- `pending`: active roadmap work that has not met its completion criteria
-- `completed`: active roadmap work that has been implemented, indexed, validated, and committed
+- `pending`: active repository work that has not met its implementation completion criteria
+- `completed`: repository work that has been implemented, indexed, repository-validated, and committed with resolution evidence
 
-Update a task's frontmatter and its active phase index together when its status changes. Individual finding completion never completes the dogfood umbrella unless the user explicitly makes that decision.
+Update a task's frontmatter and its active phase index together when its status changes. Published-asset or realistic-project qualification that can only happen after merge is tracked as a release gate and does not keep or return an implementation task to `pending`. Individual finding completion never completes the dogfood umbrella unless the user explicitly makes that decision.
 
 ## Shared completion work
 

@@ -27,6 +27,7 @@ python3 "$ROOT/internal/release/conformance.py" \
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_installed_paths \
   internal.release.tests.test_installer \
+  internal.release.tests.test_transaction_cleanup \
   internal.release.tests.test_installer_conformance \
   internal.release.tests.test_host_config \
   internal.release.tests.test_document_update_metadata_fixtures \
