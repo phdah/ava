@@ -86,7 +86,7 @@ Release preparation also lacked a mandatory source-to-target impact review bindi
 
 ## Resolution evidence
 
-Repository implementation is complete in this change:
+Repository implementation is complete in draft PR [#60](https://github.com/phdah/ava/pull/60):
 
 - `upgrade-sources.txt`, alpha qualification, and conformance fixtures prepare direct alpha.5, alpha.6, and alpha.7 edges to alpha.8
 - `protected_direct_sources` prevents a release proposal from silently dropping one of those installed prereleases
