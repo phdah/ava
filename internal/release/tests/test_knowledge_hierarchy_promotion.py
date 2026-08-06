@@ -61,7 +61,7 @@ class KnowledgeHierarchyPromotionTests(unittest.TestCase):
             self.inbox,
         )
         self.assertIn("Do not use document counts as the promotion rule", self.inbox)
-        self.assertIn("leave the source pending and request Project Steward follow-up", self.inbox.lower())
+        self.assertIn("leave the source pending and request project steward follow-up", self.inbox.lower())
 
     def test_project_steward_owns_broader_reorganization(self) -> None:
         self.assertIn("# Knowledge hierarchy maintenance", self.steward)
