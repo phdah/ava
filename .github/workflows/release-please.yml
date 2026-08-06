@@ -72,7 +72,16 @@ jobs:
 
       - name: Run release qualification
         if: ${{ steps.release.outputs.release_created == 'true' }}
-        run: internal/release/test.sh
+        env:
+          SOURCE_REVISION: ${{ steps.identity.outputs.source_revision }}
+        run: |
+          set -eu
+          previous_version=$(git show "${SOURCE_REVISION}^:version.txt")
+          python3 internal/release/validate_release_pr.py \
+            --previous-version "$previous_version"
+          python3 internal/release/validate_upgrade_impact.py \
+            --previous-version "$previous_version"
+          internal/release/test.sh
 
       - name: Assemble release twice
         if: ${{ steps.release.outputs.release_created == 'true' }}
@@ -85,7 +94,8 @@ jobs:
             done < internal/release/upgrade-sources.txt
           fi
           for output in release-a release-b; do
-            internal/release/assemble.sh \
+            python3 internal/release/assemble_reviewed.py \
+              --root . \
               --output "$output" \
               --version "${{ steps.identity.outputs.version }}" \
               --channel "${{ steps.identity.outputs.channel }}" \
@@ -93,6 +103,7 @@ jobs:
               --source-date-epoch "${{ steps.identity.outputs.source_date_epoch }}" \
               --published-at "${{ steps.identity.outputs.published_at }}" \
               --release-notes CHANGELOG.md \
+              --upgrade-impact internal/release/upgrade-impact.json \
               "${upgrade_args[@]}"
           done
           (cd release-a && find . -type f -print0 | sort -z | xargs -0 sha256sum) > release-a.sha256
