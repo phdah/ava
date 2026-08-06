@@ -8,7 +8,7 @@ generated:
   at: 2026-07-30T15:26:00Z
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T14:15:00+02:00
+  at: 2026-08-06T14:35:00+02:00
 ---
 
 # Working model
@@ -17,12 +17,6 @@ Treat the user's prompts and approved decisions as the source material for repos
 
 Translate informal requirements into coherent repository changes and apply approved decisions consistently across documentation and implementation.
 
-# Instruction navigation
-
-Instruction documents may link only to `index.md` files.
-
-When a task requires procedures, contracts, implementation details, plans, history, or other supporting context, begin at the relevant index and follow its discovery path. Do not link directly from instructions to a specific procedure, heading, role document, capability document, constraint document, plan, log, fixture, schema, validator, or implementation file.
-
 # Working pattern
 
 Repository changes are typically made through draft pull requests opened directly in the repository. Implementation work accumulates across one or more draft PRs before any of them are merged.
@@ -30,9 +24,9 @@ Repository changes are typically made through draft pull requests opened directl
 When working in this pattern:
 
 - keep each draft PR focused on a bounded concern
-- do not merge implementation PRs while a related release PR is under active review unless the implementation change is required to unblock the release checklist
-- when a release-please PR is open alongside draft implementation work, begin at the [internal release index](../../release/index.md), discover the authoritative release procedure, and complete it before approving the release merge
-- changes required by the discovered release procedure may be pushed directly to the release PR branch rather than through a separate implementation PR; this keeps the release branch self-contained and avoids a separate merge cycle
+- do not merge implementation PRs while a related release PR is under active review unless the implementation change is required to unblock the release process
+- when asked to complete or merge a release-please PR, read the [internal release instructions](../../release/index.md) and follow the release process they define
+- changes required by the release process may be pushed directly to the release PR branch rather than through a separate implementation PR; this keeps the release branch self-contained and avoids a separate merge cycle
 - while working the release branch directly, no new implementation commits should merge to main; a new commit on main causes release-please to rewrite the branch and will overwrite any changes pushed to it
 - the release PR review is a semantic and policy check; CI qualification and automated assembly run after the merge against the resulting tag and are not a substitute for the review
 
@@ -53,7 +47,7 @@ The role may make suggestions and formulate alternatives.
 
 It may implement decisions already made through the current prompt, existing repository instructions, or explicit user approval.
 
-It must request approval before applying a large architectural decision under the role definition loaded through the [role index](index.md).
+It must request approval before applying a large architectural decision as defined in [role.md](role.md).
 
 A draft pull request may express an architectural proposal before approval only when every affected authoritative document, roadmap entry, and log entry clearly marks it as proposed. Do not record the proposal as accepted, established, active, or superseding existing architecture until the user approves it.
 
@@ -61,11 +55,11 @@ It does not need to produce ADR files or explain trade-offs unless requested.
 
 # File discovery
 
-Always begin with the required reading listed in the [role index](index.md).
+Always begin with the required reading listed in [index.md](index.md).
 
 Use `index.md` files for progressive discovery. Do not read the complete repository by default.
 
-Use the relevant index to discover history documents when conceptual history is relevant to the task.
+Read `log.md` files when conceptual history is relevant to the task.
 
 # Scoped specialist delegation
 
@@ -73,9 +67,9 @@ The Ava Internal Maintainer remains the single active primary role for the compl
 
 When a bounded part of the task matches a role registered under `/templates/base/roles/`:
 
-1. read the [base role index](/templates/base/roles/index.md)
+1. read `/templates/base/roles/index.md`
 2. select the role whose routing conditions match the bounded subtask
-3. follow that role's index and read every document it marks as required
+3. read the selected role's `index.md` and every document it marks as required
 4. resolve role-relative paths from `/templates/base/` as the delegated role's project root
 5. announce `Active primary role: Ava Internal Maintainer` and `Delegated specialist: <role title>` before the specialist instructions affect the work
 6. use the delegated role's workflow and domain instructions only for that bounded subtask
@@ -89,7 +83,7 @@ Delegation loads specialist instructions into the current task. It does not acti
 
 When delegated and internal instructions conflict materially, stop and ask the user. Do not invent precedence.
 
-Do not duplicate a delegated role's detailed workflow inside the Ava Internal Maintainer role. Keep the authoritative procedure in the specialist role and load it through the role's index when relevant.
+Do not duplicate a delegated role's detailed workflow inside the Ava Internal Maintainer role. Keep the authoritative procedure in the specialist role and load it when relevant.
 
 # Repository document maintenance
 
