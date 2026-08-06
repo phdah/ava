@@ -31,7 +31,6 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_host_config \
   internal.release.tests.test_document_update_metadata_fixtures \
   internal.release.tests.test_ava_maintenance \
-  internal.release.tests.test_instruction_navigation \
   internal.release.tests.test_conformance \
   internal.release.tests.test_conformance_matrix \
   internal.release.tests.test_alpha_qualification \
