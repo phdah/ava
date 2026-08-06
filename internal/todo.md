@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T09:25:50+02:00
+  at: 2026-08-06T10:49:13+02:00
 ---
 
 # Ava Internal To-Do List
@@ -27,7 +27,9 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 The immutable alpha.6 release omitted the direct `alpha.5 -> alpha.6` edge, and alpha.7 supports only alpha.6. The next corrective prerelease must directly support alpha.5, alpha.6, and alpha.7, and release preparation must explicitly assess managed replacements, deterministic migrations, semantic guidance, and cumulative release notes for every supported source.
 
-[Repair installed context link resolution](todo/05-release-qualification/dogfood/02-repair-installed-context-link-resolution.md) remains pending only for separate validation against published alpha.7 assets. Its repository implementation is complete and does not block beginning the current implementation task under the shared-validation backlog rule.
+[Repair installed context link resolution](todo/05-release-qualification/dogfood/02-repair-installed-context-link-resolution.md) is complete after real immutable alpha.7 validation loaded the complete Inbox Ingester required-reading chain from exact installed-project paths.
+
+[Remove empty upgrade transaction containers](todo/05-release-qualification/dogfood/06-remove-empty-upgrade-transaction-containers.md) is the next pending blocker after finding 05. It requires terminal updater cleanup to remove `./.ava/state/transactions/` when its final transaction workspace is deleted.
 
 ## Dogfood backlog rule
 

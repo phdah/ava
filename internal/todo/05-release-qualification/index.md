@@ -25,11 +25,13 @@ Current findings:
 
 - 2 pending blockers
 - 2 pending required-v1 findings
-- 1 completed finding
+- 2 completed findings
 
 Current next actionable finding: [Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md).
 
-[Repair installed context link resolution](dogfood/02-repair-installed-context-link-resolution.md) remains pending only for separate validation against published alpha.7 assets. Its repository implementation is complete, so it does not prevent the next actionable implementation finding from proceeding.
+[Repair installed context link resolution](dogfood/02-repair-installed-context-link-resolution.md) is complete after immutable alpha.7 validation loaded the complete Inbox Ingester required-reading chain from exact installed-project paths.
+
+[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is the next pending blocker after finding 05 and should be included in the same corrective prerelease cycle when practical.
 
 The dogfood umbrella remains pending until the user explicitly declares it complete. Having no pending findings does not automatically make task 5 current.
 
@@ -63,7 +65,7 @@ Phase 5 begins only after:
 - the Ava Maintenance role is implemented
 - the complete validation, conformance, recovery, uninstall, and upgrade matrix passes
 
-These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed two pending release blockers: the assembled installed-path defect tracked by [finding 02](dogfood/02-repair-installed-context-link-resolution.md), whose implementation now awaits alpha.7 validation, and the stranded prerelease upgrade support tracked by [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md). These blockers do not rewind completed phases, but they must be resolved before another prerelease.
+These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). Two release blockers remain pending: stranded prerelease upgrade support in [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) and terminal transaction-container cleanup in [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md). These findings do not rewind completed phases, but both must be resolved before another prerelease.
 
 ## Current active work
 
