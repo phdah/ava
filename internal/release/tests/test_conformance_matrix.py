@@ -28,7 +28,16 @@ class ConformanceMatrixTests(unittest.TestCase):
                 case["id"],
             )
             self.assertFalse(
-                set(case) - {"id", "area", "expected", "evidence", "fixture_kind", "rules", "notes"},
+                set(case)
+                - {
+                    "id",
+                    "area",
+                    "expected",
+                    "evidence",
+                    "fixture_kind",
+                    "rules",
+                    "notes",
+                },
                 case["id"],
             )
             self.assertTrue(case["area"], case["id"])
@@ -191,6 +200,24 @@ class ConformanceMatrixTests(unittest.TestCase):
                 {
                     "from": "1.0.0-alpha.6",
                     "to": "1.0.0-alpha.7",
+                    "channel": "alpha",
+                    "must_be_declared": True,
+                },
+                {
+                    "from": "1.0.0-alpha.5",
+                    "to": "1.0.0-alpha.8",
+                    "channel": "alpha",
+                    "must_be_declared": True,
+                },
+                {
+                    "from": "1.0.0-alpha.6",
+                    "to": "1.0.0-alpha.8",
+                    "channel": "alpha",
+                    "must_be_declared": True,
+                },
+                {
+                    "from": "1.0.0-alpha.7",
+                    "to": "1.0.0-alpha.8",
                     "channel": "alpha",
                     "must_be_declared": True,
                 },
