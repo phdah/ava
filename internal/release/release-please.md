@@ -8,7 +8,7 @@ generated:
   at: 2026-08-04T14:40:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-05T22:42:00+02:00
+  at: 2026-08-06T11:30:00+02:00
 ---
 
 # Ava Release Automation
@@ -72,9 +72,11 @@ Also enable Actions to create pull requests and protect `main` with the Conventi
 
 The `release-qualification` workflow runs `internal/release/test.sh` for every pull request without requiring write permissions or repository secrets. This gives reviewers the same repository qualification entry point used again for the exact tagged release source.
 
-The separate `Release PR policy` workflow resolves successfully without checking release state for ordinary pull requests. Only the exact `release-please--branches--main` branch checks out the proposed release and runs `internal/release/validate_release_pr.py` plus its isolated tests. The validator reads the current `main` version from the pull request base revision and requires it to be declared as an upgrade source for the proposed version. For prereleases, `upgrade-sources.txt`, `alpha-qualification.json`, and `conformance-matrix.json` must declare the same exact source set.
+The separate `Release PR policy` workflow resolves successfully without checking release state for ordinary pull requests. Only the exact `release-please--branches--main` branch checks out the proposed release and runs both release-only validators.
 
-Pull-request success does not replace release-time qualification. The release workflow reruns the suite after the tag and draft release exist so the qualified source revision is exactly the revision that will be published.
+`validate_release_pr.py` requires the current `main` version and exact agreement between `upgrade-sources.txt`, `alpha-qualification.json`, and `conformance-matrix.json`. `validate_upgrade_impact.py` additionally requires every protected installed prerelease to remain directly supported and verifies each source-specific managed delta, migration decision, guidance decision, semantic-review decision, and cumulative changelog coverage against `upgrade-impact.json`.
+
+Pull-request success does not replace release-time qualification. The release workflow reruns the suite and both release-only validators after the tag and draft release exist so the qualified source revision is exactly the revision that will be published.
 
 ## Qualified release handoff
 
@@ -83,12 +85,14 @@ When a release pull request is merged, the merge authorizes publication of the r
 1. creates the immutable tag and draft GitHub Release
 2. checks out the exact SHA reported by release-please
 3. verifies tag, version file, action outputs, and checked-out revision agree
-4. runs the maintained release qualification suite
-5. assembles the seven release assets twice and compares every digest
+4. runs the maintained release qualification suite and exact-source impact validation
+5. assembles the seven release assets twice from the reviewed per-source impact and compares every digest
 6. validates the assembled release with the conformance suite
 7. verifies the GitHub Release is still a draft
 8. attests the verified assets
 9. uploads assets without clobbering an existing filename
 10. publishes the qualified release
+
+The reviewed assembler requires every generated manifest edge to match its declared migration IDs and guidance paths exactly. Empty lists remain valid only when the source assessment records why ordinary managed reconciliation is sufficient and why project-owned semantic work is unnecessary.
 
 Any mismatch or failed step leaves the release as a blocked draft. Existing tags or assets are never moved, replaced, or reused.
