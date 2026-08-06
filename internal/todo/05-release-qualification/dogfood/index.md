@@ -8,12 +8,14 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 ## Current next finding
 
-[Repair installed context link resolution](02-repair-installed-context-link-resolution.md).
+[Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md).
+
+Finding 02 remains pending only for its separate published alpha.7 installed-project validation. Its repository implementation is already complete, so the backlog rule permits the next actionable implementation finding to proceed.
 
 ## Backlog status
 
-- 3 pending findings
-- 1 pending blocker
+- 4 pending findings
+- 2 pending blockers
 - 2 pending required-v1 findings
 - 1 completed finding
 
@@ -25,6 +27,7 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 | 02 | pending | blocker | next prerelease | [Repair installed context link resolution](02-repair-installed-context-link-resolution.md) |
 | 03 | pending | required-v1 | release candidate | [Make knowledge hierarchy promotion predictable](03-make-knowledge-hierarchy-promotion-predictable.md) |
 | 04 | pending | required-v1 | release candidate | [Enforce faithful inbox ingestion completion](04-enforce-faithful-inbox-ingestion-completion.md) |
+| 05 | pending | blocker | next prerelease | [Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md) |
 
 ## Adding a finding
 
@@ -54,7 +57,9 @@ Implement findings in dependency order. When several findings require the same p
 
 This batching rule does not permit publication while a pending blocker is absent from the release or otherwise unresolved.
 
-Finding 02 has passing repository, assembly, and local-install evidence in implementing draft PR [#53](https://github.com/phdah/ava/pull/53). It remains the current pending blocker until corrected published-prerelease validation is recorded.
+Finding 02 has passing repository, assembly, and local-install evidence in implementing draft PR [#53](https://github.com/phdah/ava/pull/53). It remains pending until the complete Inbox Ingester required-reading chain is validated in a real project installed from immutable `1.0.0-alpha.7` assets. That validation stays within finding 02.
+
+Finding 05 is the current actionable implementation blocker. It repairs the alpha.5 source stranded by alpha.6 and alpha.7 and requires the next corrective prerelease to account explicitly for managed changes, migrations, guidance, semantic impact, and cumulative release notes for every supported source.
 
 ## Classification
 
