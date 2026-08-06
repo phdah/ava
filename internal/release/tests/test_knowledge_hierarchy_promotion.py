@@ -53,15 +53,16 @@ class KnowledgeHierarchyPromotionTests(unittest.TestCase):
         )
         self.assertIn("lists direct children only", self.knowledge)
 
-    def test_inbox_ingester_checks_promotion_before_processing(self) -> None:
+    def test_inbox_ingester_blocks_flat_growth_and_hands_off(self) -> None:
         self.assertIn("# Durable subject classification", self.inbox)
-        self.assertIn("# Bounded hierarchy promotion", self.inbox)
+        self.assertIn("# Hierarchy promotion gate", self.inbox)
         self.assertIn(
             "Inspect the target branch's current direct children and stable index headings before adding another sibling",
             self.inbox,
         )
         self.assertIn("Do not use document counts as the promotion rule", self.inbox)
-        self.assertIn("leave the source pending and request project steward follow-up", self.inbox.lower())
+        self.assertIn("must not move or broadly reorganize existing trusted concepts", self.inbox)
+        self.assertIn("leave the source pending and request the project steward", self.inbox.lower())
 
     def test_project_steward_owns_broader_reorganization(self) -> None:
         self.assertIn("# Knowledge hierarchy maintenance", self.steward)
@@ -76,12 +77,13 @@ class KnowledgeHierarchyPromotionTests(unittest.TestCase):
         self.assertIn("parent and child indexes preserve direct-child navigation", self.reviewer)
         self.assertIn("identify the Project Steward", self.reviewer)
 
-    def test_observed_mixed_branch_promotes_before_new_integration(self) -> None:
+    def test_observed_mixed_branch_requires_steward_promotion(self) -> None:
         case = self.cases["stable-index-group-promotes-to-collection"]
-        self.assertEqual(case["expected_action"], "promote-subgroup-before-ingestion")
+        self.assertEqual(case["expected_action"], "request-promotion-before-ingestion")
+        self.assertEqual(case["required_follow_up"], "Project Steward")
         self.assertEqual(case["expected_collection"], "knowledge/work/integrations/")
         self.assertTrue(
-            any("Meeting Notes" in check or "integration" in check.lower() for check in case["review_checks"]),
+            any("Project Steward" in check for check in case["review_checks"]),
             case,
         )
 
