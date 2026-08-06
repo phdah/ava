@@ -8,9 +8,9 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 ## Current next finding
 
-[Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md).
+[Make knowledge hierarchy promotion predictable](03-make-knowledge-hierarchy-promotion-predictable.md).
 
-Finding 05 has complete repository implementation in draft PR #60 and remains pending only for shared corrective-prerelease validation. Finding 06 is now the first actionable pending implementation blocker.
+Findings 05 and 06 have complete repository implementations in merged PR #60 and draft PR #62. Both remain pending for shared corrective-prerelease validation, so finding 03 is now the first actionable pending implementation task.
 
 ## Backlog status
 
@@ -60,9 +60,11 @@ This batching rule does not permit publication while a pending blocker is absent
 
 Finding 02 is complete. PR [#53](https://github.com/phdah/ava/pull/53) supplied the repository implementation and local qualification, and immutable `1.0.0-alpha.7` validation on 2026-08-06 proved that the Inbox Ingester loaded its complete required-reading chain from exact installed-project paths without substitution or mutation.
 
-Finding 05 has complete repository implementation in draft PR [#60](https://github.com/phdah/ava/pull/60). Its generic release-PR completion machinery prevents future releases from silently omitting inherited or protected direct sources. The finding remains pending until a corrective immutable release declares the required real edges and validates the affected source installations.
+Finding 05 has complete repository implementation in merged PR [#60](https://github.com/phdah/ava/pull/60). Its generic release-PR completion machinery prevents future releases from silently omitting inherited or protected direct sources. The finding remains pending until a corrective immutable release declares the required real edges and validates the affected source installations.
 
-Finding 06 is the current actionable implementation blocker. It records the empty `./.ava/state/transactions/` directory left after a successful alpha.6 to alpha.7 upgrade and requires terminal cleanup to remove the transaction container only after its final workspace is deleted, while preserving active or non-empty transaction state.
+Finding 06 has complete repository implementation in draft PR [#62](https://github.com/phdah/ava/pull/62). Terminal transaction cleanup now removes an empty parent after its final workspace is deleted while preserving active, blocked, or non-empty transaction state. The finding remains pending until a corrective immutable release leaves no empty transaction container after a real supported-source upgrade and Ava Maintenance reports the installation as healthy.
+
+Finding 03 is the current actionable implementation task. It defines semantic hierarchy-promotion guidance so repeated ingestion routes durable subjects predictably without imposing a fixed project taxonomy or numeric split threshold.
 
 ## Classification
 
