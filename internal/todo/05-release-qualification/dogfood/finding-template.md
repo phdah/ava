@@ -44,19 +44,25 @@ Define the bounded repository changes expected from the resolving PR.
 
 ## Completion criteria
 
-- state the observable behavior that must work
+- state the observable repository behavior that must work
 - name the regression coverage that must be added
-- identify the published-asset or realistic-project validation required
-- require documentation and indexes to remain aligned
+- require affected documentation and indexes to remain aligned
+- require concrete resolution and repository-validation evidence
 
 ## Resolution evidence
 
-Complete this section when resolving the finding. Include the implementing PR, tests, published version when relevant, and dogfood verification result.
+Complete this section in the resolving implementation PR. Include the implementing PR, tests, and repository validation.
+
+## Release qualification follow-up
+
+When published-asset or realistic-project checks can only happen after merge, record them here as release-gate qualification. Append the resulting evidence later without keeping or returning the task to `pending`.
 ```
 
 ## Status and disposition rules
 
 Use only `pending` and `completed` for task status. A completed task must include resolution evidence.
+
+Mark a finding `completed` in the resolving implementation PR once its bounded repository change, tests, documentation, indexes, and resolution evidence are complete. Published-asset or realistic-project qualification that can only happen after merge is tracked separately and does not keep or return the implementation task to `pending`.
 
 An accepted post-v1 finding is `completed` because the current decision is resolved, with `classification: post-v1`, `blocks: none`, and an explicit deferral rationale in its resolution evidence.
 

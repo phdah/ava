@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Restore Complete Prerelease Upgrade Coverage
 description: Prevent release preparation from stranding supported installations and require reviewed per-source managed, migration, guidance, semantic, and cumulative-note assessments.
 tags: [internal, roadmap, dogfood, releases, upgrades, migrations, guidance, blocker]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 5
@@ -15,7 +15,7 @@ generated:
   at: 2026-08-06T09:25:50+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T13:45:00+02:00
+  at: 2026-08-06T16:18:00+02:00
 ---
 
 # Restore Complete Prerelease Upgrade Coverage
@@ -71,12 +71,12 @@ Current release edges come only from `upgrade-impact.json`. Historical tags that
 - every declared source has reviewed managed-change, migration, guidance, semantic, and cumulative-note data
 - generated `migration_ids`, `guidance_paths`, and source edges exactly match the reviewed impact
 - no production release logic hardcodes the next Ava release version
-- the eventual corrective release declares and validates the required real source edges
-- real version-pinned source installations upgrade successfully and preserve project-owned files byte-for-byte
+- regression coverage verifies the generic release flow and source-inheritance policy
+- the finding task, backlog index, phase index, and stable roadmap entry remain aligned
 
 ## Resolution evidence
 
-Draft PR [#60](https://github.com/phdah/ava/pull/60) implements the generic release-PR completion machinery:
+Merged PR [#60](https://github.com/phdah/ava/pull/60) implements the generic release-PR completion machinery:
 
 - release identity and channel validation is target-derived
 - direct source requirements are inherited from immutable release history
@@ -85,4 +85,8 @@ Draft PR [#60](https://github.com/phdah/ava/pull/60) implements the generic rele
 - tests cover alpha, release candidate, stable, stable patch, inheritance, retirement, exact cumulative notes, managed deltas, and edge assembly
 - future-version transition fixtures and release-specific impact data were removed from the implementation branch
 
-The finding remains pending until a corrective immutable release uses this flow and real affected installations upgrade successfully.
+The repository implementation, regression coverage, documentation, and roadmap evidence are complete.
+
+## Release qualification follow-up
+
+The next corrective immutable release must use this flow, declare the required real source edges, and validate version-pinned affected installations while preserving project-owned files byte-for-byte. Append that evidence here after publication. It is release-gate qualification evidence and does not keep or return this implementation task to `pending`.

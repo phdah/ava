@@ -1,3 +1,12 @@
+def cleanup_transaction_workspace(transaction_root: Path) -> None:
+    transaction_parent = transaction_root.parent
+    shutil.rmtree(transaction_root, ignore_errors=True)
+    try:
+        transaction_parent.rmdir()
+    except OSError:
+        pass
+
+
 def apply_transaction(
     root: Path,
     installed: dict[str, Any] | None,
@@ -138,12 +147,7 @@ def apply_transaction(
             journal.update({"status": "active", "stage": "semantic", "allowed_operations": ["inspect", "reconcile-semantic", "rollback"]})
         atomic_json(root / ".ava/state/upgrade.json", journal if installed or semantic["status"] != "complete" else idle_journal())
         if semantic["status"] == "complete":
-            shutil.rmtree(transaction_root, ignore_errors=True)
-            if fresh:
-                try:
-                    transaction_root.parent.rmdir()
-                except OSError:
-                    pass
+            cleanup_transaction_workspace(transaction_root)
         print(f"Installed Ava {target.version} in {root}")
         if semantic["status"] != "complete":
             print("Deterministic upgrade complete. Normal routing remains blocked.")
@@ -168,12 +172,7 @@ def apply_transaction(
                         live.unlink()
                 shutil.rmtree(root / ".ava", ignore_errors=True)
         finally:
-            shutil.rmtree(transaction_root, ignore_errors=True)
-            if fresh:
-                try:
-                    transaction_root.parent.rmdir()
-                except OSError:
-                    pass
+            cleanup_transaction_workspace(transaction_root)
         raise
 
 
@@ -274,4 +273,3 @@ def load_active_plan(root: Path, journal: dict[str, Any]) -> tuple[Path, dict[st
     plan_path = transaction_root / "plan.json"
     plan = read_json(plan_path, "NO_ROLLBACK")
     return transaction_root, plan
-
