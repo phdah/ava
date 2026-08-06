@@ -165,11 +165,6 @@
     "historical_unversioned_supported": false,
     "selection": "exact-version-only",
     "stable_guarantees_begin": "1.0.0",
-    "protected_direct_sources": [
-      "1.0.0-alpha.5",
-      "1.0.0-alpha.6",
-      "1.0.0-alpha.7"
-    ],
     "transitions": [
       {
         "from": "1.0.0-alpha.1",
@@ -198,24 +193,6 @@
       {
         "from": "1.0.0-alpha.6",
         "to": "1.0.0-alpha.7",
-        "channel": "alpha",
-        "must_be_declared": true
-      },
-      {
-        "from": "1.0.0-alpha.5",
-        "to": "1.0.0-alpha.8",
-        "channel": "alpha",
-        "must_be_declared": true
-      },
-      {
-        "from": "1.0.0-alpha.6",
-        "to": "1.0.0-alpha.8",
-        "channel": "alpha",
-        "must_be_declared": true
-      },
-      {
-        "from": "1.0.0-alpha.7",
-        "to": "1.0.0-alpha.8",
         "channel": "alpha",
         "must_be_declared": true
       },

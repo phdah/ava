@@ -8,9 +8,9 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 ## Current next finding
 
-[Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md).
+[Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md).
 
-Finding 05 has completed repository implementation but remains pending for shared immutable alpha.8 validation. Finding 06 is therefore the first actionable pending blocker and should be included before alpha.8 publication.
+Finding 05 remains the first actionable pending blocker. [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) follows it and should be included in the same corrective prerelease cycle when practical.
 
 ## Backlog status
 
@@ -27,7 +27,7 @@ Finding 05 has completed repository implementation but remains pending for share
 | 02 | completed | blocker | next prerelease | [Repair installed context link resolution](02-repair-installed-context-link-resolution.md) |
 | 03 | pending | required-v1 | release candidate | [Make knowledge hierarchy promotion predictable](03-make-knowledge-hierarchy-promotion-predictable.md) |
 | 04 | pending | required-v1 | release candidate | [Enforce faithful inbox ingestion completion](04-enforce-faithful-inbox-ingestion-completion.md) |
-| 05 | pending, implementation complete | blocker | next prerelease | [Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md) |
+| 05 | pending | blocker | next prerelease | [Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md) |
 | 06 | pending | blocker | next prerelease | [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) |
 
 ## Adding a finding
@@ -44,7 +44,7 @@ A finding that requires repository work must not remain only in a conversation, 
 
 The implementation PR that resolves a finding must:
 
-1. change its task status from `pending` to `completed` only after every completion criterion passes
+1. change its task status from `pending` to `completed`
 2. add concrete resolution and validation evidence
 3. update its row in this index
 4. select the next actionable pending finding, when one exists
@@ -60,7 +60,7 @@ This batching rule does not permit publication while a pending blocker is absent
 
 Finding 02 is complete. PR [#53](https://github.com/phdah/ava/pull/53) supplied the repository implementation and local qualification, and immutable `1.0.0-alpha.7` validation on 2026-08-06 proved that the Inbox Ingester loaded its complete required-reading chain from exact installed-project paths without substitution or mutation.
 
-Finding 05 now prepares alpha.8 as a direct target from alpha.5, alpha.6, and alpha.7. The release policy preserves those protected sources, validates their actual managed payload deltas, requires explicit migration, guidance, semantic, and cumulative-note decisions, and writes each manifest edge from the reviewed assessment. It remains pending until immutable alpha.8 upgrades from all three sources succeed and preserve project-owned files.
+Finding 05 is the current actionable implementation blocker. It repairs the alpha.5 source stranded by alpha.6 and alpha.7 and requires the next corrective prerelease to account explicitly for managed changes, migrations, guidance, semantic impact, and cumulative release notes for every supported source.
 
 Finding 06 records the empty `./.ava/state/transactions/` directory left after a successful alpha.6 to alpha.7 upgrade. It requires terminal cleanup to remove the transaction container only after its final workspace is deleted, while preserving active or non-empty transaction state.
 
