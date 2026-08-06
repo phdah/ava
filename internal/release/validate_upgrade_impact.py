@@ -47,9 +47,7 @@ def _read_version(path: Path) -> str:
     except OSError as exc:
         raise UpgradeImpactValidationError(f"cannot read {path}: {exc}") from exc
     if not SEMVER_RE.fullmatch(value):
-        raise UpgradeImpactValidationError(
-            f"{path} contains an invalid Ava version: {value!r}"
-        )
+        raise UpgradeImpactValidationError(f"{path} contains an invalid Ava version: {value!r}")
     return value
 
 
@@ -74,18 +72,14 @@ def _version_list(value: object, location: str, *, allow_empty: bool = True) -> 
         raise UpgradeImpactValidationError(f"{location} must be {qualifier}")
     if not all(isinstance(item, str) and SEMVER_RE.fullmatch(item) for item in value):
         raise UpgradeImpactValidationError(f"{location} must contain valid Ava versions")
-    if len(value) != len(set(value))):
+    if len(value) != len(set(value)):
         raise UpgradeImpactValidationError(f"{location} contains duplicates")
     return list(value)
 
 
 def _string_list(value: object, location: str) -> list[str]:
-    if not isinstance(value, list) or not all(
-        isinstance(item, str) and item for item in value
-    ):
-        raise UpgradeImpactValidationError(
-            f"{location} must be a list of non-empty strings"
-        )
+    if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
+        raise UpgradeImpactValidationError(f"{location} must be a list of non-empty strings")
     if len(value) != len(set(value)):
         raise UpgradeImpactValidationError(f"{location} contains duplicates")
     return list(value)
@@ -99,9 +93,7 @@ def source_assessments(impact: dict[str, Any]) -> dict[str, dict[str, Any]]:
         raise UpgradeImpactValidationError("upgrade-impact.json.target_version is invalid")
     values = impact.get("sources")
     if not isinstance(values, list) or not values:
-        raise UpgradeImpactValidationError(
-            "upgrade-impact.json.sources must be a non-empty list"
-        )
+        raise UpgradeImpactValidationError("upgrade-impact.json.sources must be a non-empty list")
 
     result: dict[str, dict[str, Any]] = {}
     for index, assessment in enumerate(values):
@@ -121,8 +113,7 @@ def source_assessments(impact: dict[str, Any]) -> dict[str, dict[str, Any]]:
         changes = assessment["managed_changes"]
         if not isinstance(changes, dict) or set(changes) != MANAGED_CHANGE_FIELDS:
             raise UpgradeImpactValidationError(
-                f"{location}.managed_changes fields must be exactly "
-                f"{sorted(MANAGED_CHANGE_FIELDS)}"
+                f"{location}.managed_changes fields must be exactly {sorted(MANAGED_CHANGE_FIELDS)}"
             )
         if changes["retained"] != RETAINED_VALUE:
             raise UpgradeImpactValidationError(
@@ -134,8 +125,7 @@ def source_assessments(impact: dict[str, Any]) -> dict[str, dict[str, Any]]:
                 candidate = PurePosixPath(path)
                 if not candidate.is_absolute() or ".." in candidate.parts:
                     raise UpgradeImpactValidationError(
-                        f"{location}.managed_changes.{name} contains unsafe "
-                        f"installed path {path!r}"
+                        f"{location}.managed_changes.{name} contains unsafe installed path {path!r}"
                     )
             changes[name] = paths
 
@@ -151,9 +141,7 @@ def source_assessments(impact: dict[str, Any]) -> dict[str, dict[str, Any]]:
             "release_note_assessment",
         ):
             if not isinstance(assessment[field], str) or not assessment[field].strip():
-                raise UpgradeImpactValidationError(
-                    f"{location}.{field} must be non-empty"
-                )
+                raise UpgradeImpactValidationError(f"{location}.{field} must be non-empty")
         if not isinstance(assessment["semantic_review_required"], bool):
             raise UpgradeImpactValidationError(
                 f"{location}.semantic_review_required must be boolean"
@@ -174,9 +162,7 @@ def repository_path_to_installed(path: str) -> str | None:
     relative = path.removeprefix(prefix)
     if relative == "AGENTS.md":
         return "/AGENTS.md"
-    if relative == "index.md" or relative.startswith(
-        ("roles/", "workflows/", "shared/")
-    ):
+    if relative == "index.md" or relative.startswith(("roles/", "workflows/", "shared/")):
         return f"/.ava/base/{relative}"
     return None
 
@@ -192,12 +178,7 @@ def managed_delta(root: Path, source: str) -> dict[str, list[str]]:
         "--",
         "templates/base",
     ]
-    result = subprocess.run(
-        command,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
+    result = subprocess.run(command, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.returncode != 0:
         raise UpgradeImpactValidationError(
             f"cannot compare v{source} with HEAD: {result.stderr.strip()}"
@@ -233,17 +214,13 @@ def managed_delta(root: Path, source: str) -> dict[str, list[str]]:
     return {name: sorted(paths) for name, paths in delta.items()}
 
 
-def validate_release_note_coverage(
-    changelog: str,
-    assessments: dict[str, dict[str, Any]],
-) -> None:
+def validate_release_note_coverage(changelog: str, assessments: dict[str, dict[str, Any]]) -> None:
     headings = set(re.findall(r"(?m)^## \[([^]]+)\]", changelog))
     for source, assessment in assessments.items():
         missing = sorted(set(assessment["release_note_versions"]) - headings)
         if missing:
             raise UpgradeImpactValidationError(
-                f"release notes for {source} require missing changelog versions: "
-                + ", ".join(missing)
+                f"release notes for {source} require missing changelog versions: {', '.join(missing)}"
             )
 
 
@@ -267,8 +244,7 @@ def validate_upgrade_impact(
 
     if impact["target_version"] != target:
         raise UpgradeImpactValidationError(
-            f"upgrade-impact.json target {impact['target_version']} does not match "
-            f"version.txt {target}"
+            f"upgrade-impact.json target {impact['target_version']} does not match version.txt {target}"
         )
     if set(assessments) != sources:
         raise UpgradeImpactValidationError(
@@ -308,9 +284,8 @@ def validate_upgrade_impact(
             for field in ("replaced", "created", "deleted"):
                 if actual[field] != sorted(declared[field]):
                     raise UpgradeImpactValidationError(
-                        f"managed {field} paths for {source} disagree with "
-                        f"v{source}..HEAD: declared={sorted(declared[field])}, "
-                        f"actual={actual[field]}"
+                        f"managed {field} paths for {source} disagree with v{source}..HEAD: "
+                        f"declared={sorted(declared[field])}, actual={actual[field]}"
                     )
 
     return (
