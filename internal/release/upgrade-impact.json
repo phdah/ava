@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "target_version": "1.0.0-alpha.8",
+  "target_version": "1.0.0-alpha.9",
   "retired_sources": [],
   "sources": [
     {
@@ -15,13 +15,15 @@
           "/.ava/base/roles/role-manager/index.md",
           "/.ava/base/shared/instructions/document-metadata.md",
           "/.ava/base/shared/instructions/workflow-format.md",
-          "/.ava/base/shared/instructions/workflow-lifecycle.md"
+          "/.ava/base/shared/instructions/workflow-lifecycle.md",
+          "/.ava/base/roles/upgrade-role/instructions.md",
+          "/.ava/base/shared/instructions/upgrade-state-and-routing.md"
         ],
         "created": [],
         "deleted": []
       },
       "migration_ids": [],
-      "migration_assessment": "Normal managed reconciliation replaces the eight corrected managed Markdown files, so no deterministic migration is required.",
+      "migration_assessment": "Normal managed reconciliation replaces the ten reviewed managed Markdown files, so no deterministic migration is required.",
       "guidance_paths": [],
       "semantic_review_required": false,
       "semantic_impact_evidence": [
@@ -64,13 +66,24 @@
           "managed_path": "/.ava/base/shared/instructions/workflow-lifecycle.md",
           "project_owned_impact": false,
           "reason": "The change is a mechanical link-target correction; workflow lifecycle rules and project-owned workflow obligations are unchanged."
+        },
+        {
+          "managed_path": "/.ava/base/roles/upgrade-role/instructions.md",
+          "project_owned_impact": false,
+          "reason": "The change tightens the managed Upgrade Role procedure for applying already reviewed release guidance and recording completion evidence. It does not introduce a new project-owned format, path, metadata, registry, role, workflow, or lifecycle requirement."
+        },
+        {
+          "managed_path": "/.ava/base/shared/instructions/upgrade-state-and-routing.md",
+          "project_owned_impact": false,
+          "reason": "The change makes managed pre-routing follow explicit per-edge semantic decisions and exact installed guidance. It changes managed upgrade control flow only and does not require existing project-owned context to adopt a new convention."
         }
       ],
-      "semantic_assessment": "No project-owned semantic review is required. Every changed managed payload path is accounted for above and each change is limited to managed Markdown link repair without changing a project-facing contract.",
+      "semantic_assessment": "No project-owned semantic review is required. Every changed managed payload path is accounted for above: eight changes are managed Markdown link repairs, and the two upgrade-control changes only make the managed runtime honor explicit reviewed edge decisions and completion evidence without changing project-owned contracts.",
       "release_note_versions": [
         "1.0.0-alpha.6",
         "1.0.0-alpha.7",
-        "1.0.0-alpha.8"
+        "1.0.0-alpha.8",
+        "1.0.0-alpha.9"
       ],
       "release_note_assessment": "This exactly covers every cumulative release after 1.0.0-alpha.5 through the target."
     },
@@ -78,19 +91,34 @@
       "from": "1.0.0-alpha.6",
       "managed_changes": {
         "retained": "all-unlisted-managed-payload-files",
-        "replaced": [],
+        "replaced": [
+          "/.ava/base/roles/upgrade-role/instructions.md",
+          "/.ava/base/shared/instructions/upgrade-state-and-routing.md"
+        ],
         "created": [],
         "deleted": []
       },
       "migration_ids": [],
-      "migration_assessment": "No managed payload files changed after this source, so no deterministic migration is required.",
+      "migration_assessment": "Normal managed reconciliation replaces the two reviewed managed upgrade instruction files, so no deterministic migration is required.",
       "guidance_paths": [],
       "semantic_review_required": false,
-      "semantic_impact_evidence": [],
-      "semantic_assessment": "No project-owned semantic review is required because there are no managed payload changes after this source; the remaining changes affect only internal release policy, qualification, and automation.",
+      "semantic_impact_evidence": [
+        {
+          "managed_path": "/.ava/base/roles/upgrade-role/instructions.md",
+          "project_owned_impact": false,
+          "reason": "The change tightens the managed Upgrade Role procedure for applying already reviewed release guidance and recording completion evidence. It does not introduce a new project-owned format, path, metadata, registry, role, workflow, or lifecycle requirement."
+        },
+        {
+          "managed_path": "/.ava/base/shared/instructions/upgrade-state-and-routing.md",
+          "project_owned_impact": false,
+          "reason": "The change makes managed pre-routing follow explicit per-edge semantic decisions and exact installed guidance. It changes managed upgrade control flow only and does not require existing project-owned context to adopt a new convention."
+        }
+      ],
+      "semantic_assessment": "No project-owned semantic review is required. The changed managed instructions only enforce that upgrades use the release-reviewed per-edge semantic decision, exact installed guidance, and recorded completion evidence; they do not require project-owned files to change.",
       "release_note_versions": [
         "1.0.0-alpha.7",
-        "1.0.0-alpha.8"
+        "1.0.0-alpha.8",
+        "1.0.0-alpha.9"
       ],
       "release_note_assessment": "This exactly covers every cumulative release after 1.0.0-alpha.6 through the target."
     },
@@ -98,20 +126,68 @@
       "from": "1.0.0-alpha.7",
       "managed_changes": {
         "retained": "all-unlisted-managed-payload-files",
-        "replaced": [],
+        "replaced": [
+          "/.ava/base/roles/upgrade-role/instructions.md",
+          "/.ava/base/shared/instructions/upgrade-state-and-routing.md"
+        ],
         "created": [],
         "deleted": []
       },
       "migration_ids": [],
-      "migration_assessment": "No managed payload files changed after this source, so no deterministic migration is required.",
+      "migration_assessment": "Normal managed reconciliation replaces the two reviewed managed upgrade instruction files, so no deterministic migration is required.",
       "guidance_paths": [],
       "semantic_review_required": false,
-      "semantic_impact_evidence": [],
-      "semantic_assessment": "No project-owned semantic review is required because there are no managed payload changes after this source; the target release only generalizes internal release PR completion and publication qualification.",
+      "semantic_impact_evidence": [
+        {
+          "managed_path": "/.ava/base/roles/upgrade-role/instructions.md",
+          "project_owned_impact": false,
+          "reason": "The change tightens the managed Upgrade Role procedure for applying already reviewed release guidance and recording completion evidence. It does not introduce a new project-owned format, path, metadata, registry, role, workflow, or lifecycle requirement."
+        },
+        {
+          "managed_path": "/.ava/base/shared/instructions/upgrade-state-and-routing.md",
+          "project_owned_impact": false,
+          "reason": "The change makes managed pre-routing follow explicit per-edge semantic decisions and exact installed guidance. It changes managed upgrade control flow only and does not require existing project-owned context to adopt a new convention."
+        }
+      ],
+      "semantic_assessment": "No project-owned semantic review is required. The changed managed instructions only enforce that upgrades use the release-reviewed per-edge semantic decision, exact installed guidance, and recorded completion evidence; they do not require project-owned files to change.",
       "release_note_versions": [
-        "1.0.0-alpha.8"
+        "1.0.0-alpha.8",
+        "1.0.0-alpha.9"
       ],
       "release_note_assessment": "This exactly covers every cumulative release after 1.0.0-alpha.7 through the target."
+    },
+    {
+      "from": "1.0.0-alpha.8",
+      "managed_changes": {
+        "retained": "all-unlisted-managed-payload-files",
+        "replaced": [
+          "/.ava/base/roles/upgrade-role/instructions.md",
+          "/.ava/base/shared/instructions/upgrade-state-and-routing.md"
+        ],
+        "created": [],
+        "deleted": []
+      },
+      "migration_ids": [],
+      "migration_assessment": "Normal managed reconciliation replaces the two reviewed managed upgrade instruction files, so no deterministic migration is required.",
+      "guidance_paths": [],
+      "semantic_review_required": false,
+      "semantic_impact_evidence": [
+        {
+          "managed_path": "/.ava/base/roles/upgrade-role/instructions.md",
+          "project_owned_impact": false,
+          "reason": "The change tightens the managed Upgrade Role procedure for applying already reviewed release guidance and recording completion evidence. It does not introduce a new project-owned format, path, metadata, registry, role, workflow, or lifecycle requirement."
+        },
+        {
+          "managed_path": "/.ava/base/shared/instructions/upgrade-state-and-routing.md",
+          "project_owned_impact": false,
+          "reason": "The change makes managed pre-routing follow explicit per-edge semantic decisions and exact installed guidance. It changes managed upgrade control flow only and does not require existing project-owned context to adopt a new convention."
+        }
+      ],
+      "semantic_assessment": "No project-owned semantic review is required. The changed managed instructions only enforce that upgrades use the release-reviewed per-edge semantic decision, exact installed guidance, and recorded completion evidence; they do not require project-owned files to change.",
+      "release_note_versions": [
+        "1.0.0-alpha.9"
+      ],
+      "release_note_assessment": "This exactly covers every cumulative release after 1.0.0-alpha.8 through the target."
     }
   ]
 }
