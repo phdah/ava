@@ -8,9 +8,9 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 ## Current next finding
 
-[Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md).
+[Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md).
 
-Finding 05 remains the first actionable pending blocker. [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) follows it and should be included in the same corrective prerelease cycle when practical.
+Finding 05 has complete repository implementation in draft PR #60 and remains pending only for shared corrective-prerelease validation. Finding 06 is now the first actionable pending implementation blocker.
 
 ## Backlog status
 
@@ -60,9 +60,9 @@ This batching rule does not permit publication while a pending blocker is absent
 
 Finding 02 is complete. PR [#53](https://github.com/phdah/ava/pull/53) supplied the repository implementation and local qualification, and immutable `1.0.0-alpha.7` validation on 2026-08-06 proved that the Inbox Ingester loaded its complete required-reading chain from exact installed-project paths without substitution or mutation.
 
-Finding 05 is the current actionable implementation blocker. It repairs the alpha.5 source stranded by alpha.6 and alpha.7 and requires the next corrective prerelease to account explicitly for managed changes, migrations, guidance, semantic impact, and cumulative release notes for every supported source.
+Finding 05 has complete repository implementation in draft PR [#60](https://github.com/phdah/ava/pull/60). Its generic release-PR completion machinery prevents future releases from silently omitting inherited or protected direct sources. The finding remains pending until a corrective immutable release declares the required real edges and validates the affected source installations.
 
-Finding 06 records the empty `./.ava/state/transactions/` directory left after a successful alpha.6 to alpha.7 upgrade. It requires terminal cleanup to remove the transaction container only after its final workspace is deleted, while preserving active or non-empty transaction state.
+Finding 06 is the current actionable implementation blocker. It records the empty `./.ava/state/transactions/` directory left after a successful alpha.6 to alpha.7 upgrade and requires terminal cleanup to remove the transaction container only after its final workspace is deleted, while preserving active or non-empty transaction state.
 
 ## Classification
 
