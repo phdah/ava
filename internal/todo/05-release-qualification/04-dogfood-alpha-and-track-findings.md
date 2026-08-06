@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T10:49:13+02:00
+  at: 2026-08-06T16:18:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -86,7 +86,7 @@ The same alpha.7 installation was inspected through the Ava Maintenance role. Th
 
 All 54 recorded payload checksums matched. No recorded managed file was missing, modified, corrupt, or non-regular. The inspection nevertheless returned `FAIL` because the successful updater left an empty unrecorded `./.ava/state/transactions/` directory after deleting its final transaction workspace.
 
-The identity and state explanation scenario is exercised. The cleanup defect is tracked separately by [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md) and must be resolved before the next prerelease.
+The identity and state explanation scenario is exercised. The cleanup defect is resolved by completed [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md). A corrective immutable release must still verify the fixed behavior through a real supported-source upgrade and healthy Ava Maintenance inspection before that release qualifies.
 
 ### Inbox ingestion and independent review
 
@@ -115,9 +115,9 @@ For every finding:
 5. add it to the findings index using the next unused number
 6. make the first actionable pending finding the current next task, respecting explicit dependencies
 
-The resolving implementation PR updates the finding task and findings index together. Completed findings remain as durable evidence and are never deleted or renumbered.
+The resolving implementation PR marks the finding `completed` and updates the finding task and findings index together once the repository change, regression coverage, documentation, indexes, and resolution evidence are complete. Completed findings remain as durable evidence and are never deleted or renumbered.
 
-When several findings require the same published-asset validation, implement them in dependency order and validate them through one corrective prerelease when practical. A finding whose repository implementation is complete but awaits that shared validation remains pending; it does not prevent implementation of the next dependency-ordered finding. Record the shared release and dogfood evidence in every finding it validates before marking those findings complete.
+When several completed findings require validation through the same published assets, validate them through one corrective prerelease when practical and append that evidence afterward. Published-asset or realistic-project checks that can only happen after merge are release qualification evidence. They do not keep or return an implemented finding to `pending`.
 
 Do not bury unresolved defects only in prose, issue comments, CI logs, release comments, or an informal checklist.
 
@@ -126,6 +126,7 @@ Do not bury unresolved defects only in prose, issue comments, CI logs, release c
 - `blocker` findings must be resolved before the next prerelease is published.
 - `required-v1` findings must name whether they block the next prerelease, release candidate, or stable release.
 - accepted `post-v1` findings require an explicit rationale and user-approved disposition.
+- completed findings may still require explicit immutable-release evidence before a release gate passes.
 - no release-candidate task becomes current while this umbrella task remains pending.
 
 ## Additional prereleases
@@ -138,7 +139,7 @@ Publish another `alpha.N` when completed fixes require validation through immuta
 - required guidance and migrations
 - the repeated dogfood scope
 
-Before assembling the release, update `prerelease_support.transitions` in `alpha-qualification.json`, `prerelease_transitions` in `conformance-matrix.json`, and `internal/release/upgrade-sources.txt` in a reviewed PR to include every intended source-to-target edge. Qualification must fail when a planned later prerelease is assembled without its required edges.
+On the release-please branch, complete the reviewed `internal/release/upgrade-impact.json` assessment for every required source-to-target edge. Qualification must fail until the proposed release declares, assesses, and tests every required transition.
 
 A beta may be introduced when useful, but it is not mandatory. The roadmap must describe its purpose and gate rather than using the label decoratively.
 
