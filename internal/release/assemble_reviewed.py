@@ -9,6 +9,7 @@ from internal.release import assemble
 from internal.release.validate_upgrade_impact import (
     UpgradeImpactValidationError,
     source_assessments,
+    version_key,
 )
 
 
@@ -59,10 +60,9 @@ def apply_reviewed_impact(output: Path, impact_path: Path, target_version: str) 
         edge["migration_ids"] = sorted(assessment["migration_ids"])
         edge["guidance_paths"] = sorted(assessment["guidance_paths"])
 
-    semantic_review_required = any(
+    manifest["semantic_review_required"] = any(
         assessment["semantic_review_required"] for assessment in assessments.values()
     )
-    manifest["semantic_review_required"] = semantic_review_required
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
 
     checksum_lines = [
@@ -99,6 +99,15 @@ def main(argv: list[str] | None = None) -> int:
         assessments = source_assessments(impact)
     except (OSError, json.JSONDecodeError, UpgradeImpactValidationError) as exc:
         raise ReviewedAssemblyError(f"cannot read reviewed upgrade impact: {exc}") from exc
+
+    supplied_sources = set(args.upgrade_from)
+    reviewed_sources = set(assessments)
+    if supplied_sources and supplied_sources != reviewed_sources:
+        raise ReviewedAssemblyError(
+            "command-line upgrade sources disagree with reviewed impact: "
+            f"command={sorted(supplied_sources)}, reviewed={sorted(reviewed_sources)}"
+        )
+    args.upgrade_from = sorted(reviewed_sources, key=version_key)
     args.semantic_review_required = any(
         assessment["semantic_review_required"] for assessment in assessments.values()
     )
