@@ -1,7 +1,7 @@
 ---
 type: Internal Development Task
 title: Restore Complete Prerelease Upgrade Coverage
-description: Repair the stranded alpha.5 upgrade path and require each corrective prerelease edge to account explicitly for managed changes, deterministic migrations, semantic guidance, and cumulative release notes.
+description: Prevent release preparation from stranding supported installations and require reviewed per-source managed, migration, guidance, semantic, and cumulative-note assessments.
 tags: [internal, roadmap, dogfood, releases, upgrades, migrations, guidance, blocker]
 status: pending
 phase: 5
@@ -13,90 +13,76 @@ affected_version: 1.0.0-alpha.6 through 1.0.0-alpha.7
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-06T09:25:50+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-06T13:45:00+02:00
 ---
 
 # Restore Complete Prerelease Upgrade Coverage
 
 ## Observed behavior
 
-The published `1.0.0-alpha.6` release does not declare an upgrade edge from `1.0.0-alpha.5`, even though alpha.5 was the immediately preceding published prerelease and had been validated as a realistic installed project state.
+The published `1.0.0-alpha.6` release omitted the immediately preceding `1.0.0-alpha.5` source. The subsequent `1.0.0-alpha.7` release declared only `1.0.0-alpha.6`, so an alpha.5 installation cannot reach a valid newer release through the published graph.
 
-The subsequent `1.0.0-alpha.7` release declares only `1.0.0-alpha.6 -> 1.0.0-alpha.7`. An alpha.5 installation therefore cannot upgrade to alpha.6 and cannot reach alpha.7 through a valid chain. The release PR repair for alpha.7 satisfied the immediate previous-version guard but did not audit the complete published support graph.
-
-The alpha.7 release preparation also treated the source declaration as sufficient without recording an explicit assessment of the accumulated source-to-target delta. Ava-managed files may be replaced by the normal transactional reconciliation mechanism, but every supported edge must still state whether deterministic migrations, semantic guidance, and source-relevant release notes are required. Empty migration and guidance inventories must be an explicit reviewed conclusion rather than an unexamined default.
-
-## Reproduction and evidence
-
-The immutable alpha.6 release source declaration contains:
-
-```text
-1.0.0-alpha.3
-1.0.0-alpha.4
-```
-
-It omits `1.0.0-alpha.5`. Running the alpha.6 installer in an alpha.5 project therefore resolves no matching edge and must report an unsupported transition.
-
-The immutable alpha.7 declaration contains only:
-
-```text
-1.0.0-alpha.6
-```
-
-The alpha.7 release cannot repair alpha.5 through a chained path because the required adjacent `alpha.5 -> alpha.6` edge does not exist. Published releases are immutable, so the next corrective prerelease must declare a direct edge from alpha.5 rather than altering alpha.6 or alpha.7.
-
-The expected corrective target must support direct upgrades from every currently relevant installed prerelease:
-
-```text
-1.0.0-alpha.5 -> next corrective prerelease
-1.0.0-alpha.6 -> next corrective prerelease
-1.0.0-alpha.7 -> next corrective prerelease
-```
-
-For each source, release preparation must compare the source release with the target managed payload and contracts, then explicitly determine:
-
-- which Ava-managed files are retained, replaced, created, or deleted by normal reconciliation
-- whether any managed-state transformation requires deterministic migration IDs
-- whether any project-owned concept requires semantic review and installed guidance
-- which cumulative changes must appear in release notes for a user upgrading from that source
-
-## Classification
-
-This is a `blocker` for the next prerelease. Ava advertises explicit prerelease upgrade support, but a realistic installation on alpha.5 is stranded by immutable release metadata. Publishing another prerelease without repairing that path would repeat the same support failure and make release qualification pass a declaration that does not represent the complete intended support graph.
+The release process also treated a source list as sufficient without requiring an explicit source-to-target assessment of managed changes, deterministic migrations, semantic guidance, and cumulative release notes.
 
 ## Root cause
 
-`internal/release/upgrade-sources.txt` is reviewed state for the next release, but alpha.6 retained the earlier alpha.3 and alpha.4 sources and omitted the newly published alpha.5 source.
+Release preparation validated only release-specific declarations copied into several prerelease fixtures. It did not inherit the direct source commitments of the previous immutable release, did not protect known stranded sources, and did not bind assembled edges to one reviewed source assessment.
 
-The release PR validator introduced for alpha.7 requires the exact current `main` version to be present and requires agreement between the source file and two transition fixtures. It does not identify previously supported or realistically installed prereleases that would become stranded. Consistently incomplete declarations can therefore pass.
+The implementation also mixed generic release machinery with data for a presumed next version. That made the flow specific to the next alpha instead of reusable for release candidates and stable releases.
 
-Release preparation also lacks a mandatory source-to-target impact review that binds the edge to its actual managed replacements, migration IDs, guidance paths, semantic-review decision, and cumulative release-note obligations.
+## Corrective design
+
+The repository provides one generic release flow:
+
+1. A releasable implementation pull request merges to `main`.
+2. Release-please creates or updates its release pull request.
+3. The release pull request initially fails because no reviewed impact exists for its proposed target.
+4. An agent inspects all included changes and completes `internal/release/upgrade-impact.json` directly on the release-please branch.
+5. Qualification derives required direct sources from the previous version, the previous release's direct sources, and channel-neutral protected-source policy.
+6. The agent validates actual tagged deltas, cumulative changelog coverage, migrations, guidance, and semantic decisions.
+7. The release pull request is merged only after all checks pass.
+8. The exact tagged revision is requalified, assembled, attested, and published.
+
+Current release edges come only from `upgrade-impact.json`. Historical tags that predate that file are read through their immutable legacy `upgrade-sources.txt` declarations.
 
 ## Scope
 
-- make this the next actionable dogfood implementation task while finding 02 remains pending only for published alpha.7 validation
-- declare the next corrective prerelease as a direct upgrade target from alpha.5, alpha.6, and alpha.7
-- update `upgrade-sources.txt`, alpha qualification transitions, conformance transitions, and frozen expectations together for the exact corrective version
-- strengthen release qualification so reviewed source coverage cannot be reduced to only the immediate previous version when that would strand an intended supported prerelease
-- require release preparation to inspect the managed and semantic delta for every declared source edge
-- include all required deterministic migration IDs and guidance paths in the generated release manifest
-- permit empty migration or guidance lists only when the release review records why normal managed reconciliation is sufficient and why no project-owned semantic work is required
-- ensure release notes describe the cumulative user-visible and managed-contract changes relevant to every supported source, including changes first introduced in alpha.6 and alpha.7
-- preserve published release immutability; do not edit or republish alpha.6 or alpha.7 assets
-- keep the alpha.7 installed-link validation in finding 02 rather than merging it into this task
+- keep release tooling independent of any presumed next version
+- support alpha, beta, release candidate, and stable SemVer targets
+- require release-please configuration to match the proposed channel
+- inherit direct sources from immutable previous release state
+- protect explicitly retained installed sources through channel-neutral policy
+- allow inherited sources to be retired only with a reviewed reason
+- require exact per-source managed payload deltas
+- require explicit migration, guidance, and semantic-review assessments
+- require exact cumulative changelog coverage from each source through the target
+- derive assembled manifest edges directly from the reviewed impact
+- keep release-specific edges and assessments off ordinary implementation branches
+- preserve published release immutability
 
 ## Completion criteria
 
-- the next corrective prerelease declares direct manifest edges from alpha.5, alpha.6, and alpha.7
-- release qualification fails when an intended supported installed prerelease is omitted from the reviewed corrective source set
-- every declared edge has an explicit reviewed managed-change, migration, guidance, semantic-review, and cumulative release-note assessment
-- generated `migration_ids` and `guidance_paths` exactly match that assessment, including an explicit justified empty result when no special instructions are needed
-- release notes identify the cumulative changes relevant to alpha.5, alpha.6, and alpha.7 installations
-- real version-pinned alpha.5, alpha.6, and alpha.7 projects upgrade successfully to the corrective immutable prerelease
-- the updater replaces all changed unmodified Ava-managed files, advances installed state correctly, and preserves project-owned files byte-for-byte
-- regression tests cover the stranded alpha.5 shape, preservation of intended supported sources, and edge impact assessment during release preparation
-- the implementing PR, corrective published version, and three real upgrade results are recorded as resolution evidence
-- the dogfood, phase, and roadmap indexes remain aligned
+- an incomplete release-please pull request fails qualification
+- the same validator and reviewed assembler accept representative alpha, release candidate, stable, and stable patch releases
+- the immediately previous version and inherited direct sources cannot be silently omitted
+- protected sources require a separate policy change before retirement
+- every declared source has reviewed managed-change, migration, guidance, semantic, and cumulative-note data
+- generated `migration_ids`, `guidance_paths`, and source edges exactly match the reviewed impact
+- no production release logic hardcodes the next Ava release version
+- the eventual corrective release declares and validates the required real source edges
+- real version-pinned source installations upgrade successfully and preserve project-owned files byte-for-byte
 
 ## Resolution evidence
 
-Pending implementation.
+Draft PR [#60](https://github.com/phdah/ava/pull/60) implements the generic release-PR completion machinery:
+
+- release identity and channel validation is target-derived
+- direct source requirements are inherited from immutable release history
+- `upgrade-impact.json` is the sole current edge declaration
+- reviewed assembly derives edge sources from that impact
+- tests cover alpha, release candidate, stable, stable patch, inheritance, retirement, exact cumulative notes, managed deltas, and edge assembly
+- future-version transition fixtures and release-specific impact data were removed from the implementation branch
+
+The finding remains pending until a corrective immutable release uses this flow and real affected installations upgrade successfully.
