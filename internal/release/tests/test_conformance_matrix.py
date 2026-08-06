@@ -189,6 +189,12 @@ class ConformanceMatrixTests(unittest.TestCase):
                     "must_be_declared": True,
                 },
                 {
+                    "from": "1.0.0-alpha.6",
+                    "to": "1.0.0-alpha.7",
+                    "channel": "alpha",
+                    "must_be_declared": True,
+                },
+                {
                     "from": "1.0.0-alpha.5",
                     "to": "1.0.0-rc.1",
                     "channel": "rc",
