@@ -2,6 +2,11 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-08-06
+
+- **Protected prerelease source coverage**: Added an explicit protected direct-source set so a corrective release cannot retain only the immediately previous prerelease while stranding another supported installed state.
+- **Reviewed per-edge impact assembly**: Added a source-specific review artifact and validator for managed replacements, deterministic migrations, guidance, semantic review, and cumulative release-note coverage. Release assembly now writes each manifest edge from that reviewed assessment.
+
 ## 2026-08-05
 
 - **Isolated release PR policy gate**: Added a dedicated required-check workflow that no-ops ordinary pull requests but validates release-please proposals against the current `main` version, upgrade-source declarations, and matching prerelease transition fixtures before merge.
