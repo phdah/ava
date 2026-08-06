@@ -16,102 +16,84 @@ class ReleasePrPolicyTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
         (self.root / "internal/release/fixtures").mkdir(parents=True)
+        (self.root / "internal/release/fixtures/release-upgrade-policy.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "initial_release_version": "1.0.0-alpha.1",
+                    "protected_direct_sources": [],
+                }
+            )
+        )
 
     def tearDown(self) -> None:
         self.temp.cleanup()
 
-    def write_fixture(
-        self,
-        *,
-        target: str,
-        sources: list[str],
-        transitions: list[dict[str, object]],
-    ) -> None:
-        (self.root / "version.txt").write_text(f"{target}\n")
-        (self.root / ".release-please-manifest.json").write_text(
-            json.dumps({".": target})
-        )
-        (self.root / "internal/release/upgrade-sources.txt").write_text(
-            "".join(f"{source}\n" for source in sources)
-        )
-        policy = {
-            "prerelease_support": {
-                "first_alpha": {"version": "1.0.0-alpha.1"},
-                "transitions": transitions,
-            }
-        }
-        matrix = {"prerelease_transitions": transitions}
-        (self.root / "internal/release/fixtures/alpha-qualification.json").write_text(
-            json.dumps(policy)
-        )
-        (self.root / "internal/release/fixtures/conformance-matrix.json").write_text(
-            json.dumps(matrix)
-        )
-
     @staticmethod
-    def transition(source: str, target: str) -> dict[str, object]:
+    def impact(target: str) -> dict[str, object]:
         return {
-            "from": source,
-            "to": target,
-            "channel": "alpha",
-            "must_be_declared": True,
+            "schema_version": 1,
+            "target_version": target,
+            "retired_sources": [],
+            "sources": [],
         }
 
-    def test_rejects_stale_sources_for_new_prerelease(self) -> None:
-        self.write_fixture(
-            target="1.0.0-alpha.6",
-            sources=["1.0.0-alpha.3", "1.0.0-alpha.4"],
-            transitions=[
-                self.transition("1.0.0-alpha.3", "1.0.0-alpha.5"),
-                self.transition("1.0.0-alpha.4", "1.0.0-alpha.5"),
-            ],
+    def write_fixture(self, *, target: str, channel: str) -> None:
+        (self.root / "version.txt").write_text(f"{target}\n")
+        (self.root / ".release-please-manifest.json").write_text(json.dumps({".": target}))
+        if channel == "stable":
+            config = {"prerelease": False, "versioning": "default"}
+        else:
+            config = {
+                "prerelease": True,
+                "versioning": "prerelease",
+                "prerelease-type": channel,
+            }
+        (self.root / "release-please-config.json").write_text(json.dumps(config))
+        (self.root / "internal/release/upgrade-impact.json").write_text(
+            json.dumps(self.impact(target))
         )
-        with self.assertRaisesRegex(
-            ReleasePrValidationError,
-            "must include the current main version 1.0.0-alpha.5",
-        ):
-            validate_release_pr(self.root, "1.0.0-alpha.5")
 
-    def test_accepts_matching_prerelease_edge(self) -> None:
-        transition = self.transition("1.0.0-alpha.5", "1.0.0-alpha.6")
-        self.write_fixture(
-            target="1.0.0-alpha.6",
-            sources=["1.0.0-alpha.5"],
-            transitions=[transition],
-        )
-        message = validate_release_pr(self.root, "1.0.0-alpha.5")
-        self.assertIn("1.0.0-alpha.5 -> 1.0.0-alpha.6", message)
+    def test_accepts_alpha_release(self) -> None:
+        self.write_fixture(target="2.0.0-alpha.4", channel="alpha")
+        message = validate_release_pr(self.root, "2.0.0-alpha.3")
+        self.assertIn("channel: alpha", message)
 
-    def test_rejects_fixture_and_source_mismatch(self) -> None:
-        transition = self.transition("1.0.0-alpha.5", "1.0.0-alpha.6")
-        self.write_fixture(
-            target="1.0.0-alpha.6",
-            sources=["1.0.0-alpha.5", "1.0.0-alpha.4"],
-            transitions=[transition],
-        )
-        with self.assertRaisesRegex(
-            ReleasePrValidationError,
-            "does not exactly match the declared transitions",
-        ):
-            validate_release_pr(self.root, "1.0.0-alpha.5")
+    def test_accepts_rc_release(self) -> None:
+        self.write_fixture(target="2.0.0-rc.1", channel="rc")
+        message = validate_release_pr(self.root, "2.0.0-alpha.9")
+        self.assertIn("channel: rc", message)
 
-    def test_accepts_stable_patch_with_previous_version(self) -> None:
-        self.write_fixture(
-            target="1.0.1",
-            sources=["1.0.0"],
-            transitions=[],
-        )
-        message = validate_release_pr(self.root, "1.0.0")
-        self.assertIn("1.0.0 -> 1.0.1", message)
+    def test_accepts_stable_release(self) -> None:
+        self.write_fixture(target="2.0.0", channel="stable")
+        message = validate_release_pr(self.root, "2.0.0-rc.2")
+        self.assertIn("channel: stable", message)
 
-    def test_first_alpha_requires_empty_upgrade_sources(self) -> None:
-        self.write_fixture(
-            target="1.0.0-alpha.1",
-            sources=[],
-            transitions=[],
-        )
+    def test_accepts_stable_patch_release(self) -> None:
+        self.write_fixture(target="2.0.1", channel="stable")
+        message = validate_release_pr(self.root, "2.0.0")
+        self.assertIn("2.0.0 -> 2.0.1", message)
+
+    def test_rejects_channel_configuration_mismatch(self) -> None:
+        self.write_fixture(target="2.0.0-rc.1", channel="alpha")
+        with self.assertRaisesRegex(ReleasePrValidationError, "rc release requires"):
+            validate_release_pr(self.root, "2.0.0-alpha.9")
+
+    def test_rejects_non_advancing_release(self) -> None:
+        self.write_fixture(target="2.0.0-alpha.3", channel="alpha")
+        with self.assertRaisesRegex(ReleasePrValidationError, "must advance Ava"):
+            validate_release_pr(self.root, "2.0.0-alpha.3")
+
+    def test_rejects_missing_release_impact(self) -> None:
+        self.write_fixture(target="2.0.0-alpha.4", channel="alpha")
+        (self.root / "internal/release/upgrade-impact.json").unlink()
+        with self.assertRaisesRegex(ReleasePrValidationError, "cannot read"):
+            validate_release_pr(self.root, "2.0.0-alpha.3")
+
+    def test_accepts_configured_first_release(self) -> None:
+        self.write_fixture(target="1.0.0-alpha.1", channel="alpha")
         message = validate_release_pr(self.root, "0.0.0")
-        self.assertIn("first alpha", message)
+        self.assertIn("0.0.0 -> 1.0.0-alpha.1", message)
 
 
 if __name__ == "__main__":

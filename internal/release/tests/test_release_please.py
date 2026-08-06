@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[3]
 CONFIG_PATH = ROOT / "release-please-config.json"
 MANIFEST_PATH = ROOT / ".release-please-manifest.json"
 FIXTURE_PATH = ROOT / "internal/release/fixtures/release-please-policy.json"
+UPGRADE_POLICY_PATH = ROOT / "internal/release/fixtures/release-upgrade-policy.json"
 RELEASE_WORKFLOW_PATH = ROOT / ".github/workflows/release-please.yml"
 PYTHON_WORKFLOW_PATH = ROOT / ".github/workflows/python-tests.yml"
 TITLE_WORKFLOW_PATH = ROOT / ".github/workflows/conventional-pr-title.yml"
@@ -21,6 +22,7 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         cls.config = json.loads(CONFIG_PATH.read_text())
         cls.manifest = json.loads(MANIFEST_PATH.read_text())
         cls.fixture = json.loads(FIXTURE_PATH.read_text())
+        cls.upgrade_policy = json.loads(UPGRADE_POLICY_PATH.read_text())
         cls.release_workflow = RELEASE_WORKFLOW_PATH.read_text()
         cls.python_workflow = PYTHON_WORKFLOW_PATH.read_text()
         cls.title_workflow = TITLE_WORKFLOW_PATH.read_text()
@@ -99,6 +101,8 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertIn("secrets.RELEASE_PLEASE_TOKEN", self.release_workflow)
         self.assertIn("steps.release.outputs.sha", self.release_workflow)
         self.assertIn("git rev-list -n 1", self.release_workflow)
+        self.assertIn("internal/release/validate_release_pr.py", self.release_workflow)
+        self.assertIn("internal/release/validate_upgrade_impact.py", self.release_workflow)
         self.assertIn("internal/release/test.sh", self.release_workflow)
         self.assertEqual(self.release_workflow.count("internal/release/assemble.sh"), 1)
         self.assertIn("for output in release-a release-b", self.release_workflow)
@@ -112,25 +116,30 @@ class ReleasePleasePolicyTests(unittest.TestCase):
             self.release_workflow.index('gh release edit "$TAG" --draft=false'),
         )
 
-    def test_release_workflow_reads_upgrade_sources_file(self) -> None:
-        self.assertIn("internal/release/upgrade-sources.txt", self.release_workflow)
-        self.assertIn("--upgrade-from", self.release_workflow)
+    def test_release_workflow_uses_reviewed_upgrade_impact(self) -> None:
+        self.assertIn(
+            "AVA_UPGRADE_IMPACT=internal/release/upgrade-impact.json",
+            self.release_workflow,
+        )
+        self.assertNotIn("internal/release/upgrade-sources.txt", self.release_workflow)
+        self.assertNotIn("--upgrade-from", self.release_workflow)
         self.assertLess(
-            self.release_workflow.index("internal/release/upgrade-sources.txt"),
+            self.release_workflow.index("internal/release/validate_upgrade_impact.py"),
             self.release_workflow.index("internal/release/assemble.sh"),
         )
 
-    def test_upgrade_sources_file_contains_valid_versions(self) -> None:
+    def test_upgrade_policy_contains_valid_versions(self) -> None:
         import re
+
         semver_re = re.compile(
             r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-(alpha|beta|rc)\.[1-9][0-9]*)?$"
         )
-        sources_path = ROOT / "internal/release/upgrade-sources.txt"
-        self.assertTrue(sources_path.exists(), "upgrade-sources.txt must exist")
-        lines = [line for line in sources_path.read_text().splitlines() if line.strip()]
-        self.assertTrue(lines, "upgrade-sources.txt must not be empty for a non-first-alpha release")
-        for version in lines:
-            self.assertRegex(version, semver_re, f"invalid version in upgrade-sources.txt: {version}")
+        self.assertEqual(self.upgrade_policy["schema_version"], 1)
+        self.assertRegex(self.upgrade_policy["initial_release_version"], semver_re)
+        protected = self.upgrade_policy["protected_direct_sources"]
+        self.assertEqual(len(protected), len(set(protected)))
+        for version in protected:
+            self.assertRegex(version, semver_re, f"invalid protected source: {version}")
 
 
 if __name__ == "__main__":
