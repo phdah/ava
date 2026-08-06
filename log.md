@@ -2,6 +2,15 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-08-06
+
+* **Durable subject identity**: Required canonical knowledge to follow the stable project, integration, system, person, agreement, decision, process, or event it describes rather than the shape of a meeting note, daily note, message, report, or export.
+* **Concept and collection boundary**: Distinguished one independently maintainable canonical subject from a collection that provides a reusable semantic routing choice among multiple current concepts.
+* **Semantic hierarchy promotion**: Required mature index subgroups to become child collections before further flat growth when their headings already encode durable routing decisions.
+* **Project-owned taxonomy**: Kept exact scopes, domains, collection names, identity choices, and ambiguous ownership decisions project-owned, with no numeric split threshold or speculative empty taxonomy.
+* **Knowledge reorganization ownership**: Allowed bounded clear promotion during inbox ingestion, assigned broader trusted-branch restructuring to the Project Steward, and added independent hierarchy criteria to Change Reviewer.
+* **Promotion regression coverage**: Added semantic fixtures for mixed initiatives, integrations, meeting-shaped input, temporary headings, cross-links, and ambiguous handoff, enforced through the release test suite.
+
 ## 2026-08-03
 
 * **Document update provenance**: Added canonical `updated.by` and `updated.at` metadata for the latest meaningful mutation while preserving `generated` as immutable creation provenance.
