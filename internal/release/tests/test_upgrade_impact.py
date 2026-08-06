@@ -125,25 +125,25 @@ class UpgradeImpactTests(unittest.TestCase):
 
     def test_inherits_previous_release_and_legacy_sources(self) -> None:
         self.tag_previous(
-            "1.0.0-alpha.7",
-            prior_sources=["1.0.0-alpha.6"],
+            "3.0.0-alpha.7",
+            prior_sources=["3.0.0-alpha.6"],
             legacy=True,
         )
-        self.write_policy(["1.0.0-alpha.5"])
-        headings = ["1.0.0-alpha.6", "1.0.0-alpha.7", "1.0.0-alpha.8"]
+        self.write_policy(["3.0.0-alpha.5"])
+        headings = ["3.0.0-alpha.6", "3.0.0-alpha.7", "3.0.0-alpha.8"]
         self.write_target(
-            "1.0.0-alpha.8",
+            "3.0.0-alpha.8",
             [
-                ("1.0.0-alpha.5", headings),
-                ("1.0.0-alpha.6", headings[1:]),
-                ("1.0.0-alpha.7", headings[2:]),
+                ("3.0.0-alpha.5", headings),
+                ("3.0.0-alpha.6", headings[1:]),
+                ("3.0.0-alpha.7", headings[2:]),
             ],
             headings=headings,
         )
         message = validate_upgrade_impact(
-            self.root, "1.0.0-alpha.7", verify_managed_delta=False
+            self.root, "3.0.0-alpha.7", verify_managed_delta=False
         )
-        self.assertIn("1.0.0-alpha.5", message)
+        self.assertIn("3.0.0-alpha.5", message)
 
     def test_accepts_rc_release(self) -> None:
         self.tag_previous("2.0.0-alpha.9")
