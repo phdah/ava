@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "target_version": "1.0.0-alpha.8",
+  "retired_sources": [],
+  "sources": [
+    {
+      "from": "1.0.0-alpha.5",
+      "managed_changes": {
+        "retained": "all-unlisted-managed-payload-files",
+        "replaced": [
+          "/.ava/base/index.md",
+          "/.ava/base/roles/change-reviewer/index.md",
+          "/.ava/base/roles/inbox-ingester/index.md",
+          "/.ava/base/roles/project-steward/index.md",
+          "/.ava/base/roles/role-manager/index.md",
+          "/.ava/base/shared/instructions/document-metadata.md",
+          "/.ava/base/shared/instructions/workflow-format.md",
+          "/.ava/base/shared/instructions/workflow-lifecycle.md"
+        ],
+        "created": [],
+        "deleted": []
+      },
+      "migration_ids": [],
+      "migration_assessment": "Normal managed reconciliation replaces the eight corrected managed Markdown files, so no deterministic migration is required.",
+      "guidance_paths": [],
+      "semantic_review_required": false,
+      "semantic_assessment": "No project-owned semantic review is required because the changes repair managed link targets and internal release qualification without changing project-owned contracts or content.",
+      "release_note_versions": [
+        "1.0.0-alpha.6",
+        "1.0.0-alpha.7",
+        "1.0.0-alpha.8"
+      ],
+      "release_note_assessment": "This exactly covers every cumulative release after 1.0.0-alpha.5 through the target."
+    },
+    {
+      "from": "1.0.0-alpha.6",
+      "managed_changes": {
+        "retained": "all-unlisted-managed-payload-files",
+        "replaced": [],
+        "created": [],
+        "deleted": []
+      },
+      "migration_ids": [],
+      "migration_assessment": "No managed payload files changed after this source, so no deterministic migration is required.",
+      "guidance_paths": [],
+      "semantic_review_required": false,
+      "semantic_assessment": "No project-owned semantic review is required because the later changes affect only internal release policy, qualification, and automation.",
+      "release_note_versions": [
+        "1.0.0-alpha.7",
+        "1.0.0-alpha.8"
+      ],
+      "release_note_assessment": "This exactly covers every cumulative release after 1.0.0-alpha.6 through the target."
+    },
+    {
+      "from": "1.0.0-alpha.7",
+      "managed_changes": {
+        "retained": "all-unlisted-managed-payload-files",
+        "replaced": [],
+        "created": [],
+        "deleted": []
+      },
+      "migration_ids": [],
+      "migration_assessment": "No managed payload files changed after this source, so no deterministic migration is required.",
+      "guidance_paths": [],
+      "semantic_review_required": false,
+      "semantic_assessment": "No project-owned semantic review is required because the target release only generalizes internal release PR completion and publication qualification.",
+      "release_note_versions": [
+        "1.0.0-alpha.8"
+      ],
+      "release_note_assessment": "This exactly covers every cumulative release after 1.0.0-alpha.7 through the target."
+    }
+  ]
+}
