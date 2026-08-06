@@ -13,7 +13,7 @@ def perform_rollback(args: argparse.Namespace) -> None:
         if not live.is_file() or sha256_file(live) != item["sha256"]:
             raise AvaError("ROLLBACK_CONFLICT", f"target managed file changed after upgrade: {path}")
     restore_transaction(root, plan)
-    shutil.rmtree(transaction_root, ignore_errors=True)
+    cleanup_transaction_workspace(transaction_root)
     print(f"Rolled back Ava managed content in {root}")
 
 
@@ -102,7 +102,7 @@ def perform_resume(args: argparse.Namespace) -> None:
     if semantic["status"] == "complete":
         journal.update({"status": "complete", "stage": "complete", "staging": None, "allowed_operations": ["normal"]})
         atomic_json(root / ".ava/state/upgrade.json", journal)
-        shutil.rmtree(transaction_root, ignore_errors=True)
+        cleanup_transaction_workspace(transaction_root)
     else:
         journal.update({"status": "active", "stage": "semantic", "allowed_operations": ["inspect", "reconcile-semantic", "rollback"]})
         atomic_json(root / ".ava/state/upgrade.json", journal)
@@ -122,7 +122,7 @@ def perform_abort(args: argparse.Namespace) -> None:
         return
     transaction_root, plan = load_active_plan(root, journal)
     restore_transaction(root, plan, terminal="source")
-    shutil.rmtree(transaction_root, ignore_errors=True)
+    cleanup_transaction_workspace(transaction_root)
     print("Ava upgrade aborted before live managed mutation.")
 
 
@@ -149,7 +149,7 @@ def perform_finalize(args: argparse.Namespace) -> None:
     })
     atomic_json(root / ".ava/state/upgrade.json", journal)
     if transaction_root:
-        shutil.rmtree(transaction_root, ignore_errors=True)
+        cleanup_transaction_workspace(transaction_root)
     print("Ava upgrade finalized; normal routing is enabled.")
 
 
