@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "description": "Semantic regression cases for canonical subject classification and knowledge hierarchy promotion.",
+  "numeric_split_threshold": null,
+  "cases": [
+    {
+      "id": "durable-subject-remains-concept",
+      "existing_branch": "knowledge/work/projects/",
+      "existing_shape": "One project document has several sections for architecture, delivery, risks, and decisions.",
+      "incoming_material": "A daily note adds another delivery update for the same project.",
+      "expected_action": "update-existing-concept",
+      "expected_primary_path": "knowledge/work/projects/ava.md",
+      "review_checks": [
+        "All sections describe one durable subject.",
+        "No independently maintained child concept or useful routing level is introduced.",
+        "Source-artifact form does not create a new canonical concept."
+      ]
+    },
+    {
+      "id": "stable-index-group-promotes-to-collection",
+      "existing_branch": "knowledge/work/projects/",
+      "existing_shape": "The index uses stable headings for Engineering Initiatives, External Integrations, and Meeting Notes while all concepts remain direct siblings.",
+      "incoming_material": "Another durable external interface must be ingested beside existing independently maintained integration concepts.",
+      "expected_action": "promote-subgroup-before-ingestion",
+      "expected_collection": "knowledge/work/integrations/",
+      "review_checks": [
+        "The subgroup is a reusable semantic routing choice rather than presentation only.",
+        "Existing integration concepts move before another integration sibling is added.",
+        "The parent index links only to the child collection and other direct children.",
+        "The child index routes only to its direct canonical concepts.",
+        "Moved concepts preserve metadata, provenance, and updated links."
+      ]
+    },
+    {
+      "id": "temporary-heading-remains-heading",
+      "existing_branch": "knowledge/personal/home/",
+      "existing_shape": "One index heading highlights current renovation work but does not define a reusable class among independent subjects.",
+      "incoming_material": "A second note updates the same renovation concept.",
+      "expected_action": "retain-heading",
+      "review_checks": [
+        "The heading is temporary presentation rather than a durable routing decision.",
+        "No empty or speculative collection is created.",
+        "The existing canonical concept remains the destination."
+      ]
+    },
+    {
+      "id": "cross-cutting-relationship-uses-link",
+      "existing_branch": "knowledge/work/projects/",
+      "existing_shape": "A project depends on one durable external integration with its own canonical concept.",
+      "incoming_material": "A source describes the dependency from the project perspective.",
+      "expected_action": "update-primary-concept-and-cross-link",
+      "review_checks": [
+        "Each durable subject keeps one primary path.",
+        "The secondary relationship is represented by Markdown links.",
+        "Knowledge is not duplicated under both branches."
+      ]
+    },
+    {
+      "id": "ambiguous-promotion-requires-steward-handoff",
+      "existing_branch": "knowledge/work/projects/",
+      "existing_shape": "Several concepts could be projects, systems, integrations, or event records and the project has no trusted classification decision.",
+      "incoming_material": "A new source would extend the same mixed flat branch.",
+      "expected_action": "leave-source-pending",
+      "required_follow_up": "Project Steward",
+      "review_checks": [
+        "Inbox Ingester does not invent a project taxonomy.",
+        "The source remains pending while identity or ownership is unresolved.",
+        "Flat growth is not used to hide the unresolved promotion decision."
+      ]
+    }
+  ]
+}
