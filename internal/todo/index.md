@@ -44,6 +44,7 @@ GitHub Release
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
 5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 4 pending findings and 1 completed finding
+6. [Backlog.md integration](06-backlog-md/) - 0 of 2 complete; queued after release qualification
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
 
@@ -65,6 +66,8 @@ The first alpha publication task is complete. The remaining ordered path to the 
 Dogfood findings are numbered independently from the six core Phase 5 gates. New findings may be added and resolved continuously without renumbering release stages. Completed findings remain as durable evidence, and an empty backlog does not automatically advance the roadmap.
 
 Additional `alpha.N`, beta, or RC releases may be inserted when findings require them. The first alpha is a testable distribution, not a promise that the v1 feature set is defect-free.
+
+Phase 6 is queued after release qualification and does not block the v1 release unless the user explicitly reprioritizes it.
 
 ## Task status
 
