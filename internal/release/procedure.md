@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-05T10:00:00+02:00
+  at: 2026-08-06T11:30:00+02:00
 ---
 
 # Ava Release Publication Procedure
@@ -48,24 +48,29 @@ When deterministic assembly or verification automation is unavailable, publicati
 4. Build every required asset twice and require identical digests.
 5. Validate schemas, archive safety, source-to-installed mapping, identity metadata, checksums, release notes, guidance, migrations, and upgrade declarations.
 6. For `1.0.0-alpha.1`, require an empty `upgrade_paths.edges` declaration and refuse historical unversioned sources.
-7. For every later prerelease, confirm that `prerelease_support.transitions` in `alpha-qualification.json`, `prerelease_transitions` in `conformance-matrix.json`, and `internal/release/upgrade-sources.txt` have been updated in a reviewed PR before assembly, and that the assembled `upgrade_paths.edges` contains exactly the declared supported sources. Qualification must fail when a planned later prerelease is assembled without its required edges.
-8. Confirm the canonical tag is new and still points to the qualified source revision.
-9. Confirm the GitHub Release remains a draft until the complete asset set has been validated, attested, and uploaded.
+7. For every later prerelease, update `prerelease_support.transitions` in `alpha-qualification.json`, `prerelease_transitions` in `conformance-matrix.json`, `internal/release/upgrade-sources.txt`, and `internal/release/upgrade-impact.json` together in a reviewed PR.
+8. For every declared source edge, compare its tagged managed payload with the target and record exact retained, replaced, created, and deleted managed paths; deterministic migration IDs; guidance paths; semantic-review requirement; and cumulative release-note versions.
+9. Keep every version listed in `protected_direct_sources` unless a reviewed support decision explicitly removes it. Qualification must fail when the current version or another protected installed prerelease would be stranded.
+10. Permit empty migration or guidance lists only with a non-empty reviewed explanation that normal managed reconciliation is sufficient and no project-owned semantic work is required.
+11. Require the assembled `upgrade_paths.edges` to contain exactly the declared source set and the reviewed migration and guidance lists for each source.
+12. Confirm the canonical tag is new and still points to the qualified source revision.
+13. Confirm the GitHub Release remains a draft until the complete asset set has been validated, attested, and uploaded.
 
 # Release PR review
 
 When release-please opens a release pull request, the Ava Internal Maintainer works through this checklist before approving the merge. Merging is the explicit publication authorization, so the checklist must pass first. CI qualification and automated assembly run after the merge against the exact resulting tag; this review step handles the semantic and policy checks that automation cannot.
 
-Changes required by this checklist - fixture updates, upgrade-edge declarations, and similar release-preparation work - may be pushed directly to the release PR branch rather than through a separate implementation PR. While doing so, no new implementation commits should merge to main; a new commit on main causes release-please to rewrite the branch and will overwrite any changes pushed to it.
+Changes required by this checklist, including fixture updates, source declarations, impact assessments, and cumulative notes, may be pushed directly to the release PR branch rather than through a separate implementation PR. While doing so, no new implementation commits should merge to main because release-please will rewrite the branch.
 
 1. Confirm the proposed version, channel, and SemVer classification match the active release task and approved roadmap state.
-2. Confirm the changelog accurately describes the releasable changes since the last release.
+2. Confirm the changelog accurately describes the releasable changes since the last release and contains every version required by each supported source assessment.
 3. Confirm all preconditions above are met for the intended version.
-4. For a prerelease, confirm the preparation checklist has been worked through: fixtures are updated, upgrade sources are declared, and the qualification suite passes on the current source.
-5. Confirm no open blocker finding targets this release stage.
-6. Confirm the release pull request contains no implementation changes beyond what release-please manages (version file, changelog, manifest). Implementation work belongs in separate reviewed pull requests merged before the release PR.
+4. For a prerelease, confirm the transition fixtures, protected source set, upgrade sources, and reviewed source impacts agree exactly.
+5. Confirm each source assessment matches the actual tagged source-to-target managed payload delta and explicitly resolves migration, guidance, semantic, and release-note obligations.
+6. Confirm no open blocker finding targets this release stage.
+7. Confirm the release pull request contains no implementation changes beyond what release-please manages and checklist-required release state. Other implementation work belongs in separate reviewed pull requests merged before the release PR.
 
-If any item fails, keep the release PR as a draft, resolve the gap through a separate implementation PR, and re-run this checklist after it merges.
+If any item fails, keep the release PR as a draft, resolve the gap through a separate implementation PR, and rerun this checklist after it merges.
 
 # Approval boundary
 
@@ -96,8 +101,9 @@ After publication, verify:
 - every retained local asset verifies against the release
 - `SHA256SUMS`, `ava-release.json`, embedded identities, and archive inventories agree
 - version-pinned download URLs resolve to the published assets
+- every declared source version upgrades successfully and preserves project-owned files byte-for-byte
 
-Record the release URL, source revision, verification result, supported upgrade sources, and any incident in the release workflow summary and repository history required by the public contracts.
+Record the release URL, source revision, verification result, supported upgrade sources, per-source upgrade results, and any incident in the release workflow summary and repository history required by the public contracts.
 
 # Failure handling
 
