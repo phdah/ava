@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-alpha.9](https://github.com/phdah/ava/compare/v1.0.0-alpha.8...v1.0.0-alpha.9) (2026-08-06)
+
+
+### Bug Fixes
+
+* enforce reviewed project-owned semantic impact ([#64](https://github.com/phdah/ava/issues/64)) ([e64ebef](https://github.com/phdah/ava/commit/e64ebefb80c116ef10cc287e159509e544f829db))
+* **installer:** remove empty transaction containers ([#62](https://github.com/phdah/ava/issues/62)) ([b18b751](https://github.com/phdah/ava/commit/b18b751348fc0d8e78e003d0696b063a1217ebf0))
+
 ## [1.0.0-alpha.8](https://github.com/phdah/ava/compare/v1.0.0-alpha.7...v1.0.0-alpha.8) (2026-08-06)
 
 
