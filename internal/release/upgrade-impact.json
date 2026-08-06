@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target_version": "1.0.0-alpha.8",
   "retired_sources": [],
   "sources": [
@@ -24,7 +24,49 @@
       "migration_assessment": "Normal managed reconciliation replaces the eight corrected managed Markdown files, so no deterministic migration is required.",
       "guidance_paths": [],
       "semantic_review_required": false,
-      "semantic_assessment": "No project-owned semantic review is required because the changes repair managed link targets and internal release qualification without changing project-owned contracts or content.",
+      "semantic_impact_evidence": [
+        {
+          "managed_path": "/.ava/base/index.md",
+          "project_owned_impact": false,
+          "reason": "The change only repairs managed navigation links and does not alter project-owned discovery, paths, metadata, or structure."
+        },
+        {
+          "managed_path": "/.ava/base/roles/change-reviewer/index.md",
+          "project_owned_impact": false,
+          "reason": "The change only repairs a managed required-reading link and leaves the Change Reviewer contract and project-owned role requirements unchanged."
+        },
+        {
+          "managed_path": "/.ava/base/roles/inbox-ingester/index.md",
+          "project_owned_impact": false,
+          "reason": "The change only repairs managed link targets and does not change inbox ownership, routing, or project-owned ingestion requirements."
+        },
+        {
+          "managed_path": "/.ava/base/roles/project-steward/index.md",
+          "project_owned_impact": false,
+          "reason": "The change only repairs a managed required-reading link and does not change Project Steward authority or project-owned context conventions."
+        },
+        {
+          "managed_path": "/.ava/base/roles/role-manager/index.md",
+          "project_owned_impact": false,
+          "reason": "The change only repairs a managed required-reading link and does not change role structure, metadata, registries, or lifecycle requirements."
+        },
+        {
+          "managed_path": "/.ava/base/shared/instructions/document-metadata.md",
+          "project_owned_impact": false,
+          "reason": "The change is a mechanical link-target correction; the metadata contract and all project-owned document obligations are unchanged."
+        },
+        {
+          "managed_path": "/.ava/base/shared/instructions/workflow-format.md",
+          "project_owned_impact": false,
+          "reason": "The change is a mechanical link-target correction; workflow structure and project-owned workflow requirements are unchanged."
+        },
+        {
+          "managed_path": "/.ava/base/shared/instructions/workflow-lifecycle.md",
+          "project_owned_impact": false,
+          "reason": "The change is a mechanical link-target correction; workflow lifecycle rules and project-owned workflow obligations are unchanged."
+        }
+      ],
+      "semantic_assessment": "No project-owned semantic review is required. Every changed managed payload path is accounted for above and each change is limited to managed Markdown link repair without changing a project-facing contract.",
       "release_note_versions": [
         "1.0.0-alpha.6",
         "1.0.0-alpha.7",
@@ -44,7 +86,8 @@
       "migration_assessment": "No managed payload files changed after this source, so no deterministic migration is required.",
       "guidance_paths": [],
       "semantic_review_required": false,
-      "semantic_assessment": "No project-owned semantic review is required because the later changes affect only internal release policy, qualification, and automation.",
+      "semantic_impact_evidence": [],
+      "semantic_assessment": "No project-owned semantic review is required because there are no managed payload changes after this source; the remaining changes affect only internal release policy, qualification, and automation.",
       "release_note_versions": [
         "1.0.0-alpha.7",
         "1.0.0-alpha.8"
@@ -63,7 +106,8 @@
       "migration_assessment": "No managed payload files changed after this source, so no deterministic migration is required.",
       "guidance_paths": [],
       "semantic_review_required": false,
-      "semantic_assessment": "No project-owned semantic review is required because the target release only generalizes internal release PR completion and publication qualification.",
+      "semantic_impact_evidence": [],
+      "semantic_assessment": "No project-owned semantic review is required because there are no managed payload changes after this source; the target release only generalizes internal release PR completion and publication qualification.",
       "release_note_versions": [
         "1.0.0-alpha.8"
       ],
