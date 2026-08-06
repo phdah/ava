@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-alpha.8](https://github.com/phdah/ava/compare/v1.0.0-alpha.7...v1.0.0-alpha.8) (2026-08-06)
+
+
+### Bug Fixes
+
+* **release:** make release PR completion generic ([#60](https://github.com/phdah/ava/issues/60)) ([0652978](https://github.com/phdah/ava/commit/065297888b7211737e3eda7e7985825062913987))
+
 ## [1.0.0-alpha.7](https://github.com/phdah/ava/compare/v1.0.0-alpha.6...v1.0.0-alpha.7) (2026-08-05)
 
 
