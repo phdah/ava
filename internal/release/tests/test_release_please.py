@@ -101,8 +101,8 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertIn("secrets.RELEASE_PLEASE_TOKEN", self.release_workflow)
         self.assertIn("steps.release.outputs.sha", self.release_workflow)
         self.assertIn("git rev-list -n 1", self.release_workflow)
-        self.assertIn("internal/release/validate_release_pr.py", self.release_workflow)
-        self.assertIn("internal/release/validate_upgrade_impact.py", self.release_workflow)
+        self.assertIn("-m internal.release.validate_release_pr", self.release_workflow)
+        self.assertIn("-m internal.release.validate_upgrade_impact", self.release_workflow)
         self.assertIn("internal/release/test.sh", self.release_workflow)
         self.assertEqual(self.release_workflow.count("internal/release/assemble.sh"), 1)
         self.assertIn("for output in release-a release-b", self.release_workflow)
@@ -124,7 +124,7 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertNotIn("internal/release/upgrade-sources.txt", self.release_workflow)
         self.assertNotIn("--upgrade-from", self.release_workflow)
         self.assertLess(
-            self.release_workflow.index("internal/release/validate_upgrade_impact.py"),
+            self.release_workflow.index("-m internal.release.validate_upgrade_impact"),
             self.release_workflow.index("internal/release/assemble.sh"),
         )
 
