@@ -162,10 +162,33 @@ def build_semantic_state(installed: dict[str, Any] | None, target: Bundle, edges
     carry = previous["status"] != "complete"
     if carry and not all(edge["carry_unresolved_semantic_state"] for edge in edges):
         raise AvaError("SEMANTIC_STATE_BLOCKED", "upgrade path does not permit carrying unresolved semantic state")
-    review_required = target.manifest["semantic_review_required"] or any(edge["guidance_paths"] for edge in edges) or carry
-    if target.manifest["semantic_review_required"] and not any(edge["guidance_paths"] for edge in edges):
-        raise AvaError("MISSING_GUIDANCE", "semantic review is required but the selected upgrade path declares no guidance")
-    if review_required:
+
+    explicit_edge_decision = False
+    selected_edge_requires_review = False
+    for edge in edges:
+        guidance_present = bool(edge["guidance_paths"])
+        if "semantic_review_required" in edge:
+            explicit_edge_decision = True
+            required = edge["semantic_review_required"]
+            if not isinstance(required, bool):
+                raise AvaError("INVALID_UPGRADE_GRAPH", "edge semantic review decision is not boolean")
+            if required and not guidance_present:
+                raise AvaError("MISSING_GUIDANCE", "semantic review is required but the selected upgrade edge declares no guidance")
+            if not required and guidance_present:
+                raise AvaError("INVALID_UPGRADE_GRAPH", "selected non-semantic upgrade edge declares guidance")
+            selected_edge_requires_review = selected_edge_requires_review or required
+        else:
+            selected_edge_requires_review = selected_edge_requires_review or guidance_present
+
+    if not explicit_edge_decision:
+        selected_edge_requires_review = (
+            target.manifest["semantic_review_required"]
+            or selected_edge_requires_review
+        )
+        if target.manifest["semantic_review_required"] and not any(edge["guidance_paths"] for edge in edges):
+            raise AvaError("MISSING_GUIDANCE", "semantic review is required but the selected legacy upgrade path declares no guidance")
+
+    if selected_edge_requires_review or carry:
         return {
             "compatible_through": previous["compatible_through"],
             "target_version": target.version,
@@ -230,5 +253,3 @@ def idle_journal() -> dict[str, Any]:
         "failure": None,
         "allowed_operations": ["normal"],
     }
-
-

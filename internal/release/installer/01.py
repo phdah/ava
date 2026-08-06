@@ -73,12 +73,16 @@ def validate_release_manifest(manifest: Any, expected_version: str) -> None:
     upgrade_paths = manifest["upgrade_paths"]
     if not isinstance(upgrade_paths, dict) or set(upgrade_paths) != {"edges"} or not isinstance(upgrade_paths["edges"], list):
         raise AvaError("INVALID_MANIFEST", "invalid upgrade path inventory")
+    edges = upgrade_paths["edges"]
     edge_sources: set[str] = set()
-    for edge in upgrade_paths["edges"]:
-        keys = {"from", "to", "mode", "intermediates", "carry_unresolved_semantic_state", "migration_ids", "guidance_paths"}
+    edge_semantic_flags: list[bool] = []
+    edge_required_keys = {"from", "to", "mode", "intermediates", "carry_unresolved_semantic_state", "migration_ids", "guidance_paths"}
+    edge_allowed_keys = edge_required_keys | {"semantic_review_required"}
+    for edge in edges:
         if not isinstance(edge, dict):
             raise AvaError("INVALID_MANIFEST", "upgrade edge must be an object")
-        require_exact_keys(edge, keys, "upgrade edge")
+        if not edge_required_keys.issubset(edge) or not set(edge).issubset(edge_allowed_keys):
+            raise AvaError("INVALID_MANIFEST", "upgrade edge has invalid fields")
         source = canonical_version(edge["from"])
         if source in edge_sources or edge["to"] != expected_version:
             raise AvaError("INVALID_MANIFEST", "duplicate upgrade source or wrong target")
@@ -98,6 +102,19 @@ def validate_release_manifest(manifest: Any, expected_version: str) -> None:
             raise AvaError("INVALID_MANIFEST", "invalid guidance path list")
         for path in edge["guidance_paths"]:
             safe_relative(path)
+        if "semantic_review_required" in edge:
+            required = edge["semantic_review_required"]
+            if not isinstance(required, bool):
+                raise AvaError("INVALID_MANIFEST", "edge semantic_review_required must be boolean")
+            if required and not edge["guidance_paths"]:
+                raise AvaError("INVALID_MANIFEST", "semantic upgrade edge must declare guidance_paths")
+            if not required and edge["guidance_paths"]:
+                raise AvaError("INVALID_MANIFEST", "non-semantic upgrade edge must not declare guidance_paths")
+            edge_semantic_flags.append(required)
+    if edge_semantic_flags and len(edge_semantic_flags) != len(edges):
+        raise AvaError("INVALID_MANIFEST", "upgrade edges must either all declare semantic_review_required or all use the legacy release-wide declaration")
+    if edge_semantic_flags and manifest["semantic_review_required"] != any(edge_semantic_flags):
+        raise AvaError("INVALID_MANIFEST", "release semantic_review_required disagrees with its upgrade edges")
 
     guidance = manifest["guidance"]
     if not isinstance(guidance, dict) or set(guidance) != {"entries"} or not isinstance(guidance["entries"], list):
@@ -139,4 +156,8 @@ def validate_release_manifest(manifest: Any, expected_version: str) -> None:
         if not SHA256_RE.fullmatch(step["descriptor_sha256"]):
             raise AvaError("INVALID_MANIFEST", "invalid migration descriptor checksum")
 
-
+    for edge in edges:
+        if set(edge["guidance_paths"]) - guidance_paths:
+            raise AvaError("INVALID_MANIFEST", "upgrade edge references guidance absent from the archive inventory")
+        if set(edge["migration_ids"]) - migration_ids:
+            raise AvaError("INVALID_MANIFEST", "upgrade edge references migrations absent from the release inventory")

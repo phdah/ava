@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T13:45:00+02:00
+  at: 2026-08-06T15:55:00+02:00
 ---
 
 # Ava Release Publication Procedure
@@ -61,31 +61,39 @@ Before merging a release-please pull request, the Ava Internal Maintainer must:
 4. Review all changes included between each source tag and the proposed target.
 5. Create or replace `internal/release/upgrade-impact.json` directly on the release-please branch.
 6. For every source, record exact retained, replaced, created, and deleted managed paths.
-7. Record the deterministic migration IDs and installed guidance paths required for that source.
-8. Record whether project-owned semantic review is required and explain the decision.
-9. Reference every changelog release after the source through the target. The validator requires exact cumulative coverage.
-10. Record any explicit source retirement and its reviewed reason.
-11. Run `validate_release_pr.py`, `validate_upgrade_impact.py`, and the complete maintained release test suite.
-12. Push the release state and confirm every required pull-request check passes.
-13. Merge the release pull request.
+7. For every created, replaced, or deleted managed path, record one `semantic_impact_evidence` item with the installed path, whether that specific contract change affects project-owned context, and the evidence-backed reason.
+8. Record the deterministic migration IDs and installed guidance paths required for that source.
+9. Set `semantic_review_required` to the logical result of the path-by-path evidence, then provide an explicit overall assessment. A `false` decision is never an implicit default.
+10. When any evidence item affects project-owned context, provide bounded guidance for the source edge. When no evidence item does, declare no guidance for that edge.
+11. Reference every changelog release after the source through the target. The validator requires exact cumulative coverage.
+12. Record any explicit source retirement and its reviewed reason.
+13. Run `validate_release_pr.py`, `validate_upgrade_impact.py`, and the complete maintained release test suite.
+14. Push the release state and confirm every required pull-request check passes.
+15. Merge the release pull request.
 
-Empty migration or guidance lists are valid only when their assessment explains why normal managed reconciliation is sufficient and no project-owned semantic work is required.
+The validator uses the deterministic managed delta only to require complete review scope. It does not infer semantic impact from file names, diffs, or arbitrary prose. The maintainer remains responsible for the substantive judgment, and reviewers must challenge unsupported reasons.
+
+Empty migration lists remain valid when normal managed reconciliation is sufficient. Empty guidance lists are valid only when every changed managed path has explicit no-impact evidence and the overall assessment explains why project-owned context remains compatible.
 
 # Release-specific impact format
 
 `internal/release/upgrade-impact.json` belongs to the release pull request and is the only current declaration used to build `upgrade_paths.edges`.
 
-It contains:
+Schema version 2 contains:
 
 - the exact target version
 - explicit retired sources and reasons
 - one reviewed assessment per direct source
-- managed payload deltas
-- migration and guidance references
-- semantic-review decisions
+- exact managed payload deltas
+- one semantic evidence item for every created, replaced, or deleted managed path
+- deterministic migration references
+- source-edge semantic-review decisions and exact guidance references
+- explicit overall semantic assessments, including no-impact explanations
 - cumulative changelog versions
 
-The reviewed assembler derives the manifest edge source set directly from this file. A separate current source list is not maintained.
+The evidence list must exactly cover the changed managed paths. `semantic_review_required` must equal whether any evidence item declares project-owned impact. A required review must have at least one guidance path, and a no-impact edge must have none.
+
+The reviewed assembler derives the manifest edge source set directly from this file. It copies `semantic_review_required`, `migration_ids`, and `guidance_paths` onto each exact source-to-target edge. The release-wide semantic flag is only a summary across edges and must not drive a different source edge.
 
 # Approval boundary
 
@@ -93,10 +101,14 @@ Reviewing and merging the release-please pull request is the explicit publicatio
 
 A release pull request remains blocked when:
 
-- the release-specific impact file is missing or targets another version
+- the release-specific impact file is missing, uses an obsolete current schema, or targets another version
 - required inherited sources are omitted
 - a protected source is retired without a prior policy change
 - managed deltas disagree with the tagged source comparison
+- semantic evidence omits or invents a changed managed path
+- the semantic-review decision disagrees with its evidence
+- semantic review is required without bounded guidance
+- guidance is declared for an edge assessed as having no project-owned semantic impact
 - migration or guidance references are absent from the release assets
 - cumulative changelog references are incomplete
 - the release-please channel configuration disagrees with the proposed version
@@ -125,8 +137,10 @@ After publication, verify:
 - the tag and release target match the verified source revision
 - every asset and checksum verifies
 - every declared direct source upgrades successfully
+- each installed journal edge preserves its reviewed semantic decision and exact guidance paths
 - Ava-managed state advances correctly
-- project-owned files remain byte-for-byte preserved unless explicit semantic guidance requires user-approved changes
+- project-owned files remain byte-for-byte preserved until the Upgrade Role applies required semantic guidance
+- normal routing remains blocked until semantic compatibility advances and the transaction is finalized
 
 Record the release URL, source revision, supported sources, per-source results, and incidents in the required release history.
 
