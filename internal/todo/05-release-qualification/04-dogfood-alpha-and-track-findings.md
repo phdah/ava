@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-05T14:13:28+02:00
+  at: 2026-08-06T10:49:13+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -43,7 +43,7 @@ Exercise at least:
 - [ ] a clean OpenCode startup and repeated sessions against the installed project
 - [ ] free-form role routing and every managed workflow
 - [ ] role creation, project context maintenance, inbox ingestion, and independent review
-- [ ] Ava Maintenance version and state explanation
+- [x] Ava Maintenance version and state explanation
 - [ ] modified, missing, and corrupt managed-file diagnosis
 - [ ] interrupted deterministic upgrade recovery through resume, abort, rollback, and finalize
 - [ ] semantic upgrade routing and completion through the Upgrade Role
@@ -65,13 +65,36 @@ The installer skipped the existing project-owned `/index.md`, `/inbox/`, `/knowl
 
 On 2026-08-05, real installations upgraded successfully from both supported direct sources, `1.0.0-alpha.3` and `1.0.0-alpha.4`, to `1.0.0-alpha.5` using the version-pinned published installer. Both runs retained the byte-identical managed payload, advanced installed and semantic compatibility state through alpha.5, and preserved the existing project-owned OpenCode configuration.
 
+On 2026-08-06, a real project at `~/stuff/project-vault/` was freshly installed with immutable `1.0.0-alpha.6` assets and upgraded with immutable `1.0.0-alpha.7` assets. The updater retained all 54 recorded managed payload files, advanced installed and semantic compatibility through alpha.7, produced a terminal `complete` journal with only normal routing allowed, and preserved the existing project-owned OpenCode configuration.
+
+### Alpha.7 installed-link validation
+
+After the alpha.7 upgrade, the agent activated the Inbox Ingester through normal routing without processing any inbox content. It loaded the managed role index and all seven required-reading documents in declared order.
+
+The cross-root links resolved exactly against the installed project:
+
+- inbox convention to `./inbox/index.md`
+- root router to `./AGENTS.md`
+- managed role registry to `./.ava/base/roles/index.md`
+- document metadata and knowledge organization to their managed shared-instruction paths
+
+Every target existed and was readable. No repository-source substitution, path guessing, file creation, mutation, or source movement occurred. This published immutable validation completes [finding 02](dogfood/02-repair-installed-context-link-resolution.md).
+
+### Ava Maintenance installation inspection
+
+The same alpha.7 installation was inspected through the Ava Maintenance role. The role correctly reported the installed version, release channel, source revision, OKF version, manifest shape, terminal journal, semantic compatibility, normal routing state, OpenCode permissions, and host integration state.
+
+All 54 recorded payload checksums matched. No recorded managed file was missing, modified, corrupt, or non-regular. The inspection nevertheless returned `FAIL` because the successful updater left an empty unrecorded `./.ava/state/transactions/` directory after deleting its final transaction workspace.
+
+The identity and state explanation scenario is exercised. The cleanup defect is tracked separately by [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md) and must be resolved before the next prerelease.
+
 ### Inbox ingestion and independent review
 
 On 2026-08-05, the alpha.5 Inbox Ingester processed realistic work notes from 2026-02-20 through 2026-07-01 in a non-empty Obsidian vault. It preserved 46 dated sources, correctly recognized 16 frontmatter-only files, linked all 30 substantive sources through destination `sources` metadata, and created 23 indexed canonical concepts under a progressively discoverable `knowledge/work/` scope.
 
 Independent review found that this file-level coverage did not satisfy the complete ingestion contract. The installed role had an unresolved mandatory link, substantial sections of one processed source had no canonical destination, an uncertain incident contributor was presented as a confirmed cause, several claims had incorrect or non-renderable attribution, completion counts were inaccurate, and the projects collection mixed stable subject classes in a hierarchy likely to become too flat.
 
-The scenario is exercised but not accepted as passing. Follow-up is tracked by [installed context link resolution](dogfood/02-repair-installed-context-link-resolution.md), [predictable knowledge hierarchy promotion](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md), and [faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md). The combined role and workflow checklist remains open because role creation and project context maintenance have not yet been qualified with this evidence.
+The installed-link defect is now resolved and validated through completed finding 02. Remaining follow-up is tracked by [predictable knowledge hierarchy promotion](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md) and [faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md). The combined role and workflow checklist remains open because role creation and project context maintenance have not yet been qualified with this evidence.
 
 ### Role-led uninstall
 
