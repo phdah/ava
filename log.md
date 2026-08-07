@@ -2,6 +2,15 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-08-07
+
+* **Substantive ingestion inventory**: Required every substantive source section to receive an explicit `mapped`, `non-durable`, or `pending` disposition before an inbox source can be marked processed.
+* **Epistemic fidelity**: Required destination wording to preserve uncertainty, causality, authorship, chronology, and the distinction between source claims, trusted context, and user-approved decisions.
+* **Renderable claim provenance**: Defined standard Markdown footnotes whose labels match OKF `sources` identifiers, resolve to the same preserved source, name the supporting passage, and reflect the claim's actual certainty.
+* **Final-state reconciliation**: Required ingestion reports to recompute pending, processed, destination, concept, and section counts from final paths and indexes while excluding reserved inbox entries.
+* **Semantic review boundary**: Required Change Reviewer to compare completed ingestion with every selected source and kept semantic meaning review separate from deterministic metadata, path, link, and count validation.
+* **Ingestion fidelity regression coverage**: Added realistic fixtures and executable tests for multi-topic omissions, uncertain causality, cross-source attribution, unresolved footnotes, wrong-source citations, empty sources, and final count reconciliation.
+
 ## 2026-08-06
 
 * **Durable subject identity**: Required canonical knowledge to follow the stable project, integration, system, person, agreement, decision, process, or event it describes rather than the shape of a meeting note, daily note, message, report, or export.
