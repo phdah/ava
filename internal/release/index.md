@@ -14,6 +14,7 @@ This directory contains maintainer-only release assembly, installation implement
 - [Conformance validation contract](conformance.md)
 - [Unified conformance validator](conformance.py)
 - [Release publication procedure](procedure.md)
+- [Release guidance sources](guidance/) - Version-scoped reviewed semantic-upgrade guidance included in release assets when an edge requires project-owned reconciliation.
 - [Repository boundary validator](validate-boundaries.sh)
 - [Installer and conformance test runner](test.sh)
 - [Validation fixtures](fixtures/) - Machine-readable contract, qualification, release-automation, and conformance cases used by release qualification.
