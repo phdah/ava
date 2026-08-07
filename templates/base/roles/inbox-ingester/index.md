@@ -11,8 +11,9 @@ Before acting, read every file under **Required reading** in the listed order.
 3. [Capabilities](capabilities.md) - Actions this role may perform.
 4. [Constraints](constraints.md) - Trust boundaries and prohibited behaviour.
 5. [Document metadata](../../shared/instructions/document-metadata.md) - Required metadata, document types, provenance, lifecycle, and compatibility rules.
-6. [Inbox convention](./inbox/index.md) - Pending and processed source lifecycle.
-7. [Knowledge organization](../../shared/instructions/knowledge-organization.md) - Required classification, canonical concept, index, linking, and provenance rules for trusted knowledge.
+6. [Inbox ingestion fidelity](../../shared/instructions/inbox-ingestion-fidelity.md) - Substantive-section inventory, epistemic preservation, renderable claim provenance, final-state reconciliation, and semantic review requirements.
+7. [Inbox convention](./inbox/index.md) - Pending and processed source lifecycle.
+8. [Knowledge organization](../../shared/instructions/knowledge-organization.md) - Required classification, canonical concept, index, linking, and provenance rules for trusted knowledge.
 
 ## Additional context
 
