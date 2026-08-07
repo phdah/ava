@@ -6,6 +6,9 @@ tags: [ava, role, change-reviewer, instructions, review]
 generated:
   by: agent:openai-chatgpt
   at: 2026-07-27T20:51:40Z
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-06T19:00:00+02:00
 ---
 
 # Working model
@@ -95,6 +98,25 @@ Check only concerns relevant to the bounded change:
 - the change does not silently establish a new public format, compatibility promise, or migration obligation
 - uncertainty that affects authority, safety, ownership, or routing is reported as blocking
 
+## Knowledge hierarchy review
+
+When the reviewed change creates, ingests, consolidates, moves, or reorganizes trusted knowledge, load the applicable knowledge-organization contract and check that:
+
+- canonical concepts follow durable subject identity rather than meeting-note, daily-note, message, report, or export shape
+- each concept has one clear primary location and independently useful lifecycle
+- collection directories represent reusable semantic routing choices among current direct children
+- stable index headings and repeated semantic classes were considered before another flat sibling was added
+- a mature subgroup was promoted when it had become a useful routing decision
+- promotion was not based on a numeric file-count threshold
+- no empty, speculative, or one-directory-per-subject taxonomy was introduced
+- parent and child indexes preserve direct-child navigation without descendant duplication
+- moved concepts preserve valid metadata, source provenance, meaningful history, and updated links
+- ambiguous taxonomy, identity, or ownership decisions remain project-owned rather than being silently fixed by ingestion
+
+A heading may remain presentation when it does not represent a reusable classification choice. A rich concept may remain one document when its sections share one durable identity. Do not require structural splitting merely to make a review appear rigorous.
+
+If hierarchy promotion is required but remediation belongs to trusted-project maintenance, identify the Project Steward. If the issue arose while an untrusted source is still pending, identify the Inbox Ingester for source-state handling and the Project Steward for any broader reorganization.
+
 # Deterministic validation boundary
 
 Do not act as a generic deterministic validator.
@@ -140,6 +162,7 @@ Before completing a review, verify that:
 - the scope and independence level are explicit
 - every finding is supported by evidence and tied to a consequence
 - semantic concerns are separated from deterministic validation
+- applicable knowledge hierarchy promotion criteria were evaluated when trusted knowledge changed
 - unresolved material decisions remain with the user
 - remediation ownership is identified without performing remediation
 - no project files were created, updated, moved, deleted, or committed by the reviewer

@@ -8,16 +8,16 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 ## Current next finding
 
-[Make knowledge hierarchy promotion predictable](03-make-knowledge-hierarchy-promotion-predictable.md).
+[Enforce faithful inbox ingestion completion](04-enforce-faithful-inbox-ingestion-completion.md).
 
 Findings 05 and 06 are completed by merged PR #60 and PR #62. Their corrective immutable-release checks remain explicit release qualification follow-up, not pending implementation work.
 
 ## Backlog status
 
-- 2 pending findings
+- 1 pending finding
 - 0 pending blockers
-- 2 pending required-v1 findings
-- 4 completed findings
+- 1 pending required-v1 finding
+- 5 completed findings
 
 ## Findings
 
@@ -25,7 +25,7 @@ Findings 05 and 06 are completed by merged PR #60 and PR #62. Their corrective i
 |---|---|---|---|---|
 | 01 | completed | blocker | next prerelease | [Restore supported prerelease upgrade paths](01-restore-prerelease-upgrade-paths.md) |
 | 02 | completed | blocker | next prerelease | [Repair installed context link resolution](02-repair-installed-context-link-resolution.md) |
-| 03 | pending | required-v1 | release candidate | [Make knowledge hierarchy promotion predictable](03-make-knowledge-hierarchy-promotion-predictable.md) |
+| 03 | completed | required-v1 | release candidate | [Make knowledge hierarchy promotion predictable](03-make-knowledge-hierarchy-promotion-predictable.md) |
 | 04 | pending | required-v1 | release candidate | [Enforce faithful inbox ingestion completion](04-enforce-faithful-inbox-ingestion-completion.md) |
 | 05 | completed | blocker | next prerelease | [Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md) |
 | 06 | completed | blocker | next prerelease | [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) |
@@ -62,11 +62,13 @@ Missing immutable-release evidence can still prevent the next release from quali
 
 Finding 02 is complete. PR [#53](https://github.com/phdah/ava/pull/53) supplied the repository implementation and local qualification, and immutable `1.0.0-alpha.7` validation on 2026-08-06 proved that the Inbox Ingester loaded its complete required-reading chain from exact installed-project paths without substitution or mutation.
 
+Finding 03 is complete through draft PR [#65](https://github.com/phdah/ava/pull/65). The managed knowledge contract now routes canonical information by durable subject identity, promotes stable semantic subgroups before further flat growth, and keeps ambiguous taxonomy decisions project-owned. The next corrective immutable release must still validate repeated realistic ingestion and independent semantic review before release qualification can rely on the behavior.
+
 Finding 05 is complete through merged PR [#60](https://github.com/phdah/ava/pull/60). Its generic release-PR completion machinery prevents future releases from silently omitting inherited or protected direct sources. The next corrective immutable release must still declare the required real edges and validate the affected source installations before that release qualifies.
 
 Finding 06 is complete through PR [#62](https://github.com/phdah/ava/pull/62). Terminal transaction cleanup now removes an empty parent after its final workspace is deleted while preserving active, blocked, or non-empty transaction state. The next corrective immutable release must still prove the behavior through real supported-source upgrades and a healthy Ava Maintenance inspection before that release qualifies.
 
-Finding 03 is the current actionable implementation task. It defines semantic hierarchy-promotion guidance so repeated ingestion routes durable subjects predictably without imposing a fixed project taxonomy or numeric split threshold.
+Finding 04 is the current actionable implementation task. It must prevent processed inbox sources from hiding substantive omissions, changed certainty, incorrect attribution, unresolved claim markers, or inaccurate completion counts.
 
 ## Classification
 

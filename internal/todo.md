@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T16:18:00+02:00
+  at: 2026-08-06T19:05:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,15 +23,17 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Make knowledge hierarchy promotion predictable](todo/05-release-qualification/dogfood/03-make-knowledge-hierarchy-promotion-predictable.md).
+[Enforce faithful inbox ingestion completion](todo/05-release-qualification/dogfood/04-enforce-faithful-inbox-ingestion-completion.md).
 
-The next task must add generic semantic-promotion guidance so canonical knowledge follows durable subject identity, stable index groups become child collections when they are useful routing decisions, and project-owned taxonomy remains explicit without numeric split thresholds.
+The next task must account for every substantive source section before processing, preserve uncertainty and attribution, use renderable claim provenance, and reconcile completion reports against the final source and concept inventories.
+
+[Make knowledge hierarchy promotion predictable](todo/05-release-qualification/dogfood/03-make-knowledge-hierarchy-promotion-predictable.md) is complete through draft PR #65. Repeated realistic ingestion and independent semantic review remain release qualification follow-up.
 
 [Restore complete prerelease upgrade coverage](todo/05-release-qualification/dogfood/05-restore-complete-prerelease-upgrade-coverage.md) is complete through merged PR #60.
 
 [Remove empty upgrade transaction containers](todo/05-release-qualification/dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through PR #62.
 
-Both completed fixes still require real corrective-release evidence before the next prerelease can qualify. That evidence belongs to release qualification and does not keep either implementation task pending.
+Completed fixes may still require real corrective-release evidence before the next prerelease can qualify. That evidence belongs to release qualification and does not keep their implementation tasks pending.
 
 [Repair installed context link resolution](todo/05-release-qualification/dogfood/02-repair-installed-context-link-resolution.md) is complete after real immutable alpha.7 validation loaded the complete Inbox Ingester required-reading chain from exact installed-project paths.
 
