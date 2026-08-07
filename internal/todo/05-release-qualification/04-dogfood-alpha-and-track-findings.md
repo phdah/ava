@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T16:18:00+02:00
+  at: 2026-08-07T15:45:02+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -38,6 +38,7 @@ Only an explicit user decision may change this task to `completed` and advance t
 
 Exercise at least:
 
+- [ ] reproducible generation and baseline verification of the [200-400-file synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md)
 - [ ] installation into an empty project
 - [x] installation into a mature non-Ava project with existing project-owned Markdown and host configuration
 - [ ] a clean OpenCode startup and repeated sessions against the installed project
@@ -51,7 +52,7 @@ Exercise at least:
 - [ ] reinstall after uninstall
 - [ ] exact-version prerelease upgrades between every supported published transition
 
-Use realistic projects large enough to expose discovery, path, ambiguity, context-loading, and performance problems. Do not limit dogfooding to synthetic minimal fixtures.
+Use realistic projects large enough to expose discovery, path, ambiguity, context-loading, privacy-boundary, and performance problems. The synthetic qualification vault provides the repeatable baseline, but passing it does not prohibit additional real-project testing with appropriately protected evidence. Do not limit dogfooding to synthetic minimal fixtures.
 
 ## Completed scenario evidence
 
@@ -148,6 +149,7 @@ A beta may be introduced when useful, but it is not mandatory. The roadmap must 
 After the user explicitly declares dogfooding complete:
 
 - published prereleases have been exercised through realistic OpenCode and project scenarios
+- the synthetic qualification vault regenerates reproducibly and its complete evidence manifest is reconciled
 - every discovered finding is represented in the findings index with a completed resolution or explicit approved post-v1 disposition
 - no blocker remains pending
 - every required-v1 finding is complete or placed before the release gate it blocks

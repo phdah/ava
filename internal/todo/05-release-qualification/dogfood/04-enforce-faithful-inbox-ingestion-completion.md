@@ -15,7 +15,7 @@ generated:
   at: 2026-08-05T13:07:09+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-07T08:24:00+02:00
+  at: 2026-08-07T15:45:02+02:00
 ---
 
 # Enforce Faithful Inbox Ingestion Completion
@@ -85,7 +85,7 @@ These checks remain release qualification evidence. They do not keep or return t
 
 ## Resolution evidence
 
-Draft PR [#67](https://github.com/phdah/ava/pull/67) implements the repository change.
+Merged PR [#67](https://github.com/phdah/ava/pull/67) implements the repository change, published in `1.0.0-alpha.10`.
 
 - `templates/base/shared/instructions/inbox-ingestion-fidelity.md` defines complete substantive-section inventories, explicit `mapped`, `non-durable`, and `pending` dispositions, epistemic preservation, and final-state reconciliation.
 - Inbox Ingester now loads the fidelity contract as mandatory required reading before processing sources.
@@ -94,4 +94,4 @@ Draft PR [#67](https://github.com/phdah/ava/pull/67) implements the repository c
 - The provenance contract binds standard Markdown footnotes to matching OKF `sources[].id` values, the same preserved source path, a source-local supporting passage, and the claim's actual certainty.
 - `internal/release/fixtures/inbox-ingestion-fidelity.json` covers the observed multi-topic, uncertain-causality, cross-source attribution, unresolved marker, wrong-source, empty-source, and count-reconciliation cases.
 - `internal.release.tests.test_inbox_ingestion_fidelity` contains nine passing regression tests and is included in `internal/release/test.sh`.
-- The dogfood backlog contains no remaining pending bounded finding, while the parent dogfood task remains active until the user explicitly completes it.
+- Finding 07 remains the current pending bounded blocker, while this finding's repository implementation is complete and the parent dogfood task remains active until the user explicitly completes it.

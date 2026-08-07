@@ -17,6 +17,14 @@ The six core gates remain stable while dogfood findings grow in their own backlo
 
 Core progress: 3 of 6 complete.
 
+## Supporting qualification tasks
+
+These tasks add executable evidence beneath the stable six core gates without renumbering them:
+
+1. [ ] [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md) - Generate a reproducible 200-400-file raw corpus covering six coherent months of Adam's fictional private and work life in Stockholm.
+2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) - Publish the routing correction and collect immutable evidence for findings 03 through 07.
+3. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md) - Repeat the complete generated-vault and lifecycle matrix before stable qualification.
+
 ## Dogfood findings
 
 Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded findings without renumbering the core release gates.
@@ -29,13 +37,13 @@ Current findings:
 
 [Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is the current pending blocker. The managed root router must not let an agent bypass state checks and role routing because a request appears unrelated to its generic host persona.
 
-[Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through draft PR [#67](https://github.com/phdah/ava/pull/67). Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
+[Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through merged PR [#67](https://github.com/phdah/ava/pull/67) and published `1.0.0-alpha.10`. Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
 
 [Make knowledge hierarchy promotion predictable](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md) is complete through merged PR #65. Repeated realistic ingestion and independent semantic review remain corrective-release qualification evidence.
 
 [Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) is complete through merged PR #60.
 
-[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through PR #62.
+[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through merged PR #62.
 
 The completed findings still requiring corrective immutable-release evidence retain that obligation as release qualification follow-up, not pending implementation work.
 
@@ -80,7 +88,7 @@ These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed a
 
 The umbrella task is [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
-[Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is the current bounded implementation finding. Continue dogfooding after it is resolved until the user explicitly closes the umbrella or another finding is added.
+[Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is the current bounded implementation finding. After it is resolved, build the [synthetic qualification vault](04a-build-synthetic-qualification-vault.md), [qualify the corrective alpha](04b-qualify-and-publish-corrective-alpha.md), and continue dogfooding until the user explicitly closes the umbrella or another finding is added.
 
 ## Previous phase
 

@@ -10,8 +10,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
 updated:
-  by: agent:claude-sonnet-4-6
-  at: 2026-08-07T00:00:00+02:00
+  by: agent:openai-chatgpt
+  at: 2026-08-07T15:45:02+02:00
 ---
 
 # Qualify and Publish `1.0.0`
@@ -21,6 +21,7 @@ updated:
 Stable publication requires:
 
 - no unresolved blocker or required-v1 task
+- [published release-candidate stabilization](05a-stabilize-release-candidate.md) is complete
 - no known corruption, project-owned overwrite, path escape, authority bypass, or unrecoverable transaction defect
 - public format, metadata, roles, workflows, routing, ownership, host, state, release, and migration contracts are frozen and aligned
 - every maintained validator and conformance fixture passes
@@ -30,6 +31,7 @@ Stable publication requires:
 - user-facing installation, verified bootstrap, OpenCode setup, maintenance, recovery, upgrade, semantic reconciliation, and removal documentation is complete
 - release assembly is reproducible from one clean source revision
 - release automation uses the same assets and paths validated by CI and dogfooding
+- a revision-bound machine-readable stable qualification result references the complete generated-vault and release evidence
 - known post-v1 work is documented without weakening v1 guarantees
 
 ## Prepare
@@ -42,6 +44,7 @@ Stable publication requires:
 - verify the pinned authenticated installation path
 - verify GitHub release immutability is enabled and detectable
 - prepare final release notes with SemVer rationale, support guarantees, trust assumptions, host support, known limitations, and supported upgrade sources
+- update the README and other public status documentation so they describe the implemented release tooling and the exact stable support boundary
 
 ## Publish
 

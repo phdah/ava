@@ -15,7 +15,7 @@ generated:
   at: 2026-08-05T13:07:09+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T19:15:00+02:00
+  at: 2026-08-07T15:45:02+02:00
 ---
 
 # Make Knowledge Hierarchy Promotion Predictable
@@ -78,7 +78,7 @@ For the observed vault, the smallest likely structure is `knowledge/work/project
 
 ## Resolution evidence
 
-Draft PR [#65](https://github.com/phdah/ava/pull/65) implements the repository change.
+Merged PR [#65](https://github.com/phdah/ava/pull/65) implements the repository change, published in `1.0.0-alpha.10`.
 
 - `templates/base/shared/instructions/knowledge-organization.md` now distinguishes durable canonical concepts from collection-level routing decisions and defines an ordered semantic-promotion procedure without numeric thresholds.
 - Inbox Ingester checks stable headings and repeated semantic classes before appending another sibling, blocks processing when promotion is required, and leaves the source pending for Project Steward reorganization.

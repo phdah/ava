@@ -15,7 +15,7 @@ generated:
   at: 2026-08-06T10:49:13+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T16:18:00+02:00
+  at: 2026-08-07T15:45:02+02:00
 ---
 
 # Remove Empty Upgrade Transaction Containers
@@ -85,7 +85,7 @@ After a semantic-complete upgrade, it removes the transaction-specific directory
 
 ## Resolution evidence
 
-PR [#62](https://github.com/phdah/ava/pull/62) implements the repository fix.
+Merged PR [#62](https://github.com/phdah/ava/pull/62) implements the repository fix.
 
 The installer now uses one terminal cleanup helper across successful upgrade completion, resumed completion, rollback, abort, finalization, and failed transaction recovery. The helper removes the transaction-specific workspace first and then attempts to remove only its immediate parent with `rmdir`, so active or unrelated non-empty transaction entries prevent parent deletion.
 

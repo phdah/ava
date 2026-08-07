@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-04T14:28:00+02:00
+  at: 2026-08-07T15:45:02+02:00
 ---
 
 # Publish the `1.0.0` Release Candidate
@@ -26,6 +26,7 @@ Do not begin until:
 - the intended v1 format, role catalog, workflow catalog, routing, ownership, state, path, and OpenCode contracts are frozen
 - no known incompatible public-contract change is planned before stable publication
 - the latest supported alpha has an explicitly declared and tested path to the release candidate
+- the synthetic qualification vault has a stable baseline digest and complete expected-outcome manifest
 
 ## Prepare
 
@@ -33,7 +34,10 @@ Do not begin until:
 - build and verify the exact immutable asset set twice from one clean source revision
 - run the complete conformance matrix against fresh installation and every supported prerelease source
 - run the complete OpenCode fixture against assembled assets
+- run the complete synthetic qualification-vault matrix against assembled assets
 - verify Ava Maintenance, Upgrade Role, recovery, finalization, and uninstall behavior
+- update machine-readable transition evidence from the actual latest supported alpha to the RC rather than retaining an obsolete planned alpha source
+- prepare a revision-bound machine-readable RC qualification result that references executable evidence
 - verify release notes describe the full intended `1.0.0` behavior and every remaining known limitation
 - verify documentation presents the RC as a final compatibility candidate rather than stable support
 
@@ -63,4 +67,4 @@ After RC publication:
 - OpenCode passes the complete supported-host fixture
 - no known incompatible public change remains planned
 - every remaining known issue is either a stable blocker or an explicitly approved post-v1 item
-- the RC is ready to serve as the final input to stable qualification
+- the RC is ready for [published release-candidate stabilization](05a-stabilize-release-candidate.md)

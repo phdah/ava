@@ -43,7 +43,7 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 1 pending finding and 6 completed findings
+5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 1 pending finding, 3 pending supporting qualification tasks, and 6 completed findings
 6. [Backlog.md integration](06-backlog-md/) - 0 of 2 complete; queued after release qualification
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
@@ -56,12 +56,15 @@ The alpha qualification policy composes that conformance evidence with roadmap c
 
 Release-please enforces release classification at the merge boundary, maintains version and changelog state, keeps one release pull request current, creates immutable tags and draft releases, and hands the exact prepared SHA to qualification, reproducible assembly, release conformance, attestation, non-clobbering asset upload, and automatic publication.
 
-The first alpha publication task is complete. The remaining ordered path to the first stable release is:
+Alpha publication is complete through immutable `1.0.0-alpha.10`. The remaining ordered path to the first stable release is:
 
-1. resolve [mandatory role routing before every response](05-release-qualification/dogfood/07-enforce-role-routing-before-every-response.md), then continue working the [dogfood findings backlog](05-release-qualification/dogfood/) during realistic prerelease use
-2. keep the dogfood umbrella active until the user explicitly declares it complete
-3. publish a release candidate only after dogfood blockers and required RC work are resolved
-4. qualify and publish `1.0.0`
+1. resolve [mandatory role routing before every response](05-release-qualification/dogfood/07-enforce-role-routing-before-every-response.md)
+2. build the reproducible [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md)
+3. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), then continue working the [dogfood findings backlog](05-release-qualification/dogfood/) during realistic prerelease use
+4. keep the dogfood umbrella active until the user explicitly declares it complete
+5. publish the release candidate only after dogfood blockers and required RC work are resolved
+6. [stabilize the published release candidate](05-release-qualification/05a-stabilize-release-candidate.md) through the complete generated-vault matrix
+7. qualify and publish `1.0.0`
 
 Dogfood findings are numbered independently from the six core Phase 5 gates. New findings may be added and resolved continuously without renumbering release stages. Completed findings remain as durable evidence, and an empty backlog does not automatically advance the roadmap.
 

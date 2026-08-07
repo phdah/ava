@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T15:15:00+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-07T13:31:46+02:00
+  by: agent:opencode
+  at: 2026-08-07T16:21:26+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,7 +25,11 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 [Enforce role routing before every response](todo/05-release-qualification/dogfood/07-enforce-role-routing-before-every-response.md) is the current pending blocker. It must establish why an agent treated an apparently non-coding request as exempt from the Ava router, make pre-routing and role routing mandatory before substantive handling, and add regression coverage for the observed bypass.
 
-[Enforce faithful inbox ingestion completion](todo/05-release-qualification/dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through draft PR [#67](https://github.com/phdah/ava/pull/67). Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
+After the routing blocker, build the [synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md), then [qualify and publish the corrective alpha](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md). The vault must contain 200-400 raw files covering six coherent months of Adam's fictional private and work life in Stockholm, with one February apartment move and reproducible expected outcomes.
+
+Immutable `1.0.0-alpha.10` is the latest published release. Release PR [#68](https://github.com/phdah/ava/pull/68) currently proposes `1.0.0-alpha.11` and is expected to remain blocked until its implementation, release-impact review, and qualification gates are complete.
+
+[Enforce faithful inbox ingestion completion](todo/05-release-qualification/dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through merged PR [#67](https://github.com/phdah/ava/pull/67) and published `1.0.0-alpha.10`. Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
 
 [Make knowledge hierarchy promotion predictable](todo/05-release-qualification/dogfood/03-make-knowledge-hierarchy-promotion-predictable.md) is complete through merged PR #65. Repeated realistic ingestion and independent semantic review remain release qualification follow-up.
 
@@ -43,6 +47,7 @@ Use the [Alpha Dogfood Findings](todo/05-release-qualification/dogfood/) index a
 
 - add each new finding as a numbered bounded task
 - work the first actionable pending finding in dependency order unless the user reprioritizes it
+- work supporting qualification tasks linked from the Phase 5 index after any blocker they depend on; do not assign them finding IDs unless their execution exposes a defect
 - mark a finding completed in the resolving implementation PR once its repository change, tests, documentation, indexes, and resolution evidence are complete
 - append later published-asset or realistic-project qualification evidence without keeping or returning the implementation task to pending
 - update the finding task and backlog index together
@@ -56,8 +61,9 @@ When the user asks to work on the next to-do item, read:
 
 1. this entry point
 2. the active Phase 5 index
-3. the dogfood findings index
-4. the current finding task when one is pending
-5. only the related repository context needed to complete it
+3. the parent dogfood task
+4. the dogfood findings index when a finding is pending or relevant
+5. the current bounded finding or supporting qualification task
+6. only the related repository context needed to complete it
 
 A finding is complete when the intended repository change has been implemented, indexed, repository-validated, and committed with resolution evidence. Published-release qualification may be appended later and is tracked as a release gate rather than task status. Completing a finding does not complete the parent dogfood task.
