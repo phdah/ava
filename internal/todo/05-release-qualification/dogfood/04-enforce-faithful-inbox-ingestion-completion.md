@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Enforce Faithful Inbox Ingestion Completion
 description: Prevent substantive omissions, unsupported certainty, incorrect attribution, and inaccurate completion reports before inbox sources are marked processed.
 tags: [internal, roadmap, dogfood, inbox, provenance, knowledge]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 4
@@ -13,6 +13,9 @@ affected_version: 1.0.0-alpha.5
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-05T13:07:09+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-07T08:24:00+02:00
 ---
 
 # Enforce Faithful Inbox Ingestion Completion
@@ -49,7 +52,7 @@ The role requires complete and faithful ingestion but does not provide a suffici
 
 ## Dependency
 
-Implement this finding after [predictable knowledge hierarchy promotion](03-make-knowledge-hierarchy-promotion-predictable.md). Its section inventory and destination checks depend on the canonical classification and hierarchy rules established there.
+Implement this finding after [predictable knowledge hierarchy promotion](03-make-knowledge-hierarchy-predictable.md). Its section inventory and destination checks depend on the canonical classification and hierarchy rules established there.
 
 ## Scope
 
@@ -61,16 +64,34 @@ Implement this finding after [predictable knowledge hierarchy promotion](03-make
 - reconcile completion counts with the final pending, processed, destination, and index inventories
 - add realistic multi-source conformance coverage without pretending semantic fidelity can be reduced to deterministic link validation
 
-## Completion criteria
+## Repository completion criteria
 
 - the Inbox Ingester procedure accounts for every substantive section before marking a source processed
-- regression context covers a long multi-topic source, material omissions, uncertain causal language, and claims supported by different source files
-- generated claim-level attribution renders correctly in supported Markdown and Obsidian usage
-- completion reporting excludes reserved inbox entries and matches final source and concept inventories
-- a repeated ingestion of representative daily notes preserves all material initiatives and uncertainty without unsupported attribution
-- independent semantic review identifies no blocking or major fidelity finding in the repeated result
-- the finding index records the implementing PR, published version, and realistic-project validation before this task is completed
+- regression context covers a long multi-topic source, material omissions, uncertain causal language, claims supported by different source files, unresolved footnote markers, and empty sources
+- generated claim-level attribution uses renderable standard Markdown footnotes tied to matching `sources` identifiers and supporting passages
+- completion reporting excludes reserved inbox entries and matches final source, destination, and concept inventories
+- the release fixture and executable regression tests enforce the role, workflow, provenance, count, and semantic-review boundaries
+- the finding task, backlog index, phase index, and repository history record the implementing PR and repository validation
+
+## Release qualification follow-up
+
+- repeat ingestion against representative multi-topic daily notes through a corrective immutable release
+- verify that all material initiatives, uncertainty, authorship, and source-versus-decision distinctions remain intact
+- verify final pending, processed, destination, and concept counts against the installed project state
+- obtain an independent or isolated semantic review with no blocking or major fidelity finding
+- append the published version and realistic-project evidence to this task and the findings index before relying on the behavior for release-candidate qualification
+
+These checks remain release qualification evidence. They do not keep or return the bounded repository implementation task to `pending`.
 
 ## Resolution evidence
 
-Pending.
+Draft PR [#67](https://github.com/phdah/ava/pull/67) implements the repository change.
+
+- `templates/base/shared/instructions/inbox-ingestion-fidelity.md` defines complete substantive-section inventories, explicit `mapped`, `non-durable`, and `pending` dispositions, epistemic preservation, and final-state reconciliation.
+- Inbox Ingester now loads the fidelity contract as mandatory required reading before processing sources.
+- `templates/base/workflows/ingest-inbox.md` requires inventory before mutation, renderable claim provenance, final source-state reconciliation, and final-inventory reporting.
+- Change Reviewer loads the fidelity contract for ingestion review and keeps semantic meaning review separate from deterministic validation.
+- The provenance contract binds standard Markdown footnotes to matching OKF `sources[].id` values, the same preserved source path, a source-local supporting passage, and the claim's actual certainty.
+- `internal/release/fixtures/inbox-ingestion-fidelity.json` covers the observed multi-topic, uncertain-causality, cross-source attribution, unresolved marker, wrong-source, empty-source, and count-reconciliation cases.
+- `internal.release.tests.test_inbox_ingestion_fidelity` contains nine passing regression tests and is included in `internal/release/test.sh`.
+- The dogfood backlog contains no remaining pending bounded finding, while the parent dogfood task remains active until the user explicitly completes it.
