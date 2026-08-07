@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-alpha.10](https://github.com/phdah/ava/compare/v1.0.0-alpha.9...v1.0.0-alpha.10) (2026-08-07)
+
+
+### Bug Fixes
+
+* enforce faithful inbox ingestion completion ([#67](https://github.com/phdah/ava/issues/67)) ([d02e1ac](https://github.com/phdah/ava/commit/d02e1ac5328f78b47418047ff9eb3d5f63e54c75))
+* make knowledge hierarchy promotion predictable ([#65](https://github.com/phdah/ava/issues/65)) ([071a646](https://github.com/phdah/ava/commit/071a6463955dbdc19e9b8a250996d68816186b9c))
+
 ## [1.0.0-alpha.9](https://github.com/phdah/ava/compare/v1.0.0-alpha.8...v1.0.0-alpha.9) (2026-08-06)
 
 
