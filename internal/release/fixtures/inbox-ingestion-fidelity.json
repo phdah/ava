@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "description": "Semantic regression cases for faithful inbox ingestion completion.",
+  "deterministic_validation_proves_semantic_fidelity": false,
+  "cases": [
+    {
+      "id": "long-multi-topic-source-requires-complete-inventory",
+      "source": "inbox/2026-04-07.md",
+      "substantive_sections": [
+        "Airflow 3 and Renovate initiative",
+        "Snowflake access-management changes",
+        "Data-production Kubernetes upgrade policy",
+        "Unresolved follow-up ownership"
+      ],
+      "expected_action": "inventory-before-destination-mutation",
+      "expected_dispositions": {
+        "mapped": 3,
+        "non_durable": 0,
+        "pending": 1
+      },
+      "source_may_move": false,
+      "review_checks": [
+        "Every substantive section has an explicit disposition.",
+        "The unresolved owner remains pending instead of disappearing from the result.",
+        "File-level source metadata is not treated as proof that all topics were ingested."
+      ]
+    },
+    {
+      "id": "uncertain-causal-language-remains-uncertain",
+      "source": "inbox/2026-06-10.md",
+      "source_claim": "Reduced worker capacity was a plausible, unconfirmed contributor to the pod eviction.",
+      "forbidden_destination_claim": "Reduced worker capacity caused the pod eviction.",
+      "expected_action": "preserve-epistemic-state",
+      "source_may_move": true,
+      "review_checks": [
+        "Plausible and unconfirmed qualifiers remain explicit.",
+        "A contributing-factor hypothesis is not rewritten as established causality.",
+        "The destination distinguishes source interpretation from project decision."
+      ]
+    },
+    {
+      "id": "claims-from-different-sources-keep-distinct-attribution",
+      "sources": [
+        "inbox/2026-06-10.md",
+        "inbox/2026-06-11.md"
+      ],
+      "claims": [
+        {
+          "claim": "The eviction occurred during the capacity reduction.",
+          "supporting_source": "inbox/2026-06-10.md",
+          "source_id": "incident-2026-06-10"
+        },
+        {
+          "claim": "The remediation restored the previous worker request.",
+          "supporting_source": "inbox/2026-06-11.md",
+          "source_id": "remediation-2026-06-11"
+        }
+      ],
+      "expected_action": "use-distinct-renderable-footnotes",
+      "source_may_move": true,
+      "review_checks": [
+        "Each footnote label matches a sources metadata id.",
+        "Each footnote link resolves to the source that actually supports its claim.",
+        "Attribution is not collapsed to one convenient file-level source."
+      ]
+    },
+    {
+      "id": "unresolved-footnote-marker-blocks-completion",
+      "source": "inbox/incident-summary.md",
+      "destination_marker": "[^incident-2026-06-10]",
+      "footnote_definition_present": false,
+      "expected_action": "leave-source-pending",
+      "source_may_move": false,
+      "review_checks": [
+        "Every used marker has a standard Markdown footnote definition.",
+        "The definition links to the same source as the matching metadata id.",
+        "A bare source-id marker is not accepted as renderable provenance."
+      ]
+    },
+    {
+      "id": "incorrect-source-attribution-blocks-completion",
+      "source": "inbox/2026-06-11.md",
+      "attributed_claim": "Reduced worker capacity was a plausible contributor.",
+      "actual_supporting_source": "inbox/2026-06-10.md",
+      "expected_action": "correct-attribution-before-processing",
+      "source_may_move": false,
+      "review_checks": [
+        "The cited source contains the attributed claim.",
+        "The actual supporting source is present in destination metadata.",
+        "A valid link to the wrong source is still a semantic fidelity failure."
+      ]
+    },
+    {
+      "id": "frontmatter-only-source-remains-unchanged",
+      "source": "inbox/2026-04-01.md",
+      "substantive_section_count": 0,
+      "expected_action": "report-unchanged-pending",
+      "source_may_move": false,
+      "review_checks": [
+        "Zero substantive sections is reported explicitly.",
+        "The source is not counted as ingested merely to empty the inbox.",
+        "Another disposition requires explicit user authority."
+      ]
+    },
+    {
+      "id": "completion-counts-use-final-inventories",
+      "initial_entries": {
+        "pending_source_files": 3,
+        "reserved_index_files": 1,
+        "processed_directories": 1
+      },
+      "final_outcomes": {
+        "processed": 2,
+        "blocked": 1,
+        "unchanged": 0,
+        "failed": 0
+      },
+      "expected_final_pending_direct_children": 1,
+      "expected_selected_source_count": 3,
+      "expected_action": "recompute-final-state",
+      "review_checks": [
+        "inbox/index.md and inbox/processed/ are excluded from pending-source counts.",
+        "Processed and blocked totals reconcile with the selected source inventory.",
+        "Destination and concept counts are checked against final indexes and paths."
+      ]
+    }
+  ]
+}
