@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T19:05:00+02:00
+  at: 2026-08-07T08:24:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,11 +23,11 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Enforce faithful inbox ingestion completion](todo/05-release-qualification/dogfood/04-enforce-faithful-inbox-ingestion-completion.md).
+No bounded finding is currently pending. Continue [dogfooding the alpha](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md), add each new executable finding to the [Alpha Dogfood Findings](todo/05-release-qualification/dogfood/) backlog, and keep the umbrella active until the user explicitly declares dogfooding complete.
 
-The next task must account for every substantive source section before processing, preserve uncertainty and attribution, use renderable claim provenance, and reconcile completion reports against the final source and concept inventories.
+[Enforce faithful inbox ingestion completion](todo/05-release-qualification/dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through draft PR [#67](https://github.com/phdah/ava/pull/67). Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
 
-[Make knowledge hierarchy promotion predictable](todo/05-release-qualification/dogfood/03-make-knowledge-hierarchy-promotion-predictable.md) is complete through draft PR #65. Repeated realistic ingestion and independent semantic review remain release qualification follow-up.
+[Make knowledge hierarchy promotion predictable](todo/05-release-qualification/dogfood/03-make-knowledge-hierarchy-promotion-predictable.md) is complete through merged PR #65. Repeated realistic ingestion and independent semantic review remain release qualification follow-up.
 
 [Restore complete prerelease upgrade coverage](todo/05-release-qualification/dogfood/05-restore-complete-prerelease-upgrade-coverage.md) is complete through merged PR #60.
 
@@ -57,7 +57,7 @@ When the user asks to work on the next to-do item, read:
 1. this entry point
 2. the active Phase 5 index
 3. the dogfood findings index
-4. the current finding task
+4. the current finding task when one is pending
 5. only the related repository context needed to complete it
 
 A finding is complete when the intended repository change has been implemented, indexed, repository-validated, and committed with resolution evidence. Published-release qualification may be appended later and is tracked as a release gate rather than task status. Completing a finding does not complete the parent dogfood task.
