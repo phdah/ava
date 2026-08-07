@@ -10,8 +10,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-04T14:28:00+02:00
+  by: agent:claude-sonnet-4-6
+  at: 2026-08-07T00:00:00+02:00
 ---
 
 # Qualify and Publish `1.0.0`
@@ -34,6 +34,7 @@ Stable publication requires:
 
 ## Prepare
 
+- delete all immutable alpha prerelease GitHub Releases in order from oldest to newest, then delete their now-unlocked tags; this removes the old commit SHAs containing redacted content from accessible history and source archives (note: deleted immutable release tag names cannot be reused)
 - build the exact seven-asset stable release set twice and require identical digests
 - verify fresh installation and RC-to-stable upgrade from assembled assets
 - verify semantic compatibility transitions independently from installed `ava_version`
