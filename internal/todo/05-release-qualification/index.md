@@ -24,16 +24,18 @@ Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded find
 Current findings:
 
 - 0 pending blockers
-- 2 pending required-v1 findings
-- 4 completed findings
+- 1 pending required-v1 finding
+- 5 completed findings
 
-Current next actionable finding: [Make knowledge hierarchy promotion predictable](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md).
+Current next actionable finding: [Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md).
+
+[Make knowledge hierarchy promotion predictable](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md) is complete through draft PR #65. Repeated realistic ingestion and independent semantic review remain corrective-release qualification evidence.
 
 [Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) is complete through merged PR #60.
 
 [Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through PR #62.
 
-Both completed blocker findings still require corrective immutable-release evidence before the next prerelease can qualify. That evidence is a release-gate requirement and does not keep either implementation task pending.
+The completed findings still requiring corrective immutable-release evidence retain that obligation as release qualification follow-up, not pending implementation work.
 
 [Repair installed context link resolution](dogfood/02-repair-installed-context-link-resolution.md) is complete after immutable alpha.7 validation loaded the complete Inbox Ingester required-reading chain from exact installed-project paths.
 
@@ -70,13 +72,13 @@ Phase 5 begins only after:
 - the Ava Maintenance role is implemented
 - the complete validation, conformance, recovery, uninstall, and upgrade matrix passes
 
-These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). The repository fixes for stranded prerelease upgrade support in completed [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) and terminal transaction-container cleanup in completed [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md) are implemented. Their real corrective-release checks remain mandatory qualification evidence before another prerelease can qualify, but they are not pending roadmap tasks.
+These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). The semantic hierarchy contract from completed [finding 03](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md), prerelease support fix from completed [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md), and terminal transaction cleanup from completed [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md) are implemented. Their required real corrective-release checks remain qualification evidence where named, but they are not pending roadmap tasks.
 
 ## Current active work
 
 The umbrella task is [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
-The current executable implementation task is [Make knowledge hierarchy promotion predictable](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md).
+The current executable implementation task is [Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md).
 
 ## Previous phase
 
