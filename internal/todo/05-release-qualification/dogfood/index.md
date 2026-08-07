@@ -8,14 +8,14 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 ## Current next finding
 
-No bounded finding is currently pending. Continue realistic dogfooding and add the next executable finding with the next unused number when discovered.
+[Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) is the current pending blocker. Investigate why the installed root-router instructions were treated as optional, then make managed state checks and role routing mandatory before substantive handling of every request.
 
 Findings 03, 04, 05, and 06 have completed repository implementations. Their named corrective immutable-release checks remain explicit release qualification follow-up, not pending implementation work.
 
 ## Backlog status
 
-- 0 pending findings
-- 0 pending blockers
+- 1 pending finding
+- 1 pending blocker
 - 0 pending required-v1 findings
 - 6 completed findings
 
@@ -29,6 +29,7 @@ Findings 03, 04, 05, and 06 have completed repository implementations. Their nam
 | 04 | completed | required-v1 | release candidate | [Enforce faithful inbox ingestion completion](04-enforce-faithful-inbox-ingestion-completion.md) |
 | 05 | completed | blocker | next prerelease | [Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md) |
 | 06 | completed | blocker | next prerelease | [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) |
+| 07 | pending | blocker | next prerelease | [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) |
 
 ## Adding a finding
 

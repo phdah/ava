@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-07T08:24:00+02:00
+  at: 2026-08-07T13:31:46+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,7 +23,7 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-No bounded finding is currently pending. Continue [dogfooding the alpha](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md), add each new executable finding to the [Alpha Dogfood Findings](todo/05-release-qualification/dogfood/) backlog, and keep the umbrella active until the user explicitly declares dogfooding complete.
+[Enforce role routing before every response](todo/05-release-qualification/dogfood/07-enforce-role-routing-before-every-response.md) is the current pending blocker. It must establish why an agent treated an apparently non-coding request as exempt from the Ava router, make pre-routing and role routing mandatory before substantive handling, and add regression coverage for the observed bypass.
 
 [Enforce faithful inbox ingestion completion](todo/05-release-qualification/dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through draft PR [#67](https://github.com/phdah/ava/pull/67). Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
 

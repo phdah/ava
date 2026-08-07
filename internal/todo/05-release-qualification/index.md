@@ -23,11 +23,11 @@ Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded find
 
 Current findings:
 
-- 0 pending blockers
+- 1 pending blocker
 - 0 pending required-v1 findings
 - 6 completed findings
 
-No bounded finding is currently pending. Continue realistic dogfooding and add the next executable finding to the backlog when discovered.
+[Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is the current pending blocker. The managed root router must not let an agent bypass state checks and role routing because a request appears unrelated to its generic host persona.
 
 [Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through draft PR [#67](https://github.com/phdah/ava/pull/67). Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
 
@@ -80,7 +80,7 @@ These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed a
 
 The umbrella task is [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
-No bounded implementation finding is currently pending. Continue dogfooding until the user explicitly closes the umbrella or another finding is added.
+[Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is the current bounded implementation finding. Continue dogfooding after it is resolved until the user explicitly closes the umbrella or another finding is added.
 
 ## Previous phase
 
