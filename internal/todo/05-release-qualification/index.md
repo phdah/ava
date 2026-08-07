@@ -24,12 +24,14 @@ Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded find
 Current findings:
 
 - 0 pending blockers
-- 1 pending required-v1 finding
-- 5 completed findings
+- 0 pending required-v1 findings
+- 6 completed findings
 
-Current next actionable finding: [Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md).
+No bounded finding is currently pending. Continue realistic dogfooding and add the next executable finding to the backlog when discovered.
 
-[Make knowledge hierarchy promotion predictable](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md) is complete through draft PR #65. Repeated realistic ingestion and independent semantic review remain corrective-release qualification evidence.
+[Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through draft PR [#67](https://github.com/phdah/ava/pull/67). Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
+
+[Make knowledge hierarchy promotion predictable](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md) is complete through merged PR #65. Repeated realistic ingestion and independent semantic review remain corrective-release qualification evidence.
 
 [Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) is complete through merged PR #60.
 
@@ -72,13 +74,13 @@ Phase 5 begins only after:
 - the Ava Maintenance role is implemented
 - the complete validation, conformance, recovery, uninstall, and upgrade matrix passes
 
-These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). The semantic hierarchy contract from completed [finding 03](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md), prerelease support fix from completed [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md), and terminal transaction cleanup from completed [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md) are implemented. Their required real corrective-release checks remain qualification evidence where named, but they are not pending roadmap tasks.
+These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). The semantic hierarchy contract from completed [finding 03](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md), faithful ingestion contract from completed [finding 04](dogfood/04-enforce-faithful-inbox-ingestion-completion.md), prerelease support fix from completed [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md), and terminal transaction cleanup from completed [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md) are implemented. Their required real corrective-release checks remain qualification evidence where named, but they are not pending roadmap tasks.
 
 ## Current active work
 
 The umbrella task is [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
-The current executable implementation task is [Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md).
+No bounded implementation finding is currently pending. Continue dogfooding until the user explicitly closes the umbrella or another finding is added.
 
 ## Previous phase
 
