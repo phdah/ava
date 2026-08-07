@@ -7,4 +7,5 @@ Machine-readable fixtures that freeze public contract examples and release quali
 - [Release-please policy](release-please-policy.json) - First-alpha bootstrap identity, Conventional Commit title classification, changelog visibility, and alpha, RC, and stable channel settings.
 - [Document update metadata](document-update-metadata.json) - Creation, meaningful mutation, trivial mutation, repeated mutation, legacy metadata, malformed metadata, temporal consistency, verification staleness, and reserved-document cases.
 - [Knowledge hierarchy promotion](knowledge-hierarchy-promotion.json) - Durable-subject classification, semantic subgroup promotion, temporary headings, cross-links, and Project Steward handoff cases.
+- [Inbox ingestion fidelity](inbox-ingestion-fidelity.json) - Multi-topic source inventories, uncertainty preservation, claim attribution, renderable footnotes, empty sources, and final-state count reconciliation.
 - [Ava Maintenance](ava-maintenance.json) - Installation reporting, managed integrity, deterministic recovery routing, semantic handoff, host capability and OpenCode access, and safe role-led removal cases.
