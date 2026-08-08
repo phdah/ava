@@ -10,7 +10,7 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) is the current pending blocker. Investigate why the installed root-router instructions were treated as optional, then make managed state checks and role routing mandatory before substantive handling of every request.
 
-[Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) is the next pending `required-v1` finding after the routing blocker. It must make ordinary bounded review capable of reaching a stable acceptance conclusion instead of continually surfacing progressively smaller improvements.
+[Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) is a pending `required-v1` finding that must be completed before the release candidate. It does not block the corrective prerelease required to qualify finding 07.
 
 Findings 03, 04, 05, and 06 have completed repository implementations. Their named corrective immutable-release checks remain explicit release qualification follow-up, not pending implementation work.
 
