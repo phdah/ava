@@ -31,14 +31,14 @@ Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded find
 
 Current findings:
 
-- 2 pending findings
-- 1 pending blocker
+- 1 pending finding
+- 0 pending blockers
 - 1 pending required-v1 finding
-- 6 completed findings
+- 7 completed findings
 
-[Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is the current pending blocker. The managed root router must not let an agent bypass state checks and role routing because a request appears unrelated to its generic host persona.
+[Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The managed root router now requires state gating and explicit workflow or role routing before every substantive response, refusal, tool call, or project action. The corrective immutable prerelease must still repeat the warranty and unresolved-routing scenarios in a realistic fresh session.
 
-[Define review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md) is a pending `required-v1` finding that must be completed before the release candidate. It does not block the corrective prerelease required to qualify finding 07.
+[Define review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md) is the remaining pending `required-v1` finding. It must be completed before the release candidate, after the synthetic vault and corrective-alpha qualification tasks ordered below.
 
 [Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through merged PR [#67](https://github.com/phdah/ava/pull/67) and published `1.0.0-alpha.10`. Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
 
@@ -46,13 +46,13 @@ Current findings:
 
 [Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) is complete through merged PR #60.
 
-[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through merged PR #62.
+[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through PR #62.
 
 The completed findings still requiring corrective immutable-release evidence retain that obligation as release qualification follow-up, not pending implementation work.
 
 [Repair installed context link resolution](dogfood/02-repair-installed-context-link-resolution.md) is complete after immutable alpha.7 validation loaded the complete Inbox Ingester required-reading chain from exact installed-project paths.
 
-The dogfood umbrella remains pending until the user explicitly declares it complete. Having no pending findings does not automatically make task 5 current.
+The dogfood umbrella remains pending until the user explicitly declares it complete. Having no pending blockers does not automatically make task 5 current.
 
 ## Finding and release ordering
 
@@ -85,13 +85,13 @@ Phase 5 begins only after:
 - the Ava Maintenance role is implemented
 - the complete validation, conformance, recovery, uninstall, and upgrade matrix passes
 
-These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). The semantic hierarchy contract from completed [finding 03](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md), faithful ingestion contract from completed [finding 04](dogfood/04-enforce-faithful-inbox-ingestion-completion.md), prerelease support fix from completed [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md), and terminal transaction cleanup from completed [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md) are implemented. Their required real corrective-release checks remain qualification evidence where named, but they are not pending roadmap tasks.
+These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). The semantic hierarchy contract from completed [finding 03](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md), faithful ingestion contract from completed [finding 04](dogfood/04-enforce-faithful-inbox-ingestion-completion.md), prerelease support fix from completed [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md), terminal transaction cleanup from completed [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md), and unconditional routing contract from completed [finding 07](dogfood/07-enforce-role-routing-before-every-response.md) are implemented. Their required real corrective-release checks remain qualification evidence where named, but they are not pending roadmap tasks.
 
 ## Current active work
 
-The umbrella task is [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
+The umbrella task remains [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
-[Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is the current bounded implementation finding. After it is resolved, build the [synthetic qualification vault](04a-build-synthetic-qualification-vault.md) and [qualify the corrective alpha](04b-qualify-and-publish-corrective-alpha.md). Then complete [review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md) before release-candidate publication, and continue dogfooding until the user explicitly closes the umbrella or another finding is added.
+Build the reproducible [synthetic qualification vault](04a-build-synthetic-qualification-vault.md) next, then [qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) and collect immutable evidence for completed findings 03 through 07. After that, complete [review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md) before release-candidate publication, and continue dogfooding until the user explicitly closes the umbrella or another finding is added.
 
 ## Previous phase
 
