@@ -1,7 +1,7 @@
 ---
 type: Internal Development Task
 title: Compose semantic upgrades from adjacent release edges
-description: Replace duplicated source-to-target semantic guidance with deterministic composition of reviewed adjacent release edges.
+description: Redesign the general release and upgrade process to replace duplicated source-to-target semantic guidance with deterministic composition of reviewed adjacent release edges.
 tags: [internal, roadmap, dogfood, releases, upgrades, semantics]
 status: pending
 phase: 5
@@ -9,7 +9,7 @@ parent: 04-dogfood-alpha-and-track-findings
 order: 9
 classification: required-v1
 blocks: release-candidate
-affected_version: 1.0.0-alpha.11
+affected_version: release process, observed in 1.0.0-alpha.11
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-08T23:58:55+02:00
@@ -17,11 +17,17 @@ generated:
 
 # Compose semantic upgrades from adjacent release edges
 
+## Architectural scope
+
+This is not a correction limited to `1.0.0-alpha.11` or to prerelease handling. Alpha.11 is only the concrete release that exposed the design problem.
+
+This finding defines the intended general model for authoring, reviewing, assembling, validating, distributing, and executing upgrades across all future Ava prerelease and stable releases. The resolving implementation must replace the general release architecture rather than add alpha.11-specific behavior.
+
 ## Observed behavior
 
 Completing the `1.0.0-alpha.11` release required the target release to restate complete source-to-target upgrade assessments for every supported prerelease. Earlier semantic obligations from alpha.10 were copied into new alpha.5-to-alpha.11 through alpha.9-to-alpha.11 edges even though the only new alpha.10-to-alpha.11 managed change was the root router and required no project-owned semantic work.
 
-This makes each release responsible for recreating cumulative upgrade guidance from every supported source. The authoring and review cost grows with the number of releases, and duplicated obligations can drift or be omitted.
+This concrete example reveals a general release-process problem: each new release is responsible for recreating cumulative upgrade guidance from every supported source. The authoring and review cost grows with the number of releases, and duplicated obligations can drift or be omitted.
 
 ## Reproduction and evidence
 
@@ -33,6 +39,8 @@ Review release PR [#68](https://github.com/phdah/ava/pull/68) and compare:
 
 The alpha.11 impact file repeats cumulative semantic evidence and requires new target-specific guidance for older sources. The alpha.10-to-alpha.11 edge correctly has no guidance, but prior alpha.9-to-alpha.10 obligations are represented again as alpha.9-to-alpha.11 guidance rather than composed from immutable adjacent edges.
 
+This evidence demonstrates the current general release behavior. The finding is not scoped to rewriting alpha.11 assets after publication.
+
 The public guidance contract already describes ordered multi-version composition and explicit supersession, while the release process still materializes complete direct source-to-target guidance for every target.
 
 ## Classification
@@ -43,11 +51,11 @@ The current implementation is safe because every direct edge is reviewed and val
 
 ## Root cause
 
-The release model treats each target release as the sole owner of a complete set of direct source-to-target edges. Release qualification derives cumulative managed deltas, semantic evidence, and target-specific guidance for every supported source instead of inheriting a previously reviewed immutable edge graph and appending only newly introduced adjacent edges.
+The general release model treats each target release as the sole owner of a complete set of direct source-to-target edges. Release qualification derives cumulative managed deltas, semantic evidence, and target-specific guidance for every supported source instead of inheriting a previously reviewed immutable edge graph and appending only newly introduced adjacent edges.
 
 ## Scope
 
-Design and implement a deterministic adjacent-edge upgrade model, subject to explicit approval of the resulting public contract change.
+Design and implement a deterministic adjacent-edge upgrade model as the general release and upgrade architecture, subject to explicit approval of the resulting public contract change.
 
 The intended direction is:
 
@@ -58,12 +66,13 @@ The intended direction is:
 - guidance obligations are loaded in exact edge order and remain cumulative unless a later edge explicitly supersedes an earlier guidance ID
 - unsupported gaps, cycles, altered inherited edges, ambiguous paths, or unprovable composition block preflight
 - release qualification proves inherited edge identity and completeness without requiring release authors to rewrite cumulative source-to-target prose
+- the same model applies to future alpha, beta, release-candidate, and stable releases without version-specific special cases
 
 Do not implement runtime inference from changelogs, arbitrary historical prose, repository history, or network access to mutable releases.
 
 ## Completion criteria
 
-- public release, versioning, upgrade, and guidance contracts define adjacent-edge inheritance and deterministic path resolution consistently
+- public release, versioning, upgrade, and guidance contracts define adjacent-edge inheritance and deterministic path resolution consistently as the default release model
 - release schemas represent inherited immutable edges, newly authored edges, ordered semantic guidance, supersession, and supported-source retention without target-specific duplication
 - release assembly produces a self-contained target release with every edge and guidance document required for its supported source range
 - release PR validation reviews only new or explicitly retired edges while proving inherited edge definitions and checksums are unchanged
@@ -73,6 +82,7 @@ Do not implement runtime inference from changelogs, arbitrary historical prose, 
 - pending, partial, and blocked semantic state may be carried only when every traversed edge permits it and the composed path covers the last completed compatibility version
 - gaps, cycles, conflicting supersession, missing guidance, altered inherited edges, and non-composable paths fail before managed mutation
 - fixtures cover direct adjacent upgrades, multi-edge upgrades, semantically lagging projects, no-op semantic edges, explicit supersession, unsupported gaps, rollback, and resume
+- fixtures prove the model works generically across successive releases rather than only for the alpha.10-to-alpha.11 example
 - release tooling, installer behavior, validators, tests, documentation, indexes, and conceptual logs remain aligned
 - the user explicitly approves the final public contract before implementation records it as accepted
 - concrete resolution and repository-validation evidence are added to this task in the resolving PR
@@ -88,4 +98,4 @@ Publish and validate a release whose supported path spans at least three adjacen
 1. a project fully compatible with its installed source traverses only newly applicable semantic edges
 2. a project whose installed base is newer than `compatible_through` receives every outstanding semantic obligation exactly once before compatibility advances
 
-Confirm that the release contains no separately authored cumulative source-to-target guidance documents for paths that can be proven by adjacent-edge composition.
+Confirm that the release contains no separately authored cumulative source-to-target guidance documents for paths that can be proven by adjacent-edge composition, and that the behavior is produced by the general release process rather than version-specific handling.
