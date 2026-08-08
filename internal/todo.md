@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-08T18:06:00+02:00
+  at: 2026-08-09T00:13:04+02:00
 ---
 
 # Ava Internal To-Do List
@@ -27,7 +27,7 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 After the vault, [qualify and publish the corrective alpha](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md). That qualification must collect immutable evidence for completed findings 03 through 07, including the exact warranty prompt and unresolved-routing scenario. After the corrective prerelease is qualified, complete [Define review sufficiency and termination criteria](todo/05-release-qualification/dogfood/08-define-review-sufficiency-and-termination.md) before release-candidate publication.
 
-Immutable `1.0.0-alpha.10` is the latest published release. Release PR [#68](https://github.com/phdah/ava/pull/68) currently proposes `1.0.0-alpha.11` and is expected to remain blocked until its implementation, release-impact review, and qualification gates are complete.
+Release PR [#68](https://github.com/phdah/ava/pull/68) for `1.0.0-alpha.11` has been merged. The repository release manifest now records `1.0.0-alpha.11`; immutable publication and qualification evidence remain governed by the release workflow and the [corrective alpha qualification task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md).
 
 [Enforce role routing before every response](todo/05-release-qualification/dogfood/07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The managed router now makes state gating and role routing unconditional before substantive handling, and regression coverage protects the exact warranty bypass through source, assembled installed, and OpenCode conformance paths. Real immutable-release validation remains part of corrective-alpha qualification.
 
