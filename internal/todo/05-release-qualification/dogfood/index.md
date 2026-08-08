@@ -8,7 +8,9 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 ## Current next finding
 
-[Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) is the only pending finding. It is classified `required-v1` and must be completed before the release candidate, but it does not precede the supporting [synthetic qualification vault](../04a-build-synthetic-qualification-vault.md) and [corrective alpha qualification](../04b-qualify-and-publish-corrective-alpha.md) tasks already ordered by the Phase 5 roadmap.
+[Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) remains the first actionable pending finding. It is classified `required-v1` and must be completed before the release candidate, but it does not precede the supporting [synthetic qualification vault](../04a-build-synthetic-qualification-vault.md) and [corrective alpha qualification](../04b-qualify-and-publish-corrective-alpha.md) tasks already ordered by the Phase 5 roadmap.
+
+[Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) is also pending as `required-v1`. It follows finding 08 and must replace duplicated cumulative source-to-target guidance with deterministic adjacent-edge composition before release-candidate publication.
 
 [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The corrective immutable prerelease must still repeat the exact warranty prompt and no-clear-match scenario in a fresh agent session before release qualification can rely on the behavior.
 
@@ -16,9 +18,9 @@ Findings 03 through 07 have completed repository implementations. Their named co
 
 ## Backlog status
 
-- 1 pending finding
+- 2 pending findings
 - 0 pending blockers
-- 1 pending required-v1 finding
+- 2 pending required-v1 findings
 - 7 completed findings
 
 ## Findings
@@ -33,6 +35,7 @@ Findings 03 through 07 have completed repository implementations. Their named co
 | 06 | completed | blocker | next prerelease | [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) |
 | 07 | completed | blocker | next prerelease | [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) |
 | 08 | pending | required-v1 | release candidate | [Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) |
+| 09 | pending | required-v1 | release candidate | [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) |
 
 ## Adding a finding
 
