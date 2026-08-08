@@ -65,9 +65,19 @@ Before publication, missing `publication.json` is a recommendation. Release qual
 
 # Alpha qualification
 
-The [alpha qualification policy](alpha-qualification.md) and its machine-readable fixture define the required gates, defect classes, protected impacts, prerelease support boundary, and publication approval.
+The [alpha qualification policy](alpha-qualification.md) composes repository, installed, and release conformance with roadmap completion, reproducible assembly, prerelease support declarations, defect classification, and exact publication approval.
 
-The first alpha has no supported earlier Ava source. Later supported transitions must be explicit release-manifest upgrade edges and must preserve a tested path from the latest supported prerelease through RC to stable `1.0.0`.
+[alpha-qualification.json](fixtures/alpha-qualification.json) freezes the required gates and their conformance evidence. [test_alpha_qualification.py](tests/test_alpha_qualification.py) proves that:
+
+- every evidence reference resolves
+- Phase 1 through Phase 4 tasks are complete
+- the first alpha assembles reproducibly
+- `1.0.0-alpha.1` declares no supported source release
+- later intended prerelease transitions are represented as release-manifest upgrade edges
+- historical unversioned sources are rejected
+- publication approval is bound to both version and source revision
+
+Passing individual conformance modes is necessary but not sufficient for alpha publication. Every alpha gate must pass and the exact publication transaction must be approved.
 
 # Fixture matrix
 
