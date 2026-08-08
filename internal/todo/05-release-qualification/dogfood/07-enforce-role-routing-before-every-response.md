@@ -89,7 +89,7 @@ OpenCode host support was not the root cause. Its project-owned configuration co
 
 ## Resolution evidence
 
-The managed `templates/base/AGENTS.md` router now states that every user request must enter Ava routing before any substantive answer, refusal, tool call, or project action. Apparent simplicity, subject matter, and the host's generic persona are explicitly non-exempt. Normal routing remains blocked until managed-state checks complete, workflow or role resolution completes, the selected role's required-reading chain loads, and the role is announced.
+The managed `templates/base/AGENTS.md` router now states that every user request must enter Ava routing before any substantive answer, refusal, task execution, or project action. Apparent simplicity, subject matter, and the host's generic persona are explicitly non-exempt. Routing-specific reads and checks remain permitted only to complete the activation procedure. Normal routing remains blocked until managed-state checks complete, workflow or role resolution completes, the selected role's required-reading chain loads, and the role is announced.
 
 When no role clearly matches, the router permits only the minimum routing clarification required from the user. It explicitly prohibits generic host-persona answers, scope disclaimers, and refusals as fallbacks.
 
