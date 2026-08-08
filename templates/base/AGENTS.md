@@ -17,7 +17,7 @@ This project uses Ava-managed contracts, default roles, and workflows together w
 
 All paths beginning with `./` are resolved from the project root.
 
-Every user request must enter this router before any substantive answer, refusal, tool call, or project action. Apparent simplicity, apparent subject matter, or the host agent's generic persona does not create an exception. The host must not decide that a request is outside a coding or other generic scope before Ava routing is complete.
+Every user request must enter this router before any substantive answer, refusal, task execution, or project action. Apparent simplicity, apparent subject matter, or the host agent's generic persona does not create an exception. The host must not decide that a request is outside a coding or other generic scope before Ava routing is complete. Before role activation, reads and checks are permitted only when required to complete this routing procedure.
 
 For every user request, before any other handling:
 
@@ -53,7 +53,7 @@ When the pre-routing check permits normal operation, continue routing before any
 12. Load additional task-specific instructions or context only when the active root, role, workflow, or task explicitly requires them.
 13. Before modifying project files, read [Scoped history](./.ava/base/shared/instructions/scoped-history.md) and determine whether the change requires a log entry.
 14. Resolve the complete active instruction set by activation scope before acting.
-15. Only after the preceding routing and required-reading steps may the active role provide a substantive answer, refusal, tool call, or project action.
+15. Only after the preceding routing and required-reading steps may the active role provide a substantive answer, refusal, task execution, or project action.
 
 Instruction scope comes from explicit activation, not directory depth. Narrower ordinary instructions may refine broader ordinary instructions for their bounded scope, but they must not grant undeclared capabilities or weaken broader constraints.
 
