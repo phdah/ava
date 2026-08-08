@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T15:15:00+02:00
 updated:
-  by: agent:opencode
-  at: 2026-08-07T16:21:26+02:00
+  by: agent:openai-chatgpt
+  at: 2026-08-08T14:43:32+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,7 +25,7 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 [Enforce role routing before every response](todo/05-release-qualification/dogfood/07-enforce-role-routing-before-every-response.md) is the current pending blocker. It must establish why an agent treated an apparently non-coding request as exempt from the Ava router, make pre-routing and role routing mandatory before substantive handling, and add regression coverage for the observed bypass.
 
-After the routing blocker, build the [synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md), then [qualify and publish the corrective alpha](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md). The vault must contain 200-400 raw files covering six coherent months of Adam's fictional private and work life in Stockholm, with one February apartment move and reproducible expected outcomes.
+After the routing blocker, complete [Define review sufficiency and termination criteria](todo/05-release-qualification/dogfood/08-define-review-sufficiency-and-termination.md), then build the [synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) and [qualify and publish the corrective alpha](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md). The review finding must make ordinary bounded review capable of reaching a stable acceptance conclusion without implementing that change in its registration PR. The vault must contain 200-400 raw files covering six coherent months of Adam's fictional private and work life in Stockholm, with one February apartment move and reproducible expected outcomes.
 
 Immutable `1.0.0-alpha.10` is the latest published release. Release PR [#68](https://github.com/phdah/ava/pull/68) currently proposes `1.0.0-alpha.11` and is expected to remain blocked until its implementation, release-impact review, and qualification gates are complete.
 
