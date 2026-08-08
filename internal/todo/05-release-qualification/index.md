@@ -22,7 +22,7 @@ Core progress: 3 of 6 complete.
 These tasks add executable evidence beneath the stable six core gates without renumbering them:
 
 1. [ ] [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md) - Generate a reproducible 200-400-file raw corpus covering six coherent months of Adam's fictional private and work life in Stockholm.
-2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) - Publish the routing correction and collect immutable evidence for findings 03 through 07.
+2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) - Publish the routing correction and collect immutable evidence for findings 03 through 08.
 3. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md) - Repeat the complete generated-vault and lifecycle matrix before stable qualification.
 
 ## Dogfood findings
@@ -31,16 +31,16 @@ Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded find
 
 Current findings:
 
-- 2 pending findings
+- 1 pending finding
 - 0 pending blockers
-- 2 pending required-v1 findings
-- 7 completed findings
+- 1 pending required-v1 finding
+- 8 completed findings
+
+[Define review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md) is complete in its resolving implementation PR. Ordinary bounded review now defaults to a stable acceptance threshold, exhaustive audit requires explicit scope, and re-review must terminate successfully once material findings are resolved without new threshold-exceeding evidence.
+
+[Compose semantic upgrades from adjacent release edges](dogfood/09-compose-semantic-upgrades-from-adjacent-edges.md) is the remaining pending `required-v1` finding. It must replace duplicated cumulative source-to-target guidance with deterministic adjacent-edge composition before release-candidate publication.
 
 [Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The managed root router now requires state gating and explicit workflow or role routing before every substantive response, refusal, task execution, or project action. The corrective immutable prerelease must still repeat the warranty and unresolved-routing scenarios in a realistic fresh session.
-
-[Define review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md) remains the first pending `required-v1` finding. It must be completed before the release candidate, after the synthetic vault and corrective-alpha qualification tasks ordered below.
-
-[Compose semantic upgrades from adjacent release edges](dogfood/09-compose-semantic-upgrades-from-adjacent-edges.md) is the second pending `required-v1` finding. It must replace duplicated cumulative source-to-target guidance with deterministic adjacent-edge composition before release-candidate publication.
 
 [Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through merged PR [#67](https://github.com/phdah/ava/pull/67) and published `1.0.0-alpha.10`. Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
 
@@ -48,7 +48,7 @@ Current findings:
 
 [Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) is complete through merged PR #60.
 
-[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through merged PR #62.
+[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through PR #62.
 
 The completed findings still requiring corrective immutable-release evidence retain that obligation as release qualification follow-up, not pending implementation work.
 
@@ -63,7 +63,7 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 - post-v1 dispositions require explicit user approval and durable rationale
 - additional `alpha.N`, beta, or RC releases may be inserted when findings require another immutable validation cycle
 - every added release declares and tests its supported source prereleases
-- completed findings may still carry explicit release qualification follow-up without returning to pending status
+- completed findings may still carry explicit immutable-release evidence before a release gate passes
 
 ## Qualification policy
 
@@ -87,13 +87,13 @@ Phase 5 begins only after:
 - the Ava Maintenance role is implemented
 - the complete validation, conformance, recovery, uninstall, and upgrade matrix passes
 
-These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). The semantic hierarchy contract from completed [finding 03](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md), faithful ingestion contract from completed [finding 04](dogfood/04-enforce-faithful-inbox-ingestion-completion.md), prerelease support fix from completed [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md), terminal transaction cleanup from completed [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md), and unconditional routing contract from completed [finding 07](dogfood/07-enforce-role-routing-before-every-response.md) are implemented. Their required real corrective-release checks remain qualification evidence where named, but they are not pending roadmap tasks.
+These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed and validated the installed-path defect tracked by completed [finding 02](dogfood/02-repair-installed-context-link-resolution.md). The semantic hierarchy contract from completed [finding 03](dogfood/03-make-knowledge-hierarchy-promotion-predictable.md), faithful ingestion contract from completed [finding 04](dogfood/04-enforce-faithful-inbox-ingestion-completion.md), prerelease support fix from completed [finding 05](dogfood/05-restore-complete-prerelease-upgrade-coverage.md), terminal transaction cleanup from completed [finding 06](dogfood/06-remove-empty-upgrade-transaction-containers.md), unconditional routing contract from completed [finding 07](dogfood/07-enforce-role-routing-before-every-response.md), and review sufficiency contract from completed [finding 08](dogfood/08-define-review-sufficiency-and-termination.md) are implemented. Their required real corrective-release checks remain qualification evidence where named, but they are not pending roadmap tasks.
 
 ## Current active work
 
 The umbrella task remains [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
-Build the reproducible [synthetic qualification vault](04a-build-synthetic-qualification-vault.md) next, then [qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) and collect immutable evidence for completed findings 03 through 07. After that, complete [review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md), then [compose semantic upgrades from adjacent release edges](dogfood/09-compose-semantic-upgrades-from-adjacent-edges.md) before release-candidate publication. Continue dogfooding until the user explicitly closes the umbrella or another finding is added.
+Build the reproducible [synthetic qualification vault](04a-build-synthetic-qualification-vault.md) next, then [qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) and collect immutable evidence for completed findings 03 through 08. After that, complete [semantic upgrade composition from adjacent release edges](dogfood/09-compose-semantic-upgrades-from-adjacent-edges.md) before release-candidate publication. Continue dogfooding until the user explicitly closes the umbrella or another finding is added.
 
 ## Previous phase
 
