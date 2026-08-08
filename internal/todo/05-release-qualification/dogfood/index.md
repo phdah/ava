@@ -10,13 +10,15 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) is the current pending blocker. Investigate why the installed root-router instructions were treated as optional, then make managed state checks and role routing mandatory before substantive handling of every request.
 
+[Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) is the next pending `required-v1` finding after the routing blocker. It must make ordinary bounded review capable of reaching a stable acceptance conclusion instead of continually surfacing progressively smaller improvements.
+
 Findings 03, 04, 05, and 06 have completed repository implementations. Their named corrective immutable-release checks remain explicit release qualification follow-up, not pending implementation work.
 
 ## Backlog status
 
-- 1 pending finding
+- 2 pending findings
 - 1 pending blocker
-- 0 pending required-v1 findings
+- 1 pending required-v1 finding
 - 6 completed findings
 
 ## Findings
@@ -30,6 +32,7 @@ Findings 03, 04, 05, and 06 have completed repository implementations. Their nam
 | 05 | completed | blocker | next prerelease | [Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md) |
 | 06 | completed | blocker | next prerelease | [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) |
 | 07 | pending | blocker | next prerelease | [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) |
+| 08 | pending | required-v1 | release candidate | [Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) |
 
 ## Adding a finding
 
