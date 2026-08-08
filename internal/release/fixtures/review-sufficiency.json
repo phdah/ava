@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "finding_admission_test": [
+    "evidence",
+    "consequence",
+    "confidence",
+    "threshold"
+  ],
+  "standards": {
+    "acceptance": {
+      "default_for": "ordinary-bounded-review",
+      "terminal_conclusions": [
+        "acceptance threshold met",
+        "acceptance threshold met with non-blocking findings",
+        "acceptance threshold not met"
+      ],
+      "optional_observations": "omit-unless-explicitly-requested"
+    },
+    "audit": {
+      "requires_explicit_scope": true,
+      "terminal_conclusions": [
+        "audit completed"
+      ],
+      "optional_observations": "report-separately-when-useful"
+    }
+  },
+  "cases": [
+    {
+      "id": "clean-first-review",
+      "review_standard": "acceptance",
+      "prior_findings": [],
+      "admitted_findings": [],
+      "optional_observations": [],
+      "expected_conclusion": "acceptance threshold met"
+    },
+    {
+      "id": "satisfied-rereview",
+      "review_standard": "acceptance",
+      "prior_findings": [
+        {
+          "id": "CR-1",
+          "severity": "major",
+          "expected_disposition": "resolved"
+        }
+      ],
+      "remediation_evidence": [
+        "the contradictory capability was removed"
+      ],
+      "changed_scope": false,
+      "regression": false,
+      "expected_new_findings": [],
+      "expected_reopened_findings": [],
+      "expected_conclusion": "acceptance threshold met"
+    },
+    {
+      "id": "remediation-introduces-regression",
+      "review_standard": "acceptance",
+      "prior_findings": [
+        {
+          "id": "CR-1",
+          "severity": "major",
+          "expected_disposition": "resolved"
+        }
+      ],
+      "new_evidence": [
+        "the remediation removed the adjacent safeguard"
+      ],
+      "changed_scope": false,
+      "regression": true,
+      "expected_new_findings": [
+        {
+          "severity": "major",
+          "basis": "genuine-regression"
+        }
+      ],
+      "expected_conclusion": "acceptance threshold not met"
+    },
+    {
+      "id": "explicit-exhaustive-audit",
+      "review_standard": "audit",
+      "explicit_scope": "complete role catalog improvement discovery",
+      "admitted_findings": [],
+      "optional_observations": [
+        "one non-required wording simplification"
+      ],
+      "expected_conclusion": "audit completed"
+    }
+  ]
+}
