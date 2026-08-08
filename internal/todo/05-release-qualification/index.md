@@ -36,7 +36,7 @@ Current findings:
 - 1 pending required-v1 finding
 - 7 completed findings
 
-[Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The managed root router now requires state gating and explicit workflow or role routing before every substantive response, refusal, tool call, or project action. The corrective immutable prerelease must still repeat the warranty and unresolved-routing scenarios in a realistic fresh session.
+[Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The managed root router now requires state gating and explicit workflow or role routing before every substantive response, refusal, task execution, or project action. The corrective immutable prerelease must still repeat the warranty and unresolved-routing scenarios in a realistic fresh session.
 
 [Define review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md) is the remaining pending `required-v1` finding. It must be completed before the release candidate, after the synthetic vault and corrective-alpha qualification tasks ordered below.
 
@@ -46,7 +46,7 @@ Current findings:
 
 [Restore complete prerelease upgrade coverage](dogfood/05-restore-complete-prerelease-upgrade-coverage.md) is complete through merged PR #60.
 
-[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through PR #62.
+[Remove empty upgrade transaction containers](dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through merged PR #62.
 
 The completed findings still requiring corrective immutable-release evidence retain that obligation as release qualification follow-up, not pending implementation work.
 
