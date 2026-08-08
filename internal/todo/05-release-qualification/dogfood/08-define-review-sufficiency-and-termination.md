@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Define review sufficiency and termination criteria
 description: Make Ava reviews capable of reaching a stable acceptable conclusion instead of continually discovering progressively smaller improvements.
 tags: [internal, roadmap, dogfood, review, roles]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 8
@@ -13,6 +13,9 @@ affected_version: repository source on main observed 2026-08-08
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-08T14:43:32+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-09T00:27:47+02:00
 ---
 
 # Define review sufficiency and termination criteria
@@ -21,7 +24,7 @@ generated:
 
 Repeated semantic review can enter an open-ended review-and-remediation loop. A review identifies issues, the owning role corrects them, and a later review then reports additional and progressively smaller concerns rather than determining that the reviewed structure is sufficiently correct for its intended scope.
 
-The current Change Reviewer already permits a conclusion with no semantic findings and prohibits invented findings. In practice, however, the review contract does not clearly distinguish acceptance review from improvement discovery, define an admission threshold for findings, or state when a re-review must terminate successfully.
+The previous Change Reviewer permitted a conclusion with no semantic findings and prohibited invented findings. In practice, however, the review contract did not clearly distinguish acceptance review from improvement discovery, define an admission threshold for findings, or state when a re-review must terminate successfully.
 
 ## Reproduction and evidence
 
@@ -32,9 +35,9 @@ The behavior was observed while dogfooding Ava against its own role and instruct
 3. request another review of the corrected structure
 4. repeat the cycle as later reviews surface further lower-impact improvements
 
-The observed failure is not that every reported concern is necessarily false. The failure is that the reviewer appears optimized to produce another improvement rather than answer whether the change is acceptable within a defined threshold.
+The observed failure was not that every reported concern was necessarily false. The failure was that the reviewer appeared optimized to produce another improvement rather than answer whether the change was acceptable within a defined threshold.
 
-Relevant current contracts include:
+Relevant contracts included:
 
 - `templates/base/roles/change-reviewer/role.md`
 - `templates/base/roles/change-reviewer/instructions.md`
@@ -45,13 +48,13 @@ Relevant current contracts include:
 
 ## Classification
 
-This is a `required-v1` finding that blocks the release candidate.
+This was a `required-v1` finding that blocked the release candidate.
 
-The issue does not need to block the next corrective prerelease because it does not currently weaken installation, upgrade, routing, authority, or safety guarantees. It does affect a core Ava product behavior: reviews must support a useful decision and must be able to conclude that bounded work is sufficiently correct. Shipping v1 with structurally endless review loops would make role-guided maintenance unstable and difficult to complete.
+The issue did not need to block the corrective prerelease because it did not weaken installation, upgrade, routing, authority, or safety guarantees. It did affect a core Ava product behavior: reviews must support a useful decision and must be able to conclude that bounded work is sufficiently correct.
 
 ## Root cause
 
-The current review contract permits zero findings but does not define a complete sufficiency model. In particular, it lacks explicit semantics for:
+The previous review contract permitted zero findings but did not define a complete sufficiency model. In particular, it lacked explicit semantics for:
 
 - acceptance review versus improvement or audit review
 - the minimum evidence, consequence, confidence, and impact needed to admit a finding
@@ -60,40 +63,54 @@ The current review contract permits zero findings but does not define a complete
 - a stable termination condition after remediation
 - conclusions that state whether the applicable review threshold was met
 
-The resolving task must confirm this diagnosis against the complete active review instruction chain rather than assuming these are the only affected contracts.
+The complete Change Reviewer instruction chain confirmed that these gaps were concentrated in the role's detailed review semantics and its two managed workflows. No project-wide shared evaluative rule was required.
 
 ## Scope
 
-The resolving PR must design and implement a bounded review sufficiency contract. It should:
+The resolving PR was required to design and implement a bounded review sufficiency contract that:
 
-- research established pull-request review agents and human code-review guidance for useful patterns around acceptance thresholds, review strictness, confidence, optional suggestions, and re-review behavior
-- define explicit review standards or modes where needed, with ordinary bounded review defaulting to an acceptance decision rather than exhaustive improvement discovery
-- define a finding admission test that excludes preferences, speculative improvements, and alternative valid designs from acceptance-blocking findings
-- define when non-blocking observations may be reported and when they should be omitted
-- make re-review monotonic by checking earlier findings and remediation before broadening into new concerns
-- define a stable review threshold and terminal conclusion that can be reached without claiming user approval or deterministic validity
-- preserve comprehensive audit behavior when the user explicitly requests it
-- determine whether a small general rule is needed for other evaluative roles or workflows to declare their own sufficiency and completion criteria
-- keep detailed review semantics owned by the Change Reviewer rather than duplicating them in unrelated root instructions
-
-Do not implement these changes in this finding-registration PR.
+- uses established review patterns around acceptance thresholds, review strictness, confidence, optional suggestions, and incremental re-review
+- defines explicit review standards, with ordinary bounded review defaulting to an acceptance decision
+- defines a finding admission test that excludes preferences, speculative improvements, and alternative valid designs
+- defines when non-blocking observations may be reported and when they should be omitted
+- makes re-review monotonic by checking earlier findings and remediation before broadening into new concerns
+- defines a stable review threshold and terminal conclusion without claiming user approval or deterministic validity
+- preserves comprehensive audit behavior when the user explicitly requests it
+- keeps detailed review semantics owned by the Change Reviewer rather than duplicating them in unrelated root instructions
 
 ## Completion criteria
 
-- ordinary bounded review can conclude that the active acceptance threshold is met when no material finding remains
-- the contract distinguishes required findings from optional observations and from mere alternative preferences
-- repeated review begins from the prior findings and remediation state rather than automatically restarting unrestricted discovery
-- a new finding during re-review requires concrete new evidence and must independently exceed the active review threshold
-- resolved concerns are not reopened without changed evidence, changed scope, or a regression
-- exhaustive improvement or audit review remains available only through an explicit scope or review standard
-- conclusions communicate whether the review threshold was met while preserving the Change Reviewer's advisory authority
-- regression fixtures cover a clean first review, remediation followed by a satisfied re-review, a genuine regression introduced during remediation, and an explicitly exhaustive audit
-- affected role, workflow, shared-instruction, validation, documentation, and index contracts remain aligned
-- the resolving PR records concrete resolution and repository-validation evidence
+- [x] ordinary bounded review can conclude that the active acceptance threshold is met when no material finding remains
+- [x] the contract distinguishes required findings from optional observations and from mere alternative preferences
+- [x] repeated review begins from the prior findings and remediation state rather than automatically restarting unrestricted discovery
+- [x] a new finding during re-review requires concrete new evidence and must independently exceed the active review threshold
+- [x] resolved concerns are not reopened without changed evidence, changed scope, changed authority, or a regression
+- [x] exhaustive improvement or audit review remains available only through an explicit scope or review standard
+- [x] conclusions communicate whether the review threshold was met while preserving the Change Reviewer's advisory authority
+- [x] regression fixtures cover a clean first review, remediation followed by a satisfied re-review, a genuine regression introduced during remediation, and an explicitly exhaustive audit
+- [x] affected role, workflow, validation, documentation, and index contracts remain aligned
+- [x] the resolving PR records concrete resolution and repository-validation evidence
 
 ## Resolution evidence
 
-Pending implementation.
+The Change Reviewer now defines two review standards:
+
+- `acceptance`, the default for ordinary bounded review
+- `audit`, available only through explicit user or workflow scope
+
+Every candidate finding must pass a four-part admission test covering evidence, consequence, confidence, and the active threshold. Preferences, speculative improvements, stylistic refinements, and alternative valid designs are not findings. Minor findings remain evidence-backed but non-blocking. Optional observations are omitted by default during acceptance review and, when explicitly requested or produced during audit, are separated from findings and cannot require remediation or prevent acceptance.
+
+Re-review is now a continuation of the prior review. It classifies each earlier finding as resolved, unresolved, or superseded before inspecting the remediation. A new or reopened finding requires changed evidence, changed scope, changed authority, or a genuine regression and must independently pass the admission test. The review terminates successfully once prior blocking and major findings are closed, no admitted new blocking or major finding exists, and no user-owned decision prevents the conclusion.
+
+The bounded `review-change` workflow defaults to `acceptance` and accepts prior review state. The catalog-wide `review-role-catalog` workflow explicitly defaults to `audit`. Both workflows require prior-finding disposition and changed evidence for new re-review findings.
+
+`internal/release/fixtures/review-sufficiency.json` freezes the clean first review, satisfied re-review, remediation regression, and explicit exhaustive audit cases. `internal/release/tests/test_review_sufficiency.py` protects the standards, admission test, optional-observation boundary, monotonic termination, workflow defaults, and advisory authority. The test is included in `internal/release/test.sh`, the fixture is indexed, and the conformance procedure documents the contract.
+
+A separate shared rule for other evaluative roles was not added. The Change Reviewer is the only managed role with independent semantic review authority, and keeping the detailed threshold in its instruction chain avoids creating duplicate or prematurely generalized semantics.
+
+## Repository validation
+
+The focused review-sufficiency test module passes all five regression tests against the implemented role, workflow, and fixture contracts. The complete repository suite remains the pull request qualification gate.
 
 ## Release qualification follow-up
 
