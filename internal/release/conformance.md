@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T22:30:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-05T14:49:04+02:00
+  at: 2026-08-08T18:06:00+02:00
 ---
 
 # Purpose
@@ -57,25 +57,17 @@ Installed validation reports `normal_routing_permitted` separately from overall 
 
 Host-access findings do not silently mutate project-owned configuration. Ava Maintenance reports the required OpenCode merge or host correction.
 
+Root-router regression coverage separately freezes unconditional router entry, managed-state gating, workflow and role resolution, required-reading completion, role-announcement ordering, and explicit unresolved-routing behavior. It validates both the repository source and assembled installed `/AGENTS.md` bytes against the maintained OpenCode access model, including the exact warranty request that exposed the generic-host-persona bypass.
+
 # Publication evidence
 
 Before publication, missing `publication.json` is a recommendation. Release qualification uses `--require-publication-evidence`, which requires evidence that immutable releases are enabled, the release is immutable, and attestation verification succeeded.
 
 # Alpha qualification
 
-The [alpha qualification policy](alpha-qualification.md) composes repository, installed, and release conformance with roadmap completion, reproducible assembly, prerelease support declarations, defect classification, and exact publication approval.
+The [alpha qualification policy](alpha-qualification.md) and its machine-readable fixture define the required gates, defect classes, protected impacts, prerelease support boundary, and publication approval.
 
-[alpha-qualification.json](fixtures/alpha-qualification.json) freezes the required gates and their conformance evidence. [test_alpha_qualification.py](tests/test_alpha_qualification.py) proves that:
-
-- every evidence reference resolves
-- Phase 1 through Phase 4 tasks are complete
-- the first alpha assembles reproducibly
-- `1.0.0-alpha.1` declares no supported source release
-- later intended prerelease transitions are represented as release-manifest upgrade edges
-- historical unversioned sources are rejected
-- publication approval is bound to both version and source revision
-
-Passing individual conformance modes is necessary but not sufficient for alpha publication. Every alpha gate must pass and the exact publication transaction must be approved.
+The first alpha has no supported earlier Ava source. Later supported transitions must be explicit release-manifest upgrade edges and must preserve a tested path from the latest supported prerelease through RC to stable `1.0.0`.
 
 # Fixture matrix
 
