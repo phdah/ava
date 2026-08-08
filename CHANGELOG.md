@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.0.0-alpha.11](https://github.com/phdah/ava/compare/v1.0.0-alpha.10...v1.0.0-alpha.11) (2026-08-08)
+
+
+### Features
+
+* add project steward role ([1e991c1](https://github.com/phdah/ava/commit/1e991c12e77a9d1b41d916c30303de49444faa4e))
+* add project steward role ([2fb01f6](https://github.com/phdah/ava/commit/2fb01f6c43efa076696a1e009ac4a93aa56da4fe))
+* add project steward role ([6b1e4ac](https://github.com/phdah/ava/commit/6b1e4acffb9590553a9f544917c1dd012774fb9c))
+* add project steward role ([dac4228](https://github.com/phdah/ava/commit/dac4228497dafe4a82cd9cfa25ae96e48cdeb3aa))
+* add project steward role ([dad29a9](https://github.com/phdah/ava/commit/dad29a9ddf6fece1b9f0d7c3e048f3444355f5b4))
+* add project steward role ([7fae0f3](https://github.com/phdah/ava/commit/7fae0f34bcdbe79bc15213590617873acc36733e))
+* add project steward role ([794bec2](https://github.com/phdah/ava/commit/794bec2d0cbc92ce1de4e55b5d5090a875f0c466))
+* add project steward role ([98945b0](https://github.com/phdah/ava/commit/98945b006ae447e8fdd3851e7817a2aa49436312))
+* **release:** force first alpha proposal ([#38](https://github.com/phdah/ava/issues/38)) ([f284794](https://github.com/phdah/ava/commit/f2847946c6644379aed86e8e925c5625dc5ff805))
+* **release:** publish qualified releases automatically ([#46](https://github.com/phdah/ava/issues/46)) ([9959b8c](https://github.com/phdah/ava/commit/9959b8c37d04d993c4857ef135ca862fbe4f672f))
+
+
+### Bug Fixes
+
+* align project steward routing ([c5f40bc](https://github.com/phdah/ava/commit/c5f40bcb07ce2f60e285ae90f45faf22c2007096))
+* align project steward routing ([c5ddc92](https://github.com/phdah/ava/commit/c5ddc92922b10412b35ee068a341aa4edfe34316))
+* align project steward routing ([3181434](https://github.com/phdah/ava/commit/31814347d2c11e2e0bf1b43ac7f38f66715e590d))
+* align project steward routing ([50f9878](https://github.com/phdah/ava/commit/50f9878f2d6bcae9c3dd92b78ff67943438d7a2d))
+* **ci:** set release workflow Python path ([#42](https://github.com/phdah/ava/issues/42)) ([b444343](https://github.com/phdah/ava/commit/b4443438200e83cf2b00b945b8457ca2b3de79a2))
+* enforce faithful inbox ingestion completion ([#67](https://github.com/phdah/ava/issues/67)) ([5d9facb](https://github.com/phdah/ava/commit/5d9facb0302107f1d6a3c5d0436622245d86e7ff))
+* enforce reviewed project-owned semantic impact ([#64](https://github.com/phdah/ava/issues/64)) ([2158a51](https://github.com/phdah/ava/commit/2158a5115589c4ab26937284099afc5a855330e0))
+* enforce role routing before every response ([#70](https://github.com/phdah/ava/issues/70)) ([0a8db33](https://github.com/phdah/ava/commit/0a8db33f21735d54c428fc981a33eafa14957282))
+* **installer:** remove empty transaction containers ([#62](https://github.com/phdah/ava/issues/62)) ([9dc481a](https://github.com/phdah/ava/commit/9dc481a955ad13fb3b7d8cc43da322934b59dca6))
+* make knowledge hierarchy promotion predictable ([#65](https://github.com/phdah/ava/issues/65)) ([626cd30](https://github.com/phdah/ava/commit/626cd307e03deb26cf3ba14c904d42073dd13f9f))
+* **release:** configure grouped release PR title ([#43](https://github.com/phdah/ava/issues/43)) ([8e2dacc](https://github.com/phdah/ava/commit/8e2dacc54f7b197991e55d3f14f05511fa1fbe46))
+* **release:** enforce release PR upgrade edges ([#56](https://github.com/phdah/ava/issues/56)) ([a02dfa6](https://github.com/phdah/ava/commit/a02dfa6ede89724ae96c79433ff0ae4761d3a3a7))
+* **release:** make release PR completion generic ([#60](https://github.com/phdah/ava/issues/60)) ([eabfec0](https://github.com/phdah/ava/commit/eabfec0209904dfe616af2bc38cb341d09c3d833))
+* **release:** repair qualification validation ([#44](https://github.com/phdah/ava/issues/44)) ([ac51f15](https://github.com/phdah/ava/commit/ac51f152015678b0dd019e534e12073ad770eb5e))
+* **release:** validate installed context links ([#53](https://github.com/phdah/ava/issues/53)) ([6fc4320](https://github.com/phdah/ava/commit/6fc4320c4fa9a0e5a078b93023e3e5562c5eac04))
+* **release:** wire upgrade-sources.txt into release workflow assembler call ([#50](https://github.com/phdah/ava/issues/50)) ([a26e798](https://github.com/phdah/ava/commit/a26e7982131ffac9235a1860af772d757a9d5191))
+
 ## [1.0.0-alpha.10](https://github.com/phdah/ava/compare/v1.0.0-alpha.9...v1.0.0-alpha.10) (2026-08-07)
 
 
