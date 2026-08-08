@@ -31,14 +31,16 @@ Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded find
 
 Current findings:
 
-- 1 pending finding
+- 2 pending findings
 - 0 pending blockers
-- 1 pending required-v1 finding
+- 2 pending required-v1 findings
 - 7 completed findings
 
 [Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The managed root router now requires state gating and explicit workflow or role routing before every substantive response, refusal, task execution, or project action. The corrective immutable prerelease must still repeat the warranty and unresolved-routing scenarios in a realistic fresh session.
 
-[Define review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md) is the remaining pending `required-v1` finding. It must be completed before the release candidate, after the synthetic vault and corrective-alpha qualification tasks ordered below.
+[Define review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md) remains the first pending `required-v1` finding. It must be completed before the release candidate, after the synthetic vault and corrective-alpha qualification tasks ordered below.
+
+[Compose semantic upgrades from adjacent release edges](dogfood/09-compose-semantic-upgrades-from-adjacent-edges.md) is the second pending `required-v1` finding. It must replace duplicated cumulative source-to-target guidance with deterministic adjacent-edge composition before release-candidate publication.
 
 [Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through merged PR [#67](https://github.com/phdah/ava/pull/67) and published `1.0.0-alpha.10`. Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
 
@@ -91,7 +93,7 @@ These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed a
 
 The umbrella task remains [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
-Build the reproducible [synthetic qualification vault](04a-build-synthetic-qualification-vault.md) next, then [qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) and collect immutable evidence for completed findings 03 through 07. After that, complete [review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md) before release-candidate publication, and continue dogfooding until the user explicitly closes the umbrella or another finding is added.
+Build the reproducible [synthetic qualification vault](04a-build-synthetic-qualification-vault.md) next, then [qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) and collect immutable evidence for completed findings 03 through 07. After that, complete [review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md), then [compose semantic upgrades from adjacent release edges](dogfood/09-compose-semantic-upgrades-from-adjacent-edges.md) before release-candidate publication. Continue dogfooding until the user explicitly closes the umbrella or another finding is added.
 
 ## Previous phase
 
