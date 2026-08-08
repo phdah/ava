@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T22:30:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-05T14:49:04+02:00
+  at: 2026-08-08T18:06:00+02:00
 ---
 
 # Purpose
@@ -56,6 +56,8 @@ Installed validation reports `normal_routing_permitted` separately from overall 
 - no blocking deterministic, semantic, or routing finding exists
 
 Host-access findings do not silently mutate project-owned configuration. Ava Maintenance reports the required OpenCode merge or host correction.
+
+Root-router regression coverage separately freezes unconditional router entry, managed-state gating, workflow and role resolution, required-reading completion, role-announcement ordering, and explicit unresolved-routing behavior. It validates both the repository source and assembled installed `/AGENTS.md` bytes against the maintained OpenCode access model, including the exact warranty request that exposed the generic-host-persona bypass.
 
 # Publication evidence
 
