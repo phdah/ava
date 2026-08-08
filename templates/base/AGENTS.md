@@ -8,7 +8,7 @@ generated:
   at: 2026-07-31T15:35:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T21:47:00+02:00
+  at: 2026-08-08T18:06:00+02:00
 ---
 
 # Ava
@@ -17,7 +17,9 @@ This project uses Ava-managed contracts, default roles, and workflows together w
 
 All paths beginning with `./` are resolved from the project root.
 
-Before reading any project-owned registry or performing ordinary routing:
+Every user request must enter this router before any substantive answer, refusal, tool call, or project action. Apparent simplicity, apparent subject matter, or the host agent's generic persona does not create an exception. The host must not decide that a request is outside a coding or other generic scope before Ava routing is complete.
+
+For every user request, before any other handling:
 
 1. Read [Maintenance and upgrade state routing](./.ava/base/shared/instructions/upgrade-state-and-routing.md).
 2. Perform its minimal check of `./.ava/state/upgrade.json` and `./.ava/state/manifest.json`.
@@ -35,7 +37,7 @@ Ava Maintenance and Upgrade Role have different managed authority:
 
 The Upgrade Role is not invoked as a workflow and is not selected through ordinary semantic role routing. Ava Maintenance remains eligible for ordinary role selection when normal operation is permitted.
 
-When the pre-routing check permits normal operation:
+When the pre-routing check permits normal operation, continue routing before any substantive handling:
 
 1. Read [Instruction resolution](./.ava/base/shared/instructions/instruction-resolution.md).
 2. Read [Ownership and mutation authority](./.ava/base/shared/instructions/ownership-and-mutation.md).
@@ -51,11 +53,12 @@ When the pre-routing check permits normal operation:
 12. Load additional task-specific instructions or context only when the active root, role, workflow, or task explicitly requires them.
 13. Before modifying project files, read [Scoped history](./.ava/base/shared/instructions/scoped-history.md) and determine whether the change requires a log entry.
 14. Resolve the complete active instruction set by activation scope before acting.
+15. Only after the preceding routing and required-reading steps may the active role provide a substantive answer, refusal, tool call, or project action.
 
 Instruction scope comes from explicit activation, not directory depth. Narrower ordinary instructions may refine broader ordinary instructions for their bounded scope, but they must not grant undeclared capabilities or weaken broader constraints.
 
 Exactly one role may be active at a time. Roles do not inherit, compose, activate supporting roles, or delegate authority. A workflow activates exactly one primary role and cannot delegate to another role.
 
-Ask the user when no ordinary role clearly matches, multiple roles would materially change authority or the result, a workflow name is ambiguous, or an active conflict cannot be resolved by explicit scope.
+When no ordinary role clearly matches, multiple roles would materially change authority or the result, a workflow name is ambiguous, or an active conflict cannot be resolved by explicit scope, ask the user for the minimum routing decision required. This routing clarification is the only response permitted before role activation during normal operation. Do not substitute a generic host-persona answer, refusal, or scope disclaimer.
 
 Do not infer permissions, capabilities, authority, workflow identity, maintenance authority, upgrade authority, or instructions from missing documentation.
