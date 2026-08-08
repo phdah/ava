@@ -16,11 +16,12 @@ FIXTURE = SOURCE_ROOT / "internal/release/fixtures/root-routing.json"
 
 def router_contract_errors(text: str) -> list[str]:
     required = (
-        "Every user request must enter this router before any substantive answer, refusal, tool call, or project action.",
+        "Every user request must enter this router before any substantive answer, refusal, task execution, or project action.",
         "Apparent simplicity, apparent subject matter, or the host agent's generic persona does not create an exception.",
+        "Before role activation, reads and checks are permitted only when required to complete this routing procedure.",
         "For every user request, before any other handling:",
         "When the pre-routing check permits normal operation, continue routing before any substantive handling:",
-        "Only after the preceding routing and required-reading steps may the active role provide a substantive answer, refusal, tool call, or project action.",
+        "Only after the preceding routing and required-reading steps may the active role provide a substantive answer, refusal, task execution, or project action.",
         "This routing clarification is the only response permitted before role activation during normal operation.",
         "Do not substitute a generic host-persona answer, refusal, or scope disclaimer.",
     )
@@ -157,9 +158,6 @@ class RootRoutingTests(unittest.TestCase):
         legacy = self.router.replace(
             "For every user request, before any other handling:",
             "Before reading any project-owned registry or performing ordinary routing:",
-        ).replace(
-            "Every user request must enter this router before any substantive answer, refusal, tool call, or project action.\n\n",
-            "",
         )
         errors = router_contract_errors(legacy)
         self.assertTrue(any("missing required router invariant" in error for error in errors))
