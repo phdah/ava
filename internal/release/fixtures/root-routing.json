@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "description": "Regression scenarios proving that every request enters managed state and role routing before any substantive host response.",
+  "cases": [
+    {
+      "id": "apparently-out-of-domain-warranty",
+      "request": "Has my warranty run out on my glasses?",
+      "managed_state": "normal",
+      "required_before_handling": [
+        "managed-state-gate",
+        "workflow-resolution",
+        "managed-and-project-role-registry-evaluation",
+        "selected-role-required-reading",
+        "role-announcement"
+      ],
+      "acceptable_outcomes": [
+        "selected-role-handling",
+        "explicit-routing-clarification"
+      ],
+      "forbidden_before_routing": [
+        "generic coding-assistant scope refusal",
+        "receipt-retailer-or-manufacturer fallback"
+      ]
+    },
+    {
+      "id": "no-clear-role-match",
+      "request": "Please handle this request even though I have not said what outcome I want.",
+      "managed_state": "normal",
+      "required_before_handling": [
+        "managed-state-gate",
+        "workflow-resolution",
+        "managed-and-project-role-registry-evaluation"
+      ],
+      "acceptable_outcomes": [
+        "explicit-routing-clarification"
+      ],
+      "forbidden_before_routing": [
+        "generic host-persona answer",
+        "invented role authority"
+      ]
+    }
+  ]
+}
