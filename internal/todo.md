@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-08T14:43:32+02:00
+  at: 2026-08-08T18:06:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,11 +23,13 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Enforce role routing before every response](todo/05-release-qualification/dogfood/07-enforce-role-routing-before-every-response.md) is the current pending blocker. It must establish why an agent treated an apparently non-coding request as exempt from the Ava router, make pre-routing and role routing mandatory before substantive handling, and add regression coverage for the observed bypass.
+[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) is the current task. It must generate a reproducible 200-400-file raw corpus covering six coherent months of Adam's fictional private and work life in Stockholm, including one February apartment move and machine-checkable expected outcomes.
 
-After the routing blocker, build the [synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md), then [qualify and publish the corrective alpha](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md). After that corrective prerelease is qualified, complete [Define review sufficiency and termination criteria](todo/05-release-qualification/dogfood/08-define-review-sufficiency-and-termination.md) before release-candidate publication. The vault must contain 200-400 raw files covering six coherent months of Adam's fictional private and work life in Stockholm, with one February apartment move and reproducible expected outcomes.
+After the vault, [qualify and publish the corrective alpha](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md). That qualification must collect immutable evidence for completed findings 03 through 07, including the exact warranty prompt and unresolved-routing scenario. After the corrective prerelease is qualified, complete [Define review sufficiency and termination criteria](todo/05-release-qualification/dogfood/08-define-review-sufficiency-and-termination.md) before release-candidate publication.
 
 Immutable `1.0.0-alpha.10` is the latest published release. Release PR [#68](https://github.com/phdah/ava/pull/68) currently proposes `1.0.0-alpha.11` and is expected to remain blocked until its implementation, release-impact review, and qualification gates are complete.
+
+[Enforce role routing before every response](todo/05-release-qualification/dogfood/07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The managed router now makes state gating and role routing unconditional before substantive handling, and regression coverage protects the exact warranty bypass through source, assembled installed, and OpenCode conformance paths. Real immutable-release validation remains part of corrective-alpha qualification.
 
 [Enforce faithful inbox ingestion completion](todo/05-release-qualification/dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through merged PR [#67](https://github.com/phdah/ava/pull/67) and published `1.0.0-alpha.10`. Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
 
@@ -37,7 +39,7 @@ Immutable `1.0.0-alpha.10` is the latest published release. Release PR [#68](htt
 
 [Remove empty upgrade transaction containers](todo/05-release-qualification/dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through PR #62.
 
-Completed fixes may still require real corrective-release evidence before the next prerelease can qualify. That evidence belongs to release qualification and does not keep their implementation tasks pending.
+Completed fixes may still require real corrective-release evidence before the next prerelease can qualify. That evidence belongs to release qualification and does not keep or return their implementation tasks to pending.
 
 [Repair installed context link resolution](todo/05-release-qualification/dogfood/02-repair-installed-context-link-resolution.md) is complete after real immutable alpha.7 validation loaded the complete Inbox Ingester required-reading chain from exact installed-project paths.
 
@@ -66,4 +68,4 @@ When the user asks to work on the next to-do item, read:
 5. the current bounded finding or supporting qualification task
 6. only the related repository context needed to complete it
 
-A finding is complete when the intended repository change has been implemented, indexed, repository-validated, and committed with resolution evidence. Published-release qualification may be appended later and is tracked as a release gate rather than task status. Completing a finding does not complete the parent dogfood task.
+A finding is complete when the intended repository change has been implemented, indexed, repository-validated, and committed with resolution evidence. Published-asset or realistic-project qualification may be appended later and is tracked as a release gate rather than task status. Completing a finding does not complete the parent dogfood task.

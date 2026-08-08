@@ -31,6 +31,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_semantic_upgrade \
   internal.release.tests.test_installer_conformance \
   internal.release.tests.test_host_config \
+  internal.release.tests.test_root_routing \
   internal.release.tests.test_document_update_metadata_fixtures \
   internal.release.tests.test_knowledge_hierarchy_promotion \
   internal.release.tests.test_inbox_ingestion_fidelity \

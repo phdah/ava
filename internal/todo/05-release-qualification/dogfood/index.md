@@ -8,18 +8,18 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 ## Current next finding
 
-[Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) is the current pending blocker. Investigate why the installed root-router instructions were treated as optional, then make managed state checks and role routing mandatory before substantive handling of every request.
+[Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) is the only pending finding. It is classified `required-v1` and must be completed before the release candidate, but it does not precede the supporting [synthetic qualification vault](../04a-build-synthetic-qualification-vault.md) and [corrective alpha qualification](../04b-qualify-and-publish-corrective-alpha.md) tasks already ordered by the Phase 5 roadmap.
 
-[Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) is a pending `required-v1` finding that must be completed before the release candidate. It does not block the corrective prerelease required to qualify finding 07.
+[Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The corrective immutable prerelease must still repeat the exact warranty prompt and no-clear-match scenario in a fresh agent session before release qualification can rely on the behavior.
 
-Findings 03, 04, 05, and 06 have completed repository implementations. Their named corrective immutable-release checks remain explicit release qualification follow-up, not pending implementation work.
+Findings 03 through 07 have completed repository implementations. Their named corrective immutable-release checks remain explicit release qualification follow-up, not pending implementation work.
 
 ## Backlog status
 
-- 2 pending findings
-- 1 pending blocker
+- 1 pending finding
+- 0 pending blockers
 - 1 pending required-v1 finding
-- 6 completed findings
+- 7 completed findings
 
 ## Findings
 
@@ -31,7 +31,7 @@ Findings 03, 04, 05, and 06 have completed repository implementations. Their nam
 | 04 | completed | required-v1 | release candidate | [Enforce faithful inbox ingestion completion](04-enforce-faithful-inbox-ingestion-completion.md) |
 | 05 | completed | blocker | next prerelease | [Restore complete prerelease upgrade coverage](05-restore-complete-prerelease-upgrade-coverage.md) |
 | 06 | completed | blocker | next prerelease | [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) |
-| 07 | pending | blocker | next prerelease | [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) |
+| 07 | completed | blocker | next prerelease | [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) |
 | 08 | pending | required-v1 | release candidate | [Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) |
 
 ## Adding a finding
@@ -73,6 +73,8 @@ Finding 04 is complete through merged PR [#67](https://github.com/phdah/ava/pull
 Finding 05 is complete through merged PR [#60](https://github.com/phdah/ava/pull/60). Its generic release-PR completion machinery prevents future releases from silently omitting inherited or protected direct sources. The next corrective immutable release must still declare the required real edges and validate the affected source installations before that release qualifies.
 
 Finding 06 is complete through PR [#62](https://github.com/phdah/ava/pull/62). Terminal transaction cleanup now removes an empty parent after its final workspace is deleted while preserving active, blocked, or non-empty transaction state. The next corrective immutable release must still prove the behavior through real supported-source upgrades and a healthy Ava Maintenance inspection before that release qualifies.
+
+Finding 07 is complete in its resolving implementation PR. The managed root router now makes state gating and workflow or role routing unconditional before substantive handling, permits only explicit routing clarification when no role matches, and prohibits generic host-persona fallbacks. Regression coverage freezes the exact warranty prompt, rejects the legacy conditional wording, verifies source and assembled installed router bytes, and exercises the maintained OpenCode permission model. The corrective immutable release must still repeat both the warranty and unresolved-routing scenarios in a fresh realistic agent session.
 
 ## Classification
 
