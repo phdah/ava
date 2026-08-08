@@ -22,7 +22,7 @@ Core progress: 3 of 6 complete.
 These tasks add executable evidence beneath the stable six core gates without renumbering them:
 
 1. [ ] [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md) - Generate a reproducible 200-400-file raw corpus covering six coherent months of Adam's fictional private and work life in Stockholm.
-2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) - Publish the routing correction and collect immutable evidence for findings 03 through 07.
+2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) - Publish the routing correction and collect immutable evidence for findings 03 through 08.
 3. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md) - Repeat the complete generated-vault and lifecycle matrix before stable qualification.
 
 ## Dogfood findings
@@ -31,11 +31,14 @@ Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded find
 
 Current findings:
 
+- 2 pending findings
 - 1 pending blocker
-- 0 pending required-v1 findings
+- 1 pending required-v1 finding
 - 6 completed findings
 
 [Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is the current pending blocker. The managed root router must not let an agent bypass state checks and role routing because a request appears unrelated to its generic host persona.
+
+[Define review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md) is the next pending `required-v1` finding after the routing blocker. Ordinary bounded review must be able to reach a stable acceptable conclusion rather than continually discovering progressively smaller improvements.
 
 [Enforce faithful inbox ingestion completion](dogfood/04-enforce-faithful-inbox-ingestion-completion.md) is complete through merged PR [#67](https://github.com/phdah/ava/pull/67) and published `1.0.0-alpha.10`. Repeated realistic ingestion, final count reconciliation, and independent semantic review remain corrective-release qualification evidence.
 
@@ -88,7 +91,7 @@ These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed a
 
 The umbrella task is [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
-[Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is the current bounded implementation finding. After it is resolved, build the [synthetic qualification vault](04a-build-synthetic-qualification-vault.md), [qualify the corrective alpha](04b-qualify-and-publish-corrective-alpha.md), and continue dogfooding until the user explicitly closes the umbrella or another finding is added.
+[Enforce role routing before every response](dogfood/07-enforce-role-routing-before-every-response.md) is the current bounded implementation finding. After it is resolved, complete [review sufficiency and termination criteria](dogfood/08-define-review-sufficiency-and-termination.md), then build the [synthetic qualification vault](04a-build-synthetic-qualification-vault.md), [qualify the corrective alpha](04b-qualify-and-publish-corrective-alpha.md), and continue dogfooding until the user explicitly closes the umbrella or another finding is added.
 
 ## Previous phase
 
