@@ -4,7 +4,7 @@ This log records major conceptual and structural changes to Ava's internal relea
 
 ## 2026-08-09
 
-- **Strict adjacent release authoring**: Normalized retained alpha.5 through alpha.12 history into one canonical adjacent catalog, removed active `upgrade-impact.json` authoring, made cumulative guidance non-selectable archival evidence, and changed release PR validation to compare inherited and proposed catalogs. Release assembly now derives installer-compatible source projections mechanically from the unique adjacent graph.
+- **Strict recursive adjacent release authoring**: Normalized retained alpha.5 through alpha.12 history into immutable release-local records, with exactly one previous-to-target edge per file. Removed active `upgrade-impact.json` authoring, made cumulative guidance non-selectable archival evidence, and changed release validation to reject historical record changes. Upgrade qualification and release assembly now follow predecessor records recursively and derive installer-compatible source projections in memory.
 - **Adjacent upgrade edge catalogs**: Added separate managed and semantic path resolution, supported-source retention, exact-once guidance composition with explicit supersession, catalog composition and validation tools, a multi-edge fixture, and regression coverage for invalid graphs and semantically lagging projects.
 
 ## 2026-08-07
