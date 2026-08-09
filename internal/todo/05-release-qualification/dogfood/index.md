@@ -10,6 +10,8 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) is the first actionable pending finding. It is classified `required-v1` and must replace duplicated cumulative source-to-target guidance with deterministic adjacent-edge composition before release-candidate publication. It does not precede the supporting [synthetic qualification vault](../04a-build-synthetic-qualification-vault.md) and [corrective alpha qualification](../04b-qualify-and-publish-corrective-alpha.md) tasks already ordered by the Phase 5 roadmap.
 
+[Define release-impact-based change types](10-define-release-impact-based-change-types.md) is also pending as `required-v1`. It must make Conventional Commit and SemVer classification depend on supported distribution impact rather than implementation novelty or repository location before release-candidate publication. Finding 09 remains the first actionable pending finding.
+
 [Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) is complete in its resolving implementation PR. Ordinary bounded review now defaults to an acceptance threshold, audit is explicit, findings have an admission test, and re-review terminates monotonically when material findings are resolved.
 
 [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The corrective immutable prerelease must still repeat the exact warranty prompt and no-clear-match scenario in a fresh agent session before release qualification can rely on the behavior.
@@ -18,9 +20,9 @@ Findings 03 through 08 have completed repository implementations. Their named co
 
 ## Backlog status
 
-- 1 pending finding
+- 2 pending findings
 - 0 pending blockers
-- 1 pending required-v1 finding
+- 2 pending required-v1 findings
 - 8 completed findings
 
 ## Findings
@@ -36,6 +38,7 @@ Findings 03 through 08 have completed repository implementations. Their named co
 | 07 | completed | blocker | next prerelease | [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) |
 | 08 | completed | required-v1 | release candidate | [Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) |
 | 09 | pending | required-v1 | release candidate | [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) |
+| 10 | pending | required-v1 | release candidate | [Define release-impact-based change types](10-define-release-impact-based-change-types.md) |
 
 ## Adding a finding
 

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/phdah/ava/blob/main/internal/release/fixtures/synthetic-qualification-vault/run-manifest.schema.json",
+  "title": "Synthetic Qualification Run Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "fixture_id", "scenario", "release", "environment", "project_inventories", "artifacts", "routing", "decision"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "fixture_id": {"const": "synthetic-v1-qualification-vault"},
+    "scenario": {"type": "object", "required": ["id", "variant", "session_id"], "properties": {"id": {"type": "string", "minLength": 1}, "variant": {"enum": ["empty-before-installation", "mature-mixed-project", "registered-private-work-roles", "complete-pending-inbox", "managed-content-damage", "interrupted-upgrade-states", "pending-semantic-reconciliation", "uninstall-reinstallation"]}, "session_id": {"type": ["string", "null"]}}, "additionalProperties": false},
+    "release": {"type": "object", "required": ["ava_version", "tag", "source_revision", "asset_urls", "asset_sha256"], "properties": {"ava_version": {"oneOf": [{"type": "null"}, {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-(?:alpha|beta|rc)\\.[1-9][0-9]*)?$"}]}, "tag": {"oneOf": [{"type": "null"}, {"type": "string", "pattern": "^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-(?:alpha|beta|rc)\\.[1-9][0-9]*)?$"}]}, "source_revision": {"oneOf": [{"type": "null"}, {"type": "string", "pattern": "^[a-f0-9]{40}$"}]}, "asset_urls": {"$ref": "#/$defs/assetUrls"}, "asset_sha256": {"$ref": "#/$defs/assetDigests"}}, "additionalProperties": false},
+    "environment": {"type": "object", "required": ["operating_system", "opencode_version", "model_identity"], "properties": {"operating_system": {"type": ["string", "null"]}, "opencode_version": {"type": ["string", "null"]}, "model_identity": {"type": ["string", "null"]}}, "additionalProperties": false},
+    "project_inventories": {"type": "object", "required": ["baseline", "final"], "properties": {"baseline": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/inventory"}]}, "final": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/inventory"}]}}, "additionalProperties": false},
+    "artifacts": {"type": "object", "required": ["installer_output", "conformance_json", "managed_manifest", "upgrade_journal", "transcript"], "properties": {"installer_output": {"type": ["string", "null"]}, "conformance_json": {"type": ["string", "null"]}, "managed_manifest": {"type": ["string", "null"]}, "upgrade_journal": {"type": ["string", "null"]}, "transcript": {"type": ["string", "null"]}}, "additionalProperties": false},
+    "routing": {"type": "object", "required": ["loaded_paths", "required_reading_order", "selected_role", "announcement_point"], "properties": {"loaded_paths": {"type": "array", "items": {"type": "string"}}, "required_reading_order": {"type": "array", "items": {"type": "string"}}, "selected_role": {"type": ["string", "null"]}, "announcement_point": {"type": ["string", "null"]}}, "additionalProperties": false},
+    "decision": {"type": "object", "required": ["expected", "actual", "result", "reviewer", "linked_finding"], "properties": {"expected": {"type": "string", "minLength": 1}, "actual": {"type": ["string", "null"]}, "result": {"enum": ["pending", "pass", "fail"]}, "reviewer": {"type": ["string", "null"]}, "linked_finding": {"type": ["string", "null"]}}, "additionalProperties": false}
+  },
+  "$defs": {
+    "assetUrls": {
+      "oneOf": [
+        {"type": "object", "maxProperties": 0},
+        {"$ref": "#/$defs/completedAssetUrls"}
+      ]
+    },
+    "completedAssetUrls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ava-install.sh", "ava-base.tar.gz", "ava-guidance.tar.gz", "ava-migrations.tar.gz", "ava-release.json", "ava-release-notes.md", "SHA256SUMS"],
+      "properties": {
+        "ava-install.sh": {"type": "string", "pattern": "^(?:https://github\\.com/phdah/ava/releases/download/v[^/]+/|file:///.*/)ava-install\\.sh$"},
+        "ava-base.tar.gz": {"type": "string", "pattern": "^(?:https://github\\.com/phdah/ava/releases/download/v[^/]+/|file:///.*/)ava-base\\.tar\\.gz$"},
+        "ava-guidance.tar.gz": {"type": "string", "pattern": "^(?:https://github\\.com/phdah/ava/releases/download/v[^/]+/|file:///.*/)ava-guidance\\.tar\\.gz$"},
+        "ava-migrations.tar.gz": {"type": "string", "pattern": "^(?:https://github\\.com/phdah/ava/releases/download/v[^/]+/|file:///.*/)ava-migrations\\.tar\\.gz$"},
+        "ava-release.json": {"type": "string", "pattern": "^(?:https://github\\.com/phdah/ava/releases/download/v[^/]+/|file:///.*/)ava-release\\.json$"},
+        "ava-release-notes.md": {"type": "string", "pattern": "^(?:https://github\\.com/phdah/ava/releases/download/v[^/]+/|file:///.*/)ava-release-notes\\.md$"},
+        "SHA256SUMS": {"type": "string", "pattern": "^(?:https://github\\.com/phdah/ava/releases/download/v[^/]+/|file:///.*/)SHA256SUMS$"}
+      }
+    },
+    "assetDigests": {
+      "oneOf": [
+        {"type": "object", "maxProperties": 0},
+        {"$ref": "#/$defs/completedAssetDigests"}
+      ]
+    },
+    "completedAssetDigests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ava-install.sh", "ava-base.tar.gz", "ava-guidance.tar.gz", "ava-migrations.tar.gz", "ava-release.json", "ava-release-notes.md", "SHA256SUMS"],
+      "properties": {
+        "ava-install.sh": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "ava-base.tar.gz": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "ava-guidance.tar.gz": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "ava-migrations.tar.gz": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "ava-release.json": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "ava-release-notes.md": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "SHA256SUMS": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"decision": {"properties": {"result": {"enum": ["pass", "fail"]}}, "required": ["result"]}}},
+      "then": {
+        "properties": {
+          "scenario": {"properties": {"session_id": {"type": "string", "minLength": 1}}},
+          "release": {"properties": {"ava_version": {"type": "string", "minLength": 1}, "tag": {"type": "string", "minLength": 1}, "source_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"}, "asset_urls": {"minProperties": 7}, "asset_sha256": {"minProperties": 7}}},
+          "environment": {"properties": {"operating_system": {"type": "string", "minLength": 1}, "opencode_version": {"type": "string", "minLength": 1}, "model_identity": {"type": "string", "minLength": 1}}},
+          "project_inventories": {"properties": {"baseline": {"$ref": "#/$defs/inventory"}, "final": {"$ref": "#/$defs/inventory"}}},
+          "artifacts": {"properties": {"installer_output": {"type": "string", "minLength": 1}, "conformance_json": {"type": "string", "minLength": 1}, "managed_manifest": {"type": "string", "minLength": 1}, "upgrade_journal": {"type": "string", "minLength": 1}, "transcript": {"type": "string", "minLength": 1}}},
+          "routing": {"properties": {"loaded_paths": {"minItems": 1}, "required_reading_order": {"minItems": 1}, "selected_role": {"type": "string", "minLength": 1}, "announcement_point": {"type": "string", "minLength": 1}}},
+          "decision": {"properties": {"actual": {"type": "string", "minLength": 1}, "reviewer": {"type": "string", "minLength": 1}}}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"decision": {"properties": {"result": {"const": "fail"}}, "required": ["result"]}}},
+      "then": {"properties": {"decision": {"properties": {"linked_finding": {"type": "string", "minLength": 1}}}}}
+    }
+  ]
+}

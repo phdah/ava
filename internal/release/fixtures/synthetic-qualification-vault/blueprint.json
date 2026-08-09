@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "fixture_id": "synthetic-v1-qualification-vault",
+  "seed": 20250101,
+  "interval": {"start": "2025-01-01", "end": "2025-06-30"},
+  "counts": {
+    "deterministic_corpus": 300,
+    "external_images": 5,
+    "finalized_corpus": 305,
+    "classes": {
+      "diary": 150,
+      "personal-todo": 12,
+      "work-todo": 12,
+      "running": 24,
+      "reading": 12,
+      "cooking": 18,
+      "dog-care": 12,
+      "housing-move": 18,
+      "kitchen-renovation": 12,
+      "work-artifact": 18,
+      "household-finance": 6,
+      "appointment-travel": 6
+    },
+    "formats": {"md": 254, "txt": 15, "csv": 10, "docx": 7, "pdf": 9, "pptx": 2, "ics": 3}
+  },
+  "identity": {
+    "full_name": "Adam Lind",
+    "first_name": "Adam",
+    "home_city": "Stockholm",
+    "country": "Sweden",
+    "email": "adam.lind@example.invalid",
+    "phone": "+46 70 000 00 00",
+    "customer_id": "AVA-ADAM-2025",
+    "fiction_notice": "All people, organizations, addresses, providers, and identifiers in this fixture are fictional."
+  },
+  "relationships": {
+    "neighbor": "Liv Ekman",
+    "neighbor_role": "trusted neighbor who occasionally walks Uno"
+  },
+  "addresses": {
+    "old": {
+      "value": "Vintergranden 18B, 112 99 Stockholm",
+      "valid_from": "2023-08-01",
+      "valid_through": "2025-02-21"
+    },
+    "new": {
+      "value": "Koppargranden 7A, 116 99 Stockholm",
+      "valid_from": "2025-02-22",
+      "valid_through": null
+    }
+  },
+  "move": {
+    "lease_signed": "2025-01-24",
+    "new_lease_start": "2025-02-15",
+    "completed": "2025-02-22",
+    "old_key_return": "2025-03-02",
+    "mover": "Fyrtorn Flytt AB",
+    "electricity_old": "Nordstrom Elhandel",
+    "electricity_new": "Stadskraft Sverige",
+    "internet_old": "Bredband Norr",
+    "internet_new": "Kajfiber"
+  },
+  "dog": {
+    "name": "Uno",
+    "breed": "miniature schnauzer",
+    "birth_date": "2020-09-14",
+    "age_during_interval": 4,
+    "vet": "Tallbacka Veterinarcenter",
+    "food": "Nordtass Adult Lamb",
+    "feeding": "170 g at 07:00 and 170 g at 18:00",
+    "routine": "three walks daily, with the longest walk after work",
+    "microchip_id": "FICTIONAL-UNO-0001"
+  },
+  "work": {
+    "employer": "Northstar Transit Labs AB",
+    "role": "Senior Platform Engineer",
+    "office": "Hamnplan 4, 111 99 Stockholm",
+    "email": "adam.lind@northstar.example.invalid",
+    "manager": "Elin Berg",
+    "colleagues": ["Viktor Hall", "Priya Nordin", "Samir Ek"],
+    "stakeholders": ["Marta Sjoberg", "Jonas Ryd"],
+    "projects": {
+      "aurora": "Aurora commuter information platform",
+      "harbor": "Harbor ticketing integration"
+    },
+    "decisions": {
+      "aurora": "Retain the regional cache with explicit stale-data alerts",
+      "harbor": "Use idempotency keys at the integration boundary"
+    },
+    "incident_observation_attribution": "incident review participants",
+    "recurring": ["Monday platform planning", "Wednesday incident review", "Friday delivery summary"]
+  },
+  "running": {
+    "habit": "long-distance running",
+    "routes": ["Djurgarden winter loop", "Arstaviken bridge loop", "Nackareservatet long route"],
+    "race": "Stockholm Spring Half",
+    "race_date": "2025-05-17",
+    "race_finish_time": "1:43:28",
+    "shoes": ["Froststep 4", "Tempo Arc 2"],
+    "watch": "Pacefield R2",
+    "recovery": ["easy walk with Uno", "calf mobility", "early bedtime"]
+  },
+  "reading": {
+    "interest": "classic literature",
+    "books": [
+      {"title": "The Odyssey", "author": "Homer", "months": [1, 2], "completed": "2025-02-16", "quotation": "Sing to me of the man, Muse, the man of twists and turns."},
+      {"title": "Middlemarch", "author": "George Eliot", "months": [2, 3, 4], "completed": "2025-04-13", "quotation": "If we had a keen vision and feeling of all ordinary human life."},
+      {"title": "The Master and Margarita", "author": "Mikhail Bulgakov", "months": [4, 5], "completed": "2025-05-25", "quotation": "Manuscripts don't burn."},
+      {"title": "Persuasion", "author": "Jane Austen", "months": [5, 6], "completed": "2025-06-27", "quotation": "You pierce my soul. I am half agony, half hope."}
+    ]
+  },
+  "cooking": {
+    "interest": "Neapolitan pizza",
+    "flour": "Tipo 00 Alba",
+    "tomatoes": "San Marena whole tomatoes",
+    "oven": "Vesuvio Home 450",
+    "baseline_dough": "62 percent hydration, 2.8 percent salt, 24-hour cold fermentation",
+    "experiments": ["hydration", "fermentation time", "room-temperature proof", "bake position"]
+  },
+  "renovation": {
+    "planned": "2025-02-24",
+    "started": "2025-03-03",
+    "completed": "2025-03-28",
+    "contractor": "Ljus & List Koksrenovering AB",
+    "supplier": "Kvarnvik Kok",
+    "materials_approved": "2025-03-02",
+    "budget_sek": 148000,
+    "final_cost_sek": 151600,
+    "worktop": "light gray composite",
+    "cabinet_color": "matte sage",
+    "delay": "worktop delivery moved from March 17 to March 21",
+    "delay_announced": "2025-03-14"
+  },
+  "providers": {
+    "glasses_retailer": "Klara Blick Optik",
+    "glasses_purchase": "2024-08-12",
+    "glasses_warranty_months": 24,
+    "insurance": "Trygga Hem Fictional",
+    "mobile": "Signalpunkt Mobile",
+    "transit": "SL fictional test account",
+    "postal": "Stockholm Address Service",
+    "household_supplier": "Malarvik Household Supply",
+    "test_card_label": "FICTIONAL TEST CARD 0000"
+  },
+  "travel": {
+    "work_trip": {"destination": "Gothenburg", "start": "2025-05-06", "end": "2025-05-07", "purpose": "Harbor partner workshop"},
+    "private_trip": {"destination": "Uppsala", "start": "2025-06-14", "end": "2025-06-15", "purpose": "weekend visit with Uno"}
+  },
+  "appointments": ["Uno routine appointment", "Optician warranty check", "Apartment handover", "Kitchen follow-up"],
+  "task_events": {
+    "address_receipt_completed": "2025-03-05",
+    "kitchen_warranty_completed": "2025-04-15",
+    "aurora_milestone_completed": "2025-04-18",
+    "harbor_milestone_completed": "2025-05-23",
+    "incident_followup_completed": "2025-06-11"
+  },
+  "transitions": [
+    {"id": "address-change", "effective": "2025-02-22", "from": "addresses.old", "to": "addresses.new", "supersedes": "old address as current residence"},
+    {"id": "electricity-change", "effective": "2025-02-22", "from": "move.electricity_old", "to": "move.electricity_new", "supersedes": "old apartment electricity provider"},
+    {"id": "internet-change", "effective": "2025-02-22", "from": "move.internet_old", "to": "move.internet_new", "supersedes": "old apartment internet provider"},
+    {"id": "commute-change", "effective": "2025-02-24", "from": "bus then metro from old apartment", "to": "walk then metro from new apartment", "supersedes": "old home commute"},
+    {"id": "kitchen-unavailable", "effective": "2025-03-03", "from": "functional new-apartment kitchen", "to": "temporary induction plate during renovation", "supersedes": "normal cooking routine"},
+    {"id": "kitchen-complete", "effective": "2025-03-28", "from": "temporary induction plate during renovation", "to": "completed renovated kitchen", "supersedes": "renovation cooking restriction"}
+  ],
+  "monthly_arcs": {
+    "01": "Old-apartment routines, apartment search, lease decision, winter running, established work, Uno care, reading, and pizza practice.",
+    "02": "Packing, leases, provider changes, moving costs, February 22 move, address updates, and disrupted routines.",
+    "03": "Kitchen renovation, unpacking, warranty records, temporary cooking, new commute, and move follow-up.",
+    "04": "Renovation follow-up, settled apartment use, overdue tasks, adjusted Uno routes, and Aurora delivery work.",
+    "05": "Mature routines, half-marathon race, Gothenburg work travel, Harbor milestone, subscriptions, and maintenance.",
+    "06": "Stable post-move state, Uppsala private travel, completed work outcomes, and end-of-period snapshot."
+  },
+  "image_slots": [
+    {"path": "corpus/01-pre-move/2025-01-18-uno-winter-walk.png", "date": "2025-01-18", "purpose": "Uno on a winter walk near the old apartment", "format": "png", "domain": "private"},
+    {"path": "corpus/02-move-transition/2025-02-22-moving-boxes.png", "date": "2025-02-22", "purpose": "Labeled boxes during the apartment move", "format": "png", "domain": "private"},
+    {"path": "corpus/03-renovation/2025-03-12-kitchen-material-receipt.png", "date": "2025-03-12", "purpose": "Legible fictional kitchen supplier receipt", "format": "png", "domain": "private"},
+    {"path": "corpus/04-settled/2025-04-19-settled-kitchen.png", "date": "2025-04-19", "purpose": "Completed kitchen and settled new apartment", "format": "png", "domain": "private"},
+    {"path": "corpus/04-settled/2025-06-20-aurora-status-board.png", "date": "2025-06-20", "purpose": "Fictional Aurora project status board", "format": "png", "domain": "work"}
+  ],
+  "variant_families": [
+    "empty-before-installation",
+    "mature-mixed-project",
+    "registered-private-work-roles",
+    "complete-pending-inbox",
+    "managed-content-damage",
+    "interrupted-upgrade-states",
+    "pending-semantic-reconciliation",
+    "uninstall-reinstallation"
+  ]
+}

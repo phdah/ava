@@ -15,6 +15,7 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_repository.py" \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/conformance_release.py" \
+  "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \
   "$ROOT/internal/release/validate_pr_title.py" \
   "$ROOT/internal/release/validate_release_pr.py" \
@@ -37,6 +38,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_knowledge_hierarchy_promotion \
   internal.release.tests.test_inbox_ingestion_fidelity \
   internal.release.tests.test_ava_maintenance \
+  internal.release.tests.test_synthetic_qualification_vault \
   internal.release.tests.test_conformance \
   internal.release.tests.test_conformance_matrix \
   internal.release.tests.test_alpha_qualification \

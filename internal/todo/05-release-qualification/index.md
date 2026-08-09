@@ -25,6 +25,8 @@ These tasks add executable evidence beneath the stable six core gates without re
 2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) - Publish the routing correction and collect immutable evidence for findings 03 through 08.
 3. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md) - Repeat the complete generated-vault and lifecycle matrix before stable qualification.
 
+The [repository-only synthetic qualification fixture](../../release/fixtures/synthetic-qualification-vault/) implements the reviewed 300-file deterministic baseline, five external image specifications, expected-outcome oracle, run-manifest schema, validators, and eight variant workspaces with explicit execution plans. Its task records reproducibility and repository-suite evidence; managed-state execution, external image finalization, and real OpenCode qualification remain pending.
+
 ## Dogfood findings
 
 Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded findings without renumbering the core release gates.
