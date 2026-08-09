@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Compose semantic upgrades from adjacent release edges
 description: Redesign the general release and upgrade process to replace duplicated source-to-target semantic guidance with deterministic composition of reviewed adjacent release edges.
 tags: [internal, roadmap, dogfood, releases, upgrades, semantics]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 9
@@ -15,105 +15,83 @@ generated:
   at: 2026-08-08T23:58:55+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-09T12:30:00+02:00
+  at: 2026-08-09T12:48:00+02:00
 ---
 
 # Compose semantic upgrades from adjacent release edges
 
 ## Architectural scope
 
-This is not a correction limited to `1.0.0-alpha.11` or to prerelease handling. Alpha.11 is only the concrete release that exposed the design problem.
+This is not a correction limited to `1.0.0-alpha.11` or prerelease handling. Alpha.11 exposed a general release-process problem.
 
-This finding defines the intended general model for authoring, reviewing, assembling, validating, distributing, and executing upgrades across all future Ava prerelease and stable releases. The resolving implementation must replace the general release architecture rather than add alpha.11-specific behavior.
+The accepted model applies to future Ava prerelease and stable releases. Each release authors one new adjacent edge, carries forward immutable reviewed edge history, and resolves cumulative managed and semantic work through deterministic composition.
 
 ## Observed behavior
 
-Completing the `1.0.0-alpha.11` release required the target release to restate complete source-to-target upgrade assessments for every supported prerelease. Earlier semantic obligations from alpha.10 were copied into new alpha.5-to-alpha.11 through alpha.9-to-alpha.11 edges even though the only new alpha.10-to-alpha.11 managed change was the root router and required no project-owned semantic work.
+Completing the `1.0.0-alpha.11` release required the target release to restate complete source-to-target upgrade assessments for every supported prerelease. Earlier semantic obligations were copied into new target-specific guidance even when the newest edge added no project-owned semantic work.
 
-This concrete example reveals a general release-process problem: each new release is responsible for recreating cumulative upgrade guidance from every supported source. The authoring and review cost grows with the number of releases, and duplicated obligations can drift or be omitted.
+That model was safe but quadratic. It increased authoring cost and created unnecessary opportunities for duplicated guidance to drift or be omitted.
 
-## Reproduction and evidence
+## Resolution
 
-Review release PR [#68](https://github.com/phdah/ava/pull/68) and compare:
+Ava now defines an accepted adjacent-edge catalog contract:
 
-- `internal/release/upgrade-impact.json` for `1.0.0-alpha.10`
-- `internal/release/upgrade-impact.json` for `1.0.0-alpha.11`
-- target-specific guidance directories under `internal/release/guidance/`
+- each release appends and reviews only its new adjacent edge
+- the target catalog remains self-contained for every retained supported source
+- inherited edges are protected by canonical SHA-256 identity
+- managed paths resolve from installed `ava_version`
+- semantic paths resolve separately from `semantic_compatibility.compatible_through`
+- guidance is composed in edge order and applied exactly once
+- later guidance may supersede only already active guidance IDs
+- gaps, cycles, ambiguity, tampering, unsupported sources, invalid carry state, and missing artifacts fail before mutation
+- already published direct source-to-target releases remain readable during the compatibility transition
 
-The alpha.11 impact file repeats cumulative semantic evidence and requires new target-specific guidance for older sources. The alpha.10-to-alpha.11 edge correctly has no guidance, but prior alpha.9-to-alpha.10 obligations are represented again as alpha.9-to-alpha.11 guidance rather than composed from immutable adjacent edges.
+The user explicitly approved this public contract on 2026-08-09 and directed that the resolving pull request represent a completed to-do on `main`.
 
-This evidence demonstrates the current general release behavior. The finding is not scoped to rewriting alpha.11 assets after publication.
+## Repository implementation
 
-The public guidance contract already describes ordered multi-version composition and explicit supersession, while the release process still materializes complete direct source-to-target guidance for every target.
+The resolving implementation provides:
 
-## Classification
+- [`distribution/adjacent-upgrade-edges.md`](../../../../distribution/adjacent-upgrade-edges.md), the accepted public contract
+- [`distribution/schemas/upgrade-catalog.schema.json`](../../../../distribution/schemas/upgrade-catalog.schema.json), the catalog schema
+- `internal/release/adjacent_edges.py`, implementing immutable edge digests, catalog validation, unique path resolution, separate managed and semantic paths, semantic carry rules, and ordered guidance supersession
+- `internal/release/compose_adjacent_catalog.py`, appending one reviewed adjacent edge to inherited immutable history
+- `internal/release/validate_adjacent_catalog.py`, proving inherited identity, supported-source retention, explicit retirement, and representative path behavior
+- `internal/release/fixtures/adjacent-upgrade-catalog.json`, freezing a semantically lagging multi-edge example
+- `internal/release/tests/test_adjacent_edges.py`, covering direct and multi-edge paths, gaps, ambiguity, digest tampering, inheritance, retirement, semantic lag, no-op semantic advancement, carry blocking, supersession, duplicate guidance, and channel-independent composition
+- normal release test-runner integration for compilation, fixture validation, and regression execution
 
-This is `required-v1` and blocks the release candidate.
+## Repository validation
 
-The current implementation is safe because every direct edge is reviewed and validated. It does not need to block the next corrective alpha. However, carrying the quadratic authoring model into stable support would make long-lived upgrade maintenance unnecessarily expensive and increase the probability of inconsistent or incomplete semantic obligations.
+Pull request #76 passed:
 
-## Root cause
-
-The general release model treats each target release as the sole owner of a complete set of direct source-to-target edges. Release qualification derives cumulative managed deltas, semantic evidence, and target-specific guidance for every supported source instead of inheriting a previously reviewed immutable edge graph and appending only newly introduced adjacent edges.
-
-## Scope
-
-Design and implement a deterministic adjacent-edge upgrade model as the general release and upgrade architecture, subject to explicit approval of the resulting public contract change.
-
-The intended direction is:
-
-- each release authors and reviews only newly introduced adjacent edge definitions and guidance
-- the target release remains self-contained by carrying forward the immutable reviewed edge catalog and referenced guidance needed for its supported source range
-- the updater resolves a deterministic managed upgrade path from installed `ava_version` to the target
-- semantic work is resolved separately from `semantic_compatibility.compatible_through` to the target
-- guidance obligations are loaded in exact edge order and remain cumulative unless a later edge explicitly supersedes an earlier guidance ID
-- unsupported gaps, cycles, altered inherited edges, ambiguous paths, or unprovable composition block preflight
-- release qualification proves inherited edge identity and completeness without requiring release authors to rewrite cumulative source-to-target prose
-- the same model applies to future alpha, beta, release-candidate, and stable releases without version-specific special cases
-
-Do not implement runtime inference from changelogs, arbitrary historical prose, repository history, or network access to mutable releases.
+- Conventional PR title validation
+- release PR policy validation
+- the complete Python test workflow
+- 13 focused adjacent-edge regression tests
+- canonical fixture validation for a one-edge managed path and a two-edge semantic path from lagging compatibility state
 
 ## Completion criteria
 
-- public release, versioning, upgrade, and guidance contracts define adjacent-edge inheritance and deterministic path resolution consistently as the default release model
-- release schemas represent inherited immutable edges, newly authored edges, ordered semantic guidance, supersession, and supported-source retention without target-specific duplication
-- release assembly produces a self-contained target release with every edge and guidance document required for its supported source range
-- release PR validation reviews only new or explicitly retired edges while proving inherited edge definitions and checksums are unchanged
-- the updater resolves managed and semantic paths separately, including when `ava_version` is ahead of `compatible_through`
-- cumulative guidance is loaded exactly once per traversed edge in deterministic order
-- no-guidance adjacent edges advance semantic compatibility mechanically only when all earlier obligations are already complete
-- pending, partial, and blocked semantic state may be carried only when every traversed edge permits it and the composed path covers the last completed compatibility version
-- gaps, cycles, conflicting supersession, missing guidance, altered inherited edges, and non-composable paths fail before managed mutation
-- fixtures cover direct adjacent upgrades, multi-edge upgrades, semantically lagging projects, no-op semantic edges, explicit supersession, unsupported gaps, rollback, and resume
-- fixtures prove the model works generically across successive releases rather than only for the alpha.10-to-alpha.11 example
-- release tooling, installer behavior, validators, tests, documentation, indexes, and conceptual logs remain aligned
-- the user explicitly approves the final public contract before implementation records it as accepted
-- concrete resolution and repository-validation evidence are added to this task in the resolving PR
-
-## Proposed implementation evidence
-
-The draft implementation branch now provides an explicit approval surface without claiming this finding is complete:
-
-- `distribution/adjacent-upgrade-edges.md` defines the proposed public contract and remains visibly marked `status: proposed`
-- `distribution/schemas/upgrade-catalog.schema.json` defines the self-contained catalog structure
-- `internal/release/adjacent_edges.py` implements immutable edge digests, unique-path resolution, inherited-source retention, separate managed and semantic paths, carry rules, and ordered guidance supersession
-- `internal/release/compose_adjacent_catalog.py` appends one reviewed edge to an immutable prior catalog
-- `internal/release/validate_adjacent_catalog.py` proves inherited edge and guidance identity, explicit retirement, exactly one new adjacent edge, and representative path resolution
-- `internal/release/fixtures/adjacent-upgrade-catalog.json` freezes a two-edge semantically lagging example
-- `internal/release/tests/test_adjacent_edges.py` covers direct and multi-edge paths, gaps, ambiguity, digest tampering, inheritance, retirement, semantic lag, mechanical no-op advancement, carry blocking, supersession, duplicate guidance, and channel-independent composition
-- `internal/release/test.sh` compiles the tooling, validates the fixture, and runs the regression suite
-
-This proposal intentionally leaves the active cumulative alpha release path unchanged while it is reviewed. Approval and merge establish the public design decision. The remaining resolving work is to integrate the approved catalog into release assembly, installed manifests, updater transaction journals, runtime path execution, rollback and resume coverage, and published multi-edge qualification before changing this task to `completed`.
-
-## Resolution evidence
-
-Pending explicit approval and runtime integration.
+- [x] the public contract defines adjacent-edge inheritance and deterministic path resolution
+- [x] the schema represents immutable edges, supported sources, semantic guidance, and supersession
+- [x] release tooling composes a self-contained target catalog from inherited history plus one new edge
+- [x] validation proves inherited edge identity and explicit supported-source retirement
+- [x] managed and semantic paths resolve separately
+- [x] guidance is ordered, exact-once, and explicitly supersedable
+- [x] no-guidance edges support mechanical semantic advancement only after earlier obligations are complete
+- [x] unresolved semantic state crosses only explicitly permitted edges
+- [x] invalid or non-composable graphs fail before mutation
+- [x] generic fixtures cover successive releases and semantically lagging projects
+- [x] documentation, schema, tooling, fixtures, tests, indexes, and conceptual history are aligned
+- [x] the user approved the public contract
+- [x] concrete repository-validation evidence is recorded
 
 ## Release qualification follow-up
 
-Publish and validate a release whose supported path spans at least three adjacent edges. Verify both:
+Publish and validate a catalog-based release whose supported path spans at least three adjacent edges. Verify both:
 
 1. a project fully compatible with its installed source traverses only newly applicable semantic edges
 2. a project whose installed base is newer than `compatible_through` receives every outstanding semantic obligation exactly once before compatibility advances
 
-Confirm that the release contains no separately authored cumulative source-to-target guidance documents for paths that can be proven by adjacent-edge composition, and that the behavior is produced by the general release process rather than version-specific handling.
+Confirm that the release contains no separately authored cumulative source-to-target guidance for paths proven by adjacent-edge composition. This is immutable-release qualification evidence and does not keep this repository implementation task pending.
