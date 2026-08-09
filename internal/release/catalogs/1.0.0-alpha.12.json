@@ -1,0 +1,90 @@
+{
+  "catalog_schema": 1,
+  "edges": [
+    {
+      "carry_unresolved_semantic_state": true,
+      "edge_sha256": "d1deb1cd983b986a0a8ab5f0a4a32207c0562a5e14058b9b9b661e625d32d5f4",
+      "from": "1.0.0-alpha.5",
+      "guidance_paths": [],
+      "migration_ids": [],
+      "semantic_review_required": false,
+      "to": "1.0.0-alpha.6"
+    },
+    {
+      "carry_unresolved_semantic_state": true,
+      "edge_sha256": "1827309ca63687da10beefa86ea24940f00dc37b693fcab4dbd8287f74d0d034",
+      "from": "1.0.0-alpha.6",
+      "guidance_paths": [],
+      "migration_ids": [],
+      "semantic_review_required": false,
+      "to": "1.0.0-alpha.7"
+    },
+    {
+      "carry_unresolved_semantic_state": true,
+      "edge_sha256": "3ae3f3625bdce9e00b41b0f9ad981dca80142fd134eb7bebe7fc1cb95dcb1aa3",
+      "from": "1.0.0-alpha.7",
+      "guidance_paths": [],
+      "migration_ids": [],
+      "semantic_review_required": false,
+      "to": "1.0.0-alpha.8"
+    },
+    {
+      "carry_unresolved_semantic_state": true,
+      "edge_sha256": "a11f2dafa5bad5a2f0254da446fc2d6dee9a33d5066c3f744768c0aa9ea33d54",
+      "from": "1.0.0-alpha.8",
+      "guidance_paths": [],
+      "migration_ids": [],
+      "semantic_review_required": false,
+      "to": "1.0.0-alpha.9"
+    },
+    {
+      "carry_unresolved_semantic_state": true,
+      "edge_sha256": "0f3e27cdeaca9872d52e18bdb590eb12f4fec1ba18ca2461ee8993db28b5e298",
+      "from": "1.0.0-alpha.9",
+      "guidance_paths": [
+        "1.0.0-alpha.10/1.0.0-alpha.9-to-1.0.0-alpha.10/UPGRADE.md"
+      ],
+      "migration_ids": [],
+      "semantic_review_required": true,
+      "to": "1.0.0-alpha.10"
+    },
+    {
+      "carry_unresolved_semantic_state": true,
+      "edge_sha256": "32ab92d8f38c848f9b1d8ec6f6f7fa3177cccaab69fa6f1f83a000a7f9bb5064",
+      "from": "1.0.0-alpha.10",
+      "guidance_paths": [],
+      "migration_ids": [],
+      "semantic_review_required": false,
+      "to": "1.0.0-alpha.11"
+    },
+    {
+      "carry_unresolved_semantic_state": true,
+      "edge_sha256": "0f9c97efd8f4a3bf88fc376e5738be75eefb03375bef216351ecf3280a7b3e18",
+      "from": "1.0.0-alpha.11",
+      "guidance_paths": [],
+      "migration_ids": [],
+      "semantic_review_required": false,
+      "to": "1.0.0-alpha.12"
+    }
+  ],
+  "guidance": [
+    {
+      "from_version": "1.0.0-alpha.9",
+      "guidance_id": "1.0.0-alpha.9-to-1.0.0-alpha.10",
+      "path": "1.0.0-alpha.10/1.0.0-alpha.9-to-1.0.0-alpha.10/UPGRADE.md",
+      "sha256": "b078f2e41261f64278f3605b382112e3999e0d2c4e26c14de2ccb4cf09de1820",
+      "supersedes": [],
+      "to_version": "1.0.0-alpha.10"
+    }
+  ],
+  "supported_sources": [
+    "1.0.0-alpha.5",
+    "1.0.0-alpha.6",
+    "1.0.0-alpha.7",
+    "1.0.0-alpha.8",
+    "1.0.0-alpha.9",
+    "1.0.0-alpha.10",
+    "1.0.0-alpha.11"
+  ],
+  "target_version": "1.0.0-alpha.12"
+}

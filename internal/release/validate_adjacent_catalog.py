@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate a proposed self-contained adjacent upgrade edge catalog."""
+"""Validate an adjacent catalog and, for a release, its exact inherited delta."""
 
 from __future__ import annotations
 
@@ -14,79 +14,12 @@ from internal.release.adjacent_edges import (
     resolve_upgrade,
     validate_catalog,
 )
-
-
-def read_object(path: Path) -> dict[str, Any]:
-    try:
-        value = json.loads(path.read_text())
-    except (OSError, json.JSONDecodeError) as exc:
-        raise AdjacentEdgeError(f"cannot read valid JSON from {path}: {exc}") from exc
-    if not isinstance(value, dict):
-        raise AdjacentEdgeError(f"{path} must contain a JSON object")
-    return value
-
-
-def validate_inheritance(
-    previous: dict[str, Any],
-    current: dict[str, Any],
-    retired_sources: set[str],
-) -> None:
-    prior = validate_catalog(previous)
-    target = validate_catalog(current)
-    if target["target_version"] == prior["target_version"]:
-        raise AdjacentEdgeError("current catalog must advance beyond the previous target")
-
-    prior_edges = {edge["edge_sha256"]: edge for edge in prior["edges"]}
-    current_edges = {edge["edge_sha256"]: edge for edge in target["edges"]}
-    missing_edges = sorted(set(prior_edges) - set(current_edges))
-    if missing_edges:
-        raise AdjacentEdgeError(
-            "current catalog omits or alters inherited edge digests: "
-            + ", ".join(missing_edges)
-        )
-    for digest, edge in prior_edges.items():
-        if current_edges[digest] != edge:
-            raise AdjacentEdgeError(f"inherited edge content changed: {digest}")
-
-    prior_guidance = {item["guidance_id"]: item for item in prior["guidance"]}
-    current_guidance = {item["guidance_id"]: item for item in target["guidance"]}
-    missing_guidance = sorted(set(prior_guidance) - set(current_guidance))
-    if missing_guidance:
-        raise AdjacentEdgeError(
-            "current catalog omits inherited guidance IDs: "
-            + ", ".join(missing_guidance)
-        )
-    for guidance_id, item in prior_guidance.items():
-        if current_guidance[guidance_id] != item:
-            raise AdjacentEdgeError(f"inherited guidance changed: {guidance_id}")
-
-    unknown_retirements = retired_sources - set(prior["supported_sources"])
-    if unknown_retirements:
-        raise AdjacentEdgeError(
-            "retirement names unknown prior sources: "
-            + ", ".join(sorted(unknown_retirements))
-        )
-    required_sources = set(prior["supported_sources"]) - retired_sources
-    omitted = required_sources - set(target["supported_sources"])
-    if omitted:
-        raise AdjacentEdgeError(
-            "current catalog silently drops inherited supported sources: "
-            + ", ".join(sorted(omitted))
-        )
-    if prior["target_version"] not in target["supported_sources"]:
-        raise AdjacentEdgeError("previous target must become a supported source")
-
-    new_edges = [
-        edge for edge in target["edges"]
-        if edge["edge_sha256"] not in prior_edges
-    ]
-    if len(new_edges) != 1:
-        raise AdjacentEdgeError("a normal release must append exactly one new adjacent edge")
-    new_edge = new_edges[0]
-    if new_edge["from"] != prior["target_version"]:
-        raise AdjacentEdgeError("new edge must start at the previous catalog target")
-    if new_edge["to"] != target["target_version"]:
-        raise AdjacentEdgeError("new edge must end at the current catalog target")
+from internal.release.release_catalog import (
+    read_json_object,
+    read_retirements,
+    validate_guidance_artifacts,
+    validate_release_delta,
+)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -95,7 +28,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("catalog", type=Path)
     parser.add_argument("--previous-catalog", type=Path)
-    parser.add_argument("--retired-source", action="append", default=[])
+    parser.add_argument("--retirements", type=Path)
+    parser.add_argument("--guidance-root", type=Path)
     parser.add_argument("--installed-version")
     parser.add_argument("--compatible-through")
     parser.add_argument(
@@ -107,17 +41,51 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def _retirements(path: Path | None, target: str) -> dict[str, str]:
+    if path is None:
+        return {}
+    root = path.resolve().parents[2]
+    expected = root / "internal/release/catalog-retirements.json"
+    if path.resolve() == expected:
+        return read_retirements(root, target)
+    value = read_json_object(path)
+    if set(value) != {"schema_version", "target_version", "retired_sources"}:
+        raise AdjacentEdgeError("retirement file has invalid fields")
+    if value["schema_version"] != 1 or value["target_version"] != target:
+        raise AdjacentEdgeError("retirement file identity does not match the catalog")
+    result: dict[str, str] = {}
+    for index, item in enumerate(value["retired_sources"]):
+        if not isinstance(item, dict) or set(item) != {"version", "reason"}:
+            raise AdjacentEdgeError(
+                f"retired_sources[{index}] must contain version and reason"
+            )
+        if not isinstance(item["reason"], str) or not item["reason"].strip():
+            raise AdjacentEdgeError(
+                f"retired_sources[{index}].reason must be non-empty"
+            )
+        result[item["version"]] = item["reason"].strip()
+    return result
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     try:
-        raw = read_object(args.catalog)
-        catalog = validate_catalog(raw)
+        raw = read_json_object(args.catalog)
+        target_version = raw.get("target_version")
+        if not isinstance(target_version, str):
+            raise AdjacentEdgeError("catalog target_version must be a string")
         if args.previous_catalog:
-            validate_inheritance(
-                read_object(args.previous_catalog),
-                catalog,
-                set(args.retired_source),
+            catalog = validate_release_delta(
+                read_json_object(args.previous_catalog),
+                raw,
+                retired_sources=_retirements(args.retirements, target_version),
+                guidance_root=args.guidance_root,
             )
+        else:
+            catalog = validate_catalog(raw)
+            if args.guidance_root:
+                validate_guidance_artifacts(catalog, args.guidance_root)
+
         resolution = None
         if bool(args.installed_version) != bool(args.compatible_through):
             raise AdjacentEdgeError(
@@ -142,9 +110,15 @@ def main(argv: list[str] | None = None) -> int:
     }
     if resolution is not None:
         result["resolution"] = {
-            "managed_edges": [edge["edge_sha256"] for edge in resolution.managed_path],
-            "semantic_edges": [edge["edge_sha256"] for edge in resolution.semantic_path],
-            "guidance_ids": [item["guidance_id"] for item in resolution.effective_guidance],
+            "managed_edges": [
+                edge["edge_sha256"] for edge in resolution.managed_path
+            ],
+            "semantic_edges": [
+                edge["edge_sha256"] for edge in resolution.semantic_path
+            ],
+            "guidance_ids": [
+                item["guidance_id"] for item in resolution.effective_guidance
+            ],
             "semantic_review_required": resolution.semantic_review_required,
             "may_advance_compatibility_mechanically": (
                 resolution.may_advance_compatibility_mechanically

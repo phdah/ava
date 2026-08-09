@@ -79,8 +79,6 @@ jobs:
           previous_version=$(git show "${SOURCE_REVISION}^:version.txt")
           python3 -m internal.release.validate_release_pr \
             --previous-version "$previous_version"
-          python3 -m internal.release.validate_upgrade_impact \
-            --previous-version "$previous_version"
           internal/release/test.sh
 
       - name: Assemble release twice
@@ -88,7 +86,7 @@ jobs:
         run: |
           set -eu
           for output in release-a release-b; do
-            AVA_UPGRADE_IMPACT=internal/release/upgrade-impact.json \
+            AVA_UPGRADE_CATALOG="internal/release/catalogs/${{ steps.identity.outputs.version }}.json" \
               internal/release/assemble.sh \
               --output "$output" \
               --version "${{ steps.identity.outputs.version }}" \
@@ -96,7 +94,6 @@ jobs:
               --source-revision "${{ steps.identity.outputs.source_revision }}" \
               --source-date-epoch "${{ steps.identity.outputs.source_date_epoch }}" \
               --published-at "${{ steps.identity.outputs.published_at }}" \
-              --guidance-dir "internal/release/guidance/${{ steps.identity.outputs.version }}" \
               --release-notes CHANGELOG.md
           done
           (cd release-a && find . -type f -print0 | sort -z | xargs -0 sha256sum) > release-a.sha256
@@ -128,5 +125,5 @@ jobs:
         if: ${{ steps.release.outputs.release_created == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-          TAG: ${{ steps.identity.outputs.tag }}
+          TAG: ${{ steps.release.outputs.tag_name }}
         run: gh release edit "$TAG" --draft=false
