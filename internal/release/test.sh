@@ -9,6 +9,7 @@ sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
 python3 -m py_compile \
   "$ROOT/internal/release/adjacent_edges.py" \
+  "$ROOT/internal/release/release_catalog.py" \
   "$ROOT/internal/release/compose_adjacent_catalog.py" \
   "$ROOT/internal/release/validate_adjacent_catalog.py" \
   "$ROOT/internal/release/assemble.py" \
@@ -25,9 +26,10 @@ python3 -m py_compile \
   "$ROOT/internal/release/validate_upgrade_impact.py"
 python3 "$ROOT/internal/release/validate-installed-paths.py" --root "$ROOT"
 python3 "$ROOT/internal/release/validate_adjacent_catalog.py" \
-  "$ROOT/internal/release/fixtures/adjacent-upgrade-catalog.json" \
-  --installed-version 1.0.0-alpha.2 \
-  --compatible-through 1.0.0-alpha.1
+  "$ROOT/internal/release/catalogs/1.0.0-alpha.12.json" \
+  --guidance-root "$ROOT/internal/release/guidance" \
+  --installed-version 1.0.0-alpha.11 \
+  --compatible-through 1.0.0-alpha.9
 python3 "$ROOT/internal/release/conformance.py" \
   --root "$ROOT" \
   --mode repository \
@@ -47,9 +49,10 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_ava_maintenance \
   internal.release.tests.test_synthetic_qualification_vault \
   internal.release.tests.test_adjacent_edges \
+  internal.release.tests.test_release_catalog \
+  internal.release.tests.test_release_catalog_history \
   internal.release.tests.test_conformance \
   internal.release.tests.test_conformance_matrix \
   internal.release.tests.test_alpha_qualification \
   internal.release.tests.test_release_please \
-  internal.release.tests.release_pr_policy_test \
-  internal.release.tests.test_upgrade_impact
+  internal.release.tests.release_pr_policy_test

@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
+"""Assemble a release from recursively linked adjacent-edge records."""
+
 from __future__ import annotations
 
 import argparse
 import json
+import shutil
+import tempfile
 from pathlib import Path
 
 from internal.release import assemble
-from internal.release.validate_upgrade_impact import (
-    UpgradeImpactValidationError,
-    source_assessments,
-    version_key,
+from internal.release.adjacent_edges import AdjacentEdgeError, validate_catalog
+from internal.release.release_catalog import (
+    catalog_path,
+    manifest_edges,
+    read_catalog,
+    validate_guidance_artifacts,
 )
 
 
@@ -17,55 +23,65 @@ class ReviewedAssemblyError(RuntimeError):
     pass
 
 
-def apply_reviewed_impact(output: Path, impact_path: Path, target_version: str) -> None:
+def apply_reviewed_catalog(
+    output: Path,
+    catalog: dict[str, object],
+    target_version: str,
+) -> None:
     try:
-        impact = json.loads(impact_path.read_text())
-    except (OSError, json.JSONDecodeError) as exc:
-        raise ReviewedAssemblyError(f"cannot read reviewed upgrade impact: {exc}") from exc
-    try:
-        assessments = source_assessments(
-            impact,
-            require_semantic_evidence=True,
-        )
-    except UpgradeImpactValidationError as exc:
+        normalized = validate_catalog(catalog)
+        projections = manifest_edges(normalized)
+    except AdjacentEdgeError as exc:
         raise ReviewedAssemblyError(str(exc)) from exc
-    if impact["target_version"] != target_version:
+    if normalized["target_version"] != target_version:
         raise ReviewedAssemblyError(
-            f"reviewed impact target {impact['target_version']} does not match {target_version}"
+            f"reviewed catalog target {normalized['target_version']} "
+            f"does not match {target_version}"
         )
 
     manifest_path = output / "ava-release.json"
     manifest = json.loads(manifest_path.read_text())
-    edges = manifest["upgrade_paths"]["edges"]
-    edge_by_source = {edge["from"]: edge for edge in edges}
-    if set(edge_by_source) != set(assessments):
+    assembled_sources = {
+        edge["from"]
+        for edge in manifest["upgrade_paths"]["edges"]
+    }
+    reviewed_sources = {
+        edge["from"]
+        for edge in projections
+    }
+    if assembled_sources != reviewed_sources:
         raise ReviewedAssemblyError(
-            "assembled edge sources do not match reviewed impact: "
-            f"assembled={sorted(edge_by_source)}, reviewed={sorted(assessments)}"
+            "assembled edge sources do not match the recursively composed catalog: "
+            f"assembled={sorted(assembled_sources)}, "
+            f"reviewed={sorted(reviewed_sources)}"
         )
 
-    migration_ids = {step["id"] for step in manifest["migrations"]["steps"]}
-    guidance_paths = {entry["path"] for entry in manifest["guidance"]["entries"]}
-    for source, assessment in assessments.items():
-        unknown_migrations = sorted(set(assessment["migration_ids"]) - migration_ids)
-        unknown_guidance = sorted(set(assessment["guidance_paths"]) - guidance_paths)
+    migration_ids = {
+        step["id"]
+        for step in manifest["migrations"]["steps"]
+    }
+    guidance_paths = {
+        entry["path"]
+        for entry in manifest["guidance"]["entries"]
+    }
+    for edge in projections:
+        unknown_migrations = sorted(set(edge["migration_ids"]) - migration_ids)
+        unknown_guidance = sorted(set(edge["guidance_paths"]) - guidance_paths)
         if unknown_migrations:
             raise ReviewedAssemblyError(
-                f"reviewed migration IDs for {source} are absent from release assets: "
+                f"catalog migrations for {edge['from']} are absent from release assets: "
                 + ", ".join(unknown_migrations)
             )
         if unknown_guidance:
             raise ReviewedAssemblyError(
-                f"reviewed guidance paths for {source} are absent from release assets: "
+                f"catalog guidance for {edge['from']} is absent from release assets: "
                 + ", ".join(unknown_guidance)
             )
-        edge = edge_by_source[source]
-        edge["migration_ids"] = list(assessment["migration_ids"])
-        edge["guidance_paths"] = list(assessment["guidance_paths"])
-        edge["semantic_review_required"] = assessment["semantic_review_required"]
 
+    manifest["upgrade_paths"]["edges"] = projections
     manifest["semantic_review_required"] = any(
-        assessment["semantic_review_required"] for assessment in assessments.values()
+        edge["semantic_review_required"]
+        for edge in projections
     )
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
 
@@ -74,6 +90,23 @@ def apply_reviewed_impact(output: Path, impact_path: Path, target_version: str) 
         for name in assemble.ASSET_NAMES[:-1]
     ]
     (output / "SHA256SUMS").write_text("".join(checksum_lines))
+
+
+def stage_guidance(
+    catalog: dict[str, object],
+    guidance_root: Path,
+    destination: Path,
+) -> None:
+    try:
+        normalized = validate_catalog(catalog)
+        validate_guidance_artifacts(normalized, guidance_root)
+    except AdjacentEdgeError as exc:
+        raise ReviewedAssemblyError(str(exc)) from exc
+    for item in normalized["guidance"]:
+        source = guidance_root / item["path"]
+        target = destination / item["path"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, target)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -86,45 +119,66 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--source-date-epoch", type=int, required=True)
     parser.add_argument("--published-at")
     parser.add_argument("--release-notes", type=Path)
-    parser.add_argument("--guidance-dir", type=Path)
+    parser.add_argument("--guidance-root", type=Path)
     parser.add_argument("--migrations-dir", type=Path)
     parser.add_argument("--upgrade-from", action="append", default=[])
     parser.add_argument("--semantic-review-required", action="store_true")
-    parser.add_argument("--upgrade-impact", type=Path, required=True)
+    parser.add_argument("--upgrade-catalog", type=Path, required=True)
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    impact_path = args.upgrade_impact
-    del args.upgrade_impact
-    try:
-        impact = json.loads(impact_path.read_text())
-        assessments = source_assessments(
-            impact,
-            require_semantic_evidence=True,
+    root = args.root.resolve()
+    target_version = assemble.canonical_version(args.version)
+    supplied_catalog_path = args.upgrade_catalog.resolve()
+    expected_catalog_path = catalog_path(root, target_version).resolve()
+    if supplied_catalog_path != expected_catalog_path:
+        raise ReviewedAssemblyError(
+            f"target release record must be {expected_catalog_path}"
         )
-    except (OSError, json.JSONDecodeError, UpgradeImpactValidationError) as exc:
-        raise ReviewedAssemblyError(f"cannot read reviewed upgrade impact: {exc}") from exc
+
+    guidance_root = (
+        args.guidance_root.resolve()
+        if args.guidance_root
+        else root / "internal/release/guidance"
+    )
+    try:
+        catalog = read_catalog(root, target_version)
+    except AdjacentEdgeError as exc:
+        raise ReviewedAssemblyError(str(exc)) from exc
 
     supplied_sources = set(args.upgrade_from)
-    reviewed_sources = set(assessments)
+    reviewed_sources = set(catalog["supported_sources"])
     if supplied_sources and supplied_sources != reviewed_sources:
         raise ReviewedAssemblyError(
-            "command-line upgrade sources disagree with reviewed impact: "
+            "command-line upgrade sources disagree with the recursively composed catalog: "
             f"command={sorted(supplied_sources)}, reviewed={sorted(reviewed_sources)}"
         )
-    args.upgrade_from = sorted(reviewed_sources, key=version_key)
+
+    del args.upgrade_catalog
+    del args.guidance_root
+    args.upgrade_from = list(catalog["supported_sources"])
+    projections = manifest_edges(catalog)
     args.semantic_review_required = any(
-        assessment["semantic_review_required"] for assessment in assessments.values()
+        edge["semantic_review_required"]
+        for edge in projections
     )
-    assemble.build(args)
-    apply_reviewed_impact(
+
+    with tempfile.TemporaryDirectory(prefix="ava-guidance-") as temporary:
+        staging = Path(temporary)
+        stage_guidance(catalog, guidance_root, staging)
+        args.guidance_dir = staging
+        assemble.build(args)
+
+    apply_reviewed_catalog(
         args.output.resolve(),
-        impact_path.resolve(),
-        assemble.canonical_version(args.version),
+        catalog,
+        target_version,
     )
-    print(f"Applied reviewed upgrade impact from {impact_path}")
+    print(
+        f"Applied recursively composed adjacent records through {supplied_catalog_path}"
+    )
     return 0
 
 
@@ -134,6 +188,7 @@ if __name__ == "__main__":
     except (
         ReviewedAssemblyError,
         assemble.AssemblyError,
+        AdjacentEdgeError,
         OSError,
         json.JSONDecodeError,
     ) as exc:

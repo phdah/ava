@@ -1,0 +1,15 @@
+{
+  "catalog_schema": 1,
+  "edge": {
+    "carry_unresolved_semantic_state": true,
+    "edge_sha256": "6f6db34349f0854b8a4ab6afb942b82337ae19d6a52f75e54a0339aa3d6e989e",
+    "from": "1.0.0-alpha.2",
+    "guidance_paths": [],
+    "migration_ids": [],
+    "semantic_review_required": false,
+    "to": "1.0.0-alpha.3"
+  },
+  "guidance": [],
+  "retired_sources": [],
+  "target_version": "1.0.0-alpha.3"
+}

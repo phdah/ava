@@ -1,0 +1,20 @@
+{
+  "catalog_schema": 1,
+  "edge": {
+    "carry_unresolved_semantic_state": true,
+    "edge_sha256": "4e8c0f98de27b2b9a4e60070f64eb9d9cd04becbb0db72a6280329463b8ab4f7",
+    "from": "0.0.0",
+    "guidance_paths": [],
+    "migration_ids": [],
+    "semantic_review_required": false,
+    "to": "1.0.0-alpha.1"
+  },
+  "guidance": [],
+  "retired_sources": [
+    {
+      "reason": "Bootstrap sentinel is not an installed Ava release.",
+      "version": "0.0.0"
+    }
+  ],
+  "target_version": "1.0.0-alpha.1"
+}

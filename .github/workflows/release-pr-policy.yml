@@ -39,8 +39,8 @@ jobs:
           previous_version=$(git show "${BASE_SHA}:version.txt")
           PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
             internal.release.tests.release_pr_policy_test \
-            internal.release.tests.test_upgrade_impact
+            internal.release.tests.test_release_catalog \
+            internal.release.tests.test_release_catalog_history
           python3 -m internal.release.validate_release_pr \
-            --previous-version "$previous_version"
-          python3 -m internal.release.validate_upgrade_impact \
-            --previous-version "$previous_version"
+            --previous-version "$previous_version" \
+            --base-revision "$BASE_SHA"

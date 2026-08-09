@@ -63,8 +63,14 @@ class ReleasePleasePolicyTests(unittest.TestCase):
 
     def test_current_channel_and_planned_transitions(self) -> None:
         channels = {item["name"]: item for item in self.fixture["channels"]}
-        self.assertRegex(channels["alpha"]["example"], r"^1\.0\.0-alpha\.[1-9][0-9]*$")
-        self.assertRegex(channels["rc"]["example"], r"^1\.0\.0-rc\.[1-9][0-9]*$")
+        self.assertRegex(
+            channels["alpha"]["example"],
+            r"^1\.0\.0-alpha\.[1-9][0-9]*$",
+        )
+        self.assertRegex(
+            channels["rc"]["example"],
+            r"^1\.0\.0-rc\.[1-9][0-9]*$",
+        )
         self.assertEqual(channels["stable"]["example"], "1.0.0")
         for key, value in channels["alpha"]["settings"].items():
             self.assertEqual(self.config[key], value)
@@ -72,7 +78,10 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertEqual(channels["stable"]["settings"]["versioning"], "default")
 
     def test_changelog_sections_match_title_policy(self) -> None:
-        sections = {item["type"]: item for item in self.config["changelog-sections"]}
+        sections = {
+            item["type"]: item
+            for item in self.config["changelog-sections"]
+        }
         for case in self.fixture["title_cases"]:
             if not case["valid"]:
                 continue
@@ -97,34 +106,67 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertNotIn("python -m unittest discover", self.python_workflow)
 
     def test_release_workflow_qualifies_then_publishes(self) -> None:
-        self.assertIn("googleapis/release-please-action@v5", self.release_workflow)
+        self.assertIn(
+            "googleapis/release-please-action@v5",
+            self.release_workflow,
+        )
         self.assertIn("secrets.RELEASE_PLEASE_TOKEN", self.release_workflow)
         self.assertIn("steps.release.outputs.sha", self.release_workflow)
         self.assertIn("git rev-list -n 1", self.release_workflow)
-        self.assertIn("-m internal.release.validate_release_pr", self.release_workflow)
-        self.assertIn("-m internal.release.validate_upgrade_impact", self.release_workflow)
+        self.assertIn(
+            "-m internal.release.validate_release_pr",
+            self.release_workflow,
+        )
+        self.assertNotIn(
+            "-m internal.release.validate_upgrade_impact",
+            self.release_workflow,
+        )
         self.assertIn("internal/release/test.sh", self.release_workflow)
-        self.assertEqual(self.release_workflow.count("internal/release/assemble.sh"), 1)
-        self.assertIn("for output in release-a release-b", self.release_workflow)
+        self.assertEqual(
+            self.release_workflow.count("internal/release/assemble.sh"),
+            1,
+        )
+        self.assertIn(
+            "for output in release-a release-b",
+            self.release_workflow,
+        )
         self.assertIn("actions/attest@v4", self.release_workflow)
         self.assertIn("gh release upload", self.release_workflow)
         self.assertNotIn("--clobber", self.release_workflow)
         self.assertIn("--json isDraft", self.release_workflow)
-        self.assertIn('gh release edit "$TAG" --draft=false', self.release_workflow)
-        self.assertLess(
-            self.release_workflow.index("gh release upload"),
-            self.release_workflow.index('gh release edit "$TAG" --draft=false'),
-        )
-
-    def test_release_workflow_uses_reviewed_upgrade_impact(self) -> None:
         self.assertIn(
-            "AVA_UPGRADE_IMPACT=internal/release/upgrade-impact.json",
+            'gh release edit "$TAG" --draft=false',
             self.release_workflow,
         )
-        self.assertNotIn("internal/release/upgrade-sources.txt", self.release_workflow)
+        self.assertLess(
+            self.release_workflow.index("gh release upload"),
+            self.release_workflow.index(
+                'gh release edit "$TAG" --draft=false'
+            ),
+        )
+
+    def test_release_workflow_uses_reviewed_adjacent_catalog(self) -> None:
+        self.assertIn(
+            "AVA_UPGRADE_CATALOG=internal/release/catalogs/",
+            self.release_workflow,
+        )
+        self.assertNotIn(
+            "AVA_UPGRADE_IMPACT",
+            self.release_workflow,
+        )
+        self.assertNotIn(
+            "internal/release/upgrade-impact.json",
+            self.release_workflow,
+        )
+        self.assertNotIn(
+            "internal/release/upgrade-sources.txt",
+            self.release_workflow,
+        )
         self.assertNotIn("--upgrade-from", self.release_workflow)
         self.assertLess(
-            self.release_workflow.index("-m internal.release.validate_upgrade_impact"),
+            self.release_workflow.index(
+                "-m internal.release.validate_release_pr"
+            ),
             self.release_workflow.index("internal/release/assemble.sh"),
         )
 
@@ -132,14 +174,22 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         import re
 
         semver_re = re.compile(
-            r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-(alpha|beta|rc)\.[1-9][0-9]*)?$"
+            r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)"
+            r"(?:-(alpha|beta|rc)\.[1-9][0-9]*)?$"
         )
         self.assertEqual(self.upgrade_policy["schema_version"], 1)
-        self.assertRegex(self.upgrade_policy["initial_release_version"], semver_re)
+        self.assertRegex(
+            self.upgrade_policy["initial_release_version"],
+            semver_re,
+        )
         protected = self.upgrade_policy["protected_direct_sources"]
         self.assertEqual(len(protected), len(set(protected)))
         for version in protected:
-            self.assertRegex(version, semver_re, f"invalid protected source: {version}")
+            self.assertRegex(
+                version,
+                semver_re,
+                f"invalid protected source: {version}",
+            )
 
 
 if __name__ == "__main__":

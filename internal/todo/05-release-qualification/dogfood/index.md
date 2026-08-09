@@ -2,30 +2,20 @@
 
 This index is the mutable backlog for findings discovered while exercising published Ava prereleases. The parent task remains [Dogfood the Alpha and Track Findings](../04-dogfood-alpha-and-track-findings.md).
 
-## Control rule
-
-Dogfooding remains active until the user explicitly declares it complete. An empty findings list, a passing test suite, or publication of another prerelease does not automatically complete the parent task or advance the roadmap to the release candidate.
+Dogfooding remains active until the user explicitly declares it complete.
 
 ## Current next finding
 
-[Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) is the first actionable pending finding. It is a `blocker` for the next prerelease. It must normalize the active historical upgrade graph into canonical adjacent edges, make legacy direct source-to-target data read-only compatibility input, and require release-policy tests to prove that every future release inherits prior history unchanged and authors exactly one new `previous_release -> target` edge.
+[Define release-impact-based change types](10-define-release-impact-based-change-types.md) is the first actionable pending finding. It is `required-v1` work before release-candidate publication.
 
-[Define release-impact-based change types](10-define-release-impact-based-change-types.md) remains pending as `required-v1` work before release-candidate publication. It follows finding 11 because a next-prerelease blocker takes precedence.
-
-[Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) is complete in PR #76. Ava now has an accepted self-contained adjacent-edge catalog contract, executable composition and validation tooling, separate managed and semantic path resolution, ordered exact-once guidance, explicit supersession, and regression coverage for invalid graphs and lagging semantic compatibility.
-
-[Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) is complete in its resolving implementation PR. Ordinary bounded review now defaults to an acceptance threshold, audit is explicit, findings have an admission test, and re-review terminates monotonically when material findings are resolved.
-
-[Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The corrective immutable prerelease must still repeat the exact warranty prompt and no-clear-match scenario in a fresh agent session before release qualification can rely on the behavior.
-
-Findings 03 through 09 have completed repository implementations. Their named corrective or catalog-based immutable-release checks remain explicit release qualification follow-up, not pending implementation work.
+[Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) is complete. The active alpha.5 through alpha.12 history is canonical adjacent state, legacy cumulative authoring is disabled, and required release gates enforce one new previous-to-target edge.
 
 ## Backlog status
 
-- 2 pending findings
-- 1 pending blocker
+- 1 pending finding
+- 0 pending blockers
 - 1 pending required-v1 finding
-- 9 completed findings
+- 10 completed findings
 
 ## Findings
 
@@ -41,70 +31,15 @@ Findings 03 through 09 have completed repository implementations. Their named co
 | 08 | completed | required-v1 | release candidate | [Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) |
 | 09 | completed | required-v1 | release candidate | [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) |
 | 10 | pending | required-v1 | release candidate | [Define release-impact-based change types](10-define-release-impact-based-change-types.md) |
-| 11 | pending | blocker | next prerelease | [Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) |
+| 11 | completed | blocker | next prerelease | [Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) |
 
-## Adding a finding
+## Backlog rules
 
-1. Assign the next unused two-digit ID.
-2. Copy the structure from [the finding template](finding-template.md) into a new file named `NN-short-description.md`.
-3. Record the affected published version or source revision, observed behavior, reproduction evidence, classification, blocked gate, and completion criteria.
-4. Add the finding to this table and make the first actionable pending finding the current next finding.
-5. Keep the parent dogfood task pending.
+- Add every repository finding as the next numbered bounded task.
+- Resolve blockers before the next prerelease.
+- Mark a finding complete in its implementation PR when code, tests, documentation, indexes, and resolution evidence are complete.
+- Keep immutable-release follow-up as a release gate rather than returning implemented work to pending.
+- Completed findings remain durable evidence.
+- Only the user may complete the parent dogfood task.
 
-A finding that requires repository work must not remain only in a conversation, CI log, release comment, or informal checklist.
-
-## Resolving a finding
-
-The implementation PR that resolves a finding must:
-
-1. change its task status from `pending` to `completed`
-2. add concrete resolution and repository-validation evidence
-3. update its row in this index
-4. select the next actionable pending finding, when one exists
-5. leave the parent dogfood task pending unless the user explicitly closes dogfooding
-
-A finding is completed when its bounded repository change, regression coverage, documentation, indexes, and resolution evidence are implemented in the resolving PR. Published-asset or realistic-project checks that can only happen after merge are appended later as release qualification evidence. They do not keep or return the finding to `pending`.
-
-Completed findings remain in the index as durable prerelease evidence. Do not delete or renumber them.
-
-## Release qualification evidence
-
-When several completed findings require validation through the same published assets, validate them through one corrective prerelease when practical and append the resulting evidence to every relevant finding.
-
-Missing immutable-release evidence can still prevent the next release from qualifying. It is represented as an unmet release gate, not as unfinished implementation-task status.
-
-Finding 02 is complete. PR [#53](https://github.com/phdah/ava/pull/53) supplied the repository implementation and local qualification, and immutable `1.0.0-alpha.7` validation on 2026-08-06 proved that the Inbox Ingester loaded its complete required-reading chain from exact installed-project paths without substitution or mutation.
-
-Finding 03 is complete through merged PR [#65](https://github.com/phdah/ava/pull/65). The managed knowledge contract now routes canonical information by durable subject identity, promotes stable semantic subgroups before further flat growth, and keeps ambiguous taxonomy decisions project-owned. The next corrective immutable release must still validate repeated realistic ingestion and independent semantic review before release qualification can rely on the behavior.
-
-Finding 04 is complete through merged PR [#67](https://github.com/phdah/ava/pull/67) and published `1.0.0-alpha.10`. Inbox ingestion now inventories every substantive section, preserves material epistemic and attribution qualifiers, binds renderable Markdown footnotes to OKF source identifiers and supporting passages, and reconciles completion counts against final inventories. The next corrective immutable release must still validate repeated representative ingestion, final count reconciliation, and independent semantic review before release qualification can rely on the behavior.
-
-Finding 05 is complete through merged PR [#60](https://github.com/phdah/ava/pull/60). Its generic release-PR completion machinery prevents future releases from silently omitting inherited or protected direct sources. The next corrective immutable release must still declare the required real edges and validate the affected source installations before that release qualifies.
-
-Finding 06 is complete through PR [#62](https://github.com/phdah/ava/pull/62). Terminal transaction cleanup now removes an empty parent after its final workspace is deleted while preserving active, blocked, or non-empty transaction state. The next corrective immutable release must still prove the behavior through real supported-source upgrades and a healthy Ava Maintenance inspection before that release qualifies.
-
-Finding 07 is complete in its resolving implementation PR. The managed root router now makes state gating and workflow or role routing unconditional before substantive handling, permits only explicit routing clarification when no role matches, and prohibits generic coding-assistant or host-persona fallbacks. Regression coverage freezes the exact warranty prompt, rejects the legacy conditional wording, verifies source and assembled installed router bytes, and exercises the maintained OpenCode permission model. The corrective immutable release must still repeat both the warranty and unresolved-routing scenarios in a fresh realistic agent session.
-
-Finding 08 is complete in its resolving implementation PR. The Change Reviewer now defaults ordinary bounded review to an acceptance threshold, reserves exhaustive audit for explicit scope, admits findings only through an evidence-consequence-confidence-threshold test, and separates optional observations from required findings. Re-review resolves prior findings first and allows a new or reopened finding only from changed evidence, changed scope, changed authority, or a genuine regression. Regression coverage freezes clean acceptance, satisfied re-review, remediation regression, and explicit audit cases. An installed corrective prerelease must still demonstrate the terminal satisfied re-review outcome before release qualification relies on the behavior.
-
-Finding 09 is complete in PR [#76](https://github.com/phdah/ava/pull/76). The accepted adjacent-edge catalog replaces cumulative target-specific authoring with immutable edge inheritance, supported-source retention, unique managed and semantic path resolution, semantic carry rules, ordered guidance supersession, composition and validation CLIs, a canonical multi-edge fixture, and 13 focused regression tests. A future catalog-based release must still validate a path spanning at least three adjacent edges through immutable published assets.
-
-Finding 11 records the failed transition from that accepted architecture to the real release process. Its resolving PR must normalize retained historical transitions and make strict inherited-versus-proposed catalog tests part of the required release gate. Until then, no further prerelease may qualify.
-
-## Classification
-
-- `blocker`: prevents the next prerelease and every later release gate until resolved
-- `required-v1`: must be completed before the release candidate or stable release gate named by the finding
-- `post-v1`: an explicit accepted deferral that does not weaken a v1 contract or safety property
-
-A post-v1 decision is recorded as a completed finding with the deferral rationale and approving user decision. It is not represented as unresolved work in this backlog.
-
-## Dogfood completion
-
-The parent task may be completed only after the user explicitly says dogfooding is complete and all of the following are true:
-
-- no blocker remains pending
-- every required-v1 finding is completed or placed before the release gate it blocks
-- the latest supported prerelease has a tested upgrade path to the next planned release stage
-- the required realistic installation, routing, recovery, upgrade, uninstall, and reinstall scenarios have been exercised
-- this index and the phase roadmap accurately reflect every finding and disposition
+Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release.

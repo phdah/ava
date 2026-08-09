@@ -1,151 +1,109 @@
 ---
 type: Internal Release Procedure
 title: Ava Release Publication Procedure
-description: Defines release-please preparation, agent completion of release-specific upgrade state, approval, publication, verification, and failure handling for immutable Ava releases.
+description: Defines release-local adjacent-edge preparation, recursive qualification, assembly, approval, publication, and verification.
 tags: [internal, releases, publication, verification, maintenance]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T15:55:00+02:00
+  at: 2026-08-09T18:05:00+02:00
 ---
 
 # Ava Release Publication Procedure
 
-This procedure coordinates maintainers around the public contracts under `/distribution/`. It does not replace deterministic release automation and must never be included in an Ava release payload.
+Ava has one release flow for alpha, beta, release candidate, stable, patch, minor, and major releases. The version and channel come from the release-please pull request. Each release PR owns only its new adjacent transition.
 
-Ava has one release flow for alpha, beta, release candidate, and stable releases. The proposed version and channel come from the release-please pull request. Release-specific upgrade edges are never prepared in an ordinary implementation pull request.
+## Authoritative release state
 
-# Release chain
+The authored upgrade history is an immutable ledger under `internal/release/catalogs/`.
 
-1. A normal pull request containing a user-facing releasable change is merged to `main`.
-2. Release-please creates or updates `release-please--branches--main` with the proposed version, changelog, version file, and manifest state.
-3. The release pull request is expected to fail the `Release PR policy` check until its release-specific upgrade review has been completed.
-4. When an agent is asked to merge the release pull request, it first completes the release state directly on that release-please branch.
-5. The agent inspects every change included since each required source release, writes `internal/release/upgrade-impact.json`, validates the actual tagged source deltas, and pushes the completed release state.
-6. The release pull request may be merged only after all required checks pass.
-7. Merging the release pull request authorizes the exact proposed version and tagged source revision for qualification and publication.
-8. The release workflow creates the immutable tag and draft release, reruns qualification, assembles reproducibly, validates, attests, uploads, and publishes.
+Every published release has a record. The first record is `1.0.0-alpha.1.json`, which owns the bootstrap transition `0.0.0 -> 1.0.0-alpha.1`. The `0.0.0` sentinel is retired by that record because it is not an installed Ava release. There is no exception that permits a release without an edge.
 
-# Channel configuration
+Each `internal/release/catalogs/<target>.json` file contains:
 
-The channel is derived from the proposed SemVer version:
+- exactly one edge, `<previous> -> <target>`
+- only migrations introduced by that edge
+- only semantic guidance introduced by that edge
+- only source-retirement decisions made by that release
 
-- `x.y.z-alpha.n` is alpha
-- `x.y.z-beta.n` is beta
-- `x.y.z-rc.n` is release candidate
-- `x.y.z` is stable
+A release record never copies earlier edges, guidance records, supported-source lists, or cumulative assessments. To resolve an upgrade, tooling starts at the target record, follows `edge.from` recursively through earlier release records until it reaches the source, and then composes those records chronologically in memory.
 
-The release-please configuration must match that channel. Continuing within the current channel requires no configuration change. Moving to beta, release candidate, or stable requires a separate reviewed change to `release-please-config.json` before release-please proposes the first release in that channel.
+Every release must:
 
-# Required direct sources
+1. leave every existing catalog record unchanged
+2. create only `internal/release/catalogs/<target>.json`
+3. author exactly one edge, `<previous> -> <target>`
+4. assess only that managed delta for project-owned semantic impact
+5. set `semantic_review_required` explicitly
+6. add guidance only when that edge requires semantic reconciliation
+7. record any source retirement and its reason inside the target release record
 
-For every release after the first, qualification derives the minimum direct source set from:
+A no-impact release still authors the edge with `semantic_review_required: false`. It must not omit the edge or repeat historical impact prose.
 
-- the immediately previous published version
-- every direct source declared by the previous release
-- any source listed in `internal/release/fixtures/release-upgrade-policy.json`
+Legacy `upgrade-impact.json`, published direct edges, and target-specific cumulative guidance are read-only compatibility evidence. They are never valid inputs for a new release.
 
-For older releases that predate `upgrade-impact.json`, qualification reads the legacy `upgrade-sources.txt` from the immutable previous tag. Current releases use only `upgrade-impact.json` as the source of truth.
+## Release PR completion
 
-A release pull request may retire an inherited source only by adding it to `retired_sources` with a non-empty reviewed reason. A protected source cannot be retired inside the release pull request. Its protection must first be changed through a separate ordinary pull request.
+Before merging a release PR, the Ava Internal Maintainer must:
 
-# Agent completion of a release pull request
+1. verify version, manifest, base version, and release channel identity
+2. create one target record with `compose_adjacent_catalog.py`
+3. review the exact previous-to-target managed delta
+4. add only transition-local migrations, guidance, and retirement decisions
+5. run `validate_release_pr.py` against the release PR base revision
+6. run the complete `internal/release/test.sh` suite
+7. confirm all required checks pass
+8. merge only after the release-local edge is accepted
 
-Before merging a release-please pull request, the Ava Internal Maintainer must:
+The release policy rejects a missing target record, a record whose edge does not start at the immediately previous release, a missing historical record, extra or cumulative guidance, invalid retirement decisions, guidance artifact digest changes, legacy `upgrade-impact.json` authoring, and any release PR that changes historical catalog JSON files.
 
-1. Confirm that `version.txt`, `.release-please-manifest.json`, the pull-request proposal, and release-please channel configuration agree.
-2. Confirm that the target is newer than the version on the pull-request base revision.
-3. Determine the required direct source set from immutable release history and the upgrade policy.
-4. Review all changes included between each source tag and the proposed target.
-5. Create or replace `internal/release/upgrade-impact.json` directly on the release-please branch.
-6. For every source, record exact retained, replaced, created, and deleted managed paths.
-7. For every created, replaced, or deleted managed path, record one `semantic_impact_evidence` item with the installed path, whether that specific contract change affects project-owned context, and the evidence-backed reason.
-8. Record the deterministic migration IDs and installed guidance paths required for that source.
-9. Set `semantic_review_required` to the logical result of the path-by-path evidence, then provide an explicit overall assessment. A `false` decision is never an implicit default.
-10. When any evidence item affects project-owned context, provide bounded guidance for the source edge. When no evidence item does, declare no guidance for that edge.
-11. Reference every changelog release after the source through the target. The validator requires exact cumulative coverage.
-12. Record any explicit source retirement and its reviewed reason.
-13. Run `validate_release_pr.py`, `validate_upgrade_impact.py`, and the complete maintained release test suite.
-14. Push the release state and confirm every required pull-request check passes.
-15. Merge the release pull request.
+## Recursive composition
 
-The validator uses the deterministic managed delta only to require complete review scope. It does not infer semantic impact from file names, diffs, or arbitrary prose. The maintainer remains responsible for the substantive judgment, and reviewers must challenge unsupported reasons.
+For an upgrade from source `S` to target `T`:
 
-Empty migration lists remain valid when normal managed reconciliation is sufficient. Empty guidance lists are valid only when every changed managed path has explicit no-impact evidence and the overall assessment explains why project-owned context remains compatible.
+1. load `internal/release/catalogs/T.json`
+2. follow its edge to the immediately previous version
+3. continue loading predecessor records until the edge whose `from` version is `S`
+4. reverse the selected records into chronological order
+5. compose migrations, semantic decisions, guidance, and retirements exactly once
 
-# Release-specific impact format
+Repository qualification additionally walks the complete ledger from `0.0.0` through the current target. Missing intermediate records, cycles, skipped predecessors, duplicate guidance, and unsupported sources block the release.
 
-`internal/release/upgrade-impact.json` belongs to the release pull request and is the only current declaration used to build `upgrade_paths.edges`.
+## Assembly
 
-Schema version 2 contains:
+`assemble_reviewed.py` reads the target release record and recursively loads its predecessors. It stages guidance referenced by the composed path and mechanically produces one installer-compatible source-to-target projection for each retained source.
 
-- the exact target version
-- explicit retired sources and reasons
-- one reviewed assessment per direct source
-- exact managed payload deltas
-- one semantic evidence item for every created, replaced, or deleted managed path
-- deterministic migration references
-- source-edge semantic-review decisions and exact guidance references
-- explicit overall semantic assessments, including no-impact explanations
-- cumulative changelog versions
+Those projections are generated output, not authored release state. Their migration and guidance lists come from the unique adjacent path and apply effective guidance exactly once. The repository never stores a parallel cumulative catalog snapshot.
 
-The evidence list must exactly cover the changed managed paths. `semantic_review_required` must equal whether any evidence item declares project-owned impact. A required review must have at least one guidance path, and a no-impact edge must have none.
+## Immutable compatibility boundary
 
-The reviewed assembler derives the manifest edge source set directly from this file. It copies `semantic_review_required`, `migration_ids`, and `guidance_paths` onto each exact source-to-target edge. The release-wide semantic flag is only a summary across edges and must not drive a different source edge.
+Published tags, manifests, assets, checksums, and attestations are immutable. Historical installers may continue to read the representation published with their release. Repository-local cumulative alpha.10 through alpha.12 guidance remains archival and cannot be selected unless referenced by its owning release edge.
 
-# Approval boundary
+## Publication
 
-Reviewing and merging the release-please pull request is the explicit publication approval. Approval of implementation work, release tooling, policy, or an unmerged release proposal does not authorize publication.
+After the release PR is merged, automation:
 
-A release pull request remains blocked when:
+1. binds the immutable tag, version, source revision, and channel
+2. verifies that the tagged change adds only the target release record
+3. recursively validates the complete bootstrap-to-target edge chain
+4. runs the complete qualification suite
+5. assembles twice from the recursive records and requires identical digests
+6. validates release conformance
+7. attests and uploads assets without replacement
+8. publishes the existing draft release
 
-- the release-specific impact file is missing, uses an obsolete current schema, or targets another version
-- required inherited sources are omitted
-- a protected source is retired without a prior policy change
-- managed deltas disagree with the tagged source comparison
-- semantic evidence omits or invents a changed managed path
-- the semantic-review decision disagrees with its evidence
-- semantic review is required without bounded guidance
-- guidance is declared for an edge assessed as having no project-owned semantic impact
-- migration or guidance references are absent from the release assets
-- cumulative changelog references are incomplete
-- the release-please channel configuration disagrees with the proposed version
-- any maintained qualification check fails
+Any failure leaves publication blocked. Existing tags and assets are never moved, overwritten, or reused.
 
-# Automated publication
+## Post-publication qualification
 
-After the release pull request is merged, the workflow must:
+The first release after this change must prove:
 
-1. Bind the release-please tag, version, full source revision, and derived channel.
-2. Rerun release PR and upgrade-impact validation against the exact tagged source.
-3. Run the complete maintained qualification suite.
-4. Assemble every required asset twice from the reviewed impact and require identical digests.
-5. Validate release conformance and confirm the GitHub Release is still a draft.
-6. Attest and upload the complete asset set without replacement.
-7. Publish the existing draft without moving the tag or recreating the release.
-
-Any failure leaves publication blocked. Existing tags or uploaded assets are never moved, overwritten, or reused.
-
-# Post-publication verification
-
-After publication, verify:
-
-- the release is immutable and no longer a draft
-- prerelease and latest status match the channel
-- the tag and release target match the verified source revision
-- every asset and checksum verifies
-- every declared direct source upgrades successfully
-- each installed journal edge preserves its reviewed semantic decision and exact guidance paths
-- Ava-managed state advances correctly
-- project-owned files remain byte-for-byte preserved until the Upgrade Role applies required semantic guidance
-- normal routing remains blocked until semantic compatibility advances and the transaction is finalized
-
-Record the release URL, source revision, supported sources, per-source results, and incidents in the required release history.
-
-# Failure handling
-
-Before publication, correct the defect on the release pull request. If an immutable tag already exists, use a new version. Never move or recreate a tag, overwrite an asset, or reuse a published version.
-
-After publication, a failed verification is a release incident. Corrective work uses a new release or an explicit security withdrawal under the public release contract.
+- every historical release record remains unchanged
+- only the new previous-to-target record was authored
+- every release from alpha.1 onward has exactly one edge record
+- at least three retained historical sources resolve through the recursive chain
+- semantic compatibility lag receives outstanding guidance exactly once
+- project-owned files remain unchanged until the Upgrade Role applies required guidance
+- the installed journal preserves the composed semantic decision and exact guidance paths
