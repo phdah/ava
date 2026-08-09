@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-09T17:50:00+02:00
+  at: 2026-08-09T18:05:00+02:00
 ---
 
 # Ava Release Publication Procedure
@@ -19,6 +19,8 @@ Ava has one release flow for alpha, beta, release candidate, stable, patch, mino
 
 The authored upgrade history is an immutable ledger under `internal/release/catalogs/`.
 
+Every published release has a record. The first record is `1.0.0-alpha.1.json`, which owns the bootstrap transition `0.0.0 -> 1.0.0-alpha.1`. The `0.0.0` sentinel is retired by that record because it is not an installed Ava release. There is no exception that permits a release without an edge.
+
 Each `internal/release/catalogs/<target>.json` file contains:
 
 - exactly one edge, `<previous> -> <target>`
@@ -28,7 +30,7 @@ Each `internal/release/catalogs/<target>.json` file contains:
 
 A release record never copies earlier edges, guidance records, supported-source lists, or cumulative assessments. To resolve an upgrade, tooling starts at the target record, follows `edge.from` recursively through earlier release records until it reaches the source, and then composes those records chronologically in memory.
 
-Every normal release must:
+Every release must:
 
 1. leave every existing catalog record unchanged
 2. create only `internal/release/catalogs/<target>.json`
@@ -55,7 +57,7 @@ Before merging a release PR, the Ava Internal Maintainer must:
 7. confirm all required checks pass
 8. merge only after the release-local edge is accepted
 
-The release policy rejects a missing target record, a record whose edge does not start at the immediately previous release, extra or cumulative guidance, invalid retirement decisions, guidance artifact digest changes, legacy `upgrade-impact.json` authoring, and any release PR that changes historical catalog JSON files.
+The release policy rejects a missing target record, a record whose edge does not start at the immediately previous release, a missing historical record, extra or cumulative guidance, invalid retirement decisions, guidance artifact digest changes, legacy `upgrade-impact.json` authoring, and any release PR that changes historical catalog JSON files.
 
 ## Recursive composition
 
@@ -67,7 +69,7 @@ For an upgrade from source `S` to target `T`:
 4. reverse the selected records into chronological order
 5. compose migrations, semantic decisions, guidance, and retirements exactly once
 
-Missing intermediate records, cycles, skipped predecessors, duplicate guidance, and unsupported sources block the upgrade.
+Repository qualification additionally walks the complete ledger from `0.0.0` through the current target. Missing intermediate records, cycles, skipped predecessors, duplicate guidance, and unsupported sources block the release.
 
 ## Assembly
 
@@ -85,7 +87,7 @@ After the release PR is merged, automation:
 
 1. binds the immutable tag, version, source revision, and channel
 2. verifies that the tagged change adds only the target release record
-3. recursively validates the complete source-to-target edge chain
+3. recursively validates the complete bootstrap-to-target edge chain
 4. runs the complete qualification suite
 5. assembles twice from the recursive records and requires identical digests
 6. validates release conformance
@@ -100,6 +102,7 @@ The first release after this change must prove:
 
 - every historical release record remains unchanged
 - only the new previous-to-target record was authored
+- every release from alpha.1 onward has exactly one edge record
 - at least three retained historical sources resolve through the recursive chain
 - semantic compatibility lag receives outstanding guidance exactly once
 - project-owned files remain unchanged until the Upgrade Role applies required guidance
