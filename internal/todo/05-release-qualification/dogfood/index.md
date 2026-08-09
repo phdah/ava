@@ -8,22 +8,22 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 ## Current next finding
 
-[Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) is the first actionable pending finding. It is classified `required-v1` and must replace duplicated cumulative source-to-target guidance with deterministic adjacent-edge composition before release-candidate publication. It does not precede the supporting [synthetic qualification vault](../04a-build-synthetic-qualification-vault.md) and [corrective alpha qualification](../04b-qualify-and-publish-corrective-alpha.md) tasks already ordered by the Phase 5 roadmap.
+[Define release-impact-based change types](10-define-release-impact-based-change-types.md) is the first actionable pending finding. It is classified `required-v1` and must make Conventional Commit and SemVer classification depend on supported distribution impact rather than implementation novelty or repository location before release-candidate publication. It does not precede the supporting [synthetic qualification vault](../04a-build-synthetic-qualification-vault.md) and [corrective alpha qualification](../04b-qualify-and-publish-corrective-alpha.md) tasks already ordered by the Phase 5 roadmap.
 
-[Define release-impact-based change types](10-define-release-impact-based-change-types.md) is also pending as `required-v1`. It must make Conventional Commit and SemVer classification depend on supported distribution impact rather than implementation novelty or repository location before release-candidate publication. Finding 09 remains the first actionable pending finding.
+[Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) is complete in PR #76. Ava now has an accepted self-contained adjacent-edge catalog contract, executable composition and validation tooling, separate managed and semantic path resolution, ordered exact-once guidance, explicit supersession, and regression coverage for invalid graphs and lagging semantic compatibility.
 
 [Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) is complete in its resolving implementation PR. Ordinary bounded review now defaults to an acceptance threshold, audit is explicit, findings have an admission test, and re-review terminates monotonically when material findings are resolved.
 
 [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) is complete in its resolving implementation PR. The corrective immutable prerelease must still repeat the exact warranty prompt and no-clear-match scenario in a fresh agent session before release qualification can rely on the behavior.
 
-Findings 03 through 08 have completed repository implementations. Their named corrective immutable-release checks remain explicit release qualification follow-up, not pending implementation work.
+Findings 03 through 09 have completed repository implementations. Their named corrective or catalog-based immutable-release checks remain explicit release qualification follow-up, not pending implementation work.
 
 ## Backlog status
 
-- 2 pending findings
+- 1 pending finding
 - 0 pending blockers
-- 2 pending required-v1 findings
-- 8 completed findings
+- 1 pending required-v1 finding
+- 9 completed findings
 
 ## Findings
 
@@ -37,7 +37,7 @@ Findings 03 through 08 have completed repository implementations. Their named co
 | 06 | completed | blocker | next prerelease | [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) |
 | 07 | completed | blocker | next prerelease | [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) |
 | 08 | completed | required-v1 | release candidate | [Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) |
-| 09 | pending | required-v1 | release candidate | [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) |
+| 09 | completed | required-v1 | release candidate | [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) |
 | 10 | pending | required-v1 | release candidate | [Define release-impact-based change types](10-define-release-impact-based-change-types.md) |
 
 ## Adding a finding
@@ -80,9 +80,11 @@ Finding 05 is complete through merged PR [#60](https://github.com/phdah/ava/pull
 
 Finding 06 is complete through PR [#62](https://github.com/phdah/ava/pull/62). Terminal transaction cleanup now removes an empty parent after its final workspace is deleted while preserving active, blocked, or non-empty transaction state. The next corrective immutable release must still prove the behavior through real supported-source upgrades and a healthy Ava Maintenance inspection before that release qualifies.
 
-Finding 07 is complete in its resolving implementation PR. The managed root router now makes state gating and workflow or role routing unconditional before substantive handling, permits only explicit routing clarification when no role matches, and prohibits generic host-persona fallbacks. Regression coverage freezes the exact warranty prompt, rejects the legacy conditional wording, verifies source and assembled installed router bytes, and exercises the maintained OpenCode permission model. The corrective immutable release must still repeat both the warranty and unresolved-routing scenarios in a fresh realistic agent session.
+Finding 07 is complete in its resolving implementation PR. The managed root router now makes state gating and workflow or role routing unconditional before substantive handling, permits only explicit routing clarification when no role matches, and prohibits generic coding-assistant or host-persona fallbacks. Regression coverage freezes the exact warranty prompt, rejects the legacy conditional wording, verifies source and assembled installed router bytes, and exercises the maintained OpenCode permission model. The corrective immutable release must still repeat both the warranty and unresolved-routing scenarios in a fresh realistic agent session.
 
 Finding 08 is complete in its resolving implementation PR. The Change Reviewer now defaults ordinary bounded review to an acceptance threshold, reserves exhaustive audit for explicit scope, admits findings only through an evidence-consequence-confidence-threshold test, and separates optional observations from required findings. Re-review resolves prior findings first and allows a new or reopened finding only from changed evidence, changed scope, changed authority, or a genuine regression. Regression coverage freezes clean acceptance, satisfied re-review, remediation regression, and explicit audit cases. An installed corrective prerelease must still demonstrate the terminal satisfied re-review outcome before release qualification relies on the behavior.
+
+Finding 09 is complete in PR [#76](https://github.com/phdah/ava/pull/76). The accepted adjacent-edge catalog replaces cumulative target-specific authoring with immutable edge inheritance, supported-source retention, unique managed and semantic path resolution, semantic carry rules, ordered guidance supersession, composition and validation CLIs, a canonical multi-edge fixture, and 13 focused regression tests. A future catalog-based release must still validate a path spanning at least three adjacent edges through immutable published assets.
 
 ## Classification
 

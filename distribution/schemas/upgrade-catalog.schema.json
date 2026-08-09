@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/phdah/ava/blob/main/distribution/schemas/upgrade-catalog.schema.json",
+  "title": "Ava adjacent upgrade edge catalog",
+  "description": "Self-contained catalog of immutable adjacent release edges and semantic guidance metadata.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["catalog_schema", "target_version", "supported_sources", "edges", "guidance"],
+  "properties": {
+    "catalog_schema": {"const": 1},
+    "target_version": {"$ref": "#/$defs/version"},
+    "supported_sources": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/version"}
+    },
+    "edges": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/edge"}
+    },
+    "guidance": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/guidance"}
+    }
+  },
+  "$defs": {
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-(alpha|beta|rc)\\.[1-9][0-9]*)?$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": {"pattern": "(^/|(^|/)\\.\\.(/|$))"}
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from",
+        "to",
+        "carry_unresolved_semantic_state",
+        "migration_ids",
+        "guidance_paths",
+        "semantic_review_required",
+        "edge_sha256"
+      ],
+      "properties": {
+        "from": {"$ref": "#/$defs/version"},
+        "to": {"$ref": "#/$defs/version"},
+        "carry_unresolved_semantic_state": {"type": "boolean"},
+        "migration_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "guidance_paths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/relativePath"}
+        },
+        "semantic_review_required": {"type": "boolean"},
+        "edge_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"semantic_review_required": {"const": true}},
+            "required": ["semantic_review_required"]
+          },
+          "then": {"properties": {"guidance_paths": {"minItems": 1}}}
+        },
+        {
+          "if": {
+            "properties": {"semantic_review_required": {"const": false}},
+            "required": ["semantic_review_required"]
+          },
+          "then": {"properties": {"guidance_paths": {"maxItems": 0}}}
+        }
+      ]
+    },
+    "guidance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "guidance_id",
+        "path",
+        "from_version",
+        "to_version",
+        "supersedes",
+        "sha256"
+      ],
+      "properties": {
+        "guidance_id": {"$ref": "#/$defs/identifier"},
+        "path": {"$ref": "#/$defs/relativePath"},
+        "from_version": {"$ref": "#/$defs/version"},
+        "to_version": {"$ref": "#/$defs/version"},
+        "supersedes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}
