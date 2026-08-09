@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/phdah/ava/blob/main/distribution/schemas/upgrade-catalog.schema.json",
   "title": "Ava adjacent upgrade edge catalog",
-  "description": "Proposed self-contained catalog of immutable adjacent release edges and semantic guidance metadata.",
+  "description": "Self-contained catalog of immutable adjacent release edges and semantic guidance metadata.",
   "type": "object",
   "additionalProperties": false,
   "required": ["catalog_schema", "target_version", "supported_sources", "edges", "guidance"],
