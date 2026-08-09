@@ -16,11 +16,11 @@ from internal.release.adjacent_edges import (
     validate_catalog,
     version_key,
 )
+from internal.release.catalog_policy import catalog_root_version
 
 
 CATALOG_DIRECTORY = Path("internal/release/catalogs")
 GUIDANCE_DIRECTORY = Path("internal/release/guidance")
-UPGRADE_POLICY_PATH = Path("internal/release/fixtures/release-upgrade-policy.json")
 RELEASE_RECORD_FIELDS = {
     "catalog_schema",
     "target_version",
@@ -44,18 +44,6 @@ def read_json_object(path: Path) -> dict[str, Any]:
 def catalog_path(root: Path, version: str) -> Path:
     version_key(version)
     return root / CATALOG_DIRECTORY / f"{version}.json"
-
-
-def read_initial_version(root: Path) -> str:
-    path = root / UPGRADE_POLICY_PATH
-    policy = read_json_object(path)
-    initial = policy.get("initial_release_version")
-    if not isinstance(initial, str):
-        raise AdjacentEdgeError(
-            f"{path} must define initial_release_version as a string"
-        )
-    version_key(initial)
-    return initial
 
 
 def _normalize_retirements(value: object) -> list[dict[str, str]]:
@@ -221,11 +209,11 @@ def read_release_chain(
     *,
     initial_version: str | None = None,
 ) -> tuple[dict[str, Any], ...]:
-    initial = initial_version or read_initial_version(root)
+    initial = initial_version or catalog_root_version(root)
     version_key(target_version)
     if version_key(target_version) < version_key(initial):
         raise AdjacentEdgeError(
-            f"target {target_version} predates initial release {initial}"
+            f"target {target_version} predates catalog root {initial}"
         )
     if target_version == initial:
         return ()
@@ -249,7 +237,7 @@ def read_release_chain(
         current = record["edge"]["from"]
         if version_key(current) < version_key(initial):
             raise AdjacentEdgeError(
-                f"release chain for {target_version} passes before initial release {initial}"
+                f"release chain for {target_version} passes before catalog root {initial}"
             )
 
     reverse_records.reverse()
@@ -262,7 +250,7 @@ def read_catalog(
     *,
     initial_version: str | None = None,
 ) -> dict[str, Any]:
-    initial = initial_version or read_initial_version(root)
+    initial = initial_version or catalog_root_version(root)
     catalog = initial_catalog(initial)
     for record in read_release_chain(
         root,
