@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-alpha.13](https://github.com/phdah/ava/compare/v1.0.0-alpha.12...v1.0.0-alpha.13) (2026-08-09)
+
+
+### Bug Fixes
+
+* **release:** enforce recursive adjacent edge records ([#78](https://github.com/phdah/ava/issues/78)) ([76600b9](https://github.com/phdah/ava/commit/76600b9a070ac2bb16ca96182e6b8138a373c8cb))
+
 ## [1.0.0-alpha.12](https://github.com/phdah/ava/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) (2026-08-09)
 
 
