@@ -8,7 +8,9 @@ Dogfooding remains active until the user explicitly declares it complete. An emp
 
 ## Current next finding
 
-[Define release-impact-based change types](10-define-release-impact-based-change-types.md) is the first actionable pending finding. It is classified `required-v1` and must make Conventional Commit and SemVer classification depend on supported distribution impact rather than implementation novelty or repository location before release-candidate publication. It does not precede the supporting [synthetic qualification vault](../04a-build-synthetic-qualification-vault.md) and [corrective alpha qualification](../04b-qualify-and-publish-corrective-alpha.md) tasks already ordered by the Phase 5 roadmap.
+[Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) is the first actionable pending finding. It is a `blocker` for the next prerelease. It must normalize the active historical upgrade graph into canonical adjacent edges, make legacy direct source-to-target data read-only compatibility input, and require release-policy tests to prove that every future release inherits prior history unchanged and authors exactly one new `previous_release -> target` edge.
+
+[Define release-impact-based change types](10-define-release-impact-based-change-types.md) remains pending as `required-v1` work before release-candidate publication. It follows finding 11 because a next-prerelease blocker takes precedence.
 
 [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) is complete in PR #76. Ava now has an accepted self-contained adjacent-edge catalog contract, executable composition and validation tooling, separate managed and semantic path resolution, ordered exact-once guidance, explicit supersession, and regression coverage for invalid graphs and lagging semantic compatibility.
 
@@ -20,8 +22,8 @@ Findings 03 through 09 have completed repository implementations. Their named co
 
 ## Backlog status
 
-- 1 pending finding
-- 0 pending blockers
+- 2 pending findings
+- 1 pending blocker
 - 1 pending required-v1 finding
 - 9 completed findings
 
@@ -39,6 +41,7 @@ Findings 03 through 09 have completed repository implementations. Their named co
 | 08 | completed | required-v1 | release candidate | [Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) |
 | 09 | completed | required-v1 | release candidate | [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) |
 | 10 | pending | required-v1 | release candidate | [Define release-impact-based change types](10-define-release-impact-based-change-types.md) |
+| 11 | pending | blocker | next prerelease | [Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) |
 
 ## Adding a finding
 
@@ -85,6 +88,8 @@ Finding 07 is complete in its resolving implementation PR. The managed root rout
 Finding 08 is complete in its resolving implementation PR. The Change Reviewer now defaults ordinary bounded review to an acceptance threshold, reserves exhaustive audit for explicit scope, admits findings only through an evidence-consequence-confidence-threshold test, and separates optional observations from required findings. Re-review resolves prior findings first and allows a new or reopened finding only from changed evidence, changed scope, changed authority, or a genuine regression. Regression coverage freezes clean acceptance, satisfied re-review, remediation regression, and explicit audit cases. An installed corrective prerelease must still demonstrate the terminal satisfied re-review outcome before release qualification relies on the behavior.
 
 Finding 09 is complete in PR [#76](https://github.com/phdah/ava/pull/76). The accepted adjacent-edge catalog replaces cumulative target-specific authoring with immutable edge inheritance, supported-source retention, unique managed and semantic path resolution, semantic carry rules, ordered guidance supersession, composition and validation CLIs, a canonical multi-edge fixture, and 13 focused regression tests. A future catalog-based release must still validate a path spanning at least three adjacent edges through immutable published assets.
+
+Finding 11 records the failed transition from that accepted architecture to the real release process. Its resolving PR must normalize retained historical transitions and make strict inherited-versus-proposed catalog tests part of the required release gate. Until then, no further prerelease may qualify.
 
 ## Classification
 
