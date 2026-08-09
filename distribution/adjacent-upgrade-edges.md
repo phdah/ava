@@ -1,21 +1,24 @@
 ---
-type: Ava Distribution Contract Proposal
+type: Ava Distribution Contract
 title: Adjacent Upgrade Edge Catalog
-description: Proposed self-contained release graph for deterministic managed upgrades and separately resolved project-owned semantic reconciliation.
-tags: [distribution, releases, upgrades, guidance, proposal]
-status: proposed
+description: Self-contained release graph for deterministic managed upgrades and separately resolved project-owned semantic reconciliation.
+tags: [distribution, releases, upgrades, guidance]
+status: accepted
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-09T12:30:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-09T12:48:00+02:00
 ---
 
 # Adjacent Upgrade Edge Catalog
 
-> **Proposal:** This contract becomes authoritative only when its implementation pull request is approved and merged. Until then, the existing direct source-to-target release contract remains active.
+This contract is authoritative for future catalog-based releases. Already published releases and an in-progress release proposal may retain the earlier direct source-to-target representation for backward compatibility.
 
 ## Purpose
 
-A release should add and review only the new edge from the previous release to the proposed target. It must not re-author cumulative source-to-target assessments or duplicate semantic guidance already reviewed for earlier edges.
+A release adds and reviews only the new edge from the previous release to the proposed target. It must not re-author cumulative source-to-target assessments or duplicate semantic guidance already reviewed for earlier edges.
 
 The target release remains self-contained. Its release manifest and archives carry every immutable edge, migration, and guidance document needed for the supported source range.
 
@@ -45,7 +48,7 @@ Preflight resolves exactly one path from the installed `ava_version` to the targ
 
 The release manifest may contain branches for explicitly supported release channels, but a source-to-target resolution must still be unique.
 
-The updater must not download intermediate release assets. It uses only the selected target release's self-contained edge catalog and archives.
+The updater uses only the selected target release's self-contained edge catalog and archives. It must not depend on mutable repository history or infer transitions from changelogs.
 
 ## Separate managed and semantic paths
 
@@ -80,6 +83,6 @@ Qualification must still exercise every retained supported source. This proves c
 
 ## Compatibility transition
 
-The current source-to-target release metadata remains valid during the proposal review. After approval, release tooling may emit the adjacent catalog while retaining read compatibility for already published releases.
+Release tooling retains read compatibility for already published direct source-to-target manifests. The first catalog-based release imports the previously reviewed edge history without changing its meaning.
 
-The first catalog-based release must import the previously reviewed edge history without changing its meaning. Historical cumulative guidance files may remain repository history, but only immutable adjacent guidance is referenced by the new catalog.
+Historical cumulative guidance files may remain repository history, but catalog-based releases reference only immutable adjacent guidance. Published-asset validation of a path spanning at least three adjacent edges remains a release qualification requirement, not unfinished repository implementation work.
