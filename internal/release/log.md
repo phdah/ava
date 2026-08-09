@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-08-09
+
+- **Proposed adjacent upgrade edge catalog**: Added an executable proposal for immutable adjacent release edges, inherited edge digests, retained supported sources, unique source-to-target path resolution, separate managed and semantic paths, ordered guidance composition, explicit supersession, and release-authoring validation. The existing cumulative source-to-target release process remains active until the proposal pull request is approved and merged.
+
 ## 2026-08-07
 
 - **Synthetic v1 qualification fixture**: Added a repository-only, standard-library generator for a reproducible 300-file six-month fictional corpus, five externally staged image slots, per-source semantic oracle, run-evidence contract, eight isolated qualification variant families, and release-boundary regression coverage. Generated content and evidence are required to remain outside the repository and release assets.
