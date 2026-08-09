@@ -7,7 +7,6 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Reviewed recursive-edge assembler](assemble_reviewed.py)
 - [Immutable release edge records](catalogs/)
 - [Adjacent edge model](adjacent_edges.py)
-- [Retained ledger boundary policy](catalog_policy.py)
 - [Release-record and recursive composition policy](release_catalog.py)
 - [Release-local edge composer](compose_adjacent_catalog.py)
 - [Recursive edge-chain validator](validate_adjacent_catalog.py)
