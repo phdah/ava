@@ -9,7 +9,6 @@ sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
 python3 -m py_compile \
   "$ROOT/internal/release/adjacent_edges.py" \
-  "$ROOT/internal/release/catalog_policy.py" \
   "$ROOT/internal/release/release_catalog.py" \
   "$ROOT/internal/release/compose_adjacent_catalog.py" \
   "$ROOT/internal/release/validate_adjacent_catalog.py" \
