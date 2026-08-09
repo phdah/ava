@@ -11,3 +11,4 @@ Machine-readable fixtures that freeze public contract examples and release quali
 - [Root routing](root-routing.json) - Unconditional managed state gates, role-selection ordering, warranty-prompt bypass prevention, and explicit unresolved-routing behavior.
 - [Review sufficiency](review-sufficiency.json) - Acceptance and audit standards, finding admission, satisfied re-review termination, remediation regressions, and explicit exhaustive audit.
 - [Ava Maintenance](ava-maintenance.json) - Installation reporting, managed integrity, deterministic recovery routing, semantic handoff, host capability and OpenCode access, and safe role-led removal cases.
+- [Synthetic qualification vault](synthetic-qualification-vault/) - Reviewed canonical facts, deterministic 300-file raw corpus generator, five external image specifications, oracle and run-manifest contracts, validators, and eight qualification variant families.

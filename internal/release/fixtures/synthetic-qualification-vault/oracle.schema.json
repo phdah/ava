@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/phdah/ava/blob/main/internal/release/fixtures/synthetic-qualification-vault/oracle.schema.json",
+  "title": "Synthetic Qualification Vault Baseline Oracle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "fixture_id", "generator", "interval", "counts", "canonical_facts", "transitions", "files", "image_slots"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "fixture_id": {"const": "synthetic-v1-qualification-vault"},
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seed", "revision", "python_contract", "dependencies", "blueprint_sha256"],
+      "properties": {
+        "seed": {"type": "integer"},
+        "revision": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "python_contract": {"const": "CPython >=3.11; deterministic algorithms are runtime-version independent"},
+        "dependencies": {"type": "array", "maxItems": 0},
+        "blueprint_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "interval": {"type": "object", "required": ["start", "end"], "properties": {"start": {"type": "string", "format": "date"}, "end": {"type": "string", "format": "date"}}, "additionalProperties": false},
+    "counts": {"type": "object"},
+    "canonical_facts": {"type": "object"},
+    "transitions": {"type": "array", "items": {"type": "object"}},
+    "files": {"type": "array", "minItems": 300, "maxItems": 300, "items": {"$ref": "#/$defs/file"}},
+    "image_slots": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"$ref": "#/$defs/image"}}
+  },
+  "$defs": {
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "date", "month", "format", "class", "domain", "durable_subjects", "non_durable", "sections", "claims", "duplicates"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^corpus/(01-pre-move|02-move-transition|03-renovation|04-settled)/[^/]+$"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "date": {"type": "string", "format": "date"},
+        "month": {"type": "string", "pattern": "^2025-(0[1-6])$"},
+        "format": {"enum": ["md", "txt", "csv", "docx", "pdf", "pptx", "ics"]},
+        "class": {"type": "string"},
+        "domain": {"enum": ["private", "work", "overlapping", "ambiguous"]},
+        "durable_subjects": {"type": "array", "items": {"type": "string"}},
+        "non_durable": {"type": "array", "items": {"type": "string"}},
+        "sections": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["locator", "disposition", "expected", "destinations", "attribution_required", "blocker"], "properties": {"locator": {"type": "string"}, "disposition": {"enum": ["mapped", "non-durable", "pending"]}, "expected": {"type": "string"}, "destinations": {"type": "array", "items": {"type": "string", "pattern": "^knowledge/[^/]+/.+\\.md$"}}, "attribution_required": {"type": "boolean"}, "blocker": {"type": ["string", "null"]}}, "additionalProperties": false, "allOf": [{"if": {"properties": {"disposition": {"const": "mapped"}}}, "then": {"properties": {"destinations": {"minItems": 1}, "blocker": {"type": "null"}}}}, {"if": {"properties": {"disposition": {"const": "pending"}}}, "then": {"properties": {"destinations": {"maxItems": 0}, "blocker": {"type": "string", "minLength": 1}}}}, {"if": {"properties": {"disposition": {"const": "non-durable"}}}, "then": {"properties": {"destinations": {"maxItems": 0}, "blocker": {"type": "null"}}}}]}},
+        "claims": {"type": "array", "items": {"type": "object", "required": ["text", "date", "certainty", "attribution", "decision_status", "source_excerpt"], "properties": {"text": {"type": "string"}, "date": {"type": "string", "format": "date"}, "certainty": {"enum": ["certain", "uncertain"]}, "attribution": {"type": "string"}, "decision_status": {"enum": ["fact", "proposal", "decision", "observation"]}, "source_excerpt": {"type": "string", "minLength": 1}}, "additionalProperties": false}},
+        "duplicates": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "prompt_path", "prompt_sha256", "prompt_bytes", "date", "purpose", "format", "domain", "state", "expected_durable", "expected_non_durable"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^corpus/(01-pre-move|02-move-transition|03-renovation|04-settled)/[^/]+\\.(png|jpg)$"},
+        "prompt_path": {"type": "string", "pattern": "^image-prompts/[^/]+\\.md$"},
+        "prompt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "prompt_bytes": {"type": "integer", "minimum": 1},
+        "date": {"type": "string", "format": "date"},
+        "purpose": {"type": "string"},
+        "format": {"enum": ["png", "jpg"]},
+        "domain": {"enum": ["private", "work"]},
+        "state": {"const": "pending"},
+        "expected_durable": {"type": "array", "items": {"type": "string"}},
+        "expected_non_durable": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@ generated:
   at: 2026-08-07T15:45:02+02:00
 updated:
   by: agent:opencode
-  at: 2026-08-07T16:31:42+02:00
+  at: 2026-08-09T10:57:56+02:00
 ---
 
 # Build the Synthetic V1 Qualification Vault
@@ -38,12 +38,16 @@ Use this output structure:
 ```text
 <output>/
 ├── corpus/             # only raw files intended for inbox ingestion
+│   ├── 01-pre-move/          # before 2025-02-15
+│   ├── 02-move-transition/   # 2025-02-15 through 2025-03-02
+│   ├── 03-renovation/        # 2025-03-03 through 2025-03-31
+│   └── 04-settled/           # 2025-04-01 onward
 ├── image-prompts/      # five external image-generation specifications; never ingest
 ├── oracle/             # canonical facts, expected outcomes, inventories, and hashes
 └── variants/           # isolated qualification projects or checkpoints
 ```
 
-Only `<output>/corpus/` is an ingestion source. Control files under `image-prompts/`, `oracle/`, and `variants/` must not be copied into the inbox or counted as corpus content.
+Only the files in `<output>/corpus/` are ingestion sources. Copy one batch's direct files into the inbox for chronological qualification; do not copy the batch directory itself. Control files under `image-prompts/`, `oracle/`, and `variants/` must not be copied into the inbox or counted as corpus content.
 
 Keep the reviewed blueprint, Python generator, dependency lock, validators, and output-boundary tests under an internal qualification-fixture scope that release assembly cannot include. The generator must reject an output directory inside the Ava repository.
 
@@ -204,6 +208,28 @@ Generated fictional content and execution evidence remain outside the repository
 7. Install assembled Ava assets into the generated qualification project and complete a clean OpenCode ingestion and review run.
 8. Prove release assembly excludes the internal generator, blueprint, oracle schema, validators, and all generated output.
 9. Link the completed fixture command and execution evidence from the parent dogfood task and Phase 5 index.
+
+## Repository implementation evidence
+
+The reviewed fixture implementation is available at [`internal/release/fixtures/synthetic-qualification-vault/`](../../release/fixtures/synthetic-qualification-vault/). Its documented commands generate, verify, finalize images, and materialize variants only in an explicit output directory outside the Ava repository.
+
+The implementation fixes a 300-file deterministic baseline and five external image slots for a finalized 305-file corpus. It writes the raw sources directly into the four chronological qualification batches, uses only Python 3.11 standard-library facilities, creates normalized DOCX, PDF, PPTX, CSV, and ICS files, emits per-source expected outcomes, and rejects repository-local output through resolved-path checks.
+
+On 2026-08-09, clean retained generations under `/tmp/opencode/ava-synthetic-vault-y` with CPython 3.11.14 and `/tmp/opencode/ava-synthetic-vault-z` with CPython 3.13.12 produced byte-identical output. Draft 2020-12 validation accepted both schemas and their generated instances. Repository tests cover image-finalizer mechanics, deterministic variant workspace and execution-plan construction, baseline preservation, installed conformance of the registered-role workspace, source and chronology validation, completed-run evidence binding, and exclusion from assembled release assets. They do not count planned managed states or test-only image bytes as qualification evidence.
+
+```text
+baseline oracle SHA-256: fe65371084f6bdb2ae38da0fe31e4be3fda9be8ebe93f6fbc80b168e86d5ca46
+deterministic corpus: 300 files
+deterministic batch counts: 77 pre-move, 37 move-transition, 46 renovation, 140 settled
+pending external image slots: 5
+finalized corpus target: 305 files
+focused fixture tests: 11 passed
+complete release suite: 193 passed
+repository boundary validation: passed
+OpenCode available for later clean-session qualification: 1.17.13
+```
+
+The task remains pending. Five semantically correct external PNG images must still be produced and finalized, the managed-state execution plans must be exercised against assembled and published Ava assets, and clean OpenCode ingestion plus independent semantic review must populate valid run manifests. Test-only image bytes prove finalizer mechanics but are not qualification evidence.
 
 ## Completion criteria
 

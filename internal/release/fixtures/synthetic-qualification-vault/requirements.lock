@@ -1,0 +1,5 @@
+# Python runtime contract: CPython >=3.11
+# Third-party dependencies: none
+# The baseline records this stable contract rather than the local interpreter patch version.
+# Date selection uses SHA-256 ranking rather than version-dependent random sampling.
+# ZIP, OOXML, PDF, CSV, ICS, hashing, JSON, and validation use deterministic standard-library operations.

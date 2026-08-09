@@ -10,8 +10,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-07T15:45:02+02:00
+  by: agent:opencode
+  at: 2026-08-07T17:50:11+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -38,7 +38,7 @@ Only an explicit user decision may change this task to `completed` and advance t
 
 Exercise at least:
 
-- [ ] reproducible generation and baseline verification of the [200-400-file synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md)
+- [x] reproducible generation and baseline verification of the [200-400-file synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md)
 - [ ] installation into an empty project
 - [x] installation into a mature non-Ava project with existing project-owned Markdown and host configuration
 - [ ] a clean OpenCode startup and repeated sessions against the installed project
@@ -53,6 +53,8 @@ Exercise at least:
 - [ ] exact-version prerelease upgrades between every supported published transition
 
 Use realistic projects large enough to expose discovery, path, ambiguity, context-loading, privacy-boundary, and performance problems. The synthetic qualification vault provides the repeatable baseline, but passing it does not prohibit additional real-project testing with appropriately protected evidence. Do not limit dogfooding to synthetic minimal fixtures.
+
+The repository-only [synthetic qualification fixture](../../release/fixtures/synthetic-qualification-vault/) generates and verifies the fixed 300-file baseline through the documented command. CPython 3.11 and 3.13 produced byte-identical retained runs on 2026-08-07; the linked bounded task records their digest and complete remediation evidence without treating test-only images or planned managed-state scenarios as qualification. External image creation, finalization to 305 files, assembled and published execution of all variant states, complete ingestion, and independent semantic review remain pending qualification work.
 
 ## Completed scenario evidence
 

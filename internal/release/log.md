@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-08-07
+
+- **Synthetic v1 qualification fixture**: Added a repository-only, standard-library generator for a reproducible 300-file six-month fictional corpus, five externally staged image slots, per-source semantic oracle, run-evidence contract, eight isolated qualification variant families, and release-boundary regression coverage. Generated content and evidence are required to remain outside the repository and release assets.
+
 ## 2026-08-05
 
 - **Isolated release PR policy gate**: Added a dedicated required-check workflow that no-ops ordinary pull requests but validates release-please proposals against the current `main` version, upgrade-source declarations, and matching prerelease transition fixtures before merge.

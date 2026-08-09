@@ -66,12 +66,20 @@ for path in \
   internal/release/test.sh \
   internal/release/fixtures/conformance-matrix.json \
   internal/release/fixtures/release-please-policy.json \
+  internal/release/fixtures/synthetic-qualification-vault/index.md \
+  internal/release/fixtures/synthetic-qualification-vault/blueprint.md \
+  internal/release/fixtures/synthetic-qualification-vault/blueprint.json \
+  internal/release/fixtures/synthetic-qualification-vault/fixture.py \
+  internal/release/fixtures/synthetic-qualification-vault/requirements.lock \
+  internal/release/fixtures/synthetic-qualification-vault/oracle.schema.json \
+  internal/release/fixtures/synthetic-qualification-vault/run-manifest.schema.json \
   internal/release/tests/test_installed_paths.py \
   internal/release/tests/test_installer.py \
   internal/release/tests/test_installer_conformance.py \
   internal/release/tests/test_conformance.py \
   internal/release/tests/test_conformance_matrix.py \
-  internal/release/tests/test_release_please.py
+  internal/release/tests/test_release_please.py \
+  internal/release/tests/test_synthetic_qualification_vault.py
 do
   require_file "$path"
 done
@@ -144,6 +152,7 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_repository.py" \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/conformance_release.py" \
+  "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \
   "$ROOT/internal/release/validate_pr_title.py"
 python3 "$ROOT/internal/release/validate-installed-paths.py" --root "$ROOT"
