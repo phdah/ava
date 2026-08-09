@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 
 from internal.release.adjacent_edges import AdjacentEdgeError, make_edge, resolve_upgrade
+from internal.release.catalog_policy import catalog_root_version
 from internal.release.release_catalog import (
     append_release,
     initial_catalog,
@@ -45,22 +46,25 @@ class ReleaseCatalogTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.catalog_dir = self.root / "internal/release/catalogs"
         self.guidance_root = self.root / "internal/release/guidance"
-        fixture_dir = self.root / "internal/release/fixtures"
+        self.fixture_dir = self.root / "internal/release/fixtures"
         self.catalog_dir.mkdir(parents=True)
         self.guidance_root.mkdir(parents=True)
-        fixture_dir.mkdir(parents=True)
-        (fixture_dir / "release-upgrade-policy.json").write_text(
-            json.dumps(
-                {
-                    "schema_version": 1,
-                    "initial_release_version": "1.0.0-alpha.1",
-                    "protected_direct_sources": [],
-                }
-            )
-        )
+        self.fixture_dir.mkdir(parents=True)
+        self.write_policy("1.0.0-alpha.1")
 
     def tearDown(self):
         self.temp.cleanup()
+
+    def write_policy(self, initial: str, protected=()) -> None:
+        (self.fixture_dir / "release-upgrade-policy.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "initial_release_version": initial,
+                    "protected_direct_sources": list(protected),
+                }
+            )
+        )
 
     def write_record(self, value) -> None:
         target = value["target_version"]
@@ -131,6 +135,25 @@ class ReleaseCatalogTests(unittest.TestCase):
             catalog["supported_sources"],
         )
         self.assertEqual(3, len(catalog["edges"]))
+
+    def test_catalog_root_can_be_later_than_first_published_release(self):
+        self.write_policy(
+            "1.0.0-alpha.1",
+            protected=["1.0.0-alpha.5"],
+        )
+        self.write_record(
+            record(make_edge("1.0.0-alpha.5", "1.0.0-alpha.6"))
+        )
+        self.write_record(
+            record(make_edge("1.0.0-alpha.6", "1.0.0-alpha.7"))
+        )
+        self.assertEqual("1.0.0-alpha.5", catalog_root_version(self.root))
+        catalog = read_catalog(self.root, "1.0.0-alpha.7")
+        self.assertEqual(
+            ["1.0.0-alpha.5", "1.0.0-alpha.6"],
+            catalog["supported_sources"],
+        )
+        self.assertEqual(2, len(catalog["edges"]))
 
     def test_missing_intermediate_record_fails(self):
         self.write_record(
