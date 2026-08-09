@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-09T00:27:47+02:00
+  at: 2026-08-09T12:48:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,13 +23,15 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) is the current task. It must generate a reproducible 200-400-file raw corpus covering six coherent months of Adam's fictional private and work life in Stockholm, including one February apartment move and machine-checkable expected outcomes.
+[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) is the current task. It must finalize the five external images, exercise the managed-state variants, and collect real assembled and published OpenCode qualification evidence for the reproducible 300-file baseline.
 
-After the vault, [qualify and publish the corrective alpha](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md). That qualification must collect immutable evidence for completed findings 03 through 08, including the exact warranty prompt, unresolved-routing scenario, faithful ingestion checks, and satisfied review re-review termination. After the corrective prerelease is qualified, complete [Compose semantic upgrades from adjacent release edges](todo/05-release-qualification/dogfood/09-compose-semantic-upgrades-from-adjacent-edges.md) before release-candidate publication.
+After the vault, [qualify and publish the corrective alpha](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md). That qualification must collect immutable evidence for completed findings 03 through 08, including the exact warranty prompt, unresolved-routing scenario, faithful ingestion checks, and satisfied review re-review termination. After the corrective prerelease is qualified, complete [Define release-impact-based change types](todo/05-release-qualification/dogfood/10-define-release-impact-based-change-types.md) before release-candidate publication.
 
-The repository implementation for the synthetic vault is now present and reproducibly generates the fixed 300-file baseline across the maintained Python runtime contract. Its task remains pending external image finalization, managed-state execution, and real assembled and published OpenCode qualification. The routing blocker remains the current release blocker.
+The repository implementation for the synthetic vault is present and reproducibly generates the fixed 300-file baseline across the maintained Python runtime contract. Its task remains pending external image finalization, managed-state execution, and real assembled and published OpenCode qualification.
 
-Release PR [#68](https://github.com/phdah/ava/pull/68) for `1.0.0-alpha.11` has been merged. The repository release manifest now records `1.0.0-alpha.11`; immutable publication and qualification evidence remain governed by the release workflow and the [corrective alpha qualification task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md).
+Release PR [#68](https://github.com/phdah/ava/pull/68) for `1.0.0-alpha.11` has been merged. The repository release manifest records `1.0.0-alpha.11`; immutable publication and qualification evidence remain governed by the release workflow and the [corrective alpha qualification task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md).
+
+[Compose semantic upgrades from adjacent release edges](todo/05-release-qualification/dogfood/09-compose-semantic-upgrades-from-adjacent-edges.md) is complete in PR [#76](https://github.com/phdah/ava/pull/76). Ava now has an accepted self-contained adjacent-edge catalog contract, immutable edge inheritance, unique managed and semantic path resolution, ordered exact-once guidance, explicit supersession, composition and validation tooling, and focused regression coverage. Published multi-edge validation remains release qualification evidence.
 
 [Define review sufficiency and termination criteria](todo/05-release-qualification/dogfood/08-define-review-sufficiency-and-termination.md) is complete in its resolving implementation PR. Ordinary bounded review now defaults to an explicit acceptance threshold, exhaustive audit requires explicit scope, optional observations remain non-blocking, and re-review terminates once prior material findings are resolved without new qualifying evidence.
 
@@ -43,7 +45,7 @@ Release PR [#68](https://github.com/phdah/ava/pull/68) for `1.0.0-alpha.11` has 
 
 [Remove empty upgrade transaction containers](todo/05-release-qualification/dogfood/06-remove-empty-upgrade-transaction-containers.md) is complete through PR #62.
 
-Completed fixes may still require real corrective-release evidence before the next prerelease can qualify. That evidence belongs to release qualification and does not keep or return their implementation tasks to pending.
+Completed fixes may still require real corrective-release or catalog-based evidence before a later release can qualify. That evidence belongs to release qualification and does not keep or return their implementation tasks to pending.
 
 [Repair installed context link resolution](todo/05-release-qualification/dogfood/02-repair-installed-context-link-resolution.md) is complete after real immutable alpha.7 validation loaded the complete Inbox Ingester required-reading chain from exact installed-project paths.
 
