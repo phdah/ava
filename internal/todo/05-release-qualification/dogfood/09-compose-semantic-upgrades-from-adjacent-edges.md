@@ -13,6 +13,9 @@ affected_version: release process, observed in 1.0.0-alpha.11
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-08T23:58:55+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-09T12:30:00+02:00
 ---
 
 # Compose semantic upgrades from adjacent release edges
@@ -87,9 +90,24 @@ Do not implement runtime inference from changelogs, arbitrary historical prose, 
 - the user explicitly approves the final public contract before implementation records it as accepted
 - concrete resolution and repository-validation evidence are added to this task in the resolving PR
 
+## Proposed implementation evidence
+
+The draft implementation branch now provides an explicit approval surface without claiming this finding is complete:
+
+- `distribution/adjacent-upgrade-edges.md` defines the proposed public contract and remains visibly marked `status: proposed`
+- `distribution/schemas/upgrade-catalog.schema.json` defines the self-contained catalog structure
+- `internal/release/adjacent_edges.py` implements immutable edge digests, unique-path resolution, inherited-source retention, separate managed and semantic paths, carry rules, and ordered guidance supersession
+- `internal/release/compose_adjacent_catalog.py` appends one reviewed edge to an immutable prior catalog
+- `internal/release/validate_adjacent_catalog.py` proves inherited edge and guidance identity, explicit retirement, exactly one new adjacent edge, and representative path resolution
+- `internal/release/fixtures/adjacent-upgrade-catalog.json` freezes a two-edge semantically lagging example
+- `internal/release/tests/test_adjacent_edges.py` covers direct and multi-edge paths, gaps, ambiguity, digest tampering, inheritance, retirement, semantic lag, mechanical no-op advancement, carry blocking, supersession, duplicate guidance, and channel-independent composition
+- `internal/release/test.sh` compiles the tooling, validates the fixture, and runs the regression suite
+
+This proposal intentionally leaves the active cumulative alpha release path unchanged while it is reviewed. Approval and merge establish the public design decision. The remaining resolving work is to integrate the approved catalog into release assembly, installed manifests, updater transaction journals, runtime path execution, rollback and resume coverage, and published multi-edge qualification before changing this task to `completed`.
+
 ## Resolution evidence
 
-Pending.
+Pending explicit approval and runtime integration.
 
 ## Release qualification follow-up
 
