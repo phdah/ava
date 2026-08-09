@@ -12,6 +12,16 @@ from internal.release.validate_release_pr import (
 )
 
 
+def record(edge, retirements=()):
+    return {
+        "catalog_schema": 1,
+        "target_version": edge["to"],
+        "edge": edge,
+        "guidance": [],
+        "retired_sources": list(retirements),
+    }
+
+
 class ReleasePrPolicyTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory()
@@ -19,30 +29,23 @@ class ReleasePrPolicyTests(unittest.TestCase):
         (self.root / "internal/release/catalogs").mkdir(parents=True)
         (self.root / "internal/release/guidance").mkdir(parents=True)
         (self.root / "internal/release/fixtures").mkdir(parents=True)
-        (self.root / "internal/release/fixtures/release-upgrade-policy.json").write_text(
-            json.dumps(
-                {
-                    "schema_version": 1,
-                    "initial_release_version": "1.0.0-alpha.1",
-                    "protected_direct_sources": [],
-                }
-            )
-        )
+        self.write_policy("1.0.0-alpha.1")
 
     def tearDown(self) -> None:
         self.temp.cleanup()
 
-    @staticmethod
-    def catalog(target: str, sources, edges):
-        return {
-            "catalog_schema": 1,
-            "target_version": target,
-            "supported_sources": list(sources),
-            "edges": list(edges),
-            "guidance": [],
-        }
+    def write_policy(self, initial: str, protected=()) -> None:
+        (self.root / "internal/release/fixtures/release-upgrade-policy.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "initial_release_version": initial,
+                    "protected_direct_sources": list(protected),
+                }
+            )
+        )
 
-    def write_catalog(self, value) -> None:
+    def write_record(self, value) -> None:
         target = value["target_version"]
         (self.root / f"internal/release/catalogs/{target}.json").write_text(
             json.dumps(value)
@@ -62,36 +65,10 @@ class ReleasePrPolicyTests(unittest.TestCase):
                 "prerelease-type": channel,
             }
         (self.root / "release-please-config.json").write_text(json.dumps(config))
-        (self.root / "internal/release/catalog-retirements.json").write_text(
-            json.dumps(
-                {
-                    "schema_version": 1,
-                    "target_version": target,
-                    "retired_sources": [],
-                }
-            )
-        )
 
-    def write_release(
-        self,
-        previous: str,
-        target: str,
-        channel: str,
-    ) -> None:
-        prior_source = (
-            "1.0.0-alpha.1"
-            if previous == "1.0.0-alpha.2"
-            else "1.0.0-alpha.2"
-        )
-        prior_edge = make_edge(prior_source, previous)
-        prior = self.catalog(previous, [prior_source], [prior_edge])
-        current = self.catalog(
-            target,
-            [prior_source, previous],
-            [prior_edge, make_edge(previous, target)],
-        )
-        self.write_catalog(prior)
-        self.write_catalog(current)
+    def write_release(self, previous: str, target: str, channel: str) -> None:
+        self.write_policy(previous)
+        self.write_record(record(make_edge(previous, target)))
         self.write_identity(target, channel)
 
     def test_accepts_alpha_release(self) -> None:
@@ -124,7 +101,8 @@ class ReleasePrPolicyTests(unittest.TestCase):
         with self.assertRaisesRegex(ReleasePrValidationError, "must advance Ava"):
             validate_release_pr(self.root, "2.0.0-alpha.3")
 
-    def test_rejects_missing_target_catalog(self) -> None:
+    def test_rejects_missing_target_record(self) -> None:
+        self.write_policy("2.0.0-alpha.3")
         self.write_identity("2.0.0-alpha.4", "alpha")
         with self.assertRaisesRegex(ReleasePrValidationError, "cannot read"):
             validate_release_pr(self.root, "2.0.0-alpha.3")
@@ -135,46 +113,53 @@ class ReleasePrPolicyTests(unittest.TestCase):
         with self.assertRaisesRegex(ReleasePrValidationError, "archival compatibility"):
             validate_release_pr(self.root, "2.0.0-alpha.3")
 
-    def test_accepts_configured_first_release(self) -> None:
+    def test_accepts_configured_first_release_without_edge_record(self) -> None:
         target = "1.0.0-alpha.1"
+        self.write_policy(target)
         self.write_identity(target, "alpha")
-        self.write_catalog(self.catalog(target, [], []))
         message = validate_release_pr(self.root, "0.0.0")
         self.assertIn("0.0.0 -> 1.0.0-alpha.1", message)
 
-    def test_rejects_protected_source_retirement(self) -> None:
-        self.write_release("2.0.0-alpha.3", "2.0.0-alpha.4", "alpha")
-        policy = {
-            "schema_version": 1,
-            "initial_release_version": "1.0.0-alpha.1",
-            "protected_direct_sources": ["1.0.0-alpha.2"],
-        }
-        (self.root / "internal/release/fixtures/release-upgrade-policy.json").write_text(
-            json.dumps(policy)
+    def test_rejects_first_release_edge_record(self) -> None:
+        target = "1.0.0-alpha.1"
+        self.write_policy(target)
+        self.write_identity(target, "alpha")
+        self.write_record(record(make_edge("0.9.0", target)))
+        with self.assertRaisesRegex(ReleasePrValidationError, "has no predecessor"):
+            validate_release_pr(self.root, "0.0.0")
+
+    def test_rejects_record_whose_edge_skips_previous_release(self) -> None:
+        self.write_policy("2.0.0-alpha.3")
+        self.write_identity("2.0.0-alpha.4", "alpha")
+        self.write_record(
+            record(make_edge("2.0.0-alpha.2", "2.0.0-alpha.4"))
         )
-        current_path = self.root / "internal/release/catalogs/2.0.0-alpha.4.json"
-        current = json.loads(current_path.read_text())
-        current["supported_sources"] = ["2.0.0-alpha.3"]
-        current_path.write_text(json.dumps(current))
-        (self.root / "internal/release/catalog-retirements.json").write_text(
-            json.dumps(
-                {
-                    "schema_version": 1,
-                    "target_version": "2.0.0-alpha.4",
-                    "retired_sources": [
-                        {
-                            "version": "1.0.0-alpha.2",
-                            "reason": "Support window ended.",
-                        }
-                    ],
-                }
+        with self.assertRaisesRegex(ReleasePrValidationError, "immediately previous"):
+            validate_release_pr(self.root, "2.0.0-alpha.3")
+
+    def test_rejects_protected_source_retirement(self) -> None:
+        initial = "1.0.0-alpha.1"
+        previous = "1.0.0-alpha.2"
+        target = "1.0.0-alpha.3"
+        self.write_policy(initial, protected=[initial])
+        self.write_record(record(make_edge(initial, previous)))
+        self.write_record(
+            record(
+                make_edge(previous, target),
+                retirements=[
+                    {
+                        "version": initial,
+                        "reason": "Support window ended.",
+                    }
+                ],
             )
         )
+        self.write_identity(target, "alpha")
         with self.assertRaisesRegex(
             ReleasePrValidationError,
             "separate policy change",
         ):
-            validate_release_pr(self.root, "2.0.0-alpha.3")
+            validate_release_pr(self.root, previous)
 
 
 if __name__ == "__main__":
