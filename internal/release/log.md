@@ -4,7 +4,7 @@ This log records major conceptual and structural changes to Ava's internal relea
 
 ## 2026-08-09
 
-- **Proposed adjacent upgrade edge catalog**: Added an executable proposal for immutable adjacent release edges, inherited edge digests, retained supported sources, unique source-to-target path resolution, separate managed and semantic paths, ordered guidance composition, explicit supersession, and release-authoring validation. The existing cumulative source-to-target release process remains active until the proposal pull request is approved and merged.
+- **Adjacent upgrade edge catalogs**: Replaced cumulative target-specific upgrade authoring with an accepted self-contained catalog of immutable adjacent edges. Added separate managed and semantic path resolution, supported-source retention, exact-once guidance composition with explicit supersession, catalog composition and validation tools, a multi-edge fixture, and regression coverage for invalid graphs and semantically lagging projects.
 
 ## 2026-08-07
 
