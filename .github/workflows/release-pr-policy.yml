@@ -41,4 +41,5 @@ jobs:
             internal.release.tests.release_pr_policy_test \
             internal.release.tests.test_release_catalog
           python3 -m internal.release.validate_release_pr \
-            --previous-version "$previous_version"
+            --previous-version "$previous_version" \
+            --base-revision "$BASE_SHA"
