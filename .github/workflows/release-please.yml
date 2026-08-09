@@ -76,9 +76,11 @@ jobs:
           SOURCE_REVISION: ${{ steps.identity.outputs.source_revision }}
         run: |
           set -eu
-          previous_version=$(git show "${SOURCE_REVISION}^:version.txt")
+          previous_revision="${SOURCE_REVISION}^"
+          previous_version=$(git show "${previous_revision}:version.txt")
           python3 -m internal.release.validate_release_pr \
-            --previous-version "$previous_version"
+            --previous-version "$previous_version" \
+            --base-revision "$previous_revision"
           internal/release/test.sh
 
       - name: Assemble release twice
