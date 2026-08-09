@@ -33,12 +33,14 @@ Use the [Alpha Dogfood Findings](dogfood/) index to add and resolve bounded find
 
 Current findings:
 
-- 1 pending finding
-- 0 pending blockers
+- 2 pending findings
+- 1 pending blocker
 - 1 pending required-v1 finding
 - 9 completed findings
 
-[Define release-impact-based change types](dogfood/10-define-release-impact-based-change-types.md) is the remaining pending `required-v1` finding. It must make Conventional Commit and SemVer classification depend on supported distribution impact rather than implementation novelty or repository location before release-candidate publication.
+[Normalize and enforce adjacent-edge release authoring](dogfood/11-enforce-adjacent-edge-release-authoring.md) is the current next finding and blocks the next prerelease. It must normalize the active historical upgrade graph, make legacy direct source-to-target data read-only compatibility input, and require release-policy tests to prove that every future release inherits all prior edges unchanged and adds exactly one new adjacent edge.
+
+[Define release-impact-based change types](dogfood/10-define-release-impact-based-change-types.md) remains pending `required-v1` work before release-candidate publication and follows finding 11.
 
 [Compose semantic upgrades from adjacent release edges](dogfood/09-compose-semantic-upgrades-from-adjacent-edges.md) is complete in PR [#76](https://github.com/phdah/ava/pull/76). The accepted catalog model composes immutable adjacent edges, resolves managed and semantic paths separately, applies guidance exactly once in edge order, and rejects invalid or altered graphs before mutation. Published multi-edge qualification remains release evidence rather than pending implementation work.
 
@@ -73,7 +75,7 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 The [alpha qualification policy](../../release/alpha-qualification.md) and its machine-readable fixture define the required gates, defect classes, protected impacts, prerelease support boundary, and publication approval.
 
-The first alpha has no supported earlier Ava source. Later supported transitions must remain explicit and tested. Catalog-based releases compose retained adjacent edges into a unique supported path while preserving immutable edge and guidance identity.
+The first alpha has no supported earlier Ava source. Later supported transitions must remain explicit and tested. Catalog-based releases compose retained adjacent edges into a unique supported path while preserving immutable edge and guidance identity. Finding 11 must make this the only active authoring model and require a strict inherited-versus-proposed catalog delta containing exactly one new adjacent edge.
 
 ## Release automation boundary
 
@@ -97,7 +99,7 @@ These entry conditions allowed Phase 5 to begin. Subsequent dogfooding exposed a
 
 The umbrella task remains [Dogfood the alpha and track findings](04-dogfood-alpha-and-track-findings.md).
 
-Build the reproducible [synthetic qualification vault](04a-build-synthetic-qualification-vault.md) next, then [qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md) and collect immutable evidence for completed findings 03 through 08. After that, complete [release-impact-based change types](dogfood/10-define-release-impact-based-change-types.md) before release-candidate publication. Continue dogfooding until the user explicitly closes the umbrella or another finding is added.
+Complete [normalize and enforce adjacent-edge release authoring](dogfood/11-enforce-adjacent-edge-release-authoring.md) next. No further prerelease may be prepared until the historical graph is normalized and required release-policy tests enforce exactly one new adjacent edge. Then resume the supporting qualification sequence and complete [release-impact-based change types](dogfood/10-define-release-impact-based-change-types.md) before release-candidate publication. Continue dogfooding until the user explicitly closes the umbrella or another higher-priority finding is added.
 
 ## Previous phase
 
