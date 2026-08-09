@@ -8,6 +8,7 @@ cd "$ROOT"
 sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
 python3 -m py_compile \
+  "$ROOT/internal/release/adjacent_edges.py" \
   "$ROOT/internal/release/assemble.py" \
   "$ROOT/internal/release/assemble_reviewed.py" \
   "$ROOT/internal/release/conformance.py" \
@@ -39,6 +40,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_inbox_ingestion_fidelity \
   internal.release.tests.test_ava_maintenance \
   internal.release.tests.test_synthetic_qualification_vault \
+  internal.release.tests.test_adjacent_edges \
   internal.release.tests.test_conformance \
   internal.release.tests.test_conformance_matrix \
   internal.release.tests.test_alpha_qualification \
