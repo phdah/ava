@@ -24,7 +24,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("catalog", type=Path)
     parser.add_argument("--root", type=Path, default=Path.cwd())
-    parser.add_argument("--catalog-root-version")
     parser.add_argument("--guidance-root", type=Path)
     parser.add_argument("--installed-version")
     parser.add_argument("--compatible-through")
@@ -48,11 +47,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"catalog must be the target record at {expected}"
             )
         record = read_release_record(root, target_version)
-        catalog = read_catalog(
-            root,
-            target_version,
-            initial_version=args.catalog_root_version,
-        )
+        catalog = read_catalog(root, target_version)
         guidance_root = (
             args.guidance_root.resolve()
             if args.guidance_root
