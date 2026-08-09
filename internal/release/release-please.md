@@ -8,7 +8,7 @@ generated:
   at: 2026-08-04T14:40:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-09T17:50:00+02:00
+  at: 2026-08-09T18:05:00+02:00
 ---
 
 # Ava Release Automation
@@ -39,11 +39,14 @@ internal/release/catalogs/<target>.json
 
 That file contains exactly one `<previous> -> <target>` edge, only guidance and migrations introduced by that edge, and any source-retirement decisions made by the target release. Earlier release records remain untouched.
 
+This also applies to the first published release. `1.0.0-alpha.1.json` owns `0.0.0 -> 1.0.0-alpha.1`; there is no release-without-an-edge bootstrap exception.
+
 The gate validates:
 
 - target and channel identity
 - exactly one target release record changed relative to the release PR base
 - the edge starts at the immediately previous release
+- the first release starts at the `0.0.0` bootstrap sentinel
 - the record contains only transition-local guidance and migration references
 - guidance metadata, digest, and artifact integrity
 - explicit, valid source-retirement decisions
@@ -62,6 +65,6 @@ AVA_UPGRADE_CATALOG=internal/release/catalogs/<target>.json
 
 The reviewed assembler follows `edge.from` recursively through earlier release records, stages the guidance referenced by those edges, and derives installer-compatible projections for each retained source. The cumulative graph exists only during validation and assembly.
 
-After merge, automation verifies the exact tag and source SHA, proves that only the target record was added, reruns recursive chain validation and the complete repository suite, assembles twice, compares digests, validates conformance, attests assets, uploads without clobbering, and publishes the existing draft.
+After merge, automation verifies the exact tag and source SHA, proves that only the target record was added, reruns the complete `0.0.0`-to-target chain validation and repository suite, assembles twice, compares digests, validates conformance, attests assets, uploads without clobbering, and publishes the existing draft.
 
 The same release-local record rule applies to alpha, beta, release candidate, stable, patch, minor, and major releases.
