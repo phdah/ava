@@ -9,9 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from internal.release.adjacent_edges import AdjacentEdgeError, version_key
-from internal.release.catalog_policy import catalog_root_version, read_upgrade_policy
 from internal.release.release_catalog import (
-    catalog_path,
     read_catalog,
     read_release_record,
     validate_release_delta,
@@ -81,24 +79,44 @@ def validate_release_please_channel(
         )
 
 
+def _read_upgrade_policy(root: Path) -> dict[str, Any]:
+    path = root / "internal/release/fixtures/release-upgrade-policy.json"
+    policy = _read_json(path)
+    required = {
+        "schema_version",
+        "initial_release_version",
+        "protected_direct_sources",
+    }
+    if set(policy) != required or policy.get("schema_version") != 1:
+        raise ReleasePrValidationError(f"{path} has invalid schema 1 fields")
+    initial = policy["initial_release_version"]
+    protected = policy["protected_direct_sources"]
+    if not isinstance(initial, str) or not SEMVER_RE.fullmatch(initial):
+        raise ReleasePrValidationError(f"{path} has invalid initial_release_version")
+    if (
+        not isinstance(protected, list)
+        or not all(isinstance(item, str) and SEMVER_RE.fullmatch(item) for item in protected)
+        or len(protected) != len(set(protected))
+    ):
+        raise ReleasePrValidationError(f"{path} has invalid protected source list")
+    return policy
+
+
 def validate_catalog_change_scope(
     root: Path,
     base_revision: str,
     target_version: str,
-    *,
-    initial_release: bool,
 ) -> None:
-    command = [
-        "git",
-        "diff",
-        "--name-only",
-        base_revision,
-        "--",
-        "internal/release/catalogs",
-    ]
     try:
         completed = subprocess.run(
-            command,
+            [
+                "git",
+                "diff",
+                "--name-only",
+                base_revision,
+                "--",
+                "internal/release/catalogs",
+            ],
             cwd=root,
             check=True,
             text=True,
@@ -114,12 +132,6 @@ def validate_catalog_change_scope(
         if line.strip().endswith(".json")
     }
     expected = f"internal/release/catalogs/{target_version}.json"
-    if initial_release:
-        if changed_json:
-            raise ReleasePrValidationError(
-                "the initial release must not author an upgrade edge record"
-            )
-        return
     if changed_json != {expected}:
         raise ReleasePrValidationError(
             "a release PR may add only its own release-local catalog record; "
@@ -146,7 +158,6 @@ def validate_release_pr(
             ".release-please-manifest.json and version.txt disagree: "
             f"{manifest.get('.')!r} != {target_version!r}"
         )
-
     if version_key(target_version) <= version_key(previous_version):
         raise ReleasePrValidationError(
             f"release PR must advance Ava from {previous_version} to a newer version, "
@@ -157,12 +168,12 @@ def validate_release_pr(
         _read_json(root / "release-please-config.json"),
         target_version,
     )
-    try:
-        policy = read_upgrade_policy(root)
-        ledger_root = catalog_root_version(root)
-    except AdjacentEdgeError as exc:
-        raise ReleasePrValidationError(str(exc)) from exc
-    initial_version = policy["initial_release_version"]
+    policy = _read_upgrade_policy(root)
+    if previous_version == "0.0.0" and target_version != policy["initial_release_version"]:
+        raise ReleasePrValidationError(
+            f"first release target must be {policy['initial_release_version']}, "
+            f"got {target_version}"
+        )
 
     legacy_impact = root / "internal/release/upgrade-impact.json"
     if legacy_impact.exists():
@@ -171,58 +182,34 @@ def validate_release_pr(
             "authoring input. Author one release-local adjacent edge record."
         )
 
-    initial_release = previous_version == "0.0.0"
     try:
-        if initial_release:
-            if target_version != initial_version:
-                raise ReleasePrValidationError(
-                    f"first release target must be {initial_version}, got {target_version}"
-                )
-            if catalog_path(root, target_version).exists():
-                raise ReleasePrValidationError(
-                    "the initial release has no predecessor and must not have a catalog edge record"
-                )
-        else:
-            previous_catalog = read_catalog(
-                root,
-                previous_version,
-                initial_version=ledger_root,
+        previous_catalog = read_catalog(root, previous_version)
+        current_record = read_release_record(root, target_version)
+        protected_retirements = {
+            item["version"]
+            for item in current_record["retired_sources"]
+        } & set(policy["protected_direct_sources"])
+        if protected_retirements:
+            raise ReleasePrValidationError(
+                "protected supported sources require a separate policy change before "
+                "retirement: "
+                + ", ".join(sorted(protected_retirements, key=version_key))
             )
-            current_record = read_release_record(root, target_version)
-            protected_retirements = {
-                item["version"]
-                for item in current_record["retired_sources"]
-            } & set(policy["protected_direct_sources"])
-            if protected_retirements:
-                raise ReleasePrValidationError(
-                    "protected supported sources require a separate policy change before "
-                    "retirement: "
-                    + ", ".join(sorted(protected_retirements, key=version_key))
-                )
-            expected_catalog = validate_release_delta(
-                previous_catalog,
-                current_record,
-                guidance_root=root / "internal/release/guidance",
+        expected_catalog = validate_release_delta(
+            previous_catalog,
+            current_record,
+            guidance_root=root / "internal/release/guidance",
+        )
+        recursive_catalog = read_catalog(root, target_version)
+        if recursive_catalog != expected_catalog:
+            raise ReleasePrValidationError(
+                "the target record does not recursively compose to the reviewed release delta"
             )
-            recursive_catalog = read_catalog(
-                root,
-                target_version,
-                initial_version=ledger_root,
-            )
-            if recursive_catalog != expected_catalog:
-                raise ReleasePrValidationError(
-                    "the target record does not recursively compose to the reviewed release delta"
-                )
     except AdjacentEdgeError as exc:
         raise ReleasePrValidationError(str(exc)) from exc
 
     if base_revision:
-        validate_catalog_change_scope(
-            root,
-            base_revision,
-            target_version,
-            initial_release=initial_release,
-        )
+        validate_catalog_change_scope(root, base_revision, target_version)
 
     return (
         f"release PR identity and recursive adjacent edge valid for "
