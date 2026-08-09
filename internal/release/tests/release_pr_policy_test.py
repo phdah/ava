@@ -22,6 +22,18 @@ def record(edge, retirements=()):
     }
 
 
+def bootstrap_record(target: str):
+    return record(
+        make_edge("0.0.0", target, carry_unresolved_semantic_state=True),
+        retirements=[
+            {
+                "version": "0.0.0",
+                "reason": "Bootstrap sentinel is not an installed release.",
+            }
+        ],
+    )
+
+
 class ReleasePrPolicyTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory()
@@ -67,7 +79,7 @@ class ReleasePrPolicyTests(unittest.TestCase):
         (self.root / "release-please-config.json").write_text(json.dumps(config))
 
     def write_release(self, previous: str, target: str, channel: str) -> None:
-        self.write_policy(previous)
+        self.write_record(bootstrap_record(previous))
         self.write_record(record(make_edge(previous, target)))
         self.write_identity(target, channel)
 
@@ -102,10 +114,19 @@ class ReleasePrPolicyTests(unittest.TestCase):
             validate_release_pr(self.root, "2.0.0-alpha.3")
 
     def test_rejects_missing_target_record(self) -> None:
-        self.write_policy("2.0.0-alpha.3")
+        previous = "2.0.0-alpha.3"
+        self.write_record(bootstrap_record(previous))
         self.write_identity("2.0.0-alpha.4", "alpha")
         with self.assertRaisesRegex(ReleasePrValidationError, "cannot read"):
-            validate_release_pr(self.root, "2.0.0-alpha.3")
+            validate_release_pr(self.root, previous)
+
+    def test_rejects_missing_previous_release_record(self) -> None:
+        previous = "2.0.0-alpha.3"
+        target = "2.0.0-alpha.4"
+        self.write_record(record(make_edge(previous, target)))
+        self.write_identity(target, "alpha")
+        with self.assertRaisesRegex(ReleasePrValidationError, "missing release catalog record"):
+            validate_release_pr(self.root, previous)
 
     def test_rejects_legacy_upgrade_impact_authoring(self) -> None:
         self.write_release("2.0.0-alpha.3", "2.0.0-alpha.4", "alpha")
@@ -113,35 +134,46 @@ class ReleasePrPolicyTests(unittest.TestCase):
         with self.assertRaisesRegex(ReleasePrValidationError, "archival compatibility"):
             validate_release_pr(self.root, "2.0.0-alpha.3")
 
-    def test_accepts_configured_first_release_without_edge_record(self) -> None:
+    def test_accepts_configured_first_release_with_bootstrap_edge(self) -> None:
         target = "1.0.0-alpha.1"
         self.write_policy(target)
         self.write_identity(target, "alpha")
+        self.write_record(bootstrap_record(target))
         message = validate_release_pr(self.root, "0.0.0")
         self.assertIn("0.0.0 -> 1.0.0-alpha.1", message)
 
-    def test_rejects_first_release_edge_record(self) -> None:
+    def test_rejects_first_release_without_edge_record(self) -> None:
+        target = "1.0.0-alpha.1"
+        self.write_policy(target)
+        self.write_identity(target, "alpha")
+        with self.assertRaisesRegex(ReleasePrValidationError, "cannot read"):
+            validate_release_pr(self.root, "0.0.0")
+
+    def test_rejects_first_release_with_wrong_bootstrap_edge(self) -> None:
         target = "1.0.0-alpha.1"
         self.write_policy(target)
         self.write_identity(target, "alpha")
         self.write_record(record(make_edge("0.9.0", target)))
-        with self.assertRaisesRegex(ReleasePrValidationError, "has no predecessor"):
+        with self.assertRaisesRegex(ReleasePrValidationError, "immediately previous"):
             validate_release_pr(self.root, "0.0.0")
 
     def test_rejects_record_whose_edge_skips_previous_release(self) -> None:
-        self.write_policy("2.0.0-alpha.3")
-        self.write_identity("2.0.0-alpha.4", "alpha")
+        previous = "2.0.0-alpha.3"
+        target = "2.0.0-alpha.4"
+        self.write_record(bootstrap_record(previous))
+        self.write_identity(target, "alpha")
         self.write_record(
-            record(make_edge("2.0.0-alpha.2", "2.0.0-alpha.4"))
+            record(make_edge("2.0.0-alpha.2", target))
         )
         with self.assertRaisesRegex(ReleasePrValidationError, "immediately previous"):
-            validate_release_pr(self.root, "2.0.0-alpha.3")
+            validate_release_pr(self.root, previous)
 
     def test_rejects_protected_source_retirement(self) -> None:
         initial = "1.0.0-alpha.1"
         previous = "1.0.0-alpha.2"
         target = "1.0.0-alpha.3"
         self.write_policy(initial, protected=[initial])
+        self.write_record(bootstrap_record(initial))
         self.write_record(record(make_edge(initial, previous)))
         self.write_record(
             record(
