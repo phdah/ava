@@ -12,4 +12,5 @@ These files define release, installation, upgrade, and compatibility behavior. T
 - [GitHub release assets](releases.md)
 - [Upgrade and migration protocol](upgrades.md)
 - [Release guidance](guidance.md)
+- [Adjacent upgrade edge catalog proposal](adjacent-upgrade-edges.md) - Proposed replacement for cumulative source-to-target release authoring. It is non-authoritative until its implementation pull request is approved and merged.
 - [Machine-readable schemas](schemas/)
