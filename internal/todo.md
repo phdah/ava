@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-09T12:48:00+02:00
+  at: 2026-08-09T16:49:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,15 +23,19 @@ Read the [ordered roadmap](todo/index.md) to discover active phases and individu
 
 ## Current next task
 
-[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) is the current task. It must finalize the five external images, exercise the managed-state variants, and collect real assembled and published OpenCode qualification evidence for the reproducible 300-file baseline.
+[Normalize and enforce adjacent-edge release authoring](todo/05-release-qualification/dogfood/11-enforce-adjacent-edge-release-authoring.md) is the current task and blocks the next prerelease.
 
-After the vault, [qualify and publish the corrective alpha](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md). That qualification must collect immutable evidence for completed findings 03 through 08, including the exact warranty prompt, unresolved-routing scenario, faithful ingestion checks, and satisfied review re-review termination. After the corrective prerelease is qualified, complete [Define release-impact-based change types](todo/05-release-qualification/dogfood/10-define-release-impact-based-change-types.md) before release-candidate publication.
+It must convert the active historical upgrade graph into one canonical adjacent-edge catalog, make immutable published direct source-to-target representations read-only compatibility inputs, and remove active repository ambiguity between legacy cumulative and adjacent authoring. Every future release must inherit all previous edges unchanged and author exactly one new edge from the immediately previous release to the proposed target.
 
-The repository implementation for the synthetic vault is present and reproducibly generates the fixed 300-file baseline across the maintained Python runtime contract. Its task remains pending external image finalization, managed-state execution, and real assembled and published OpenCode qualification.
+The required release-policy tests must compare inherited and proposed catalogs and fail for zero, multiple, skipped, shortcut, cumulative, or non-adjacent new edges, as well as any mutation of inherited edge or guidance identity. A compositionally valid final graph is insufficient when the release delta violates the one-edge authoring rule.
 
-Release PR [#68](https://github.com/phdah/ava/pull/68) for `1.0.0-alpha.11` has been merged. The repository release manifest records `1.0.0-alpha.11`; immutable publication and qualification evidence remain governed by the release workflow and the [corrective alpha qualification task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md).
+After finding 11 is resolved, resume the supporting qualification work and complete [Define release-impact-based change types](todo/05-release-qualification/dogfood/10-define-release-impact-based-change-types.md) before release-candidate publication.
 
-[Compose semantic upgrades from adjacent release edges](todo/05-release-qualification/dogfood/09-compose-semantic-upgrades-from-adjacent-edges.md) is complete in PR [#76](https://github.com/phdah/ava/pull/76). Ava now has an accepted self-contained adjacent-edge catalog contract, immutable edge inheritance, unique managed and semantic path resolution, ordered exact-once guidance, explicit supersession, composition and validation tooling, and focused regression coverage. Published multi-edge validation remains release qualification evidence.
+The repository implementation for the [synthetic qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) is present and reproducibly generates the fixed 300-file baseline across the maintained Python runtime contract. Its task remains pending external image finalization, managed-state execution, and real assembled and published OpenCode qualification.
+
+Release PR [#74](https://github.com/phdah/ava/pull/74) for `1.0.0-alpha.12` has been merged. Its cumulative target-specific upgrade preparation exposed the process gap tracked by finding 11. Immutable published alpha.12 assets must not be rewritten; the active repository process and historical catalog must be normalized before another prerelease is prepared.
+
+[Compose semantic upgrades from adjacent release edges](todo/05-release-qualification/dogfood/09-compose-semantic-upgrades-from-adjacent-edges.md) is complete in PR [#76](https://github.com/phdah/ava/pull/76). Ava has an accepted self-contained adjacent-edge catalog contract, immutable edge inheritance, unique managed and semantic path resolution, ordered exact-once guidance, explicit supersession, composition and validation tooling, and focused regression coverage. Finding 11 now covers the incomplete transition of real release authoring and historical state to that model.
 
 [Define review sufficiency and termination criteria](todo/05-release-qualification/dogfood/08-define-review-sufficiency-and-termination.md) is complete in its resolving implementation PR. Ordinary bounded review now defaults to an explicit acceptance threshold, exhaustive audit requires explicit scope, optional observations remain non-blocking, and re-review terminates once prior material findings are resolved without new qualifying evidence.
 
@@ -55,6 +59,7 @@ Use the [Alpha Dogfood Findings](todo/05-release-qualification/dogfood/) index a
 
 - add each new finding as a numbered bounded task
 - work the first actionable pending finding in dependency order unless the user reprioritizes it
+- a blocker for the next prerelease takes precedence over supporting qualification work and required-v1 findings that block only a later gate
 - work supporting qualification tasks linked from the Phase 5 index after any blocker they depend on; do not assign them finding IDs unless their execution exposes a defect
 - mark a finding completed in the resolving implementation PR once its repository change, tests, documentation, indexes, and resolution evidence are complete
 - append later published-asset or realistic-project qualification evidence without keeping or returning the implementation task to pending
