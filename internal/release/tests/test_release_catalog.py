@@ -8,9 +8,13 @@ from pathlib import Path
 
 from internal.release.adjacent_edges import AdjacentEdgeError, make_edge, resolve_upgrade
 from internal.release.release_catalog import (
+    append_release,
+    initial_catalog,
     manifest_edges,
+    read_catalog,
+    read_release_chain,
     validate_guidance_artifacts,
-    validate_release_delta,
+    validate_release_record,
 )
 
 
@@ -25,23 +29,42 @@ def guidance(guidance_id: str, path: str, source: str, target: str, content: byt
     }
 
 
-def catalog(target: str, sources, edges, guidance_items=()):
+def record(edge, guidance_items=(), retirements=()):
     return {
         "catalog_schema": 1,
-        "target_version": target,
-        "supported_sources": list(sources),
-        "edges": list(edges),
+        "target_version": edge["to"],
+        "edge": edge,
         "guidance": list(guidance_items),
+        "retired_sources": list(retirements),
     }
 
 
 class ReleaseCatalogTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
-        self.guidance_root = Path(self.temp.name)
+        self.root = Path(self.temp.name)
+        self.catalog_dir = self.root / "internal/release/catalogs"
+        self.guidance_root = self.root / "internal/release/guidance"
+        fixture_dir = self.root / "internal/release/fixtures"
+        self.catalog_dir.mkdir(parents=True)
+        self.guidance_root.mkdir(parents=True)
+        fixture_dir.mkdir(parents=True)
+        (fixture_dir / "release-upgrade-policy.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "initial_release_version": "1.0.0-alpha.1",
+                    "protected_direct_sources": [],
+                }
+            )
+        )
 
     def tearDown(self):
         self.temp.cleanup()
+
+    def write_record(self, value) -> None:
+        target = value["target_version"]
+        (self.catalog_dir / f"{target}.json").write_text(json.dumps(value))
 
     def write_guidance(self, path: str, content: bytes = b"guidance\n") -> dict:
         target = self.guidance_root / path
@@ -55,206 +78,159 @@ class ReleaseCatalogTests(unittest.TestCase):
             content,
         )
 
-    def base(self):
-        g = self.write_guidance("a1-a2/UPGRADE.md")
-        e1 = make_edge(
-            "1.0.0-alpha.1",
-            "1.0.0-alpha.2",
-            guidance_paths=[g["path"]],
-            semantic_review_required=True,
-            carry_unresolved_semantic_state=True,
-        )
-        e2 = make_edge(
-            "1.0.0-alpha.2",
-            "1.0.0-alpha.3",
-            carry_unresolved_semantic_state=True,
-        )
-        return catalog(
-            "1.0.0-alpha.3",
-            ["1.0.0-alpha.1", "1.0.0-alpha.2"],
-            [e1, e2],
-            [g],
-        )
-
-    def extend(self, prior, target="1.0.0-alpha.4", *, edge=None, guidance_items=()):
-        edge = edge or make_edge(prior["target_version"], target, carry_unresolved_semantic_state=True)
-        return catalog(
-            target,
-            [*prior["supported_sources"], prior["target_version"]],
-            [*prior["edges"], edge],
-            [*prior["guidance"], *guidance_items],
-        )
-
-    def test_exactly_one_adjacent_edge_passes(self):
-        prior = self.base()
-        current = self.extend(prior)
-        validate_release_delta(prior, current, guidance_root=self.guidance_root)
-
-    def test_zero_new_edges_fails(self):
-        prior = self.base()
-        current = dict(prior)
-        current["target_version"] = "1.0.0-alpha.4"
-        current["supported_sources"] = [*prior["supported_sources"], prior["target_version"]]
-        with self.assertRaisesRegex(AdjacentEdgeError, "exactly one"):
-            validate_release_delta(prior, current)
-
-    def test_two_new_edges_fails(self):
-        prior = self.base()
-        current = self.extend(prior)
-        current["edges"] = [
-            *current["edges"],
-            make_edge("1.0.0-alpha.2", "1.0.0-alpha.4"),
-        ]
-        with self.assertRaisesRegex(AdjacentEdgeError, "exactly one"):
-            validate_release_delta(prior, current)
-
-    def test_adjacent_plus_cumulative_shortcut_fails(self):
-        prior = self.base()
-        current = self.extend(prior)
-        current["edges"] = [
-            *current["edges"],
-            make_edge("1.0.0-alpha.1", "1.0.0-alpha.4"),
-        ]
-        with self.assertRaises(AdjacentEdgeError):
-            validate_release_delta(prior, current)
-
-    def test_skipped_edge_fails(self):
-        prior = self.base()
-        edge = make_edge("1.0.0-alpha.2", "1.0.0-alpha.4")
-        current = catalog(
-            "1.0.0-alpha.4",
-            [*prior["supported_sources"], prior["target_version"]],
-            [*prior["edges"], edge],
-            prior["guidance"],
-        )
-        with self.assertRaisesRegex(AdjacentEdgeError, "immediately previous"):
-            validate_release_delta(prior, current)
-
-    def test_mutated_inherited_edge_fails(self):
-        prior = self.base()
-        current = self.extend(prior)
-        current["edges"][0] = make_edge(
-            "1.0.0-alpha.1",
-            "1.0.0-alpha.2",
-            guidance_paths=[prior["guidance"][0]["path"]],
-            semantic_review_required=True,
-            carry_unresolved_semantic_state=False,
-        )
-        with self.assertRaisesRegex(AdjacentEdgeError, "mutates inherited edge"):
-            validate_release_delta(prior, current)
-
-    def test_mutated_inherited_guidance_metadata_fails(self):
-        prior = self.base()
-        current = self.extend(prior)
-        current["guidance"][0] = {
-            **current["guidance"][0],
-            "sha256": "1" * 64,
-        }
-        with self.assertRaisesRegex(AdjacentEdgeError, "mutates inherited guidance"):
-            validate_release_delta(prior, current)
-
-    def test_mutated_guidance_artifact_fails(self):
-        prior = self.base()
-        current = self.extend(prior)
-        (self.guidance_root / prior["guidance"][0]["path"]).write_text("changed\n")
-        with self.assertRaisesRegex(AdjacentEdgeError, "artifact digest changed"):
-            validate_release_delta(prior, current, guidance_root=self.guidance_root)
-
-    def test_copied_cumulative_guidance_fails(self):
-        prior = self.base()
-        edge = make_edge(
-            "1.0.0-alpha.3",
-            "1.0.0-alpha.4",
-            guidance_paths=[prior["guidance"][0]["path"]],
-            semantic_review_required=True,
-        )
-        current = self.extend(prior, edge=edge)
-        with self.assertRaisesRegex(AdjacentEdgeError, "do not copy cumulative guidance"):
-            validate_release_delta(prior, current)
-
-    def test_no_impact_edge_is_explicit_and_passes(self):
-        prior = self.base()
-        current = self.extend(
-            prior,
-            edge=make_edge(
-                "1.0.0-alpha.3",
-                "1.0.0-alpha.4",
-                semantic_review_required=False,
+    def write_chain(self):
+        item = self.write_guidance("a1-a2/UPGRADE.md")
+        records = [
+            record(
+                make_edge(
+                    "1.0.0-alpha.1",
+                    "1.0.0-alpha.2",
+                    guidance_paths=[item["path"]],
+                    semantic_review_required=True,
+                    carry_unresolved_semantic_state=True,
+                ),
+                [item],
             ),
-        )
-        validate_release_delta(prior, current)
-
-    def test_source_retirement_requires_explicit_reason(self):
-        prior = self.base()
-        current = self.extend(prior)
-        current["supported_sources"] = [
-            "1.0.0-alpha.2",
-            "1.0.0-alpha.3",
+            record(
+                make_edge(
+                    "1.0.0-alpha.2",
+                    "1.0.0-alpha.3",
+                    carry_unresolved_semantic_state=True,
+                )
+            ),
+            record(
+                make_edge(
+                    "1.0.0-alpha.3",
+                    "1.0.0-alpha.4",
+                    carry_unresolved_semantic_state=True,
+                )
+            ),
         ]
-        validate_release_delta(
-            prior,
-            current,
-            retired_sources={"1.0.0-alpha.1": "Support window ended."},
-        )
+        for value in records:
+            self.write_record(value)
+        return item, records
 
-    def test_silent_source_retirement_fails(self):
-        prior = self.base()
-        current = self.extend(prior)
-        current["supported_sources"] = [
-            "1.0.0-alpha.2",
-            "1.0.0-alpha.3",
-        ]
-        with self.assertRaisesRegex(AdjacentEdgeError, "silently omitted"):
-            validate_release_delta(prior, current)
-
-    def test_three_historical_sources_project_to_direct_manifest_edges(self):
-        prior = self.base()
-        current = self.extend(prior)
-        projections = manifest_edges(current)
+    def test_each_file_contains_only_its_release_edge(self):
+        _, records = self.write_chain()
+        chain = read_release_chain(self.root, "1.0.0-alpha.4")
+        self.assertEqual(records, list(chain))
         self.assertEqual(
             [
-                "1.0.0-alpha.1",
-                "1.0.0-alpha.2",
-                "1.0.0-alpha.3",
+                ("1.0.0-alpha.1", "1.0.0-alpha.2"),
+                ("1.0.0-alpha.2", "1.0.0-alpha.3"),
+                ("1.0.0-alpha.3", "1.0.0-alpha.4"),
             ],
-            [item["from"] for item in projections],
+            [(item["edge"]["from"], item["edge"]["to"]) for item in chain],
         )
+
+    def test_recursive_chain_composes_supported_sources(self):
+        self.write_chain()
+        catalog = read_catalog(self.root, "1.0.0-alpha.4")
         self.assertEqual(
-            [prior["guidance"][0]["path"]],
-            projections[0]["guidance_paths"],
+            ["1.0.0-alpha.1", "1.0.0-alpha.2", "1.0.0-alpha.3"],
+            catalog["supported_sources"],
         )
+        self.assertEqual(3, len(catalog["edges"]))
+
+    def test_missing_intermediate_record_fails(self):
+        self.write_record(
+            record(make_edge("1.0.0-alpha.3", "1.0.0-alpha.4"))
+        )
+        with self.assertRaisesRegex(AdjacentEdgeError, "missing release catalog record"):
+            read_catalog(self.root, "1.0.0-alpha.4")
+
+    def test_wrong_previous_release_fails(self):
+        base = initial_catalog("1.0.0-alpha.1")
+        skipped = record(make_edge("1.0.0-alpha.2", "1.0.0-alpha.3"))
+        with self.assertRaisesRegex(AdjacentEdgeError, "immediately previous"):
+            append_release(base, skipped)
+
+    def test_record_rejects_more_than_edge_local_guidance(self):
+        item = self.write_guidance("a1-a2/UPGRADE.md")
+        value = record(make_edge("1.0.0-alpha.1", "1.0.0-alpha.2"), [item])
+        with self.assertRaisesRegex(AdjacentEdgeError, "exactly the guidance"):
+            validate_release_record(value)
+
+    def test_guidance_artifact_digest_is_immutable(self):
+        item, records = self.write_chain()
+        validate_guidance_artifacts(records[0], self.guidance_root)
+        (self.guidance_root / item["path"]).write_text("changed\n")
+        with self.assertRaisesRegex(AdjacentEdgeError, "artifact digest changed"):
+            validate_guidance_artifacts(records[0], self.guidance_root)
+
+    def test_release_local_retirement_removes_inherited_source(self):
+        self.write_record(
+            record(make_edge("1.0.0-alpha.1", "1.0.0-alpha.2"))
+        )
+        self.write_record(
+            record(
+                make_edge("1.0.0-alpha.2", "1.0.0-alpha.3"),
+                retirements=[
+                    {
+                        "version": "1.0.0-alpha.1",
+                        "reason": "Support window ended.",
+                    }
+                ],
+            )
+        )
+        catalog = read_catalog(self.root, "1.0.0-alpha.3")
+        self.assertEqual(["1.0.0-alpha.2"], catalog["supported_sources"])
+
+    def test_unknown_retirement_fails(self):
+        base = initial_catalog("1.0.0-alpha.1")
+        value = record(
+            make_edge("1.0.0-alpha.1", "1.0.0-alpha.2"),
+            retirements=[
+                {"version": "0.9.0", "reason": "Not supported."}
+            ],
+        )
+        with self.assertRaisesRegex(AdjacentEdgeError, "not inherited"):
+            append_release(base, value)
+
+    def test_immediate_previous_release_cannot_be_retired(self):
+        value = record(
+            make_edge("1.0.0-alpha.1", "1.0.0-alpha.2"),
+            retirements=[
+                {"version": "1.0.0-alpha.1", "reason": "No longer supported."}
+            ],
+        )
+        with self.assertRaisesRegex(AdjacentEdgeError, "immediately previous"):
+            validate_release_record(value)
+
+    def test_three_historical_sources_project_to_direct_manifest_edges(self):
+        item, _ = self.write_chain()
+        catalog = read_catalog(self.root, "1.0.0-alpha.4")
+        projections = manifest_edges(catalog)
+        self.assertEqual(
+            ["1.0.0-alpha.1", "1.0.0-alpha.2", "1.0.0-alpha.3"],
+            [entry["from"] for entry in projections],
+        )
+        self.assertEqual([item["path"]], projections[0]["guidance_paths"])
         self.assertEqual([], projections[1]["guidance_paths"])
         self.assertTrue(projections[0]["semantic_review_required"])
 
     def test_semantic_lag_receives_guidance_exactly_once(self):
-        prior = self.base()
-        current = self.extend(prior)
+        item, _ = self.write_chain()
+        catalog = read_catalog(self.root, "1.0.0-alpha.4")
         resolved = resolve_upgrade(
-            current,
+            catalog,
             installed_version="1.0.0-alpha.3",
             compatible_through="1.0.0-alpha.1",
             semantic_status="complete",
         )
         self.assertEqual(
-            [prior["guidance"][0]["guidance_id"]],
-            [item["guidance_id"] for item in resolved.effective_guidance],
+            [item["guidance_id"]],
+            [entry["guidance_id"] for entry in resolved.effective_guidance],
         )
 
     def test_channel_neutral_stable_edge(self):
-        prior = catalog(
-            "2.0.0-rc.1",
-            ["2.0.0-beta.1"],
-            [make_edge("2.0.0-beta.1", "2.0.0-rc.1")],
+        base = initial_catalog("2.0.0-rc.1")
+        current = append_release(
+            base,
+            record(make_edge("2.0.0-rc.1", "2.0.0")),
         )
-        current = catalog(
-            "2.0.0",
-            ["2.0.0-beta.1", "2.0.0-rc.1"],
-            [
-                *prior["edges"],
-                make_edge("2.0.0-rc.1", "2.0.0"),
-            ],
-        )
-        validate_release_delta(prior, current)
+        self.assertEqual("2.0.0", current["target_version"])
+        self.assertEqual(["2.0.0-rc.1"], current["supported_sources"])
 
 
 if __name__ == "__main__":
