@@ -7,7 +7,6 @@ import unittest
 from pathlib import Path
 
 from internal.release.adjacent_edges import AdjacentEdgeError, make_edge, resolve_upgrade
-from internal.release.catalog_policy import catalog_root_version
 from internal.release.release_catalog import (
     append_release,
     initial_catalog,
@@ -40,31 +39,29 @@ def record(edge, guidance_items=(), retirements=()):
     }
 
 
+def bootstrap_record(target: str):
+    return record(
+        make_edge("0.0.0", target, carry_unresolved_semantic_state=True),
+        retirements=[
+            {
+                "version": "0.0.0",
+                "reason": "Bootstrap sentinel is not an installed release.",
+            }
+        ],
+    )
+
+
 class ReleaseCatalogTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
         self.catalog_dir = self.root / "internal/release/catalogs"
         self.guidance_root = self.root / "internal/release/guidance"
-        self.fixture_dir = self.root / "internal/release/fixtures"
         self.catalog_dir.mkdir(parents=True)
         self.guidance_root.mkdir(parents=True)
-        self.fixture_dir.mkdir(parents=True)
-        self.write_policy("1.0.0-alpha.1")
 
     def tearDown(self):
         self.temp.cleanup()
-
-    def write_policy(self, initial: str, protected=()) -> None:
-        (self.fixture_dir / "release-upgrade-policy.json").write_text(
-            json.dumps(
-                {
-                    "schema_version": 1,
-                    "initial_release_version": initial,
-                    "protected_direct_sources": list(protected),
-                }
-            )
-        )
 
     def write_record(self, value) -> None:
         target = value["target_version"]
@@ -85,6 +82,7 @@ class ReleaseCatalogTests(unittest.TestCase):
     def write_chain(self):
         item = self.write_guidance("a1-a2/UPGRADE.md")
         records = [
+            bootstrap_record("1.0.0-alpha.1"),
             record(
                 make_edge(
                     "1.0.0-alpha.1",
@@ -114,12 +112,13 @@ class ReleaseCatalogTests(unittest.TestCase):
             self.write_record(value)
         return item, records
 
-    def test_each_file_contains_only_its_release_edge(self):
+    def test_every_release_file_contains_only_its_own_edge(self):
         _, records = self.write_chain()
         chain = read_release_chain(self.root, "1.0.0-alpha.4")
         self.assertEqual(records, list(chain))
         self.assertEqual(
             [
+                ("0.0.0", "1.0.0-alpha.1"),
                 ("1.0.0-alpha.1", "1.0.0-alpha.2"),
                 ("1.0.0-alpha.2", "1.0.0-alpha.3"),
                 ("1.0.0-alpha.3", "1.0.0-alpha.4"),
@@ -134,37 +133,21 @@ class ReleaseCatalogTests(unittest.TestCase):
             ["1.0.0-alpha.1", "1.0.0-alpha.2", "1.0.0-alpha.3"],
             catalog["supported_sources"],
         )
-        self.assertEqual(3, len(catalog["edges"]))
+        self.assertEqual(4, len(catalog["edges"]))
 
-    def test_catalog_root_can_be_later_than_first_published_release(self):
-        self.write_policy(
-            "1.0.0-alpha.1",
-            protected=["1.0.0-alpha.5"],
-        )
-        self.write_record(
-            record(make_edge("1.0.0-alpha.5", "1.0.0-alpha.6"))
-        )
-        self.write_record(
-            record(make_edge("1.0.0-alpha.6", "1.0.0-alpha.7"))
-        )
-        self.assertEqual("1.0.0-alpha.5", catalog_root_version(self.root))
-        catalog = read_catalog(self.root, "1.0.0-alpha.7")
-        self.assertEqual(
-            ["1.0.0-alpha.5", "1.0.0-alpha.6"],
-            catalog["supported_sources"],
-        )
-        self.assertEqual(2, len(catalog["edges"]))
-
-    def test_missing_intermediate_record_fails(self):
-        self.write_record(
-            record(make_edge("1.0.0-alpha.3", "1.0.0-alpha.4"))
-        )
+    def test_first_published_release_requires_bootstrap_edge_record(self):
         with self.assertRaisesRegex(AdjacentEdgeError, "missing release catalog record"):
-            read_catalog(self.root, "1.0.0-alpha.4")
+            read_catalog(self.root, "1.0.0-alpha.1")
+
+    def test_missing_any_intermediate_release_record_fails(self):
+        _, records = self.write_chain()
+        (self.catalog_dir / "1.0.0-alpha.2.json").unlink()
+        with self.assertRaisesRegex(AdjacentEdgeError, "missing release catalog record"):
+            read_catalog(self.root, records[-1]["target_version"])
 
     def test_wrong_previous_release_fails(self):
-        base = initial_catalog("1.0.0-alpha.1")
-        skipped = record(make_edge("1.0.0-alpha.2", "1.0.0-alpha.3"))
+        base = initial_catalog()
+        skipped = record(make_edge("1.0.0-alpha.1", "1.0.0-alpha.2"))
         with self.assertRaisesRegex(AdjacentEdgeError, "immediately previous"):
             append_release(base, skipped)
 
@@ -176,12 +159,24 @@ class ReleaseCatalogTests(unittest.TestCase):
 
     def test_guidance_artifact_digest_is_immutable(self):
         item, records = self.write_chain()
-        validate_guidance_artifacts(records[0], self.guidance_root)
+        validate_guidance_artifacts(records[1], self.guidance_root)
         (self.guidance_root / item["path"]).write_text("changed\n")
         with self.assertRaisesRegex(AdjacentEdgeError, "artifact digest changed"):
-            validate_guidance_artifacts(records[0], self.guidance_root)
+            validate_guidance_artifacts(records[1], self.guidance_root)
+
+    def test_bootstrap_sentinel_must_be_retired_by_first_release(self):
+        self.write_record(record(make_edge("0.0.0", "1.0.0-alpha.1")))
+        catalog = read_catalog(self.root, "1.0.0-alpha.1")
+        self.assertEqual(["0.0.0"], catalog["supported_sources"])
+        self.assertNotEqual([], catalog["supported_sources"])
+
+    def test_bootstrap_sentinel_can_be_retired_by_first_release(self):
+        self.write_record(bootstrap_record("1.0.0-alpha.1"))
+        catalog = read_catalog(self.root, "1.0.0-alpha.1")
+        self.assertEqual([], catalog["supported_sources"])
 
     def test_release_local_retirement_removes_inherited_source(self):
+        self.write_record(bootstrap_record("1.0.0-alpha.1"))
         self.write_record(
             record(make_edge("1.0.0-alpha.1", "1.0.0-alpha.2"))
         )
@@ -200,9 +195,9 @@ class ReleaseCatalogTests(unittest.TestCase):
         self.assertEqual(["1.0.0-alpha.2"], catalog["supported_sources"])
 
     def test_unknown_retirement_fails(self):
-        base = initial_catalog("1.0.0-alpha.1")
+        base = initial_catalog()
         value = record(
-            make_edge("1.0.0-alpha.1", "1.0.0-alpha.2"),
+            make_edge("0.0.0", "1.0.0-alpha.1"),
             retirements=[
                 {"version": "0.9.0", "reason": "Not supported."}
             ],
@@ -210,7 +205,7 @@ class ReleaseCatalogTests(unittest.TestCase):
         with self.assertRaisesRegex(AdjacentEdgeError, "not inherited"):
             append_release(base, value)
 
-    def test_immediate_previous_release_cannot_be_retired(self):
+    def test_non_bootstrap_previous_release_cannot_be_retired(self):
         value = record(
             make_edge("1.0.0-alpha.1", "1.0.0-alpha.2"),
             retirements=[
@@ -247,9 +242,12 @@ class ReleaseCatalogTests(unittest.TestCase):
         )
 
     def test_channel_neutral_stable_edge(self):
-        base = initial_catalog("2.0.0-rc.1")
+        catalog = append_release(
+            initial_catalog(),
+            bootstrap_record("2.0.0-rc.1"),
+        )
         current = append_release(
-            base,
+            catalog,
             record(make_edge("2.0.0-rc.1", "2.0.0")),
         )
         self.assertEqual("2.0.0", current["target_version"])
