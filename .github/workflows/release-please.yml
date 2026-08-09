@@ -86,7 +86,7 @@ jobs:
         run: |
           set -eu
           for output in release-a release-b; do
-            AVA_UPGRADE_CATALOG="internal/release/catalogs/${{ steps.identity.outputs.version }}.json" \
+            AVA_UPGRADE_CATALOG=internal/release/catalogs/${{ steps.identity.outputs.version }}.json \
               internal/release/assemble.sh \
               --output "$output" \
               --version "${{ steps.identity.outputs.version }}" \
