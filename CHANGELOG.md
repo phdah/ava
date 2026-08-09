@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-alpha.12](https://github.com/phdah/ava/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) (2026-08-09)
+
+
+### Features
+
+* define review sufficiency and termination ([#73](https://github.com/phdah/ava/issues/73)) ([14bc564](https://github.com/phdah/ava/commit/14bc564534d45a50676e65c6081be186831ead8e))
+* **release:** compose semantic upgrades from adjacent edges ([#76](https://github.com/phdah/ava/issues/76)) ([03f4bfd](https://github.com/phdah/ava/commit/03f4bfd80bfc91cb28d85f8cdf6ee00bc83f8b3c))
+
 ## [1.0.0-alpha.11](https://github.com/phdah/ava/compare/v1.0.0-alpha.10...v1.0.0-alpha.11) (2026-08-08)
 
 
