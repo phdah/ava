@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T22:30:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-08T18:06:00+02:00
+  at: 2026-08-09T00:27:47+02:00
 ---
 
 # Purpose
@@ -58,6 +58,14 @@ Installed validation reports `normal_routing_permitted` separately from overall 
 Host-access findings do not silently mutate project-owned configuration. Ava Maintenance reports the required OpenCode merge or host correction.
 
 Root-router regression coverage separately freezes unconditional router entry, managed-state gating, workflow and role resolution, required-reading completion, role-announcement ordering, and explicit unresolved-routing behavior. It validates both the repository source and assembled installed `/AGENTS.md` bytes against the maintained OpenCode access model, including the exact warranty request that exposed the generic-host-persona bypass.
+
+# Semantic review sufficiency
+
+Change Reviewer regression coverage freezes the default bounded `acceptance` standard, explicit `audit` standard, evidence-consequence-confidence-threshold finding admission test, optional-observation boundary, and terminal conclusions.
+
+Re-review coverage requires prior findings and remediation to be evaluated first. It permits a new or reopened finding only from changed evidence, changed scope, changed authority, or a genuine regression that independently passes the admission test. The maintained fixture covers a clean first review, satisfied remediation and re-review, a remediation regression, and an explicitly exhaustive audit.
+
+These semantic fixtures validate the managed review contract. They do not turn deterministic conformance into semantic approval or replace installed-release dogfood qualification.
 
 # Publication evidence
 

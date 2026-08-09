@@ -22,8 +22,8 @@ Installation, managed-file replacement, checksum verification, deterministic mig
 
 ### Semantic review
 
-- [Review change](review-change.md) - Performs a standardized read-only semantic review of one bounded project change.
-- [Review role catalog](review-role-catalog.md) - Reviews the complete registered role catalog for coverage, routing, authority, safeguards, and lifecycle consistency.
+- [Review change](review-change.md) - Performs a bounded semantic review that defaults to an acceptance threshold and supports explicit audit or monotonic re-review.
+- [Review role catalog](review-role-catalog.md) - Performs an explicit catalog-wide audit of coverage, routing, authority, safeguards, and lifecycle consistency.
 
 ### Project context audit
 
