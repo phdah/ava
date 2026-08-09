@@ -50,6 +50,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_synthetic_qualification_vault \
   internal.release.tests.test_adjacent_edges \
   internal.release.tests.test_release_catalog \
+  internal.release.tests.test_release_catalog_history \
   internal.release.tests.test_conformance \
   internal.release.tests.test_conformance_matrix \
   internal.release.tests.test_alpha_qualification \
