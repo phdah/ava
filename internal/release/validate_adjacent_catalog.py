@@ -13,7 +13,6 @@ from internal.release.adjacent_edges import AdjacentEdgeError, resolve_upgrade
 from internal.release.release_catalog import (
     catalog_path,
     read_catalog,
-    read_initial_version,
     read_release_record,
     validate_guidance_artifacts,
 )
@@ -25,7 +24,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("catalog", type=Path)
     parser.add_argument("--root", type=Path, default=Path.cwd())
-    parser.add_argument("--initial-version")
+    parser.add_argument("--catalog-root-version")
     parser.add_argument("--guidance-root", type=Path)
     parser.add_argument("--installed-version")
     parser.add_argument("--compatible-through")
@@ -49,11 +48,10 @@ def main(argv: list[str] | None = None) -> int:
                 f"catalog must be the target record at {expected}"
             )
         record = read_release_record(root, target_version)
-        initial = args.initial_version or read_initial_version(root)
         catalog = read_catalog(
             root,
             target_version,
-            initial_version=initial,
+            initial_version=args.catalog_root_version,
         )
         guidance_root = (
             args.guidance_root.resolve()
