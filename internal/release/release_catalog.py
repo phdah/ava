@@ -16,11 +16,10 @@ from internal.release.adjacent_edges import (
     validate_catalog,
     version_key,
 )
-from internal.release.catalog_policy import catalog_root_version
 
 
+BOOTSTRAP_VERSION = "0.0.0"
 CATALOG_DIRECTORY = Path("internal/release/catalogs")
-GUIDANCE_DIRECTORY = Path("internal/release/guidance")
 RELEASE_RECORD_FIELDS = {
     "catalog_schema",
     "target_version",
@@ -127,7 +126,7 @@ def validate_release_record(
 
     retirements = _normalize_retirements(record.get("retired_sources"))
     retired_versions = {item["version"] for item in retirements}
-    if edge["from"] in retired_versions:
+    if edge["from"] in retired_versions and edge["from"] != BOOTSTRAP_VERSION:
         raise AdjacentEdgeError(
             "the immediately previous release cannot be retired by its own edge"
         )
@@ -146,19 +145,18 @@ def validate_release_record(
 
 
 def read_release_record(root: Path, version: str) -> dict[str, Any]:
-    path = catalog_path(root, version)
     return validate_release_record(
-        read_json_object(path),
+        read_json_object(catalog_path(root, version)),
         target_version=version,
     )
 
 
-def initial_catalog(initial_version: str) -> dict[str, Any]:
-    version_key(initial_version)
+def initial_catalog(version: str = BOOTSTRAP_VERSION) -> dict[str, Any]:
+    version_key(version)
     return validate_catalog(
         {
             "catalog_schema": 1,
-            "target_version": initial_version,
+            "target_version": version,
             "supported_sources": [],
             "edges": [],
             "guidance": [],
@@ -207,21 +205,21 @@ def read_release_chain(
     root: Path,
     target_version: str,
     *,
-    initial_version: str | None = None,
+    root_version: str = BOOTSTRAP_VERSION,
 ) -> tuple[dict[str, Any], ...]:
-    initial = initial_version or catalog_root_version(root)
     version_key(target_version)
-    if version_key(target_version) < version_key(initial):
+    version_key(root_version)
+    if version_key(target_version) <= version_key(root_version):
+        if target_version == root_version:
+            return ()
         raise AdjacentEdgeError(
-            f"target {target_version} predates catalog root {initial}"
+            f"target {target_version} predates bootstrap root {root_version}"
         )
-    if target_version == initial:
-        return ()
 
     reverse_records: list[dict[str, Any]] = []
     current = target_version
     visited: set[str] = set()
-    while current != initial:
+    while current != root_version:
         if current in visited:
             raise AdjacentEdgeError(
                 f"cycle detected while following release records from {target_version}"
@@ -235,9 +233,9 @@ def read_release_chain(
         record = read_release_record(root, current)
         reverse_records.append(record)
         current = record["edge"]["from"]
-        if version_key(current) < version_key(initial):
+        if version_key(current) < version_key(root_version):
             raise AdjacentEdgeError(
-                f"release chain for {target_version} passes before catalog root {initial}"
+                f"release chain for {target_version} passes before bootstrap root {root_version}"
             )
 
     reverse_records.reverse()
@@ -248,15 +246,10 @@ def read_catalog(
     root: Path,
     target_version: str,
     *,
-    initial_version: str | None = None,
+    root_version: str = BOOTSTRAP_VERSION,
 ) -> dict[str, Any]:
-    initial = initial_version or catalog_root_version(root)
-    catalog = initial_catalog(initial)
-    for record in read_release_chain(
-        root,
-        target_version,
-        initial_version=initial,
-    ):
+    catalog = initial_catalog(root_version)
+    for record in read_release_chain(root, target_version, root_version=root_version):
         catalog = append_release(catalog, record)
     return catalog
 
