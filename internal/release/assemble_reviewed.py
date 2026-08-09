@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble a release from the canonical adjacent-edge catalog."""
+"""Assemble a release from recursively linked adjacent-edge records."""
 
 from __future__ import annotations
 
@@ -12,8 +12,9 @@ from pathlib import Path
 from internal.release import assemble
 from internal.release.adjacent_edges import AdjacentEdgeError, validate_catalog
 from internal.release.release_catalog import (
+    catalog_path,
     manifest_edges,
-    read_json_object,
+    read_catalog,
     validate_guidance_artifacts,
 )
 
@@ -50,7 +51,7 @@ def apply_reviewed_catalog(
     }
     if assembled_sources != reviewed_sources:
         raise ReviewedAssemblyError(
-            "assembled edge sources do not match the reviewed catalog: "
+            "assembled edge sources do not match the recursively composed catalog: "
             f"assembled={sorted(assembled_sources)}, "
             f"reviewed={sorted(reviewed_sources)}"
         )
@@ -129,37 +130,39 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     root = args.root.resolve()
-    catalog_path = args.upgrade_catalog.resolve()
+    target_version = assemble.canonical_version(args.version)
+    supplied_catalog_path = args.upgrade_catalog.resolve()
+    expected_catalog_path = catalog_path(root, target_version).resolve()
+    if supplied_catalog_path != expected_catalog_path:
+        raise ReviewedAssemblyError(
+            f"target release record must be {expected_catalog_path}"
+        )
+
     guidance_root = (
         args.guidance_root.resolve()
         if args.guidance_root
         else root / "internal/release/guidance"
     )
     try:
-        catalog = validate_catalog(read_json_object(catalog_path))
+        catalog = read_catalog(root, target_version)
     except AdjacentEdgeError as exc:
         raise ReviewedAssemblyError(str(exc)) from exc
-
-    target_version = assemble.canonical_version(args.version)
-    if catalog["target_version"] != target_version:
-        raise ReviewedAssemblyError(
-            f"catalog target {catalog['target_version']} does not match {target_version}"
-        )
 
     supplied_sources = set(args.upgrade_from)
     reviewed_sources = set(catalog["supported_sources"])
     if supplied_sources and supplied_sources != reviewed_sources:
         raise ReviewedAssemblyError(
-            "command-line upgrade sources disagree with the reviewed catalog: "
+            "command-line upgrade sources disagree with the recursively composed catalog: "
             f"command={sorted(supplied_sources)}, reviewed={sorted(reviewed_sources)}"
         )
 
     del args.upgrade_catalog
     del args.guidance_root
     args.upgrade_from = list(catalog["supported_sources"])
+    projections = manifest_edges(catalog)
     args.semantic_review_required = any(
         edge["semantic_review_required"]
-        for edge in catalog["edges"]
+        for edge in projections
     )
 
     with tempfile.TemporaryDirectory(prefix="ava-guidance-") as temporary:
@@ -173,7 +176,9 @@ def main(argv: list[str] | None = None) -> int:
         catalog,
         target_version,
     )
-    print(f"Applied reviewed adjacent catalog from {catalog_path}")
+    print(
+        f"Applied recursively composed adjacent records through {supplied_catalog_path}"
+    )
     return 0
 
 
