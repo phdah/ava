@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from internal.release.adjacent_edges import AdjacentEdgeError, version_key
+from internal.release.catalog_policy import catalog_root_version, read_upgrade_policy
 from internal.release.release_catalog import (
     catalog_path,
     read_catalog,
@@ -78,30 +79,6 @@ def validate_release_please_channel(
             f"{channel} release requires release-please prerelease=true, "
             f"versioning='prerelease', and prerelease-type='{channel}'"
         )
-
-
-def _read_upgrade_policy(root: Path) -> dict[str, Any]:
-    path = root / "internal/release/fixtures/release-upgrade-policy.json"
-    policy = _read_json(path)
-    if set(policy) != {
-        "schema_version",
-        "initial_release_version",
-        "protected_direct_sources",
-    }:
-        raise ReleasePrValidationError(f"{path} has invalid fields")
-    if policy["schema_version"] != 1:
-        raise ReleasePrValidationError(f"{path} schema_version must be 1")
-    initial = policy["initial_release_version"]
-    protected = policy["protected_direct_sources"]
-    if not isinstance(initial, str) or not SEMVER_RE.fullmatch(initial):
-        raise ReleasePrValidationError(f"{path} has invalid initial_release_version")
-    if (
-        not isinstance(protected, list)
-        or not all(isinstance(item, str) and SEMVER_RE.fullmatch(item) for item in protected)
-        or len(protected) != len(set(protected))
-    ):
-        raise ReleasePrValidationError(f"{path} has invalid protected source list")
-    return policy
 
 
 def validate_catalog_change_scope(
@@ -180,7 +157,11 @@ def validate_release_pr(
         _read_json(root / "release-please-config.json"),
         target_version,
     )
-    policy = _read_upgrade_policy(root)
+    try:
+        policy = read_upgrade_policy(root)
+        ledger_root = catalog_root_version(root)
+    except AdjacentEdgeError as exc:
+        raise ReleasePrValidationError(str(exc)) from exc
     initial_version = policy["initial_release_version"]
 
     legacy_impact = root / "internal/release/upgrade-impact.json"
@@ -205,7 +186,7 @@ def validate_release_pr(
             previous_catalog = read_catalog(
                 root,
                 previous_version,
-                initial_version=initial_version,
+                initial_version=ledger_root,
             )
             current_record = read_release_record(root, target_version)
             protected_retirements = {
@@ -226,7 +207,7 @@ def validate_release_pr(
             recursive_catalog = read_catalog(
                 root,
                 target_version,
-                initial_version=initial_version,
+                initial_version=ledger_root,
             )
             if recursive_catalog != expected_catalog:
                 raise ReleasePrValidationError(
