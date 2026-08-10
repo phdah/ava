@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T11:49:00+02:00
+  at: 2026-08-10T12:48:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -55,10 +55,12 @@ Every new prerelease uses the canonical adjacent catalog:
 
 ## Current state
 
-Findings 01 through 12 are complete. No dogfood finding is currently pending, while the dogfood umbrella remains active until the user explicitly ends it. The synthetic vault and corrective immutable release qualification remain pending supporting work.
+Findings 01 through 12 are complete. [Finding 13](dogfood/13-clarify-release-semantic-impact-assessment.md) is pending and blocks the next prerelease because release completion does not yet make the semantic-impact decision test explicit enough to prevent false-positive or false-negative `semantic_review_required` decisions.
 
 Finding 10 established that pull-request change types are selected from supported distribution impact rather than implementation novelty or source location. Repository-only qualification work remains non-releasable when it does not change produced assets or supported behavior, while internal release tooling remains releasable when its output or guarantees change.
 
 Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing. Every request still performs the managed-state gate, but a pure clarification may be roleless and a same-objective scoped follow-up may retain the already-active role without repeated registry traversal or unchanged required-reading reload. New tasks, explicit workflows or roles, changed authority or domain, scoped work after roleless handling, uncertain role fit, and managed-state overrides force fresh routing.
 
-The next release must provide immutable evidence for finding 11 by proving unchanged catalog inheritance, one-edge authoring, at least three composed historical sources, and exact-once semantic guidance. It must also exercise finding 12 through a realistic multi-turn session and preserve finding 07's generic-host no-bypass behavior.
+Finding 13 was exposed while completing the `1.0.0-alpha.14` release PR. The initial release-edge assessment incorrectly treated the absence of deterministic project-owned edits as evidence that semantic review was unnecessary. The corrected assessment recognized that project-owned authoritative instructions can remain structurally unchanged while becoming semantically incompatible with changed managed routing contracts. Future release completion must explicitly distinguish managed behavior changes from project-owned compatibility impact and justify both `true` and `false` semantic-review decisions.
+
+The next release after alpha.14 must not proceed until finding 13 is implemented. The synthetic vault and corrective immutable release qualification remain pending supporting work after the blocker is resolved.
