@@ -35,7 +35,7 @@
     }
   ],
   "validation_boundary": {
-    "maintainer_judgment": "Determine whether project-owned context may require semantic inspection or reconciliation from the reviewed managed delta.",
+    "maintainer_judgment": "The maintainer determines whether project-owned context may require semantic inspection or reconciliation from the reviewed managed delta.",
     "deterministic_validation": "Validate the explicit boolean and its representation consistency, including that semantic guidance exists only when semantic review is required. Do not infer semantic impact from changed files, behavior categories, or deterministic migration presence."
   }
 }
