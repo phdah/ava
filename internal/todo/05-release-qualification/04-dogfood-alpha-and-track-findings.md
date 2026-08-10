@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T15:58:00+02:00
+  at: 2026-08-10T16:23:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -73,6 +73,8 @@ A clear user statement that dogfooding is complete or that Ava should proceed to
 
 Findings 01 through 15 are complete. There are currently no pending dogfood findings, but this umbrella remains active until the user explicitly closes dogfooding.
 
+The synthetic corpus and all five specified images are user-confirmed as generated in a repository-external local directory. The content-generation subphase is complete. Current work is to finalize and verify those local artifacts, exercise ingestion and the remaining qualification variants, collect executable evidence, and then qualify the corrective immutable alpha.
+
 Finding 13 was exposed while completing the `1.0.0-alpha.14` release PR. The initial release-edge assessment incorrectly treated the absence of deterministic project-owned edits as evidence that semantic review was unnecessary. The implemented release procedure now separates managed delta, possible project-owned incompatibility, and required reconciliation. It requires reviewed rationale for both `true` and `false`, bounded guidance when review is required, and leaves the semantic decision with the maintainer rather than deterministic validation.
 
 Finding 14 was exposed during realistic Inbox Ingester use. The managed role encoded project-root `./inbox/` and `./inbox/index.md` references as Markdown links from its nested role directory, and the host resolved them beneath `/.ava/base/roles/inbox-ingester/`. The implemented fix now names those project-owned paths explicitly as project-root paths in prose and adds assembled-payload regression coverage so required reading cannot silently return to the broken role-relative link shape.
@@ -83,4 +85,4 @@ Finding 10 established that pull-request change types are selected from supporte
 
 Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing. Every request still performs the managed-state gate, but a pure clarification may be roleless and a same-objective scoped follow-up may retain the already-active role without repeated registry traversal or unchanged required-reading reload. New tasks, explicit workflows or roles, changed authority or domain, scoped work after roleless handling, uncertain role fit, and managed-state overrides force fresh routing.
 
-The synthetic vault and corrective immutable alpha qualification are the next pending supporting work. New `blocker` or `required-v1` findings may still preempt that sequence. After those two supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
+Synthetic-vault ingestion and qualification plus corrective immutable alpha qualification are the next pending supporting work. New `blocker` or `required-v1` findings may still preempt that sequence. After those two supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
