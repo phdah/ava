@@ -23,14 +23,14 @@ Core progress: 3 of 6 complete.
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 2 pending findings
+- 1 pending finding
 - 0 pending blockers
-- 2 pending required-v1 findings
-- 10 completed findings
+- 1 pending required-v1 finding
+- 11 completed findings
 
-[Define release-impact-based change types](dogfood/10-define-release-impact-based-change-types.md) is current and blocks release-candidate publication.
+[Avoid redundant routing for conversational follow-ups](dogfood/12-avoid-redundant-followup-routing.md) is current and blocks release-candidate publication. Its refined public routing contract requires explicit user approval before implementation.
 
-[Avoid redundant routing for conversational follow-ups](dogfood/12-avoid-redundant-followup-routing.md) is queued after finding 10 and also blocks release-candidate publication.
+[Define release-impact-based change types](dogfood/10-define-release-impact-based-change-types.md) is complete. Release classification now follows supported distribution impact rather than implementation novelty or repository location.
 
 [Normalize and enforce adjacent-edge release authoring](dogfood/11-enforce-adjacent-edge-release-authoring.md) is complete. The canonical alpha.12 catalog contains the retained adjacent graph, strict inherited-versus-proposed validation is required by release policy, and legacy cumulative authoring is disabled.
 
@@ -42,7 +42,7 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-Complete [release-impact-based change types](dogfood/10-define-release-impact-based-change-types.md), then [avoid redundant routing for conversational follow-ups](dogfood/12-avoid-redundant-followup-routing.md), then continue the supporting qualification sequence and any newly discovered higher-priority findings.
+Complete [avoid redundant routing for conversational follow-ups](dogfood/12-avoid-redundant-followup-routing.md) after explicit approval of its refined routing contract, then continue the supporting qualification sequence and any newly discovered higher-priority findings.
 
 ## Previous phase
 
