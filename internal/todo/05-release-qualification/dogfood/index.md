@@ -10,14 +10,16 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 [Clarify release semantic-impact assessment](13-clarify-release-semantic-impact-assessment.md) is complete. Release completion now distinguishes Ava-managed behavioral change from possible project-owned semantic incompatibility before deciding `semantic_review_required`, requires reviewed rationale for both outcomes, and keeps semantic judgment out of deterministic validation.
 
+[Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) is pending and blocks the next prerelease. Ava Maintenance currently searches for a non-existent installer binary when finalizing an upgrade, blocking every upgrade completion. The agent must be authorized to write the terminal state directly.
+
 [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) is complete. Every request retains the managed-state gate, pure clarifications may be roleless, same-objective scoped follow-ups may retain the already-active role, and new or changed scoped work performs fresh routing.
 
 The synthetic qualification vault remains the next supporting qualification task after the pending blocker is resolved. The dogfood umbrella remains active regardless of backlog state.
 
 ## Backlog status
 
-- 1 pending finding
-- 1 pending blocker
+- 2 pending findings
+- 2 pending blockers
 - 0 pending required-v1 findings
 - 13 completed findings
 
@@ -39,6 +41,7 @@ The synthetic qualification vault remains the next supporting qualification task
 | 12 | completed | required-v1 | release candidate | [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) |
 | 13 | completed | blocker | next prerelease | [Clarify release semantic-impact assessment](13-clarify-release-semantic-impact-assessment.md) |
 | 14 | pending | blocker | next prerelease | [Repair Inbox Ingester project-root links](14-repair-inbox-ingester-project-root-links.md) |
+| 15 | pending | blocker | next prerelease | [Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) |
 
 ## Backlog rules
 
@@ -49,4 +52,4 @@ The synthetic qualification vault remains the next supporting qualification task
 - Completed findings remain durable evidence.
 - Only the user may complete the parent dogfood task.
 
-Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 is implemented: every release PR must apply the project-owned semantic-impact assessment and preserve reviewed rationale before accepting its adjacent edge. Finding 14 must repair the Inbox Ingester's project-root inbox references and add installed-path regression coverage before another prerelease is published.
+Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 is implemented: every release PR must apply the project-owned semantic-impact assessment and preserve reviewed rationale before accepting its adjacent edge. Finding 14 must repair the Inbox Ingester's project-root inbox references and add installed-path regression coverage before another prerelease is published. Finding 15 must authorize agent-driven finalization in the Ava Maintenance instructions and upgrade protocol before any upgrade can complete without manual intervention.
