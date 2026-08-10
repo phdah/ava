@@ -38,7 +38,8 @@ GitHub Release
     -> thin shell installer or updater
     -> Ava-managed router, base bundle, state, and guidance
        plus preserved project-owned context
-    -> exactly one active role for each request
+    -> managed-state gate on every request
+    -> roleless follow-up, retained active role, or fresh role/workflow routing
 ```
 
 The installer and updater perform deterministic distribution work. The host agent interprets and maintains semantic project context. Ava does not need an MCP protocol layer or persistent command application between them.
@@ -95,15 +96,20 @@ Ava distinguishes four public concepts:
 3. **Shared instructions** define routing, metadata, history, ownership, and other common contracts.
 4. **Knowledge** provides trusted project context that roles and workflows load when relevant.
 
-Workflows are optional explicit procedural scopes, not command aliases for ordinary role work. A free-form request selects a role directly. A workflow is justified only when it adds repeatable scope, meaningful inputs, an operating mode, procedure-specific constraints, or a standardized expected output.
+Workflows are optional explicit procedural scopes, not command aliases for ordinary role work. A freshly routed free-form request selects a role directly. A conversational follow-up may instead be roleless when it only clarifies the immediately preceding result, or it may retain the already-active role when it continues the same objective and that role remains clearly correct. A workflow is justified only when it adds repeatable scope, meaningful inputs, an operating mode, procedure-specific constraints, or a standardized expected output.
 
 The intended relationship is:
 
 ```text
-request -> managed root router -> exactly one active role
-explicit workflow -> exactly one primary role
+request -> managed root router -> managed-state gate
+pure conversational follow-up -> no active role
+same-objective scoped follow-up -> retain one active role
+new or changed scoped work -> fresh routing -> exactly one active role
+explicit workflow -> fresh workflow resolution -> exactly one primary role
 role or workflow -> managed contracts plus relevant project context
 ```
+
+A roleless turn ends active-role continuity. Later scoped work must route afresh. Role continuity is only current conversation context and does not require persistent Ava runtime state.
 
 Roles and workflows remain ordinary Markdown. Deterministic installation, integrity verification, managed-file replacement, mechanical migrations, and structural validation belong to release tooling rather than workflows or agent roles.
 
@@ -184,7 +190,7 @@ Ownership is established by the accepted path contract, manifest record, authori
 
 ## Router and project extensions
 
-The managed root router discovers:
+The managed root router always performs the managed-state gate. When fresh routing is required, it discovers:
 
 - managed instruction contracts under `/.ava/base/shared/`
 - managed default roles under `/.ava/base/roles/`
@@ -192,6 +198,8 @@ The managed root router discovers:
 - project-owned roles through `/roles/index.md` when present
 - project-owned workflows through `/workflows/index.md` when present
 - project-owned shared instructions, knowledge, and inbox material only when relevant
+
+A valid roleless conversational follow-up does not traverse role or workflow registries. A valid same-role continuation reuses the already-active role and its already-loaded required context rather than resolving the same role again. New tasks, explicit workflows or roles, changed authority or domain, role mismatch, scoped work after a roleless turn, and managed-state overrides force fresh routing.
 
 Managed and project-owned registries remain separate. A project must not edit managed registries to add project-specific entries.
 
@@ -230,6 +238,8 @@ Ava releases follow Semantic Versioning based on supported behavior, not only wh
 - **PATCH** releases preserve supported structure and intended behavior.
 - **MINOR** releases add backward-compatible capability that is explicitly opt-in or proven not to change existing routing, resolution, authority, validation, or behavior.
 - **MAJOR** releases introduce incompatible format, routing, ownership, authority, resolution, validation, or behavioral changes.
+
+Routing compatibility includes whether a request is roleless, retains an active role, or performs fresh workflow or role resolution, together with the resulting active-role and required-reading behavior.
 
 Every installed project records its Ava state in `/.ava/state/manifest.json`.
 
@@ -307,17 +317,17 @@ The authored document metadata and workflow instructions under `templates/base/s
 An installed project provides deterministic guidance for how an agent reads it:
 
 1. Automatically or explicitly load the root `/AGENTS.md` file.
-2. Read the managed instruction-resolution and upgrade-state contracts.
-3. Determine whether the request explicitly invokes a registered managed or project-owned workflow or is a free-form request.
-4. Resolve exactly one active role from the managed and project-owned registries.
-5. Read the active role's `index.md` and every document it marks as required.
-6. Read the workflow prompt, inputs, and workflow-specific context when a workflow is active.
-7. Follow explicit links to task-specific instructions and project context only when relevant.
-8. Resolve instruction overlap by explicit activation scope rather than directory depth.
-9. Keep capabilities and constraints cumulative and non-expandable at narrower scopes.
-10. Ask the user when routing, ownership, or instruction conflicts remain unresolved.
+2. Perform the managed maintenance and upgrade state gate for every request.
+3. When normal operation is permitted, classify the turn as a roleless conversational follow-up, same-role continuation, or fresh routing.
+4. For a roleless follow-up, answer only the clarification or refinement without role-scoped authority and clear role continuity for later turns.
+5. For a same-role continuation, confirm the same objective and role fit, retain the already-loaded required instruction set, and announce that the role remains active.
+6. Otherwise perform fresh routing: resolve an explicit workflow or select exactly one role from the managed and project-owned registries.
+7. During fresh routing, read the active role's `index.md` and every document it marks as required before announcing it.
+8. Read the workflow prompt, inputs, and workflow-specific context only for an explicitly active workflow.
+9. Follow explicit links to task-specific instructions and project context only when relevant.
+10. Resolve instruction overlap by explicit activation scope rather than directory depth, keep capabilities and constraints cumulative and non-expandable at narrower scopes, and ask the user when routing, ownership, or instruction conflicts remain unresolved.
 
-The current user request supplies the immediate objective and narrowest procedural scope, bounded by the active role, project constraints, and capabilities provided by the host agent and its available tools.
+The current user request supplies the immediate objective and narrowest procedural scope, bounded by the active role when role-scoped handling is required, project constraints, and capabilities provided by the host agent and its available tools.
 
 ## Design goals
 

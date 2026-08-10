@@ -6,18 +6,18 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 ## Current next finding
 
-[Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) is the first actionable pending finding. It is `required-v1` work before release-candidate publication and requires explicit approval of the refined routing contract before implementation.
+No dogfood finding is currently pending. Dogfooding remains active and any new realistic-use finding must be added as the next numbered bounded task before it is resolved.
 
-[Define release-impact-based change types](10-define-release-impact-based-change-types.md) is complete. Conventional Commit types now follow supported distribution impact rather than implementation novelty or repository location, with maintained examples and regression coverage.
+[Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) is complete. Every request retains the managed-state gate, pure clarifications may be roleless, same-objective scoped follow-ups may retain the already-active role, and new or changed scoped work performs fresh routing.
 
-[Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) is complete. The active alpha.5 through alpha.12 history is canonical adjacent state, legacy cumulative authoring is disabled, and required release gates enforce one new previous-to-target edge.
+With the dogfood backlog currently empty, the active Phase 5 roadmap resumes [Build the synthetic v1 qualification vault](../04a-build-synthetic-qualification-vault.md). An empty backlog does not complete dogfooding or authorize release-candidate publication.
 
 ## Backlog status
 
-- 1 pending finding
+- 0 pending findings
 - 0 pending blockers
-- 1 pending required-v1 finding
-- 11 completed findings
+- 0 pending required-v1 findings
+- 12 completed findings
 
 ## Findings
 
@@ -34,7 +34,7 @@ Dogfooding remains active until the user explicitly declares it complete.
 | 09 | completed | required-v1 | release candidate | [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) |
 | 10 | completed | required-v1 | release candidate | [Define release-impact-based change types](10-define-release-impact-based-change-types.md) |
 | 11 | completed | blocker | next prerelease | [Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) |
-| 12 | pending | required-v1 | release candidate | [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) |
+| 12 | completed | required-v1 | release candidate | [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) |
 
 ## Backlog rules
 
@@ -45,4 +45,4 @@ Dogfooding remains active until the user explicitly declares it complete.
 - Completed findings remain durable evidence.
 - Only the user may complete the parent dogfood task.
 
-Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release.
+Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact.

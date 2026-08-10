@@ -6,6 +6,9 @@ tags: [ava, distribution, semver, compatibility, manifest, upgrades]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-10T11:49:00+02:00
 ---
 
 # Ava Versioning and Compatibility
@@ -299,6 +302,8 @@ MAJOR examples include:
 - moving or repurposing a managed or project-owned public path
 - changing the meaning of an existing manifest field or semantic state
 - adding a required metadata field that makes an existing supported project invalid
+- changing whether a supported turn is roleless, retains an active role, or requires fresh workflow or role resolution
+- changing when active-role continuity is cleared, when required reading is reused, or when a role announcement is required
 - changing a workflow's primary role, mode, required inputs, invocation identity, or intended outcome
 - removing a registered workflow or changing its replacement behavior
 - changing a role's authority, capabilities, constraints, or activation outcomes
@@ -329,12 +334,15 @@ For each fixture and request or explicit workflow invocation, compare at least:
 
 - validation success, errors, and blocking warnings
 - managed versus project-owned path classification
+- conversational routing classification: `roleless`, `same-role`, or `fresh-routing`
+- whether active-role continuity is retained or cleared
 - resolved workflow identity
 - resolved primary role
-- free-form selected role
+- free-form selected role when fresh routing applies
 - ambiguity and failure outcomes
 - workflow mode
-- complete required-reading closure
+- complete required-reading closure, including whether unchanged role reading is validly reused
+- role activation or continuation announcement behavior
 - effective capabilities and constraints
 - mutation authority and prohibited operations
 - semantic migration requirement
@@ -417,9 +425,9 @@ The [document metadata contract](../templates/base/shared/instructions/document-
 
 # Host conformance and compatibility claims
 
-Ava compatibility assumes the host loads the complete managed router, required instructions, selected role, and workflow context according to the installed contracts.
+Ava compatibility assumes the host loads the complete managed router, required instructions for freshly selected roles, retained required instructions for valid same-role continuations, and workflow context for explicit workflow invocations according to the installed contracts.
 
-When a host agent skips required reading, applies incompatible precedence, cannot preserve unknown metadata, or cannot perform required file operations, Ava must not report the project as fully compatible merely because the files parse.
+When a host agent skips the managed-state gate, bypasses fresh routing, applies incompatible precedence, cannot preserve unknown metadata, cannot reliably retain required context for claimed same-role continuation, or cannot perform required file operations, Ava must not report the project as fully compatible merely because the files parse.
 
 Host discovery is reported separately as `native`, `project-provided`, `explicit-only`, or `unsupported`. Unsupported or unverified host behavior may block semantic migration and must be recorded as an unresolved decision when it prevents completion.
 

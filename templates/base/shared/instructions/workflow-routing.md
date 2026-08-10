@@ -1,20 +1,23 @@
 ---
 type: Shared Instruction
 title: Workflow Registry and Routing
-description: Deterministic managed and project-owned workflow registration, explicit invocation, external trigger discovery, role resolution, routing precedence, validation, and deprecation rules.
-tags: [ava, workflows, registry, routing, validation]
+description: Deterministic managed and project-owned workflow registration, explicit invocation, external trigger discovery, role resolution, routing precedence, conversational continuity boundaries, validation, and deprecation rules.
+tags: [ava, workflows, registry, routing, validation, conversations]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T14:10:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-10T11:49:00+02:00
 ---
 
 # Purpose
 
-This instruction defines how managed and project-owned workflows become registered, how a request or external executor explicitly invokes one workflow, how the router resolves its primary role, and when routing must stop instead of guessing.
+This instruction defines how managed and project-owned workflows become registered, how a request or external executor explicitly invokes one workflow, how the router resolves its primary role, how workflow routing interacts with conversational continuity, and when routing must stop instead of guessing.
 
 Workflow routing is deterministic. Ava does not infer a workflow from semantic similarity to an ordinary request.
 
-Portable trigger discovery and executor ownership follow [Workflow triggers](workflow-triggers.md).
+Portable trigger discovery and executor ownership follow [Workflow triggers](workflow-triggers.md). Turn-level roleless, same-role, and fresh-routing classification follows [Instruction resolution](instruction-resolution.md).
 
 All paths beginning with `./` are resolved from the project root.
 
@@ -72,6 +75,8 @@ Workflow titles and descriptions are for humans and semantic discovery. They are
 
 A client may provide a dedicated workflow selector or structured invocation field. The resulting value must still resolve by canonical path or unambiguous filename stem according to this contract.
 
+An explicit workflow invocation always forces fresh routing. A currently active role, even when it equals the workflow's `primary_role`, must not bypass workflow registry resolution, validation, input resolution, or workflow-specific context loading.
+
 # External trigger discovery and invocation
 
 An external executor may inspect registered workflows for portable `triggers` metadata according to [Workflow triggers](workflow-triggers.md).
@@ -89,19 +94,26 @@ An executor must not use trigger metadata to bypass routing or execute an unregi
 
 Ava does not validate or operate the external scheduler or event binding. It validates only the portable workflow declaration and the resulting explicit workflow invocation.
 
-# Routing precedence
+# Routing precedence and conversational continuity
 
-The managed upgrade-state check runs before ordinary workflow or role routing. When the upgrade protocol does not permit normal operation, workflow discovery and invocation remain blocked and the managed Upgrade Role is selected directly.
+The managed upgrade-state check runs before conversational classification, ordinary workflow routing, or role routing. When the upgrade protocol does not permit normal operation, workflow discovery and invocation remain blocked and the required managed role is selected directly.
 
-When normal operation is permitted, an explicitly invoked registered workflow takes precedence over free-form role selection.
+When normal operation is permitted, [Instruction resolution](instruction-resolution.md) first determines whether the turn is a roleless conversational follow-up, a same-role continuation, or fresh routing.
+
+- A roleless conversational follow-up does not traverse workflow registries because no workflow procedure or scoped authority may be required.
+- A same-role continuation does not traverse workflow registries when it is ordinary continuation of the same objective and does not require a workflow-specific procedure.
+- Fresh routing loads this contract and performs workflow resolution as defined below.
+- Any explicit workflow invocation forces fresh routing regardless of the currently active role or immediately preceding turn.
+
+When fresh routing is required and normal operation is permitted, an explicitly invoked registered workflow takes precedence over free-form role selection.
 
 The router must not ignore an explicit workflow invocation and select a role directly from the request. It must first resolve and validate the workflow, then activate the workflow's declared `primary_role`.
 
-When no workflow is explicitly invoked, the router must not guess a workflow. It uses semantic free-form role selection across the managed and project-owned role registries.
+When fresh routing is required and no workflow is explicitly invoked, the router must not guess a workflow. It uses semantic free-form role selection across the managed and project-owned role registries.
 
 # Workflow-driven routing
 
-After the root router has loaded the instruction-resolution and workflow-routing contracts, an explicitly invoked workflow must be processed in this order:
+After the root router has selected fresh routing and loaded the instruction-resolution and workflow-routing contracts, an explicitly invoked workflow must be processed in this order:
 
 1. Confirm that managed upgrade state permits normal routing.
 2. Resolve the invocation through the managed and project-owned workflow registries.
@@ -115,11 +127,11 @@ After the root router has loaded the instruction-resolution and workflow-routing
 10. Resolve the workflow inputs supplied by the invocation.
 11. Execute the workflow within its declared mode, the active role's authority, cumulative constraints, the user's approved scope, and capabilities exposed by the host agent and its available tools.
 
-The workflow remains the active procedural scope for the duration of the invocation. It does not replace the role as the authority boundary.
+The workflow remains the active procedural scope only for that explicit invocation. It does not replace the role as the authority boundary and does not become implicit workflow state for later turns.
 
-# Interactive free-form routing
+# Fresh free-form routing
 
-For a request without an explicit workflow invocation, the router must:
+For a request without an explicit workflow invocation when instruction resolution requires fresh routing, the router must:
 
 1. read the managed role registry at `./.ava/base/roles/index.md`
 2. read the project-owned role registry at `./roles/index.md` when present
@@ -129,6 +141,20 @@ For a request without an explicit workflow invocation, the router must:
 6. load and announce that role before acting
 
 A free-form request may have the same intent as a known workflow without invoking it. In that case the role may perform ordinary work within its durable instructions, but the workflow's procedure, inputs, mode, required context, triggers, and expected output are not active.
+
+Same-role continuation is not fresh free-form routing. When instruction resolution has established valid same-role continuation, the role registry is not traversed again and unchanged required reading is not reloaded.
+
+# Workflow continuity across turns
+
+Workflow procedural scope does not persist implicitly across turns.
+
+A follow-up after a workflow invocation has three possible outcomes under the instruction-resolution contract:
+
+- it may be roleless when it only clarifies the preceding result and requires no workflow or role authority
+- it may continue the workflow's primary role as ordinary same-role work when it continues the same objective but no longer requires workflow-specific procedure, inputs, mode, or context
+- it must use fresh routing when it invokes the workflow again, requires its procedural scope, starts a new task, changes authority, or otherwise fails the same-role conditions
+
+A workflow must never be considered active merely because it was invoked earlier in the conversation. Reusing workflow-specific mode or procedure requires a new explicit invocation.
 
 # Registered role resolution
 
@@ -219,6 +245,8 @@ Treat these as errors or blocking findings:
 - automatic fallback from a failed workflow invocation to role selection
 - automatic redirection through `replaced_by`
 - an external executor invoking an inferred workflow rather than an explicit canonical path
+- an explicit workflow invocation reusing same-role continuity instead of performing fresh workflow resolution
+- workflow-specific procedure, mode, inputs, or context being treated as active on a later turn without a new explicit invocation
 
 Treat these as warnings or semantic findings:
 

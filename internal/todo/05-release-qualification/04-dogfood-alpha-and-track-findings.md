@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T11:37:00+02:00
+  at: 2026-08-10T11:49:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -24,7 +24,7 @@ Only the user may mark this umbrella task complete. A passing suite, empty backl
 
 ## Required scenario coverage
 
-Dogfooding covers installation into empty and mature projects, repeated OpenCode sessions, role and workflow routing, context maintenance, inbox ingestion, independent review, damaged-state diagnosis, transaction recovery, semantic upgrades, uninstall, reinstall, and every supported published transition.
+Dogfooding covers installation into empty and mature projects, repeated OpenCode sessions, role and workflow routing, conversational follow-ups and routing transitions, context maintenance, inbox ingestion, independent review, damaged-state diagnosis, transaction recovery, semantic upgrades, uninstall, reinstall, and every supported published transition.
 
 The synthetic qualification vault supplies a reproducible baseline, but realistic projects remain required.
 
@@ -55,10 +55,10 @@ Every new prerelease uses the canonical adjacent catalog:
 
 ## Current state
 
-Findings 01 through 11 are complete. Finding 12 is the only pending `required-v1` finding and is now the current next task. The synthetic vault and corrective immutable release qualification remain pending supporting work.
+Findings 01 through 12 are complete. No dogfood finding is currently pending, while the dogfood umbrella remains active until the user explicitly ends it. The synthetic vault and corrective immutable release qualification remain pending supporting work.
 
 Finding 10 established that pull-request change types are selected from supported distribution impact rather than implementation novelty or source location. Repository-only qualification work remains non-releasable when it does not change produced assets or supported behavior, while internal release tooling remains releasable when its output or guarantees change.
 
-Finding 12 captures the follow-up-routing dogfood issue: pure conversational follow-ups should not require fresh role resolution, and same-role continuation should retain the active role without repeated routing, while new substantive work must preserve finding 07's no-bypass guarantee.
+Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing. Every request still performs the managed-state gate, but a pure clarification may be roleless and a same-objective scoped follow-up may retain the already-active role without repeated registry traversal or unchanged required-reading reload. New tasks, explicit workflows or roles, changed authority or domain, scoped work after roleless handling, uncertain role fit, and managed-state overrides force fresh routing.
 
-The next release must provide immutable evidence for finding 11 by proving unchanged catalog inheritance, one-edge authoring, at least three composed historical sources, and exact-once semantic guidance.
+The next release must provide immutable evidence for finding 11 by proving unchanged catalog inheritance, one-edge authoring, at least three composed historical sources, and exact-once semantic guidance. It must also exercise finding 12 through a realistic multi-turn session and preserve finding 07's generic-host no-bypass behavior.

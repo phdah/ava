@@ -2,6 +2,16 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-08-10
+
+* **Conversation-aware routing**: Split the unconditional per-request managed-state gate from full workflow and role resolution. Normal-operation turns are now classified as roleless conversational follow-ups, same-role continuations, or fresh routing.
+* **Roleless clarification boundary**: Pure clarification or refinement of the immediately preceding result may run without an active role only when no project action, workflow procedure, role capability, constraint, authority, or new decision boundary is required. A roleless turn clears active-role continuity.
+* **Same-role continuation**: Same-objective scoped follow-ups may retain the already-active role and its already-loaded unchanged required reading, with `Active role remains: <role title>` announced before role-scoped handling.
+* **Fresh-routing triggers**: New tasks, explicit workflow or role activation, changed domain or authority, role mismatch, unavailable role context, scoped work after a roleless turn, and managed-state overrides force fresh routing.
+* **No persistent role state**: Role continuity is conversation-scoped only and does not introduce a runtime service, manifest field, project metadata, or other durable Ava state.
+* **No-bypass preservation**: The finding 07 generic-host safeguard remains intact because every request still enters Ava's managed-state gate and continuity decision before substantive handling, including apparently out-of-domain requests.
+* **Routing compatibility coverage**: Added maintained source and assembled-installation fixtures for roleless clarification, same-role continuation, role transitions, scoped work after roleless handling, unresolved routing, and the original warranty bypass.
+
 ## 2026-08-07
 
 * **Substantive ingestion inventory**: Required every substantive source section to receive an explicit `mapped`, `non-durable`, or `pending` disposition before an inbox source can be marked processed.
