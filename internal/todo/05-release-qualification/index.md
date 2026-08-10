@@ -55,13 +55,20 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Current step: 1 of 6, validate the generated synthetic v1 qualification vault through ingestion and qualification.**
+**Current step: 1 of 6, exercise the finalized synthetic v1 qualification vault through ingestion and qualification.**
 
-The user confirmed on 2026-08-10 that the repository-external synthetic corpus and all five specified images have been generated locally and look correct. Treat the content-generation subphase as complete. The local bytes are not available to this repository, so byte-level finalization and verification must still be recorded through the fixture commands before their evidence is accepted.
+For this qualification run, the user has confirmed that corpus generation, all five image generations, image finalization, and finalized-corpus verification are complete and recorded locally.
 
-Continue with [Step 1 of the V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification): finalize and verify the existing local corpus, materialize the variants, exercise them against the exact Ava revision under qualification, complete clean OpenCode inbox ingestion and independent review, exercise recovery and upgrade lifecycle states, and validate the run manifests and repository boundaries.
+Use:
 
-Do not regenerate the corpus or images unless validation exposes a fixture defect. After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
+```text
+qualification vault: ~/stuff/ava-qualification-vault/
+test project:        ~/stuff/project-vault
+```
+
+Continue with [Step 1 of the V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification): materialize the variants from the finalized vault, exercise them against the exact Ava revision under qualification, use the test project for the manual OpenCode flow where appropriate, complete chronological inbox ingestion and independent review, exercise recovery and upgrade lifecycle states, and validate run manifests and repository boundaries.
+
+Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
 
 ## Previous phase
 
