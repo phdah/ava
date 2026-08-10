@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T16:23:00+02:00
+  at: 2026-08-10T16:33:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -46,52 +46,46 @@ Do not infer closure from an empty findings backlog, passing tests, or publicati
 
 The deterministic fixture implementation is complete.
 
-The user confirmed on 2026-08-10 that the synthetic corpus and all five specified images have already been generated in a repository-external local directory and look correct. Treat that confirmation as completion of the **content-generation subphase**. The repository cannot inspect those local bytes, so do not claim independent hash, file-type, or oracle verification until the local fixture commands are run.
+The user confirmed on 2026-08-10 that the synthetic corpus and all five specified images have been generated in a repository-external local directory and look correct. The user also confirmed that image finalization and finalized-corpus verification have been completed and recorded. Treat those confirmations as completion of corpus generation and finalization for this qualification run. The repository cannot inspect the local bytes directly, so this is recorded as user-confirmed external evidence rather than repository-generated evidence.
 
 Current subphase status:
 
 - [x] deterministic corpus generated locally
 - [x] five specified images generated locally and visually accepted by the user
-- [ ] image finalization and finalized-corpus verification recorded
+- [x] image finalization and finalized-corpus verification recorded
 - [ ] qualification variants materialized
 - [ ] clean OpenCode ingestion and routing evidence completed
 - [ ] independent semantic review and expected-outcome checks completed
 - [ ] upgrade, recovery, finalization, and lifecycle scenarios completed
 - [ ] run manifests validated and qualification evidence accepted
 
-The immediate goal is therefore **validation of the generated corpus through real ingestion and qualification**, not generation of another corpus.
+Use these user-owned local paths for the current qualification run:
+
+```text
+qualification vault: ~/stuff/ava-qualification-vault/
+test project:        ~/stuff/project-vault
+```
+
+The immediate goal is therefore **execution of the finalized corpus through real ingestion and qualification**.
 
 ### Operator procedure
 
-Point `QUALIFICATION_ROOT` at the user's existing generated directory outside the Ava repository:
+Use the recorded local locations:
 
 ```sh
-QUALIFICATION_ROOT=/absolute/path/to/existing/qualification-vault
+QUALIFICATION_ROOT=~/stuff/ava-qualification-vault/
+TEST_PROJECT=~/stuff/project-vault
 ```
 
-1. Finalize and hash the five already-generated image files. This verifies that they exist at the exact declared destinations and records their actual bytes in the finalized inventory:
-
-```sh
-python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py finalize-images "$QUALIFICATION_ROOT"
-```
-
-2. Verify the complete finalized corpus before ingestion:
-
-```sh
-python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py verify "$QUALIFICATION_ROOT"
-```
-
-If either command fails, fix the reported local fixture problem before continuing. Do not regenerate content merely because these commands have not previously been run.
-
-3. Materialize all eight isolated qualification variants:
+1. Materialize all eight isolated qualification variants from the finalized vault:
 
 ```sh
 python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py materialize-variants "$QUALIFICATION_ROOT"
 ```
 
-4. Use the execution plans recorded in the generated variants as the scenario-specific source of truth. Exercise them against the exact assembled Ava revision under qualification. At minimum, complete the fresh-install, mature-project, registered-role, pending-inbox, damaged-managed-content, interrupted-upgrade, pending-semantic-reconciliation, and uninstall/reinstall scenarios required by the task.
+2. Use the execution plans recorded in the generated variants as the scenario-specific source of truth. Exercise them against the exact assembled Ava revision under qualification. Use `$TEST_PROJECT` as the active manual OpenCode test project where the scenario calls for a working project. At minimum, complete the fresh-install, mature-project, registered-role, pending-inbox, damaged-managed-content, interrupted-upgrade, pending-semantic-reconciliation, and uninstall/reinstall scenarios required by the task.
 
-5. For inbox-ingestion qualification, process the corpus in chronological batches where the execution plan calls for staged ingestion. Copy the direct files from each batch into the project inbox rather than copying the batch directory itself:
+3. For inbox-ingestion qualification, process the corpus in chronological batches where the execution plan calls for staged ingestion. Copy the direct files from each batch into the project inbox rather than copying the batch directory itself:
 
 ```text
 01-pre-move
@@ -102,7 +96,7 @@ python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py mater
 
 For each batch, start from the scenario state defined by the execution plan, run the managed inbox-ingestion flow in a clean OpenCode session, and record the transcript, loaded paths, selected role, role announcement point, source dispositions, and resulting project-owned changes.
 
-6. After ingestion, run an independent semantic review against the expected outcomes in the fixture oracle. Check at minimum:
+4. After ingestion, run an independent semantic review against the expected outcomes in the fixture oracle. Check at minimum:
 
 - durable versus non-durable disposition
 - private/work routing separation
@@ -113,28 +107,28 @@ For each batch, start from the scenario state defined by the execution plan, run
 - role routing and conversational follow-up behavior
 - image-derived facts against their declared expected outcomes
 
-7. Exercise the remaining lifecycle variants and record deterministic state evidence for damaged managed content, interrupted upgrades, semantic reconciliation, successful agent-driven finalization, uninstall, and reinstall. Preserve before-and-after project-owned hashes so the evidence can prove which files changed.
+5. Exercise the remaining lifecycle variants and record deterministic state evidence for damaged managed content, interrupted upgrades, semantic reconciliation, successful agent-driven finalization, uninstall, and reinstall. Preserve before-and-after project-owned hashes so the evidence can prove which files changed.
 
-8. Populate the run manifest for every accepted scenario with the exact Ava version, source revision, asset identity, host/model/session identity, project-owned hashes, installer and conformance output, transcript, expected outcome, actual outcome, reviewer, and linked finding.
+6. Populate the run manifest for every accepted scenario with the exact Ava version, source revision, asset identity, host/model/session identity, project-owned hashes, installer and conformance output, transcript, expected outcome, actual outcome, reviewer, and linked finding.
 
-9. Validate every populated run manifest before accepting its result:
+7. Validate every populated run manifest before accepting its result:
 
 ```sh
 python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py verify-run-manifest /absolute/path/outside/ava/run-manifest.json
 ```
 
-10. Run repository qualification after any repository-side evidence or task-link updates:
+8. Run repository qualification after any repository-side evidence or task-link updates:
 
 ```sh
 internal/release/test.sh
 internal/release/validate-boundaries.sh
 ```
 
+Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalidates the recorded local evidence.
+
 ### Step 1 completion gate
 
-Advance only when the synthetic-vault task's completion criteria are satisfied, including finalized five-image inventory, all required qualification variants exercised, clean OpenCode ingestion and review evidence recorded, run manifests valid, and repository boundary validation passing.
-
-User confirmation of corpus and image quality completes generation, but does not by itself complete Step 1 because the purpose of this step is qualification of actual Ava behavior against that corpus.
+Advance only when the synthetic-vault task's completion criteria are satisfied, including all required qualification variants exercised, clean OpenCode ingestion and review evidence recorded, lifecycle scenarios accepted, run manifests valid, and repository boundary validation passing.
 
 ## Step 2: qualify and publish the corrective alpha
 
