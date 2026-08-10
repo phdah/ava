@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T22:30:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-09T00:27:47+02:00
+  at: 2026-08-10T11:49:00+02:00
 ---
 
 # Purpose
@@ -55,9 +55,11 @@ Installed validation reports `normal_routing_permitted` separately from overall 
 - semantic compatibility is complete for the installed `ava_version`
 - no blocking deterministic, semantic, or routing finding exists
 
+`normal_routing_permitted` means the managed-state gate allows ordinary conversation-aware routing. It does not mean every turn must traverse workflow and role registries.
+
 Host-access findings do not silently mutate project-owned configuration. Ava Maintenance reports the required OpenCode merge or host correction.
 
-Root-router regression coverage separately freezes unconditional router entry, managed-state gating, workflow and role resolution, required-reading completion, role-announcement ordering, and explicit unresolved-routing behavior. It validates both the repository source and assembled installed `/AGENTS.md` bytes against the maintained OpenCode access model, including the exact warranty request that exposed the generic-host-persona bypass.
+Root-router regression coverage separately freezes unconditional router entry and the managed-state gate on every turn, then the normal-operation continuity decision between roleless conversational handling, same-role continuation, and fresh routing. It verifies that roleless clarification performs no project action, same-role continuation retains an already-loaded role without registry traversal or required-reading reload, explicit workflows and routing transitions force fresh resolution, a roleless turn clears stale role continuity, and the original warranty request still cannot be answered or refused by a generic host persona before Ava decides routing. The coverage validates both the repository source and assembled installed `/AGENTS.md` bytes against the maintained OpenCode access model.
 
 # Semantic review sufficiency
 
