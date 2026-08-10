@@ -1,8 +1,8 @@
 # Roles
 
-This file is the managed default role catalog used by the root `./AGENTS.md` router.
+This file is the managed default role catalog used by the root `./AGENTS.md` router when fresh role routing is required.
 
-Read a selected role's `index.md` before acting. Project-owned roles are discovered separately through `./roles/index.md` when present.
+Read a selected role's `index.md` before acting after fresh routing. Project-owned roles are discovered separately through `./roles/index.md` when present. A valid same-role continuation may retain the already-active role without traversing this catalog or reloading unchanged required reading, while a roleless conversational follow-up activates no role.
 
 ## Ava lifecycle roles
 
