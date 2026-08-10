@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T15:15:00+02:00
 updated:
-  by: agent:opencode
-  at: 2026-08-10T11:53:37+02:00
+  by: agent:openai-chatgpt
+  at: 2026-08-10T14:12:32+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,11 +23,11 @@ Read the [ordered roadmap](todo/index.md) before acting.
 
 ## Current next task
 
-[Repair Inbox Ingester project-root links](todo/05-release-qualification/dogfood/14-repair-inbox-ingester-project-root-links.md) is the current next task. It must correct managed role references that currently resolve the project-owned `inbox/` beneath the Inbox Ingester role directory and block required reading.
+[Permit agent-driven upgrade finalization](todo/05-release-qualification/dogfood/15-permit-agent-driven-upgrade-finalization.md) is the current next task. It must remove the installer-binary framing from Ava Maintenance finalization and explicitly authorize the agent to write the terminal upgrade state directly once semantic compatibility is confirmed complete.
 
-[Permit agent-driven upgrade finalization](todo/05-release-qualification/dogfood/15-permit-agent-driven-upgrade-finalization.md) is a pending dogfood blocker. It must remove the installer-binary framing from Ava Maintenance finalization and explicitly authorize the agent to write the terminal upgrade state directly once semantic compatibility is confirmed complete.
+[Repair Inbox Ingester project-root links](todo/05-release-qualification/dogfood/14-repair-inbox-ingester-project-root-links.md) is complete. The Inbox Ingester now names the project-owned inbox through explicit project-root paths, and installed-payload regression coverage prevents the broken role-relative resolution from returning.
 
-[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) remains the next supporting qualification task after the pending dogfood blockers are resolved.
+[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) remains the next supporting qualification task after the pending dogfood blocker is resolved.
 
 [Clarify release semantic-impact assessment](todo/05-release-qualification/dogfood/13-clarify-release-semantic-impact-assessment.md) is complete. Release completion now distinguishes managed behavioral change from possible incompatibility in project-owned context, requires reviewed rationale for both `semantic_review_required` outcomes, and keeps the semantic decision with maintainers rather than deterministic tooling.
 
