@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Repair Inbox Ingester project-root links
 description: Fix Inbox Ingester references that incorrectly resolve the project-owned inbox beneath the managed role directory instead of the project root.
 tags: [internal, roadmap, dogfood, inbox, roles, links, routing]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 14
@@ -13,6 +13,9 @@ affected_version: general managed Inbox Ingester role, exposed during alpha dogf
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-10T13:21:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-10T14:12:32+02:00
 ---
 
 # Repair Inbox Ingester Project-Root Links
@@ -25,32 +28,38 @@ During realistic recipe ingestion, the Inbox Ingester failed while loading its r
 
 and stopped because that file does not exist.
 
-The failure comes from `templates/base/roles/inbox-ingester/index.md`, which currently describes the project inbox through role-relative links such as `./inbox/` and requires `[Inbox convention](./inbox/index.md)`. Once assembled under `/.ava/base/roles/inbox-ingester/`, those references resolve beneath the managed role directory rather than to the project-owned root `inbox/` directory.
+The failure came from `templates/base/roles/inbox-ingester/index.md`, which described the project inbox through Markdown links such as `./inbox/` and required `[Inbox convention](./inbox/index.md)`. Ava's path contract defines `./...` as project-root-relative for agent-facing project paths, but ordinary Markdown link resolution from the nested managed role directory made the host treat those targets as role-relative.
 
-This makes a valid Inbox Ingester activation fail before ingestion can begin. The dogfood session confirmed that manually clarifying that the intended target is the project-root `inbox/` directory allows the interaction to continue.
+This made a valid Inbox Ingester activation fail before ingestion could begin. The dogfood session confirmed that manually clarifying that the intended target was the project-root `./inbox/` directory allowed the interaction to continue.
 
-## Expected fix
+## Implemented fix
 
-Make the Inbox Ingester reference the project-owned inbox through the canonical project-root path rather than a path relative to the managed role directory.
+The Inbox Ingester now states the project-owned inbox and required inbox convention as explicit project-root paths in prose rather than encoding them as nested Markdown link targets. Required reading names `./inbox/index.md` directly and explicitly says not to resolve it relative to the Inbox Ingester role directory.
 
-At minimum, review:
-
-- `templates/base/roles/inbox-ingester/index.md`
-- the assembled `/.ava/base/roles/inbox-ingester/index.md` representation
-- link or conformance validation that should catch managed-role references resolving into nonexistent managed subdirectories
-
-The fix should remain bounded to path resolution. Do not change Inbox Ingester ownership, ingestion semantics, or the project-owned status of `/inbox/` merely to repair the links.
+The change remains bounded to path resolution. Inbox ownership, ingestion semantics, and the project-owned status of `./inbox/` are unchanged.
 
 ## Completion criteria
 
-- [ ] the Inbox Ingester overview resolves `inbox/` to the project-owned project-root directory
-- [ ] required reading resolves the Inbox convention to the project-root `/inbox/index.md`, not `/.ava/base/roles/inbox-ingester/inbox/index.md`
-- [ ] no managed Inbox Ingester instruction treats the project inbox as a child of the role directory
-- [ ] assembled or installed-path validation covers the corrected references
-- [ ] regression coverage fails if the role again tries to load `/.ava/base/roles/inbox-ingester/inbox/index.md`
-- [ ] the Inbox Ingester can complete required reading in a conforming installed project with the standard project-owned inbox scaffold
-- [ ] affected indexes, fixtures, and tests are aligned
+- [x] the Inbox Ingester overview resolves `inbox/` to the project-owned project-root directory
+- [x] required reading resolves the Inbox convention to project-root `./inbox/index.md`, not `/.ava/base/roles/inbox-ingester/inbox/index.md`
+- [x] no managed Inbox Ingester instruction treats the project inbox as a child of the role directory
+- [x] assembled or installed-path validation covers the corrected references
+- [x] regression coverage fails if the role again expresses the project inbox through the broken nested Markdown-link shape
+- [x] the Inbox Ingester can complete required reading in a conforming installed project with the standard project-owned inbox scaffold
+- [x] affected indexes, fixtures, and tests are aligned
+
+## Resolution evidence
+
+The resolving change:
+
+- replaces the Inbox Ingester's `./inbox/` and `./inbox/index.md` Markdown links with explicit project-root path instructions in `templates/base/roles/inbox-ingester/index.md`
+- keeps ordinary document-relative links for managed role files and the managed role registry
+- extends `internal/release/tests/test_installed_paths.py` to inspect the assembled payload mapping for `/.ava/base/roles/inbox-ingester/index.md`
+- asserts that the assembled role names project-root `./inbox/index.md`, does not contain the broken `](./inbox/` link shape, includes the standard project-owned `/inbox/index.md` scaffold destination, and never creates `/.ava/base/roles/inbox-ingester/inbox/index.md`
+- uses the existing `internal.release.tests.test_installed_paths` suite entry, so the regression runs as part of `internal/release/test.sh`
+
+Published installed-project confirmation remains a release qualification gate and does not keep this repository implementation task pending.
 
 ## Release gate
 
-This finding blocks the next prerelease because the published managed Inbox Ingester cannot reliably activate for its primary workflow while its required-reading path points to a nonexistent managed location.
+The repository blocker is resolved. The next prerelease still remains blocked by any other pending blocker in the dogfood backlog, currently finding 15.

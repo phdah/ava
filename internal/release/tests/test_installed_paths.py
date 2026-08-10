@@ -9,6 +9,8 @@ import unittest
 from pathlib import Path
 from typing import Any
 
+from internal.release.assemble import read_payloads
+
 SOURCE_ROOT = Path(__file__).resolve().parents[3]
 VALIDATOR_PATH = SOURCE_ROOT / "internal/release/validate-installed-paths.py"
 
@@ -32,6 +34,20 @@ class InstalledPathTests(unittest.TestCase):
 
     def test_root_router_project_paths_resolve(self) -> None:
         self.assertEqual(validator.unresolved_router_paths(SOURCE_ROOT), [])
+
+    def test_inbox_ingester_required_reading_uses_project_root_inbox(self) -> None:
+        payloads = {item.destination: item for item in read_payloads(SOURCE_ROOT)}
+        role_destination = "/.ava/base/roles/inbox-ingester/index.md"
+        role_index = payloads[role_destination].data.decode("utf-8")
+
+        self.assertIn("project-owned `./inbox/` directory at the project root", role_index)
+        self.assertIn("project-root `./inbox/index.md`", role_index)
+        self.assertNotIn("](./inbox/", role_index)
+        self.assertIn("/inbox/index.md", payloads)
+        self.assertNotIn(
+            "/.ava/base/roles/inbox-ingester/inbox/index.md",
+            payloads,
+        )
 
     def test_root_router_inline_code_paths_are_validated(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
