@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-08-10
+
+- **Release-impact-based change types**: Conventional Commit types now describe impact on the supported Ava distribution rather than implementation novelty or repository location. Repository-only qualification, tests, CI, documentation, and maintenance remain non-releasable when they do not change produced assets or supported behavior, while internal release tooling remains releasable when its output or guarantees change. Maintained examples and release tests freeze the boundary, including the synthetic qualification vault case.
+
 ## 2026-08-09
 
 - **Strict recursive adjacent release authoring**: Normalized retained alpha.5 through alpha.12 history into immutable release-local records, with exactly one previous-to-target edge per file. Removed active `upgrade-impact.json` authoring, made cumulative guidance non-selectable archival evidence, and changed release validation to reject historical record changes. Upgrade qualification and release assembly now follow predecessor records recursively and derive installer-compatible source projections in memory.
