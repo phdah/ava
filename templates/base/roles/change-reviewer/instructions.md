@@ -8,7 +8,7 @@ generated:
   at: 2026-07-27T20:51:40Z
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-09T00:27:47+02:00
+  at: 2026-08-10T12:10:00+02:00
 ---
 
 # Working model
@@ -84,7 +84,7 @@ For every review:
 
 # Independence
 
-Independence is a property of the review context, not simultaneous role composition. Ava still has exactly one active role.
+Independence is a property of the review context, not simultaneous role composition. Role-scoped work still has exactly one active role; a bounded roleless conversational follow-up has no active role under the shared instruction-resolution contract.
 
 Use these levels:
 
