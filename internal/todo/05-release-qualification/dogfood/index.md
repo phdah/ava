@@ -6,18 +6,18 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 ## Current next finding
 
-[Define release-impact-based change types](10-define-release-impact-based-change-types.md) is the first actionable pending finding. It is `required-v1` work before release-candidate publication.
+[Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) is the first actionable pending finding. It is `required-v1` work before release-candidate publication and requires explicit approval of the refined routing contract before implementation.
 
-[Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) is queued as the next `required-v1` routing finding after finding 10. It must refine finding 07 without restoring host-persona routing bypasses.
+[Define release-impact-based change types](10-define-release-impact-based-change-types.md) is complete. Conventional Commit types now follow supported distribution impact rather than implementation novelty or repository location, with maintained examples and regression coverage.
 
 [Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) is complete. The active alpha.5 through alpha.12 history is canonical adjacent state, legacy cumulative authoring is disabled, and required release gates enforce one new previous-to-target edge.
 
 ## Backlog status
 
-- 2 pending findings
+- 1 pending finding
 - 0 pending blockers
-- 2 pending required-v1 findings
-- 10 completed findings
+- 1 pending required-v1 finding
+- 11 completed findings
 
 ## Findings
 
@@ -32,7 +32,7 @@ Dogfooding remains active until the user explicitly declares it complete.
 | 07 | completed | blocker | next prerelease | [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) |
 | 08 | completed | required-v1 | release candidate | [Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) |
 | 09 | completed | required-v1 | release candidate | [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) |
-| 10 | pending | required-v1 | release candidate | [Define release-impact-based change types](10-define-release-impact-based-change-types.md) |
+| 10 | completed | required-v1 | release candidate | [Define release-impact-based change types](10-define-release-impact-based-change-types.md) |
 | 11 | completed | blocker | next prerelease | [Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) |
 | 12 | pending | required-v1 | release candidate | [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) |
 
