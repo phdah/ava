@@ -1,11 +1,14 @@
 ---
 type: Role Capabilities
 title: Ava Maintenance Capabilities
-description: Permitted inspection, recovery coordination, upgrade invocation, host reporting, and bounded Ava removal actions.
+description: Permitted inspection, recovery coordination, terminal finalization, upgrade invocation, host reporting, and bounded Ava removal actions.
 tags: [ava, role, maintenance, capabilities]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T21:47:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-10T14:51:00+02:00
 ---
 
 # Managed inspection
@@ -24,9 +27,10 @@ Ava Maintenance may:
 The role may:
 
 - invoke an existing verified installer or updater for an explicit upgrade
-- invoke existing resume, abort, rollback, or finalization operations when the protocol and user authorization permit them
-- provide the exact required user command when the host cannot invoke an operation
-- diagnose why deterministic recovery is blocked and identify the required decision or prerequisite
+- invoke existing resume, abort, or rollback operations when the protocol and user authorization permit them
+- directly perform the protocol-defined terminal journal write and recorded transaction-workspace cleanup when semantic compatibility is complete and every finalization precondition is proven
+- provide the exact required user command when the host cannot invoke an installer-backed operation
+- diagnose why deterministic recovery or finalization is blocked and identify the required decision or prerequisite
 
 # Removal
 
