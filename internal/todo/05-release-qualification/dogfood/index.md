@@ -8,14 +8,16 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 [Clarify release semantic-impact assessment](13-clarify-release-semantic-impact-assessment.md) is pending and blocks the next prerelease. Release completion must distinguish Ava-managed behavioral change from project-owned semantic incompatibility before deciding `semantic_review_required`, and must justify both `true` and `false` decisions without defaulting to either.
 
+[Repair Inbox Ingester project-root links](14-repair-inbox-ingester-project-root-links.md) is pending and also blocks the next prerelease. The managed role currently resolves its project-owned `inbox/` references beneath `/.ava/base/roles/inbox-ingester/`, causing required reading to fail before ingestion begins.
+
 [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) is complete. Every request retains the managed-state gate, pure clarifications may be roleless, same-objective scoped follow-ups may retain the already-active role, and new or changed scoped work performs fresh routing.
 
-The synthetic qualification vault remains the next supporting qualification task after the pending blocker is resolved. The dogfood umbrella remains active regardless of backlog state.
+The synthetic qualification vault remains the next supporting qualification task after the pending blockers are resolved. The dogfood umbrella remains active regardless of backlog state.
 
 ## Backlog status
 
-- 1 pending finding
-- 1 pending blocker
+- 2 pending findings
+- 2 pending blockers
 - 0 pending required-v1 findings
 - 12 completed findings
 
@@ -36,6 +38,7 @@ The synthetic qualification vault remains the next supporting qualification task
 | 11 | completed | blocker | next prerelease | [Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) |
 | 12 | completed | required-v1 | release candidate | [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) |
 | 13 | pending | blocker | next prerelease | [Clarify release semantic-impact assessment](13-clarify-release-semantic-impact-assessment.md) |
+| 14 | pending | blocker | next prerelease | [Repair Inbox Ingester project-root links](14-repair-inbox-ingester-project-root-links.md) |
 
 ## Backlog rules
 
@@ -46,4 +49,4 @@ The synthetic qualification vault remains the next supporting qualification task
 - Completed findings remain durable evidence.
 - Only the user may complete the parent dogfood task.
 
-Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 must be implemented before another release PR is completed so release authoring cannot mechanically advance semantic compatibility from an insufficient project-owned impact assessment.
+Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 must be implemented before another release PR is completed so release authoring cannot mechanically advance semantic compatibility from an insufficient project-owned impact assessment. Finding 14 must repair the Inbox Ingester's project-root inbox references and add installed-path regression coverage before another prerelease is published.
