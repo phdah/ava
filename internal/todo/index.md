@@ -10,7 +10,8 @@ GitHub Release
     -> versioned Ava-managed base content
        plus project-owned roles, workflows, instructions, and knowledge
     -> Ava-managed root AGENTS.md
-    -> exactly one active role for each request
+    -> managed-state gate on every request
+    -> roleless follow-up, retained active role, or fresh role/workflow routing
 ```
 
 - The files are Ava's product and public interface.
@@ -27,7 +28,8 @@ GitHub Release
 - Semantic compatibility of project-owned content is tracked separately from `ava_version`.
 - Project-owned upgrade changes happen through one explicit request that loads installed release guidance.
 - Managed pre-routing selects Ava Maintenance for deterministic or malformed state and Upgrade Role for semantic reconciliation.
-- Every request enters managed state gating and explicit workflow or role routing before substantive handling. A generic host persona cannot bypass the Ava router based on apparent subject matter.
+- Every request enters the managed-state gate and Ava's routing decision before substantive handling. Pure clarifications may be roleless, same-objective scoped follow-ups may retain the already-active role and loaded required context, and fresh routing is mandatory for new tasks, explicit workflow or role activation, changed authority or domain, role mismatch, scoped work after a roleless turn, or managed-state override. A generic host persona cannot bypass this decision based on apparent subject matter.
+- Role continuity is conversation-scoped only and does not add persistent runtime, manifest, or project state.
 - OpenCode is Ava's first installer-supported host configuration. Ava keeps `./.ava/` hidden, creates project-owned OpenCode permissions by default when possible, preserves existing configuration, and validates maintained host behavior through the conformance suite.
 - Document creation provenance and latest meaningful-update provenance are separate. `generated` remains immutable creation provenance, while canonical `updated` records only the latest meaningful mutation.
 - No pre-`1.0.0` Ava installation is a supported user state. Historical unversioned Ava migration is therefore outside the v1 roadmap; unknown historical layouts must be refused safely.
@@ -44,14 +46,14 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 1 pending finding, 0 pending blockers, 1 pending required-v1 finding, 3 pending supporting qualification tasks, and 11 completed findings
+5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 0 pending findings, 0 pending blockers, 0 pending required-v1 findings, 3 pending supporting qualification tasks, and 12 completed findings
 6. [Backlog.md integration](06-backlog-md/) - 0 of 2 complete; queued after release qualification
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
 
 The managed Ava Maintenance role provides the agent-facing interface for installed identity, integrity, deterministic recovery coordination, host accessibility, explicit upgrades, finalization, and safe removal. Upgrade Role remains isolated to semantic reconciliation of project-owned context.
 
-The unified conformance suite validates repository structure, installed managed state, semantic routing gates, unconditional root-router sequencing, filesystem safety, transaction rollback, host support, release integrity, trust evidence, and immutable publication requirements through stable machine-readable findings and indexed fixtures.
+The unified conformance suite validates repository structure, installed managed state, semantic routing gates, unconditional managed-state entry, conversation-aware continuity, filesystem safety, transaction rollback, host support, release integrity, trust evidence, and immutable publication requirements through stable machine-readable findings and indexed fixtures.
 
 The alpha qualification policy composes that conformance evidence with roadmap completion, reproducible release assembly, defect classification, prerelease upgrade declarations, and exact publication approval.
 
@@ -59,13 +61,12 @@ Release-please enforces supported-distribution release classification at the mer
 
 Alpha publication is complete through immutable `1.0.0-alpha.12`. The remaining ordered path to the first stable release is:
 
-1. complete [avoid redundant routing for conversational follow-ups](05-release-qualification/dogfood/12-avoid-redundant-followup-routing.md), including explicit approval of the refined routing contract before implementation
-2. resume the reproducible [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) and remaining external qualification work
-3. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings and the normalized adjacent-edge process
-4. continue working the [dogfood findings backlog](05-release-qualification/dogfood/) during realistic prerelease use and keep the dogfood umbrella active until the user explicitly declares it complete
-5. publish the release candidate only after dogfood blockers and required RC work are resolved
-6. [stabilize the published release candidate](05-release-qualification/05a-stabilize-release-candidate.md) through the complete generated-vault matrix
-7. qualify and publish `1.0.0`
+1. resume the reproducible [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) and remaining external qualification work
+2. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including the normalized adjacent-edge process and conversational routing transitions
+3. continue working the [dogfood findings backlog](05-release-qualification/dogfood/) during realistic prerelease use and keep the dogfood umbrella active until the user explicitly declares it complete
+4. publish the release candidate only after dogfood blockers and required RC work are resolved
+5. [stabilize the published release candidate](05-release-qualification/05a-stabilize-release-candidate.md) through the complete generated-vault matrix
+6. qualify and publish `1.0.0`
 
 Dogfood findings are numbered independently from the six core Phase 5 gates. New findings may be added and resolved continuously without renumbering release stages. Completed findings remain as durable evidence, and an empty backlog does not automatically advance the roadmap.
 
