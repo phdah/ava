@@ -19,8 +19,8 @@ GitHub Release
 - GitHub Releases provide immutable, version-addressable installer, bundle, checksum, manifest, change-note, and migration assets.
 - The installer performs deterministic installation, managed-file reconciliation, integrity verification, recovery operations, and mechanical migrations.
 - The host agent performs semantic work against project-owned context through existing Ava roles and instructions.
-- Agent-facing installation inspection, explanation, deterministic recovery coordination, explicit upgrade initiation, host access reporting, and removal belong to Ava Maintenance rather than new status, repair, or uninstall command surfaces.
-- Ava Maintenance may invoke deterministic installer operations such as resume, abort, rollback, and finalize, but must not manually reconstruct managed payloads or rewrite protected state.
+- Agent-facing installation inspection, explanation, deterministic recovery coordination, explicit upgrade initiation, host access reporting, terminal finalization, and removal belong to Ava Maintenance rather than new status, repair, finalization, or uninstall command surfaces.
+- Ava Maintenance invokes deterministic installer operations such as resume, abort, and rollback, but successful post-semantic finalization is a bounded direct terminal journal transition performed by the role after all protocol preconditions pass. It must not manually reconstruct managed payloads or perform other protected state rewrites.
 - Upgrade Role remains the sole managed role for project-owned semantic reconciliation and compatibility transitions.
 - Ava uses exactly two ownership classes: Ava-managed and project-owned.
 - The root `AGENTS.md` and installed Ava base are Ava-managed. Project customization and host-specific configuration remain project-owned.
@@ -46,12 +46,12 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 1 pending finding, 1 pending blocker, 0 pending required-v1 findings, 3 pending supporting qualification tasks, and 14 completed findings
+5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 0 pending findings, 0 pending blockers, 0 pending required-v1 findings, 3 pending supporting qualification tasks, and 15 completed findings
 6. [Backlog.md integration](06-backlog-md/) - 0 of 2 complete; queued after release qualification
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
 
-The managed Ava Maintenance role provides the agent-facing interface for installed identity, integrity, deterministic recovery coordination, host accessibility, explicit upgrades, finalization, and safe removal. Upgrade Role remains isolated to semantic reconciliation of project-owned context.
+The managed Ava Maintenance role provides the agent-facing interface for installed identity, integrity, deterministic recovery coordination, host accessibility, explicit upgrades, bounded terminal finalization, and safe removal. Upgrade Role remains isolated to semantic reconciliation of project-owned context.
 
 The unified conformance suite validates repository structure, installed managed state, semantic routing gates, unconditional managed-state entry, conversation-aware continuity, filesystem safety, transaction rollback, host support, release integrity, trust evidence, and immutable publication requirements through stable machine-readable findings and indexed fixtures.
 
@@ -61,13 +61,12 @@ Release-please enforces supported-distribution release classification at the mer
 
 Alpha publication is complete through immutable `1.0.0-alpha.12`. The remaining ordered path to the first stable release is:
 
-1. resolve [Permit agent-driven upgrade finalization](05-release-qualification/dogfood/15-permit-agent-driven-upgrade-finalization.md) before completing another prerelease
-2. resume the reproducible [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) and remaining external qualification work
-3. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including the normalized adjacent-edge process and conversational routing transitions
-4. continue working the [dogfood findings backlog](05-release-qualification/dogfood/) during realistic prerelease use and keep the dogfood umbrella active until the user explicitly declares it complete
-5. publish the release candidate only after dogfood blockers and required RC work are resolved
-6. [stabilize the published release candidate](05-release-qualification/05a-stabilize-release-candidate.md) through the complete generated-vault matrix
-7. qualify and publish `1.0.0`
+1. resume the reproducible [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) and remaining external qualification work
+2. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including normalized adjacent-edge authoring, conversational routing transitions, and agent-driven finalization
+3. continue working the [dogfood findings backlog](05-release-qualification/dogfood/) during realistic prerelease use and keep the dogfood umbrella active until the user explicitly declares it complete
+4. publish the release candidate only after dogfood blockers and required RC work are resolved
+5. [stabilize the published release candidate](05-release-qualification/05a-stabilize-release-candidate.md) through the complete generated-vault matrix
+6. qualify and publish `1.0.0`
 
 Dogfood findings are numbered independently from the six core Phase 5 gates. New findings may be added and resolved continuously without renumbering release stages. Completed findings remain as durable evidence, and an empty backlog does not automatically advance the roadmap.
 
@@ -93,7 +92,7 @@ Complete these concerns as part of the relevant individual tasks:
 - preserve the separation between Ava Maintenance and the internal Ava Internal Maintainer
 - preserve the separation between deterministic Ava Maintenance and semantic Upgrade Role authority
 - describe operational capabilities through the host agent and available tools, not a required workspace-provider abstraction
-- keep deterministic managed-state mutations inside the installer or updater even when a role initiates them
+- keep deterministic managed-state mutations inside the installer or updater except for Ava Maintenance's protocol-defined successful terminal finalization transition
 - validate required files, metadata, links, version state, ownership, and migration references
 - update affected template and repository indexes
 - update conceptual logs only when a task introduces a major conceptual or structural change

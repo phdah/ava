@@ -1,21 +1,21 @@
 ---
 type: Distribution Contract
 title: Ava Upgrade and Migration Protocol
-description: Defines deterministic base upgrades, durable transaction state, maintenance and semantic routing, rollback, and semantic completion.
+description: Defines deterministic base upgrades, durable transaction state, maintenance and semantic routing, rollback, finalization, and semantic completion.
 tags: [ava, distribution, upgrades, migrations, transactions, compatibility, maintenance]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T21:47:00+02:00
+  at: 2026-08-10T14:51:00+02:00
 ---
 
 # Ava Upgrade and Migration Protocol
 
 This contract defines supported release transitions without silently overwriting managed conflicts or treating a new managed base as completed migration of project-owned context.
 
-It implements [Ava Distribution and Ownership Boundary](ownership.md), [Ava Versioning and Compatibility](versioning.md), and [Ava GitHub Release Assets](releases.md). The updater owns deterministic state mutation. Ava Maintenance interprets and invokes deterministic lifecycle operations. Upgrade Role owns project-owned semantic reconciliation.
+It implements [Ava Distribution and Ownership Boundary](ownership.md), [Ava Versioning and Compatibility](versioning.md), and [Ava GitHub Release Assets](releases.md). The updater owns deterministic mutation through managed commit and recovery operations. Ava Maintenance interprets and invokes those operations and owns the bounded terminal finalization transition after semantic completion. Upgrade Role owns project-owned semantic reconciliation.
 
 # Invariants
 
@@ -29,7 +29,7 @@ It implements [Ava Distribution and Ownership Boundary](ownership.md), [Ava Vers
 8. Immutable release metadata must declare every supported source-to-target transition.
 9. Resume and rollback use durable recorded state, never filesystem guesses.
 10. Automatic rollback never reverses project-owned edits.
-11. Ava Maintenance may invoke deterministic operations but must not reproduce or bypass their protected state transitions.
+11. Ava Maintenance may invoke deterministic operations but must not reproduce or bypass their protected state transitions, except for the exact protocol-defined terminal finalization transition after every finalization precondition is proven.
 12. Upgrade Role may update semantic state but must not perform deterministic installation administration.
 
 # Managed state
@@ -53,7 +53,7 @@ The updater replaces the live manifest last. The new manifest records the target
 - project-owned paths later changed by Upgrade Role
 - current failure and permitted operations
 
-The updater writes and validates the journal before live mutation. Each transition uses temporary-file write, flush, and atomic rename.
+The updater writes and validates the journal before live mutation and through deterministic recovery. Each transition uses temporary-file write, flush, and atomic rename. The only agent-owned journal mutation is the terminal finalization transition defined below, which uses the same atomic-write requirement.
 
 Terminal states may remain for reporting. Normal routing requires both a safe terminal journal state and `semantic_compatibility.status: complete`.
 
@@ -126,7 +126,6 @@ Migrations operate only on managed payload or managed state. Each step declares:
 For every traversed edge, the updater selects only its declared IDs, verifies each descriptor and file, rejects missing or duplicate IDs, cycles, invalid dependencies, transition mismatches, and ambiguous ordering, then records a stable topological order by dependency, edge, numeric order, and ID.
 
 For each migration:
-
 1. verify preconditions
 2. execute against staged managed content or state
 3. execute verification
@@ -210,17 +209,24 @@ Ava Maintenance remains responsible for deterministic status explanation, finali
 
 ## Completion
 
-After full validation and semantic completion, the deterministic finalization mechanism records:
+After full validation and semantic completion, Ava Maintenance performs the protocol-defined terminal finalization transition directly. Before any journal write it validates that semantic compatibility is complete, no unresolved decisions remain, the managed commit and selected edges are complete, every managed change has a terminal classification, the journal is in a finalizable post-commit state, and any recorded transaction workspace resolves safely to this transaction.
+
+The atomic terminal journal write records:
 
 ```json
 {
   "status": "complete",
   "stage": "complete",
+  "current_edge": null,
+  "staging": null,
+  "failure": null,
   "allowed_operations": ["normal"]
 }
 ```
 
-Ava Maintenance may invoke finalization only after the manifest reports semantic compatibility complete and the updater proves the journal finalizable.
+It also refreshes `updated_at` and preserves unrelated journal fields. Only after that atomic write succeeds does Ava Maintenance remove the exact transaction workspace recorded by the journal. It then verifies the terminal journal, complete semantic compatibility, and workspace absence.
+
+Finalization is agent-driven and does not require an `ava` binary, updater executable, or transaction-local installer path. This is the only direct journal-mutation exception for Ava Maintenance.
 
 # Managed pre-routing mode
 
@@ -250,7 +256,7 @@ Malformed managed state enters read-only Ava Maintenance recovery rather than no
 | safe terminal state and semantic complete | ordinary project work | ordinary routing |
 | safe terminal state and semantic complete | installation health, host access, explicit upgrade, or removal | Ava Maintenance through ordinary routing |
 
-The role selected for an explanation does not gain mutation authority owned by the other role or deterministic tooling.
+The role selected for an explanation does not gain mutation authority owned by the other role or deterministic tooling. Ava Maintenance's terminal-finalization authority is the explicit bounded exception defined by this protocol.
 
 # Permitted operations
 
@@ -274,7 +280,7 @@ The role selected for an explanation does not gain mutation authority owned by t
 | `aborted` | normal | ordinary routing | only with unchanged source state and semantic complete |
 | `rolled-back` | normal | ordinary routing | only after source compatibility validation |
 
-The journal may narrow this operation set for a failure but never broaden it. Finalization remains a protocol-derived updater operation rather than a new journal permission value.
+The journal may narrow this operation set for a failure but never broaden it. Finalization remains a protocol-derived Ava Maintenance terminal transition rather than a new journal permission value.
 
 # Abort, rollback, resume, and finalization
 
@@ -290,7 +296,9 @@ After project-owned edits, automatic rollback still restores managed state but n
 
 A fresh invocation resumes by validating the source manifest, journal, workspace, planned paths, recorded migration checksums, and completed postconditions. It continues from the earliest unverified operation. If safe continuation cannot be proven, it blocks and offers rollback.
 
-After Upgrade Role marks semantic compatibility complete, Ava Maintenance may invoke the existing finalization operation. Finalization removes retained transaction material, records `complete/complete`, and enables normal routing. Neither role manually edits those deterministic fields.
+After Upgrade Role marks semantic compatibility complete, Ava Maintenance validates the finalization preconditions and atomically writes the exact terminal journal transition itself. It then removes only the recorded transaction workspace and verifies that normal routing is enabled. It must not search for or require an installer binary to finalize.
+
+Resume, abort, rollback, repair, and non-terminal journal mutation remain installer or updater responsibilities. Direct finalization does not broaden Ava Maintenance authority beyond the terminal transition above.
 
 # Role-led removal
 
@@ -336,7 +344,7 @@ Upgrade journal: active/semantic
 Normal operations: blocked
 ```
 
-A status request reaches Ava Maintenance. A request to reconcile project-owned context reaches Upgrade Role. After semantic completion, Ava Maintenance invokes finalization before normal routing resumes.
+A status request reaches Ava Maintenance. A request to reconcile project-owned context reaches Upgrade Role. After semantic completion, Ava Maintenance performs the direct terminal finalization transition before normal routing resumes.
 
 ## Chained: 1.0.0 to 2.0.0 through 1.5.0
 
@@ -357,6 +365,9 @@ Implementations and fixtures must cover:
 - normal-routing blocks for pending, partial, and blocked semantics
 - deterministic pre-routing to Ava Maintenance
 - semantic pre-routing to Upgrade Role
+- agent-driven terminal finalization without binary discovery, including exact terminal journal fields and recorded transaction-workspace cleanup
+- finalization precondition failure leaving the journal unchanged and normal routing blocked
+- preservation of installer-backed resume, abort, rollback, and non-terminal mutation boundaries
 - managed recovery with missing or incompatible project registries
 - separate installed-base and semantic-compatibility reporting
 - host capability and OpenCode managed-context accessibility reporting

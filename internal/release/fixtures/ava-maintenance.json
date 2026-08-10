@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "roles": {
     "maintenance": "./.ava/base/roles/ava-maintenance/role.md",
     "upgrade": "./.ava/base/roles/upgrade-role/role.md"
@@ -147,11 +147,34 @@
         "journal_status": "active",
         "journal_stage": "semantic",
         "semantic_status": "complete",
+        "unresolved_decisions": [],
+        "managed_commit_complete": true,
+        "path_edges_complete": true,
+        "managed_changes_classified": true,
         "allowed_operations": ["inspect", "reconcile-semantic", "rollback"]
       },
       "expected_role": "maintenance",
       "expected_operation": "finalize",
-      "mechanism": "existing-installer-protocol"
+      "mechanism": "agent-terminal-state-transition",
+      "requires_installer_binary": false,
+      "required_preconditions": [
+        "semantic-compatibility-complete",
+        "no-unresolved-decisions",
+        "managed-commit-complete",
+        "path-edges-complete",
+        "managed-changes-classified",
+        "journal-finalizable",
+        "transaction-workspace-safe"
+      ],
+      "expected_terminal_state": {
+        "journal_status": "complete",
+        "journal_stage": "complete",
+        "current_edge": null,
+        "staging": null,
+        "failure": null,
+        "allowed_operations": ["normal"]
+      },
+      "cleanup": "recorded-transaction-workspace"
     },
     {
       "id": "unavailable-host-capability",

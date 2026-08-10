@@ -11,6 +11,7 @@ ROUTER = SOURCE_ROOT / "templates/base/AGENTS.md"
 ROUTING = SOURCE_ROOT / "templates/base/shared/instructions/upgrade-state-and-routing.md"
 ROLE_CATALOG = SOURCE_ROOT / "templates/base/roles/index.md"
 UPGRADE_ROLE = SOURCE_ROOT / "templates/base/roles/upgrade-role/role.md"
+UPGRADE_PROTOCOL = SOURCE_ROOT / "distribution/upgrades.md"
 
 
 class AvaMaintenanceFixtureTests(unittest.TestCase):
@@ -60,6 +61,9 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
         }
         self.assertTrue(required.issubset(self.cases))
 
+    def test_fixture_schema_tracks_agent_finalization_contract(self) -> None:
+        self.assertEqual(self.fixture["schema_version"], 2)
+
     def test_healthy_report_separates_installed_and_semantic_state(self) -> None:
         fields = set(self.cases["healthy-report"]["expected_report_fields"])
         self.assertTrue(
@@ -95,9 +99,50 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
             "interrupted-planning-abort",
             "interrupted-preflight-resume",
             "interrupted-live-rollback",
-            "semantic-finalization-route",
         ):
             self.assertIn("existing-installer", self.cases[case_id]["mechanism"], case_id)
+
+    def test_semantic_finalization_is_agent_driven_and_bounded(self) -> None:
+        case = self.cases["semantic-finalization-route"]
+        self.assertEqual(case["expected_operation"], "finalize")
+        self.assertEqual(case["mechanism"], "agent-terminal-state-transition")
+        self.assertFalse(case["requires_installer_binary"])
+        self.assertEqual(case["cleanup"], "recorded-transaction-workspace")
+        self.assertEqual(
+            set(case["required_preconditions"]),
+            {
+                "semantic-compatibility-complete",
+                "no-unresolved-decisions",
+                "managed-commit-complete",
+                "path-edges-complete",
+                "managed-changes-classified",
+                "journal-finalizable",
+                "transaction-workspace-safe",
+            },
+        )
+        self.assertEqual(
+            case["expected_terminal_state"],
+            {
+                "journal_status": "complete",
+                "journal_stage": "complete",
+                "current_edge": None,
+                "staging": None,
+                "failure": None,
+                "allowed_operations": ["normal"],
+            },
+        )
+
+        instructions = (ROLE_ROOT / "instructions.md").read_text()
+        constraints = (ROLE_ROOT / "constraints.md").read_text()
+        routing = ROUTING.read_text()
+        protocol = UPGRADE_PROTOCOL.read_text()
+        self.assertIn("Finalization is the only deterministic journal transition Ava Maintenance performs directly", instructions)
+        self.assertIn("must not trigger a search for an `ava` binary", instructions)
+        self.assertIn("The finalization exception permits only the terminal fields", constraints)
+        self.assertIn("This transition is the agent's finalization mechanism", routing)
+        self.assertIn("does not require or imply an installed `ava` command", routing)
+        self.assertIn("Finalization is agent-driven and does not require an `ava` binary", protocol)
+        self.assertIn("This is the only direct journal-mutation exception for Ava Maintenance", protocol)
 
     def test_uninstall_removes_only_managed_roots(self) -> None:
         case = self.cases["uninstall-healthy"]
@@ -155,7 +200,7 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
         constraints = (ROLE_ROOT / "constraints.md").read_text()
         combined = instructions + constraints
         self.assertIn(
-            "Do not add or require standalone status, version, repair, or uninstall command modes",
+            "Do not add or require standalone status, version, repair, finalization, or uninstall command modes",
             instructions,
         )
         self.assertNotIn("/internal/roles/ava-internal", combined)

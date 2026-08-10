@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T14:12:32+02:00
+  at: 2026-08-10T14:51:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -56,16 +56,16 @@ Every new prerelease uses the canonical adjacent catalog:
 
 ## Current state
 
-Findings 01 through 14 are complete. [Finding 15](dogfood/15-permit-agent-driven-upgrade-finalization.md) is the remaining pending blocker for the next prerelease.
+Findings 01 through 15 are complete. There are currently no pending dogfood findings, but this umbrella remains active until the user explicitly closes dogfooding.
 
 Finding 13 was exposed while completing the `1.0.0-alpha.14` release PR. The initial release-edge assessment incorrectly treated the absence of deterministic project-owned edits as evidence that semantic review was unnecessary. The implemented release procedure now separates managed delta, possible project-owned incompatibility, and required reconciliation. It requires reviewed rationale for both `true` and `false`, bounded guidance when review is required, and leaves the semantic decision with the maintainer rather than deterministic validation.
 
 Finding 14 was exposed during realistic Inbox Ingester use. The managed role encoded project-root `./inbox/` and `./inbox/index.md` references as Markdown links from its nested role directory, and the host resolved them beneath `/.ava/base/roles/inbox-ingester/`. The implemented fix now names those project-owned paths explicitly as project-root paths in prose and adds assembled-payload regression coverage so required reading cannot silently return to the broken role-relative link shape.
 
-Finding 15 was exposed during a realistic alpha.13 to alpha.14 upgrade in a dogfood project. After semantic reconciliation completed, Ava Maintenance could not finalize the journal because the instructions say to use the existing installer or updater binary, which does not exist. The agent blocked and asked the user for an installer path. Ava has no installer binary and will not have one; the agent is the finalization mechanism and must be explicitly authorized to write the terminal state directly.
+Finding 15 was exposed during a realistic alpha.13 to alpha.14 upgrade in a dogfood project. After semantic reconciliation completed, Ava Maintenance could not finalize the journal because the instructions deferred finalization to an installer or updater binary that does not exist. The implemented fix makes Ava Maintenance itself the successful finalization mechanism: it validates the terminal preconditions, atomically writes only the protocol-defined terminal journal state, removes only the exact recorded transaction workspace, and verifies normal routing without broadening resume, abort, rollback, repair, or other state-mutation authority.
 
 Finding 10 established that pull-request change types are selected from supported distribution impact rather than implementation novelty or source location. Repository-only qualification work remains non-releasable when it does not change produced assets or supported behavior, while internal release tooling remains releasable when its output or guarantees change.
 
 Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing. Every request still performs the managed-state gate, but a pure clarification may be roleless and a same-objective scoped follow-up may retain the already-active role without repeated registry traversal or unchanged required-reading reload. New tasks, explicit workflows or roles, changed authority or domain, scoped work after roleless handling, uncertain role fit, and managed-state overrides force fresh routing.
 
-Finding 15 must be implemented before another prerelease is completed. The synthetic vault and corrective immutable release qualification remain pending supporting work after that blocker is resolved.
+The synthetic vault and corrective immutable release qualification are the next pending supporting work. New dogfood findings may still preempt that sequence according to their classification.
