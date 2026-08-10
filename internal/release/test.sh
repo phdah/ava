@@ -55,4 +55,5 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_conformance_matrix \
   internal.release.tests.test_alpha_qualification \
   internal.release.tests.test_release_please \
+  internal.release.tests.test_semantic_impact_assessment \
   internal.release.tests.release_pr_policy_test

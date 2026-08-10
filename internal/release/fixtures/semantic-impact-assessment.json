@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "name": "managed-only-compatible-change",
+      "managed_delta": "Fix managed installer cleanup ordering while preserving project-owned files, accepted host configuration, managed and project-owned contracts, canonical output, and validation semantics.",
+      "project_owned_dependency_possible": false,
+      "semantic_review_required": false,
+      "rationale": "The managed behavior changes, but no supported active project-owned context can conflict with or depend on the corrected cleanup ordering, so a previously complete semantic state may advance mechanically.",
+      "affected_project_owned_concepts": [],
+      "discovery_conditions": [],
+      "completion_criteria": [],
+      "may_advance_compatibility_mechanically_when_previous_complete": true
+    },
+    {
+      "name": "managed-routing-contract-with-project-dependency",
+      "managed_delta": "Change normal-turn routing from unconditional fresh routing to roleless clarification, same-role continuation, or fresh routing at explicit transition points.",
+      "project_owned_dependency_possible": true,
+      "semantic_review_required": true,
+      "rationale": "Active project-owned instructions may remain structurally valid while encoding the previous exact-one-role, fresh-routing, required-reading reload, or workflow-persistence assumptions.",
+      "affected_project_owned_concepts": [
+        "roles",
+        "workflows",
+        "shared instructions",
+        "indexes",
+        "host entrypoints"
+      ],
+      "discovery_conditions": [
+        "Inspect active project-owned instructions only when they define, override, or depend on normal-turn routing, role persistence, required-reading reloads, or workflow persistence."
+      ],
+      "completion_criteria": [
+        "No active project-owned instruction conflicts with the target routing contract, or every conflicting assumption has been reconciled."
+      ],
+      "may_advance_compatibility_mechanically_when_previous_complete": false
+    }
+  ],
+  "validation_boundary": {
+    "maintainer_judgment": "The maintainer determines whether project-owned context may require semantic inspection or reconciliation from the reviewed managed delta.",
+    "deterministic_validation": "Validate the explicit boolean and its representation consistency, including that semantic guidance exists only when semantic review is required. Do not infer semantic impact from changed files, behavior categories, or deterministic migration presence."
+  }
+}

@@ -23,14 +23,14 @@ Core progress: 3 of 6 complete.
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 2 pending findings
-- 2 pending blockers
+- 1 pending finding
+- 1 pending blocker
 - 0 pending required-v1 findings
-- 12 completed findings
-
-[Clarify release semantic-impact assessment](dogfood/13-clarify-release-semantic-impact-assessment.md) is pending. Release completion must explicitly distinguish changes to Ava-managed behavior from possible incompatibility in existing project-owned context before deciding `semantic_review_required`.
+- 13 completed findings
 
 [Repair Inbox Ingester project-root links](dogfood/14-repair-inbox-ingester-project-root-links.md) is pending. The managed role currently resolves project-owned inbox references under its own role directory, so required reading can fail before ingestion starts.
+
+[Clarify release semantic-impact assessment](dogfood/13-clarify-release-semantic-impact-assessment.md) is complete. Release completion now distinguishes managed behavioral change from possible project-owned incompatibility, requires reviewed rationale for either semantic-review outcome, and keeps semantic classification as maintainer judgment.
 
 [Avoid redundant routing for conversational follow-ups](dogfood/12-avoid-redundant-followup-routing.md) is complete. The managed-state gate remains unconditional, while normal turns may be roleless clarifications, same-role continuations, or fresh routing according to explicit boundaries that preserve finding 07's no-bypass guarantee.
 
@@ -46,7 +46,7 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-Resolve [Clarify release semantic-impact assessment](dogfood/13-clarify-release-semantic-impact-assessment.md) first, then [Repair Inbox Ingester project-root links](dogfood/14-repair-inbox-ingester-project-root-links.md), before completing another prerelease. After the blockers are resolved, resume [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md), then continue the corrective immutable alpha qualification sequence and any newly discovered higher-priority dogfood findings. Finding 12's realistic multi-turn installed-project exercise remains a release qualification gate, not pending implementation work.
+Resolve [Repair Inbox Ingester project-root links](dogfood/14-repair-inbox-ingester-project-root-links.md) before completing another prerelease. After the blocker is resolved, resume [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md), then continue the corrective immutable alpha qualification sequence and any newly discovered higher-priority dogfood findings. Finding 12's realistic multi-turn installed-project exercise remains a release qualification gate, not pending implementation work.
 
 ## Previous phase
 

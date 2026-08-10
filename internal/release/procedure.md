@@ -1,14 +1,14 @@
 ---
 type: Internal Release Procedure
 title: Ava Release Publication Procedure
-description: Defines release-local adjacent-edge preparation, recursive qualification, assembly, approval, publication, and verification.
+description: Defines release-local adjacent-edge preparation, semantic-impact assessment, recursive qualification, assembly, approval, publication, and verification.
 tags: [internal, releases, publication, verification, maintenance]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-09T18:05:00+02:00
+  at: 2026-08-10T13:34:00+02:00
 ---
 
 # Ava Release Publication Procedure
@@ -44,18 +44,46 @@ A no-impact release still authors the edge with `semantic_review_required: false
 
 Legacy `upgrade-impact.json`, published direct edges, and target-specific cumulative guidance are read-only compatibility evidence. They are never valid inputs for a new release.
 
+## Project-owned semantic-impact assessment
+
+The semantic decision is a maintainer judgment about the compatibility of project-owned context, not a proxy for whether managed behavior changed and not a proxy for whether a deterministic project-file migration exists.
+
+For the exact previous-to-target managed delta, the release author must answer:
+
+1. **Managed delta:** Which managed contracts, behavior, authority, routing, validation, metadata, paths, or lifecycle rules changed?
+2. **Project-owned compatibility:** Could valid active project-owned context from the previous release remain structurally unchanged yet become conflicting, misleading, semantically invalid, or behaviorally incompatible under the target managed contracts?
+3. **Required reconciliation:** If yes, which bounded project-owned concepts must be inspected or reconciled before semantic compatibility may advance?
+
+The author must consider plausible active project-owned instruction relationships exposed to the changed managed contract, including roles, workflows, shared instructions, indexes, host entrypoints, metadata, and links. Start from the changed contract and follow bounded dependencies. Do not default to scanning all project-owned content.
+
+Set `semantic_review_required: true` when project-owned context may require semantic inspection or reconciliation because of the managed delta. This remains true even when there is no deterministic project-file edit to perform. Structurally valid project-owned instructions can still encode assumptions that conflict with the target behavior.
+
+When `true`, the adjacent edge must reference transition-local guidance that defines all of the following:
+
+- affected project-owned concepts
+- bounded discovery conditions that identify potentially incompatible active context
+- completion criteria for proving reconciliation complete
+
+Set `semantic_review_required: false` when the reviewed managed delta cannot make supported project-owned context require semantic reconciliation. A managed behavior change alone is insufficient evidence for `true`. For `false`, the release author must explain why valid project-owned context remains compatible and why a previously complete semantic state may advance mechanically.
+
+The release PR body or review record must preserve the rationale for either decision. The release author owns the initial classification and evidence. The reviewer or approver independently confirms that the rationale applies the project-owned compatibility test and that any `true` guidance is bounded enough to execute.
+
+Deterministic release validation checks representation and consistency only. In particular, `true` requires guidance references and `false` forbids them. Tooling must not guess semantic migration need from changed file paths, managed behavior categories, or the presence or absence of deterministic migrations.
+
 ## Release PR completion
 
 Before merging a release PR, the Ava Internal Maintainer must:
 
 1. verify version, manifest, base version, and release channel identity
-2. create one target record with `compose_adjacent_catalog.py`
-3. review the exact previous-to-target managed delta
-4. add only transition-local migrations, guidance, and retirement decisions
-5. run `validate_release_pr.py` against the release PR base revision
-6. run the complete `internal/release/test.sh` suite
-7. confirm all required checks pass
-8. merge only after the release-local edge is accepted
+2. review the exact previous-to-target managed delta
+3. complete the project-owned semantic-impact assessment above and record the reviewed rationale
+4. create one target record with `compose_adjacent_catalog.py`
+5. add only transition-local migrations, guidance, and retirement decisions
+6. confirm any `true` semantic guidance names affected concepts, bounded discovery conditions, and completion criteria
+7. run `validate_release_pr.py` against the release PR base revision
+8. run the complete `internal/release/test.sh` suite
+9. confirm all required checks pass
+10. merge only after the release-local edge and semantic-impact rationale are accepted
 
 The release policy rejects a missing target record, a record whose edge does not start at the immediately previous release, a missing historical record, extra or cumulative guidance, invalid retirement decisions, guidance artifact digest changes, legacy `upgrade-impact.json` authoring, and any release PR that changes historical catalog JSON files.
 

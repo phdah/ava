@@ -1,14 +1,14 @@
 ---
 type: Internal Release Procedure
 title: Ava Release Automation
-description: Defines release-please version proposals, release-local edge completion, recursive qualification, and immutable publication.
+description: Defines release-please version proposals, release-local edge completion, semantic-impact assessment, recursive qualification, and immutable publication.
 tags: [internal, releases, automation, release-please, conventional-commits]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-04T14:40:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T11:37:00+02:00
+  at: 2026-08-10T13:34:00+02:00
 ---
 
 # Ava Release Automation
@@ -87,6 +87,30 @@ The gate validates:
 - unique composed paths for every retained source
 
 `upgrade-impact.json`, `upgrade-sources.txt`, cumulative catalog snapshots, and published direct edges are not current authoring inputs.
+
+## Semantic-impact assessment
+
+Before authoring the adjacent edge, the release author reviews the exact previous-to-target managed delta and answers three separate questions:
+
+1. **Managed delta:** What Ava-managed contracts, behavior, authority, routing, validation, metadata, paths, or lifecycle rules changed?
+2. **Project-owned compatibility:** Could valid active project-owned context remain structurally unchanged yet become conflicting, misleading, semantically invalid, or behaviorally incompatible because of that managed delta?
+3. **Required reconciliation:** If project-owned compatibility can be affected, what bounded project-owned concepts must the Upgrade Role inspect or reconcile before semantic compatibility may advance?
+
+Set `semantic_review_required: true` when project-owned context may require semantic inspection or reconciliation because of the managed delta. The absence of a deterministic project-file migration does not justify `false`. Project-owned roles, workflows, shared instructions, indexes, host entrypoints, metadata, links, and other active instruction relationships can encode assumptions that remain structurally valid while becoming incompatible.
+
+Set `semantic_review_required: false` when the reviewed managed delta cannot make supported project-owned context require semantic reconciliation. A managed behavior change alone does not automatically require semantic review. The author must be able to explain why existing valid project-owned context remains compatible and, when the previous semantic state is complete, why compatibility may advance mechanically.
+
+Assessment starts from the changed managed contracts and follows only plausible active project-owned dependencies. Do not replace bounded discovery with a blanket scan of unrelated project content.
+
+The release PR body or review record must contain an explicit semantic-impact rationale for both `true` and `false` decisions. The release author owns the initial classification and evidence. The reviewer or approver confirms that the rationale follows the project-owned compatibility test before accepting the edge.
+
+For `true`, transition-local upgrade guidance must identify:
+
+- the affected project-owned concepts
+- bounded discovery conditions for finding potentially incompatible active context
+- completion criteria that prove reconciliation is complete
+
+For `false`, no semantic guidance is authored for that edge. Existing deterministic validation enforces representation consistency between the boolean and guidance references. It does not infer whether semantic review is needed and must not replace maintainer judgment.
 
 ## Assembly and publication
 
