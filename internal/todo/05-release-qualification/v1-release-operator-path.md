@@ -6,6 +6,9 @@ tags: [internal, roadmap, release, qualification, operator]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-10T15:58:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-10T16:23:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -16,7 +19,7 @@ This file is the canonical ordered execution path from the current alpha qualifi
 
 When the user asks what to do next, do not reconstruct the answer from pending checkboxes or historical findings. Read `/internal/todo.md`, follow its single current-next-action link to this procedure, and report the first incomplete step below together with its immediate operator action.
 
-Detailed task files remain authoritative for acceptance criteria and background. This procedure is authoritative for ordering, advancement gates, and the practical operator sequence.
+Detailed task files remain authoritative for acceptance criteria and background. This procedure is authoritative for ordering, advancement gates, current execution status, and the practical operator sequence.
 
 ## Ordered path to `1.0.0`
 
@@ -41,51 +44,78 @@ Do not infer closure from an empty findings backlog, passing tests, or publicati
 
 ### Current status
 
-The deterministic fixture implementation is complete. The remaining work is external qualification evidence: create the five semantic images, finalize the corpus, exercise the qualification variants against assembled and published Ava assets, complete clean OpenCode ingestion and review runs, and validate the resulting run manifests.
+The deterministic fixture implementation is complete.
+
+The user confirmed on 2026-08-10 that the synthetic corpus and all five specified images have already been generated in a repository-external local directory and look correct. Treat that confirmation as completion of the **content-generation subphase**. The repository cannot inspect those local bytes, so do not claim independent hash, file-type, or oracle verification until the local fixture commands are run.
+
+Current subphase status:
+
+- [x] deterministic corpus generated locally
+- [x] five specified images generated locally and visually accepted by the user
+- [ ] image finalization and finalized-corpus verification recorded
+- [ ] qualification variants materialized
+- [ ] clean OpenCode ingestion and routing evidence completed
+- [ ] independent semantic review and expected-outcome checks completed
+- [ ] upgrade, recovery, finalization, and lifecycle scenarios completed
+- [ ] run manifests validated and qualification evidence accepted
+
+The immediate goal is therefore **validation of the generated corpus through real ingestion and qualification**, not generation of another corpus.
 
 ### Operator procedure
 
-Choose an absolute output directory outside the Ava repository:
+Point `QUALIFICATION_ROOT` at the user's existing generated directory outside the Ava repository:
 
 ```sh
-QUALIFICATION_ROOT=/absolute/path/outside/ava/qualification-vault
+QUALIFICATION_ROOT=/absolute/path/to/existing/qualification-vault
 ```
 
-1. Generate the deterministic 300-file baseline and image prompts:
-
-```sh
-python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py generate "$QUALIFICATION_ROOT"
-```
-
-2. Verify the generated baseline before adding images:
-
-```sh
-python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py verify "$QUALIFICATION_ROOT"
-```
-
-3. Read the five specifications under `$QUALIFICATION_ROOT/image-prompts/`. Use an image-capable agent to create exactly the five declared PNG files at their exact destination paths under `$QUALIFICATION_ROOT/corpus/`. Do not ingest the prompt files themselves.
-
-4. Finalize and hash the actual image bytes:
+1. Finalize and hash the five already-generated image files. This verifies that they exist at the exact declared destinations and records their actual bytes in the finalized inventory:
 
 ```sh
 python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py finalize-images "$QUALIFICATION_ROOT"
 ```
 
-5. Re-run verification against the finalized corpus:
+2. Verify the complete finalized corpus before ingestion:
 
 ```sh
 python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py verify "$QUALIFICATION_ROOT"
 ```
 
-6. Materialize all eight isolated qualification variants:
+If either command fails, fix the reported local fixture problem before continuing. Do not regenerate content merely because these commands have not previously been run.
+
+3. Materialize all eight isolated qualification variants:
 
 ```sh
 python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py materialize-variants "$QUALIFICATION_ROOT"
 ```
 
-7. Exercise the execution plans recorded in the variants against the exact assembled Ava revision under qualification. At minimum, complete the fresh-install, mature-project, registered-role, pending-inbox, damaged-managed-content, interrupted-upgrade, pending-semantic-reconciliation, and uninstall/reinstall scenarios required by the task.
+4. Use the execution plans recorded in the generated variants as the scenario-specific source of truth. Exercise them against the exact assembled Ava revision under qualification. At minimum, complete the fresh-install, mature-project, registered-role, pending-inbox, damaged-managed-content, interrupted-upgrade, pending-semantic-reconciliation, and uninstall/reinstall scenarios required by the task.
 
-8. Complete clean OpenCode ingestion and independent semantic-review sessions using the corpus in chronological batches where the scenario calls for ingestion. Record transcripts, loaded paths, role announcements, before-and-after project-owned hashes, installer output, conformance output, and actual outcome in the run manifests.
+5. For inbox-ingestion qualification, process the corpus in chronological batches where the execution plan calls for staged ingestion. Copy the direct files from each batch into the project inbox rather than copying the batch directory itself:
+
+```text
+01-pre-move
+02-move-transition
+03-renovation
+04-settled
+```
+
+For each batch, start from the scenario state defined by the execution plan, run the managed inbox-ingestion flow in a clean OpenCode session, and record the transcript, loaded paths, selected role, role announcement point, source dispositions, and resulting project-owned changes.
+
+6. After ingestion, run an independent semantic review against the expected outcomes in the fixture oracle. Check at minimum:
+
+- durable versus non-durable disposition
+- private/work routing separation
+- hierarchy and progressive discovery
+- source fidelity and attribution
+- temporal state and supersession, especially around the February move
+- repeated and duplicate facts
+- role routing and conversational follow-up behavior
+- image-derived facts against their declared expected outcomes
+
+7. Exercise the remaining lifecycle variants and record deterministic state evidence for damaged managed content, interrupted upgrades, semantic reconciliation, successful agent-driven finalization, uninstall, and reinstall. Preserve before-and-after project-owned hashes so the evidence can prove which files changed.
+
+8. Populate the run manifest for every accepted scenario with the exact Ava version, source revision, asset identity, host/model/session identity, project-owned hashes, installer and conformance output, transcript, expected outcome, actual outcome, reviewer, and linked finding.
 
 9. Validate every populated run manifest before accepting its result:
 
@@ -103,6 +133,8 @@ internal/release/validate-boundaries.sh
 ### Step 1 completion gate
 
 Advance only when the synthetic-vault task's completion criteria are satisfied, including finalized five-image inventory, all required qualification variants exercised, clean OpenCode ingestion and review evidence recorded, run manifests valid, and repository boundary validation passing.
+
+User confirmation of corpus and image quality completes generation, but does not by itself complete Step 1 because the purpose of this step is qualification of actual Ava behavior against that corpus.
 
 ## Step 2: qualify and publish the corrective alpha
 
