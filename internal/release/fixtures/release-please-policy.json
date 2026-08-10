@@ -11,8 +11,53 @@
     {"title": "feat!: replace the public manifest contract", "valid": true, "release_level": "major", "section": "Features"},
     {"title": "docs: explain upgrade ownership", "valid": true, "release_level": null, "section": null},
     {"title": "chore(internal): advance roadmap", "valid": true, "release_level": null, "section": null},
+    {"title": "test(release): add synthetic qualification vault", "valid": true, "release_level": null, "section": null},
     {"title": "update release docs", "valid": false, "release_level": null, "section": null},
     {"title": "unknown: change something", "valid": false, "release_level": null, "section": null}
+  ],
+  "impact_cases": [
+    {
+      "title": "feat(host): add opt-in managed host support",
+      "impact": "distribution-capability",
+      "source_scope": "distributed",
+      "expected_type": "feat",
+      "release_level": "minor"
+    },
+    {
+      "title": "fix(installer): preserve project-owned host configuration",
+      "impact": "distribution-fix",
+      "source_scope": "internal",
+      "expected_type": "fix",
+      "release_level": "patch"
+    },
+    {
+      "title": "test(release): add synthetic qualification vault",
+      "impact": "repository-only",
+      "source_scope": "internal",
+      "expected_type": "test",
+      "release_level": null
+    },
+    {
+      "title": "docs(release): clarify internal qualification procedure",
+      "impact": "repository-only",
+      "source_scope": "internal",
+      "expected_type": "docs",
+      "release_level": null
+    },
+    {
+      "title": "chore(internal): reorganize roadmap bookkeeping",
+      "impact": "repository-only",
+      "source_scope": "internal",
+      "expected_type": "chore",
+      "release_level": null
+    },
+    {
+      "title": "feat!: replace the public manifest contract",
+      "impact": "breaking-distribution",
+      "source_scope": "distributed",
+      "expected_type": "feat",
+      "release_level": "major"
+    }
   ],
   "channels": [
     {

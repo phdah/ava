@@ -11,6 +11,7 @@ CONFIG_PATH = ROOT / "release-please-config.json"
 MANIFEST_PATH = ROOT / ".release-please-manifest.json"
 FIXTURE_PATH = ROOT / "internal/release/fixtures/release-please-policy.json"
 UPGRADE_POLICY_PATH = ROOT / "internal/release/fixtures/release-upgrade-policy.json"
+POLICY_DOC_PATH = ROOT / "internal/release/release-please.md"
 RELEASE_WORKFLOW_PATH = ROOT / ".github/workflows/release-please.yml"
 PYTHON_WORKFLOW_PATH = ROOT / ".github/workflows/python-tests.yml"
 TITLE_WORKFLOW_PATH = ROOT / ".github/workflows/conventional-pr-title.yml"
@@ -23,6 +24,7 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         cls.manifest = json.loads(MANIFEST_PATH.read_text())
         cls.fixture = json.loads(FIXTURE_PATH.read_text())
         cls.upgrade_policy = json.loads(UPGRADE_POLICY_PATH.read_text())
+        cls.policy_doc = POLICY_DOC_PATH.read_text()
         cls.release_workflow = RELEASE_WORKFLOW_PATH.read_text()
         cls.python_workflow = PYTHON_WORKFLOW_PATH.read_text()
         cls.title_workflow = TITLE_WORKFLOW_PATH.read_text()
@@ -36,6 +38,50 @@ class ReleasePleasePolicyTests(unittest.TestCase):
                     continue
                 result = classify(case["title"])
                 self.assertEqual(result.release_level, case["release_level"])
+
+    def test_release_impact_cases_match_documented_policy(self) -> None:
+        cases = self.fixture["impact_cases"]
+        self.assertEqual(
+            {case["expected_type"] for case in cases},
+            {"feat", "fix", "test", "docs", "chore"},
+        )
+        self.assertTrue(
+            any(case["release_level"] == "major" for case in cases),
+            "impact cases must include a breaking change",
+        )
+        self.assertTrue(
+            any(
+                case["source_scope"] == "internal"
+                and case["release_level"] is not None
+                for case in cases
+            ),
+            "internal source location must not imply a non-releasable change",
+        )
+
+        for case in cases:
+            with self.subTest(title=case["title"]):
+                result = classify(case["title"])
+                self.assertEqual(result.type, case["expected_type"])
+                self.assertEqual(result.release_level, case["release_level"])
+                self.assertIn(f"`{case['title']}`", self.policy_doc)
+                if case["impact"] == "repository-only":
+                    self.assertIsNone(result.release_level)
+
+        synthetic = next(
+            case
+            for case in cases
+            if case["title"] == "test(release): add synthetic qualification vault"
+        )
+        self.assertEqual(synthetic["impact"], "repository-only")
+        self.assertIsNone(synthetic["release_level"])
+
+        self.assertIn(
+            "Select change types from supported distribution impact",
+            self.policy_doc,
+        )
+        self.assertIn("Implementation novelty alone never justifies `feat`", self.policy_doc)
+        self.assertIn("Repository location is not the classification boundary", self.policy_doc)
+        self.assertIn("Ava Versioning and Compatibility", self.policy_doc)
 
     def test_bootstrap_and_managed_version_states(self) -> None:
         bootstrap = self.fixture["bootstrap"]
