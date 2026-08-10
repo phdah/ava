@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T14:12:32+02:00
+  at: 2026-08-10T14:51:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,11 +23,11 @@ Read the [ordered roadmap](todo/index.md) before acting.
 
 ## Current next task
 
-[Permit agent-driven upgrade finalization](todo/05-release-qualification/dogfood/15-permit-agent-driven-upgrade-finalization.md) is the current next task. It must remove the installer-binary framing from Ava Maintenance finalization and explicitly authorize the agent to write the terminal upgrade state directly once semantic compatibility is confirmed complete.
+[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) is the current next supporting qualification task. There are currently no pending dogfood findings, so the Phase 5 sequence resumes here unless new dogfood work preempts it.
+
+[Permit agent-driven upgrade finalization](todo/05-release-qualification/dogfood/15-permit-agent-driven-upgrade-finalization.md) is complete. Ava Maintenance now validates successful finalization preconditions and performs the bounded terminal journal transition directly, without searching for an installer binary, while broader deterministic recovery remains installer-backed.
 
 [Repair Inbox Ingester project-root links](todo/05-release-qualification/dogfood/14-repair-inbox-ingester-project-root-links.md) is complete. The Inbox Ingester now names the project-owned inbox through explicit project-root paths, and installed-payload regression coverage prevents the broken role-relative resolution from returning.
-
-[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) remains the next supporting qualification task after the pending dogfood blocker is resolved.
 
 [Clarify release semantic-impact assessment](todo/05-release-qualification/dogfood/13-clarify-release-semantic-impact-assessment.md) is complete. Release completion now distinguishes managed behavioral change from possible incompatibility in project-owned context, requires reviewed rationale for both `semantic_review_required` outcomes, and keeps the semantic decision with maintainers rather than deterministic tooling.
 
@@ -37,7 +37,7 @@ Read the [ordered roadmap](todo/index.md) before acting.
 
 [Normalize and enforce adjacent-edge release authoring](todo/05-release-qualification/dogfood/11-enforce-adjacent-edge-release-authoring.md) is complete. The retained alpha.5 through alpha.12 graph is normalized, active cumulative `upgrade-impact.json` authoring is removed, and release gates require one immutable previous-to-target edge.
 
-Supporting qualification work remains pending for the synthetic vault and corrective immutable alpha. Finding 12's realistic multi-turn installed-project evidence remains a release gate rather than pending implementation work. Dogfooding remains active and new findings can still preempt the supporting sequence when their classification requires it.
+Supporting qualification work remains pending for the synthetic vault and corrective immutable alpha. Finding 12's realistic multi-turn installed-project evidence and finding 15's fresh-agent finalization evidence remain release gates rather than pending implementation work. Dogfooding remains active and new findings can still preempt the supporting sequence when their classification requires it.
 
 ## Working rule
 
