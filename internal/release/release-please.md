@@ -8,7 +8,7 @@ generated:
   at: 2026-08-04T14:40:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-09T18:05:00+02:00
+  at: 2026-08-10T11:37:00+02:00
 ---
 
 # Ava Release Automation
@@ -26,6 +26,39 @@ Ordinary pull request titles use:
 Releasable types are `feat`, `fix`, `perf`, and `revert`. Other supported types are internal-only unless marked breaking.
 
 Ordinary implementation PRs do not predeclare a release version or upgrade edge.
+
+## Select change types from supported distribution impact
+
+A pull request title is a release-impact claim. Select the Conventional Commit type from what merging the pull request changes in the supported Ava distribution, not from how new, substantial, or technically interesting the repository implementation is.
+
+Assess observable impact on:
+
+- installed Ava-managed content
+- public distribution, versioning, ownership, routing, workflow, role, guidance, or state contracts
+- release assets and the information they expose
+- installer or updater behavior and guarantees
+- supported agent routing, authority, validation, migration, or other intended behavior
+
+Repository location is not the classification boundary. A change under `internal/` is non-releasable only when its effect remains repository-only. An internal assembler, validator, or release-tooling change still uses `feat`, `fix`, `perf`, or a breaking marker when it changes the resulting distribution, accepted behavior, or supported guarantee.
+
+Implementation novelty alone never justifies `feat`. Use `feat` only for backward-compatible capability exposed through the Ava distribution or its supported behavior. Use `fix` when the supported distribution previously behaved incorrectly, `perf` when a supported behavior becomes materially more efficient without changing its contract, and `revert` when reverting a releasable change restores supported distribution behavior.
+
+Use non-releasable types such as `test`, `docs`, `ci`, `build`, `refactor`, or `chore` when the change only affects repository maintenance, qualification, fixtures, CI, internal documentation, or development structure and does not alter produced release assets or supported Ava behavior. Mark any incompatible supported distribution change as breaking regardless of source location or ordinary type.
+
+The public [Ava Versioning and Compatibility](../../distribution/versioning.md) contract remains authoritative for whether an observable distribution change is PATCH, MINOR, or MAJOR. This release procedure maps Conventional Commit claims to release-please; it does not redefine compatibility.
+
+Representative classifications:
+
+| Pull request title | Resulting impact | Release level |
+|---|---|---|
+| `feat(host): add opt-in managed host support` | Backward-compatible capability exposed by the distribution | minor |
+| `fix(installer): preserve project-owned host configuration` | Corrects supported installer behavior, even though the implementation is internal | patch |
+| `test(release): add synthetic qualification vault` | Adds repository-only qualification fixtures and tests | none |
+| `docs(release): clarify internal qualification procedure` | Changes maintainer-only documentation without changing supported behavior | none |
+| `chore(internal): reorganize roadmap bookkeeping` | Changes repository maintenance state only | none |
+| `feat!: replace the public manifest contract` | Changes a supported public contract incompatibly | major |
+
+The synthetic qualification vault case is intentionally `test(release)`, not `feat`, even though the fixture is a substantial new repository capability. Conversely, an implementation under `internal/release/` is not automatically internal-only when it changes the release users install or the guarantees Ava makes about it.
 
 ## Release PR contract
 
