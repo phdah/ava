@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T11:29:00+02:00
+  at: 2026-08-10T11:37:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,13 +23,13 @@ Read the [ordered roadmap](todo/index.md) before acting.
 
 ## Current next task
 
-[Define release-impact-based change types](todo/05-release-qualification/dogfood/10-define-release-impact-based-change-types.md) is the current next finding. It is required before release-candidate publication.
+[Avoid redundant routing for conversational follow-ups](todo/05-release-qualification/dogfood/12-avoid-redundant-followup-routing.md) is the current next finding. It is required-v1 routing work and requires explicit approval of the refined routing contract before implementation.
 
-[Avoid redundant routing for conversational follow-ups](todo/05-release-qualification/dogfood/12-avoid-redundant-followup-routing.md) is queued after finding 10 as required-v1 routing work. It must preserve the no-bypass guarantee from finding 07 while avoiding unnecessary fresh routing for follow-up turns.
+[Define release-impact-based change types](todo/05-release-qualification/dogfood/10-define-release-impact-based-change-types.md) is complete. Conventional Commit types now follow supported distribution impact rather than implementation novelty or repository location.
 
 [Normalize and enforce adjacent-edge release authoring](todo/05-release-qualification/dogfood/11-enforce-adjacent-edge-release-authoring.md) is complete. The retained alpha.5 through alpha.12 graph is normalized, active cumulative `upgrade-impact.json` authoring is removed, and release gates now require one immutable previous-to-target edge.
 
-Supporting qualification work remains pending for the synthetic vault and corrective immutable alpha. Completing finding 11 removes the next-prerelease repository blocker but does not complete dogfooding or automatically authorize publication.
+Supporting qualification work remains pending for the synthetic vault and corrective immutable alpha. Completing finding 10 advances the dogfood backlog but does not complete dogfooding or automatically authorize publication.
 
 ## Working rule
 
