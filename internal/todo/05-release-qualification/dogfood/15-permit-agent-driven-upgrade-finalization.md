@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Permit Agent-Driven Upgrade Finalization
 description: Remove the instruction ambiguity that causes Ava Maintenance to look for a non-existent installer binary when finalizing an upgrade, and make explicit that the agent performs the finalization state transition directly.
 tags: [internal, roadmap, dogfood, upgrades, finalization, maintenance]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 15
@@ -13,6 +13,9 @@ affected_version: 1.0.0-alpha.14
 generated:
   by: agent:opencode
   at: 2026-08-10T11:53:37+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-10T14:51:00+02:00
 ---
 
 # Permit Agent-Driven Upgrade Finalization
@@ -54,16 +57,21 @@ The resolving PR must:
 
 ## Completion criteria
 
-- [ ] An agent completing a successful upgrade can finalize the journal without searching for a binary or asking the user for an installer path.
-- [ ] The three terminal fields (`status`, `stage`, `allowed_operations`) and transaction directory removal are explicitly authorized in the Ava Maintenance instructions.
-- [ ] The preconditions for finalization are stated and must pass before the agent writes any terminal field.
-- [ ] `distribution/upgrades.md`, `templates/base/roles/ava-maintenance/instructions.md`, and `templates/base/shared/instructions/upgrade-state-and-routing.md` are updated consistently.
-- [ ] Affected indexes remain aligned.
-- [ ] Concrete resolution and repository-validation evidence are recorded below.
+- [x] An agent completing a successful upgrade can finalize the journal without searching for a binary or asking the user for an installer path.
+- [x] The three terminal fields (`status`, `stage`, `allowed_operations`) and transaction directory removal are explicitly authorized in the Ava Maintenance instructions.
+- [x] The preconditions for finalization are stated and must pass before the agent writes any terminal field.
+- [x] `distribution/upgrades.md`, `templates/base/roles/ava-maintenance/instructions.md`, and `templates/base/shared/instructions/upgrade-state-and-routing.md` are updated consistently.
+- [x] Affected indexes remain aligned.
+- [x] Concrete resolution and repository-validation evidence are recorded below.
 
 ## Resolution evidence
 
-_To be completed in the resolving PR._
+- `distribution/upgrades.md` now defines successful finalization as a bounded Ava Maintenance terminal transition: validate the post-commit journal and completed semantic state, atomically record `complete/complete` with `allowed_operations: ["normal"]`, then remove only the exact recorded transaction workspace.
+- Ava Maintenance role, instructions, capabilities, constraints, and role history now agree that finalization is the only direct journal-write exception. Explicit upgrade, resume, abort, rollback, repair, semantic-state changes, and other non-terminal mutations remain outside that exception.
+- `templates/base/shared/instructions/upgrade-state-and-routing.md` now makes Ava Maintenance itself the finalization mechanism and explicitly forbids searching for an `ava` binary or updater executable solely to finalize.
+- `internal/release/fixtures/ava-maintenance.json` records agent-driven finalization, its required preconditions, exact terminal state, workspace cleanup, and `requires_installer_binary: false`. Recovery fixtures continue to require existing installer mechanisms for abort, resume, and rollback.
+- `internal/release/tests/test_ava_maintenance.py` enforces the split between installer-backed recovery and agent-driven terminal finalization, including the no-binary contract, exact terminal state, bounded cleanup, and required preconditions. The test module remains part of the maintained `internal/release/test.sh` repository suite.
+- Affected role, fixture, dogfood, phase, and roadmap indexes were synchronized with finding 15 completed and the synthetic qualification vault restored as the next supporting task.
 
 ## Release qualification follow-up
 
