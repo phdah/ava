@@ -23,12 +23,12 @@ Core progress: 3 of 6 complete.
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 1 pending finding
-- 1 pending blocker
+- 0 pending findings
+- 0 pending blockers
 - 0 pending required-v1 findings
-- 14 completed findings
+- 15 completed findings
 
-[Permit agent-driven upgrade finalization](dogfood/15-permit-agent-driven-upgrade-finalization.md) is pending. Ava Maintenance currently searches for a non-existent installer binary when finalizing an upgrade, so successful upgrades cannot reach terminal state without manual intervention.
+[Permit agent-driven upgrade finalization](dogfood/15-permit-agent-driven-upgrade-finalization.md) is complete. Ava Maintenance now performs successful terminal finalization directly after validating semantic completion and the finalizable journal, without binary lookup, while broader deterministic recovery remains installer-backed.
 
 [Repair Inbox Ingester project-root links](dogfood/14-repair-inbox-ingester-project-root-links.md) is complete. The managed role now names the project-owned inbox through explicit project-root paths, with installed-payload regression coverage for the corrected required-reading contract.
 
@@ -48,7 +48,7 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-Resolve [Permit agent-driven upgrade finalization](dogfood/15-permit-agent-driven-upgrade-finalization.md) before completing another prerelease. After the blocker is resolved, resume [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md), then continue the corrective immutable alpha qualification sequence and any newly discovered higher-priority dogfood findings. Finding 12's realistic multi-turn installed-project exercise remains a release qualification gate, not pending implementation work.
+Resume [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md), then continue the corrective immutable alpha qualification sequence and any newly discovered higher-priority dogfood findings. Finding 12's realistic multi-turn installed-project exercise and finding 15's fresh-agent finalization exercise remain release qualification gates, not pending implementation work.
 
 ## Previous phase
 
