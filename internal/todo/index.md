@@ -44,7 +44,7 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 2 pending findings, 1 pending blocker, 1 pending required-v1 finding, 3 pending supporting qualification tasks, and 9 completed findings
+5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 2 pending findings, 0 pending blockers, 2 pending required-v1 findings, 3 pending supporting qualification tasks, and 10 completed findings
 6. [Backlog.md integration](06-backlog-md/) - 0 of 2 complete; queued after release qualification
 
 The release assembler and thin installer/updater implement deterministic source mapping, integrity verification, installation, direct and chained upgrades, managed reconciliation, restricted migrations, durable recovery state, semantic blocking, project-owned host entrypoint metadata, and create-if-absent OpenCode host configuration.
@@ -59,10 +59,10 @@ Release-please enforces release classification at the merge boundary, maintains 
 
 Alpha publication is complete through immutable `1.0.0-alpha.12`. The remaining ordered path to the first stable release is:
 
-1. complete [normalize and enforce adjacent-edge release authoring](05-release-qualification/dogfood/11-enforce-adjacent-edge-release-authoring.md), including historical graph normalization and strict required release-delta tests proving exactly one new adjacent edge
-2. resume the reproducible [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) and remaining external qualification work
-3. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings and the normalized adjacent-edge process
-4. complete [define release-impact-based change types](05-release-qualification/dogfood/10-define-release-impact-based-change-types.md)
+1. complete [define release-impact-based change types](05-release-qualification/dogfood/10-define-release-impact-based-change-types.md)
+2. complete [avoid redundant routing for conversational follow-ups](05-release-qualification/dogfood/12-avoid-redundant-followup-routing.md), including explicit approval of the refined routing contract before implementation
+3. resume the reproducible [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) and remaining external qualification work
+4. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings and the normalized adjacent-edge process
 5. continue working the [dogfood findings backlog](05-release-qualification/dogfood/) during realistic prerelease use and keep the dogfood umbrella active until the user explicitly declares it complete
 6. publish the release candidate only after dogfood blockers and required RC work are resolved
 7. [stabilize the published release candidate](05-release-qualification/05a-stabilize-release-candidate.md) through the complete generated-vault matrix
