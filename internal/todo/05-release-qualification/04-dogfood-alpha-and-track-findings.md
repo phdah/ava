@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T14:51:00+02:00
+  at: 2026-08-10T15:58:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -21,6 +21,8 @@ updated:
 The alpha exists to expose failures not found by fixtures or design review. Findings are managed through the [Alpha Dogfood Findings](dogfood/) backlog.
 
 Only the user may mark this umbrella task complete. A passing suite, empty backlog, or another prerelease does not complete dogfooding automatically.
+
+Use the [V1 Release Operator Path](v1-release-operator-path.md) for the canonical ordering between remaining dogfood qualification, explicit closure, release-candidate publication, and stable qualification.
 
 ## Required scenario coverage
 
@@ -54,6 +56,19 @@ Every new prerelease uses the canonical adjacent catalog:
 
 `upgrade-impact.json` and cumulative target-specific guidance are historical compatibility evidence, not active authoring inputs.
 
+## Closure gate
+
+Dogfooding stays open while the synthetic qualification vault and corrective-alpha qualification are completed. The user does not need to close this task before those two supporting tasks run.
+
+Ask for explicit user closure after the corrective alpha has passed its published-asset qualification and before release-candidate publication begins. Before asking, verify:
+
+- the corrective-alpha task is complete
+- there are no pending blockers
+- there are no pending `required-v1` findings
+- every newly discovered release-relevant defect has a recorded disposition
+
+A clear user statement that dogfooding is complete or that Ava should proceed to the release candidate is sufficient. Record that decision by marking this umbrella complete and synchronizing the Phase 5 indexes. Do not infer closure from an empty backlog or passing qualification.
+
 ## Current state
 
 Findings 01 through 15 are complete. There are currently no pending dogfood findings, but this umbrella remains active until the user explicitly closes dogfooding.
@@ -68,4 +83,4 @@ Finding 10 established that pull-request change types are selected from supporte
 
 Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing. Every request still performs the managed-state gate, but a pure clarification may be roleless and a same-objective scoped follow-up may retain the already-active role without repeated registry traversal or unchanged required-reading reload. New tasks, explicit workflows or roles, changed authority or domain, scoped work after roleless handling, uncertain role fit, and managed-state overrides force fresh routing.
 
-The synthetic vault and corrective immutable release qualification are the next pending supporting work. New dogfood findings may still preempt that sequence according to their classification.
+The synthetic vault and corrective immutable alpha qualification are the next pending supporting work. New `blocker` or `required-v1` findings may still preempt that sequence. After those two supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
