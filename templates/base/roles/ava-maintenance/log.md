@@ -2,6 +2,11 @@
 
 This log records major conceptual and structural changes to the managed Ava Maintenance role. It does not replace Git history.
 
+## 2026-08-10
+
+- **Agent-driven upgrade finalization**: Made Ava Maintenance the finalization mechanism after semantic compatibility is complete. The role validates the protocol preconditions, atomically writes only the terminal journal state, removes only the recorded transaction workspace, and verifies normal routing is enabled without searching for an installer binary.
+- **Bounded mutation exception**: Kept explicit upgrade, resume, abort, rollback, repair, and all non-terminal journal transitions inside existing deterministic installer or updater mechanisms. Direct state mutation remains forbidden outside successful terminal finalization.
+
 ## 2026-08-03
 
 - **Managed maintenance authority**: Added Ava Maintenance as the agent-facing role for installed identity, managed integrity, deterministic recovery coordination, host accessibility, explicit upgrades, finalization, and safe removal.
