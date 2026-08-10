@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T12:48:00+02:00
+  at: 2026-08-10T13:21:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,7 +25,9 @@ Read the [ordered roadmap](todo/index.md) before acting.
 
 [Clarify release semantic-impact assessment](todo/05-release-qualification/dogfood/13-clarify-release-semantic-impact-assessment.md) is the current next task. It must make release completion explicitly distinguish Ava-managed behavior changes from possible semantic incompatibility in project-owned context before deciding `semantic_review_required`, and it blocks the next prerelease after `1.0.0-alpha.14`.
 
-[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) remains the next supporting qualification task after the pending dogfood blocker is resolved.
+[Repair Inbox Ingester project-root links](todo/05-release-qualification/dogfood/14-repair-inbox-ingester-project-root-links.md) is the next pending dogfood blocker after finding 13. It must correct managed role references that currently resolve the project-owned `inbox/` beneath the Inbox Ingester role directory and block required reading.
+
+[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) remains the next supporting qualification task after the pending dogfood blockers are resolved.
 
 [Avoid redundant routing for conversational follow-ups](todo/05-release-qualification/dogfood/12-avoid-redundant-followup-routing.md) is complete. Every request keeps the managed-state gate, pure clarifications may be roleless, same-objective scoped follow-ups may retain the already-active role, and new or changed scoped work performs fresh routing.
 
