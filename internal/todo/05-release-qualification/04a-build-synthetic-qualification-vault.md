@@ -11,8 +11,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-07T15:45:02+02:00
 updated:
-  by: agent:opencode
-  at: 2026-08-09T10:57:56+02:00
+  by: agent:openai-chatgpt
+  at: 2026-08-10T16:23:00+02:00
 ---
 
 # Build the Synthetic V1 Qualification Vault
@@ -27,7 +27,7 @@ The complete corpus may be generated freely. It must not be derived from the use
 
 ## Ordering
 
-The current routing blocker remains the first implementation task. Build this vault before qualifying the corrective prerelease so both assembled and published versions can be exercised against the same baseline.
+Build and qualify this vault before qualifying the corrective prerelease so both assembled and published versions can be exercised against the same baseline. The content-generation subphase is complete by user confirmation; the current work is ingestion, lifecycle, and evidence qualification.
 
 ## Output boundary
 
@@ -229,7 +229,21 @@ repository boundary validation: passed
 OpenCode available for later clean-session qualification: 1.17.13
 ```
 
-The task remains pending. Five semantically correct external PNG images must still be produced and finalized, the managed-state execution plans must be exercised against assembled and published Ava assets, and clean OpenCode ingestion plus independent semantic review must populate valid run manifests. Test-only image bytes prove finalizer mechanics but are not qualification evidence.
+## External qualification progress
+
+On 2026-08-10, the user confirmed that the synthetic corpus and all five specified images have been generated in a repository-external local directory and look correct. The local artifacts are not accessible from this repository session, so this records user-confirmed completion of content generation without claiming independent byte-level validation.
+
+Current external progress:
+
+- [x] synthetic corpus generated locally
+- [x] five specified images generated locally and visually accepted by the user
+- [ ] run `finalize-images` and `verify` against those local artifacts to record the finalized inventory
+- [ ] materialize the eight qualification variants
+- [ ] exercise clean OpenCode ingestion and independent review
+- [ ] exercise routing, hierarchy, fidelity, damaged-state, upgrade, recovery, semantic reconciliation, finalization, uninstall, and reinstall scenarios
+- [ ] populate and validate the required run manifests
+
+The task remains pending because qualification evidence is still required. Do not regenerate the corpus or images unless validation exposes a fixture defect. The current next action is to validate the existing local corpus through the operator sequence in [V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification).
 
 ## Completion criteria
 
