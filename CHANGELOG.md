@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-alpha.14](https://github.com/phdah/ava/compare/v1.0.0-alpha.13...v1.0.0-alpha.14) (2026-08-10)
+
+
+### Bug Fixes
+
+* **routing:** avoid redundant follow-up routing ([#82](https://github.com/phdah/ava/issues/82)) ([e423025](https://github.com/phdah/ava/commit/e423025b4921f0916df159acda6b663f85867d6a))
+
 ## [1.0.0-alpha.13](https://github.com/phdah/ava/compare/v1.0.0-alpha.12...v1.0.0-alpha.13) (2026-08-09)
 
 
