@@ -2,6 +2,8 @@
 
 Turn Ava's format, roles, release tooling, OpenCode support, and conformance suite into tested prereleases and the first stable distribution.
 
+Use the [V1 Release Operator Path](v1-release-operator-path.md) as the canonical ordering, operator procedure, signoff, and advancement contract from the current alpha state through `1.0.0`.
+
 ## Core release gates
 
 1. [x] [Define alpha acceptance and prerelease upgrade policy](01-define-alpha-acceptance-and-upgrade-policy.md)
@@ -19,6 +21,21 @@ Core progress: 3 of 6 complete.
 2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md)
 3. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md)
 
+## Canonical remaining path to `1.0.0`
+
+The core-gate numbering and supporting-task numbering above describe roadmap structure. They are not by themselves the operator order. The official remaining sequence is:
+
+1. finish the synthetic v1 qualification vault
+2. qualify and publish the corrective alpha
+3. obtain explicit user closure of alpha dogfooding
+4. publish the `1.0.0` release candidate
+5. stabilize the published release candidate
+6. qualify and publish `1.0.0`
+
+A newly discovered `blocker` or `required-v1` finding preempts this sequence until resolved. An approved `post-v1` finding does not.
+
+Dogfooding intentionally remains open during steps 1 and 2. The user does not need to close dogfooding before completing the synthetic-vault work or corrective-alpha qualification. Explicit user closure is required before step 4 may begin, and an empty findings backlog does not substitute for that closure.
+
 ## Dogfood findings
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
@@ -28,27 +45,21 @@ Use the [Alpha Dogfood Findings](dogfood/) index.
 - 0 pending required-v1 findings
 - 15 completed findings
 
-[Permit agent-driven upgrade finalization](dogfood/15-permit-agent-driven-upgrade-finalization.md) is complete. Ava Maintenance now performs successful terminal finalization directly after validating semantic completion and the finalizable journal, without binary lookup, while broader deterministic recovery remains installer-backed.
-
-[Repair Inbox Ingester project-root links](dogfood/14-repair-inbox-ingester-project-root-links.md) is complete. The managed role now names the project-owned inbox through explicit project-root paths, with installed-payload regression coverage for the corrected required-reading contract.
-
-[Clarify release semantic-impact assessment](dogfood/13-clarify-release-semantic-impact-assessment.md) is complete. Release completion now distinguishes managed behavioral change from possible project-owned incompatibility, requires reviewed rationale for either semantic-review outcome, and keeps semantic classification as maintainer judgment.
-
-[Avoid redundant routing for conversational follow-ups](dogfood/12-avoid-redundant-followup-routing.md) is complete. The managed-state gate remains unconditional, while normal turns may be roleless clarifications, same-role continuations, or fresh routing according to explicit boundaries that preserve finding 07's no-bypass guarantee.
-
-[Define release-impact-based change types](dogfood/10-define-release-impact-based-change-types.md) is complete. Release classification follows supported distribution impact rather than implementation novelty or repository location.
-
-[Normalize and enforce adjacent-edge release authoring](dogfood/11-enforce-adjacent-edge-release-authoring.md) is complete. The canonical alpha.12 catalog contains the retained adjacent graph, strict inherited-versus-proposed validation is required by release policy, and legacy cumulative authoring is disabled.
+Findings 01 through 15 are implementation-complete. Finding 12's realistic multi-turn installed-project exercise and finding 15's fresh-agent terminal-finalization exercise remain release qualification evidence required during the corrective-alpha path rather than pending implementation work.
 
 ## Qualification policy
 
 Every new release inherits the previous canonical catalog unchanged and authors exactly one adjacent edge. Older sources qualify through unique composition. Published legacy direct representations remain readable but cannot be selected for new authoring.
 
-The dogfood umbrella remains pending until the user explicitly declares it complete. An empty findings backlog does not automatically advance or complete the core dogfood gate.
+The dogfood umbrella remains pending until the user explicitly declares it complete. A passing suite, an empty findings backlog, or publication of another alpha does not complete it automatically.
 
 ## Current active work
 
-Resume [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md), then continue the corrective immutable alpha qualification sequence and any newly discovered higher-priority dogfood findings. Finding 12's realistic multi-turn installed-project exercise and finding 15's fresh-agent finalization exercise remain release qualification gates, not pending implementation work.
+**Current step: 1 of 6, finish the synthetic v1 qualification vault.**
+
+The fixture implementation is already present. Continue with the external operator sequence in [Step 1 of the V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification): generate and verify the baseline, produce and finalize the five images, materialize all variants, exercise them against the exact Ava revision under qualification, complete clean OpenCode ingestion and independent review evidence, and validate the resulting run manifests and repository boundaries.
+
+After that gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
 
 ## Previous phase
 
