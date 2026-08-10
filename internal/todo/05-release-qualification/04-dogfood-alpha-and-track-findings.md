@@ -10,8 +10,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
 updated:
-  by: agent:opencode
-  at: 2026-08-10T11:53:37+02:00
+  by: agent:openai-chatgpt
+  at: 2026-08-10T14:12:32+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -56,11 +56,11 @@ Every new prerelease uses the canonical adjacent catalog:
 
 ## Current state
 
-Findings 01 through 13 are complete. [Finding 14](dogfood/14-repair-inbox-ingester-project-root-links.md) and [Finding 15](dogfood/15-permit-agent-driven-upgrade-finalization.md) are pending blockers for the next prerelease.
+Findings 01 through 14 are complete. [Finding 15](dogfood/15-permit-agent-driven-upgrade-finalization.md) is the remaining pending blocker for the next prerelease.
 
 Finding 13 was exposed while completing the `1.0.0-alpha.14` release PR. The initial release-edge assessment incorrectly treated the absence of deterministic project-owned edits as evidence that semantic review was unnecessary. The implemented release procedure now separates managed delta, possible project-owned incompatibility, and required reconciliation. It requires reviewed rationale for both `true` and `false`, bounded guidance when review is required, and leaves the semantic decision with the maintainer rather than deterministic validation.
 
-Finding 14 was exposed during realistic Inbox Ingester use. The managed role references `./inbox/` and `./inbox/index.md` from its own role directory, causing the agent to look for `/.ava/base/roles/inbox-ingester/inbox/index.md` instead of the project-owned root `/inbox/index.md`. The role therefore blocks before ingestion can begin unless the user manually corrects the target.
+Finding 14 was exposed during realistic Inbox Ingester use. The managed role encoded project-root `./inbox/` and `./inbox/index.md` references as Markdown links from its nested role directory, and the host resolved them beneath `/.ava/base/roles/inbox-ingester/`. The implemented fix now names those project-owned paths explicitly as project-root paths in prose and adds assembled-payload regression coverage so required reading cannot silently return to the broken role-relative link shape.
 
 Finding 15 was exposed during a realistic alpha.13 to alpha.14 upgrade in a dogfood project. After semantic reconciliation completed, Ava Maintenance could not finalize the journal because the instructions say to use the existing installer or updater binary, which does not exist. The agent blocked and asked the user for an installer path. Ava has no installer binary and will not have one; the agent is the finalization mechanism and must be explicitly authorized to write the terminal state directly.
 
@@ -68,4 +68,4 @@ Finding 10 established that pull-request change types are selected from supporte
 
 Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing. Every request still performs the managed-state gate, but a pure clarification may be roleless and a same-objective scoped follow-up may retain the already-active role without repeated registry traversal or unchanged required-reading reload. New tasks, explicit workflows or roles, changed authority or domain, scoped work after roleless handling, uncertain role fit, and managed-state overrides force fresh routing.
 
-Both pending blockers must be implemented before another prerelease is completed. The synthetic vault and corrective immutable release qualification remain pending supporting work after the blockers are resolved.
+Finding 15 must be implemented before another prerelease is completed. The synthetic vault and corrective immutable release qualification remain pending supporting work after that blocker is resolved.
