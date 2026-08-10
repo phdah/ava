@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-09T17:30:00+02:00
+  at: 2026-08-10T11:29:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -24,6 +24,8 @@ Read the [ordered roadmap](todo/index.md) before acting.
 ## Current next task
 
 [Define release-impact-based change types](todo/05-release-qualification/dogfood/10-define-release-impact-based-change-types.md) is the current next finding. It is required before release-candidate publication.
+
+[Avoid redundant routing for conversational follow-ups](todo/05-release-qualification/dogfood/12-avoid-redundant-followup-routing.md) is queued after finding 10 as required-v1 routing work. It must preserve the no-bypass guarantee from finding 07 while avoiding unnecessary fresh routing for follow-up turns.
 
 [Normalize and enforce adjacent-edge release authoring](todo/05-release-qualification/dogfood/11-enforce-adjacent-edge-release-authoring.md) is complete. The retained alpha.5 through alpha.12 graph is normalized, active cumulative `upgrade-impact.json` authoring is removed, and release gates now require one immutable previous-to-target edge.
 

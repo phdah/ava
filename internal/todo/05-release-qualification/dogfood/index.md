@@ -8,13 +8,15 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 [Define release-impact-based change types](10-define-release-impact-based-change-types.md) is the first actionable pending finding. It is `required-v1` work before release-candidate publication.
 
+[Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) is queued as the next `required-v1` routing finding after finding 10. It must refine finding 07 without restoring host-persona routing bypasses.
+
 [Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) is complete. The active alpha.5 through alpha.12 history is canonical adjacent state, legacy cumulative authoring is disabled, and required release gates enforce one new previous-to-target edge.
 
 ## Backlog status
 
-- 1 pending finding
+- 2 pending findings
 - 0 pending blockers
-- 1 pending required-v1 finding
+- 2 pending required-v1 findings
 - 10 completed findings
 
 ## Findings
@@ -32,6 +34,7 @@ Dogfooding remains active until the user explicitly declares it complete.
 | 09 | completed | required-v1 | release candidate | [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) |
 | 10 | pending | required-v1 | release candidate | [Define release-impact-based change types](10-define-release-impact-based-change-types.md) |
 | 11 | completed | blocker | next prerelease | [Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) |
+| 12 | pending | required-v1 | release candidate | [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) |
 
 ## Backlog rules
 

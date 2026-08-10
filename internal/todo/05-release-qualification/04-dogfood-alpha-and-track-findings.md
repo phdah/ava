@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-09T17:30:00+02:00
+  at: 2026-08-10T11:29:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -55,6 +55,8 @@ Every new prerelease uses the canonical adjacent catalog:
 
 ## Current state
 
-Findings 01 through 09 and 11 are complete. Finding 10 is the current pending required-v1 item. The synthetic vault and corrective immutable release qualification remain pending supporting work.
+Findings 01 through 09 and 11 are complete. Findings 10 and 12 are pending `required-v1` items, with finding 10 remaining the current next task. The synthetic vault and corrective immutable release qualification remain pending supporting work.
+
+Finding 12 captures the follow-up-routing dogfood issue: pure conversational follow-ups should not require fresh role resolution, and same-role continuation should retain the active role without repeated routing, while new substantive work must preserve finding 07's no-bypass guarantee.
 
 The next release must provide immutable evidence for finding 11 by proving unchanged catalog inheritance, one-edge authoring, at least three composed historical sources, and exact-once semantic guidance.
