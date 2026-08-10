@@ -29,16 +29,23 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 The synthetic corpus and all five specified images have been generated in a repository-external local directory and were visually accepted by the user on 2026-08-10. Image finalization and finalized-corpus verification have also been completed and recorded locally. The repository records that user-confirmed external progress without claiming direct access to the local artifacts.
 
+Use these user-owned local paths for the current qualification run:
+
+```text
+qualification vault: ~/stuff/ava-qualification-vault/
+test project:        ~/stuff/project-vault
+```
+
 The immediate operator action is now the execution sequence defined in the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification):
 
-1. materialize the eight qualification variants
-2. exercise the variants against the exact Ava revision under qualification
-3. complete clean OpenCode inbox ingestion in the required chronological batches
-4. perform independent semantic review and the routing, hierarchy, fidelity, recovery, upgrade, and finalization checks required by the fixture
-5. populate and validate the resulting run manifests
-6. validate repository boundaries after any repository-side evidence updates
+1. materialize the eight qualification variants from `~/stuff/ava-qualification-vault/`
+2. use `~/stuff/project-vault` as the active test project for the manual OpenCode qualification flow where the scenario calls for a working project
+3. exercise the variants against the exact Ava revision under qualification
+4. complete clean OpenCode inbox ingestion in the required chronological batches
+5. perform independent semantic review and the routing, hierarchy, fidelity, recovery, upgrade, and finalization checks required by the fixture
+6. populate and validate the resulting run manifests and validate repository boundaries after any repository-side evidence updates
 
-Do not regenerate or re-finalize the corpus or images unless later validation exposes a fixture defect or invalid local evidence. Advance when the [synthetic qualification task](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) meets its external ingestion, review, execution-evidence, and completion criteria.
+Do not regenerate, re-finalize, or re-verify the corpus or images unless later validation exposes a fixture defect or invalid local evidence. Advance when the [synthetic qualification task](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) meets its external ingestion, review, execution-evidence, and completion criteria.
 
 ## Official path to `1.0.0`
 
