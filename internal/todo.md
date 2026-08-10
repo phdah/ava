@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T11:49:00+02:00
+  at: 2026-08-10T12:48:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -23,7 +23,9 @@ Read the [ordered roadmap](todo/index.md) before acting.
 
 ## Current next task
 
-[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) is the current next qualification task now that the dogfood findings backlog has no pending implementation item.
+[Clarify release semantic-impact assessment](todo/05-release-qualification/dogfood/13-clarify-release-semantic-impact-assessment.md) is the current next task. It must make release completion explicitly distinguish Ava-managed behavior changes from possible semantic incompatibility in project-owned context before deciding `semantic_review_required`, and it blocks the next prerelease after `1.0.0-alpha.14`.
+
+[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) remains the next supporting qualification task after the pending dogfood blocker is resolved.
 
 [Avoid redundant routing for conversational follow-ups](todo/05-release-qualification/dogfood/12-avoid-redundant-followup-routing.md) is complete. Every request keeps the managed-state gate, pure clarifications may be roleless, same-objective scoped follow-ups may retain the already-active role, and new or changed scoped work performs fresh routing.
 
