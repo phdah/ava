@@ -59,16 +59,20 @@ The alpha qualification policy composes that conformance evidence with roadmap c
 
 Release-please enforces supported-distribution release classification at the merge boundary, maintains version and changelog state, keeps one release pull request current, creates immutable tags and draft releases, and hands the exact prepared SHA to qualification, reproducible assembly, release conformance, attestation, non-clobbering asset upload, and automatic publication.
 
-Alpha publication is complete through immutable `1.0.0-alpha.12`. The remaining ordered path to the first stable release is:
+Alpha publication is complete through immutable `1.0.0-alpha.12`. The [V1 Release Operator Path](05-release-qualification/v1-release-operator-path.md) is authoritative for the remaining operator order, exact next action, signoff point, commands, evidence, and advancement gates.
 
-1. resume the reproducible [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) and remaining external qualification work
-2. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including normalized adjacent-edge authoring, conversational routing transitions, and agent-driven finalization
-3. continue working the [dogfood findings backlog](05-release-qualification/dogfood/) during realistic prerelease use and keep the dogfood umbrella active until the user explicitly declares it complete
-4. publish the release candidate only after dogfood blockers and required RC work are resolved
+The remaining ordered path to the first stable release is:
+
+1. finish the reproducible [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) and its remaining external qualification evidence
+2. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including conversational routing transitions and agent-driven finalization
+3. obtain explicit user closure of [alpha dogfooding](05-release-qualification/04-dogfood-alpha-and-track-findings.md) after the corrective alpha passes and no blocker or `required-v1` finding remains
+4. publish the `1.0.0` release candidate only after that explicit closure and the RC entry gate pass
 5. [stabilize the published release candidate](05-release-qualification/05a-stabilize-release-candidate.md) through the complete generated-vault matrix
 6. qualify and publish `1.0.0`
 
-Dogfood findings are numbered independently from the six core Phase 5 gates. New findings may be added and resolved continuously without renumbering release stages. Completed findings remain as durable evidence, and an empty backlog does not automatically advance the roadmap.
+Dogfooding intentionally stays open during steps 1 and 2. The user does not need to close it before the synthetic-vault or corrective-alpha work. A clear user statement that dogfooding is complete or that Ava should proceed to the release candidate is required before step 4. An empty findings backlog or passing qualification does not substitute for that decision.
+
+Dogfood findings are numbered independently from the six remaining operator steps and from the six core Phase 5 gates. New findings may be added and resolved continuously without renumbering release stages. A newly discovered `blocker` or `required-v1` finding preempts the remaining operator sequence until resolved. An approved `post-v1` finding does not.
 
 Additional `alpha.N`, beta, or RC releases may be inserted when findings require them. The first alpha is a testable distribution, not a promise that the v1 feature set is defect-free.
 
