@@ -12,7 +12,7 @@ generated:
   at: 2026-08-07T15:45:02+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T15:58:00+02:00
+  at: 2026-08-10T16:23:00+02:00
 ---
 
 # Qualify and Publish the Corrective Alpha
@@ -30,7 +30,7 @@ Use [Step 2 of the V1 Release Operator Path](v1-release-operator-path.md#step-2-
 Do not complete or publish the corrective alpha until:
 
 - all currently recorded blocker and `required-v1` dogfood findings are implementation-complete
-- the [synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md) has met its step-1 qualification gate
+- the [synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md) has met its Step 1 qualification gate; its corpus and images are already user-confirmed as generated, but ingestion, review, lifecycle, and execution-evidence qualification still remain
 - no newly discovered blocker prevents prerelease publication
 - the exact target version and source revision receive approval through the maintained release pull-request process
 
