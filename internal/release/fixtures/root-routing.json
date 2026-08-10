@@ -1,13 +1,16 @@
 {
-  "schema_version": 1,
-  "description": "Regression scenarios proving that every request enters managed state and role routing before any substantive host response.",
+  "schema_version": 2,
+  "description": "Regression scenarios proving that every request enters the managed-state gate while conversational follow-ups may be roleless, retain the current role, or require fresh routing.",
   "cases": [
     {
       "id": "apparently-out-of-domain-warranty",
       "request": "Has my warranty run out on my glasses?",
+      "previous_turn": null,
       "managed_state": "normal",
+      "routing_mode": "fresh-routing",
       "required_before_handling": [
         "managed-state-gate",
+        "conversation-routing-classification",
         "workflow-resolution",
         "managed-and-project-role-registry-evaluation",
         "selected-role-required-reading",
@@ -23,11 +26,119 @@
       ]
     },
     {
-      "id": "no-clear-role-match",
-      "request": "Please handle this request even though I have not said what outcome I want.",
+      "id": "roleless-clarification",
+      "request": "What do you mean by canonical there?",
+      "previous_turn": {
+        "routing_mode": "fresh-routing",
+        "active_role": "Project Steward",
+        "objective": "Explain the project terminology contract"
+      },
       "managed_state": "normal",
+      "routing_mode": "roleless-followup",
       "required_before_handling": [
         "managed-state-gate",
+        "conversation-routing-classification"
+      ],
+      "acceptable_outcomes": [
+        "roleless-conversational-handling"
+      ],
+      "forbidden_before_routing": [
+        "workflow-registry-evaluation",
+        "managed-and-project-role-registry-evaluation",
+        "role-required-reading-reload",
+        "role-announcement",
+        "project-mutation"
+      ],
+      "active_role_after_turn": null
+    },
+    {
+      "id": "same-role-continuation",
+      "request": "Update that wording in the project instructions accordingly.",
+      "previous_turn": {
+        "routing_mode": "fresh-routing",
+        "active_role": "Project Steward",
+        "objective": "Clarify the project terminology contract",
+        "required_reading_loaded": true
+      },
+      "managed_state": "normal",
+      "routing_mode": "same-role-continuation",
+      "required_before_handling": [
+        "managed-state-gate",
+        "conversation-routing-classification",
+        "current-role-fit-check",
+        "role-continuation-announcement"
+      ],
+      "acceptable_outcomes": [
+        "same-role-handling"
+      ],
+      "forbidden_before_routing": [
+        "workflow-registry-evaluation",
+        "managed-and-project-role-registry-evaluation",
+        "role-required-reading-reload"
+      ],
+      "active_role_after_turn": "Project Steward"
+    },
+    {
+      "id": "role-transition",
+      "request": "Now review these changes independently.",
+      "previous_turn": {
+        "routing_mode": "same-role-continuation",
+        "active_role": "Role Manager",
+        "objective": "Update a project role"
+      },
+      "managed_state": "normal",
+      "routing_mode": "fresh-routing",
+      "required_before_handling": [
+        "managed-state-gate",
+        "conversation-routing-classification",
+        "workflow-resolution",
+        "managed-and-project-role-registry-evaluation",
+        "selected-role-required-reading",
+        "role-announcement"
+      ],
+      "acceptable_outcomes": [
+        "Change Reviewer"
+      ],
+      "forbidden_before_routing": [
+        "Role Manager continuation",
+        "review under authoring authority"
+      ]
+    },
+    {
+      "id": "scoped-work-after-roleless",
+      "request": "Update the project terminology to use deployment target.",
+      "previous_turn": {
+        "routing_mode": "roleless-followup",
+        "active_role": null,
+        "objective": null
+      },
+      "managed_state": "normal",
+      "routing_mode": "fresh-routing",
+      "required_before_handling": [
+        "managed-state-gate",
+        "conversation-routing-classification",
+        "workflow-resolution",
+        "managed-and-project-role-registry-evaluation",
+        "selected-role-required-reading",
+        "role-announcement"
+      ],
+      "acceptable_outcomes": [
+        "selected-role-handling"
+      ],
+      "forbidden_before_routing": [
+        "reuse role from before roleless turn",
+        "project mutation before role activation"
+      ]
+    },
+    {
+      "id": "no-clear-role-match",
+      "request": "Please handle this request even though I have not said what outcome I want.",
+      "previous_turn": null,
+      "managed_state": "normal",
+      "routing_mode": "fresh-routing",
+      "required_before_handling": [
+        "managed-state-gate",
+        "conversation-routing-classification",
         "workflow-resolution",
         "managed-and-project-role-registry-evaluation"
       ],
