@@ -23,10 +23,12 @@ Core progress: 3 of 6 complete.
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 0 pending findings
-- 0 pending blockers
+- 1 pending finding
+- 1 pending blocker
 - 0 pending required-v1 findings
 - 12 completed findings
+
+[Clarify release semantic-impact assessment](dogfood/13-clarify-release-semantic-impact-assessment.md) is pending. Release completion must explicitly distinguish changes to Ava-managed behavior from possible incompatibility in existing project-owned context before deciding `semantic_review_required`.
 
 [Avoid redundant routing for conversational follow-ups](dogfood/12-avoid-redundant-followup-routing.md) is complete. The managed-state gate remains unconditional, while normal turns may be roleless clarifications, same-role continuations, or fresh routing according to explicit boundaries that preserve finding 07's no-bypass guarantee.
 
@@ -42,7 +44,7 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-Resume [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md), then continue the corrective immutable alpha qualification sequence and any newly discovered higher-priority dogfood findings. Finding 12's realistic multi-turn installed-project exercise remains a release qualification gate, not pending implementation work.
+Resolve [Clarify release semantic-impact assessment](dogfood/13-clarify-release-semantic-impact-assessment.md) before completing another release PR. After the blocker is resolved, resume [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md), then continue the corrective immutable alpha qualification sequence and any newly discovered higher-priority dogfood findings. Finding 12's realistic multi-turn installed-project exercise remains a release qualification gate, not pending implementation work.
 
 ## Previous phase
 
