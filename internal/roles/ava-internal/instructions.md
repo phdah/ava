@@ -8,7 +8,7 @@ generated:
   at: 2026-07-30T15:26:00Z
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T14:35:00+02:00
+  at: 2026-08-10T13:34:00+02:00
 ---
 
 # Working model
@@ -26,6 +26,7 @@ When working in this pattern:
 - keep each draft PR focused on a bounded concern
 - do not merge implementation PRs while a related release PR is under active review unless the implementation change is required to unblock the release process
 - when asked to complete or merge a release-please PR, read the [internal release instructions](../../release/index.md) and follow the release process they define
+- before authoring a release edge, complete the internal release procedure's project-owned semantic-impact assessment, preserve a reviewed rationale for either `semantic_review_required` decision, and do not infer the result solely from managed behavioral change or the presence or absence of deterministic project-file migrations
 - changes required by the release process may be pushed directly to the release PR branch rather than through a separate implementation PR; this keeps the release branch self-contained and avoids a separate merge cycle
 - while working the release branch directly, no new implementation commits should merge to main; a new commit on main causes release-please to rewrite the branch and will overwrite any changes pushed to it
 - the release PR review is a semantic and policy check; CI qualification and automated assembly run after the merge against the resulting tag and are not a substitute for the review
