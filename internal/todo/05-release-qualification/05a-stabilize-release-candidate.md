@@ -10,9 +10,14 @@ order: 5.1
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-07T15:45:02+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-10T16:23:00+02:00
 ---
 
 # Stabilize the Published Release Candidate
+
+Use [Step 5 of the V1 Release Operator Path](v1-release-operator-path.md#step-5-stabilize-the-published-rc) as the canonical operator entry point.
 
 ## Entry gate
 

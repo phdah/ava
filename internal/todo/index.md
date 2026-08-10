@@ -61,12 +61,14 @@ Release-please enforces supported-distribution release classification at the mer
 
 Alpha publication is complete through immutable `1.0.0-alpha.12`. The remaining ordered path to the first stable release is:
 
-1. resume the reproducible [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) and remaining external qualification work
+1. finish the [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md); the corpus and five images are user-confirmed as generated locally, so the current action is ingestion, review, lifecycle, and evidence qualification rather than further content generation
 2. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including normalized adjacent-edge authoring, conversational routing transitions, and agent-driven finalization
-3. continue working the [dogfood findings backlog](05-release-qualification/dogfood/) during realistic prerelease use and keep the dogfood umbrella active until the user explicitly declares it complete
-4. publish the release candidate only after dogfood blockers and required RC work are resolved
+3. obtain explicit user closure of [alpha dogfooding](05-release-qualification/04-dogfood-alpha-and-track-findings.md) after the corrective alpha passes and before RC work begins
+4. publish the release candidate only after dogfood closure, blockers, and required RC work are resolved
 5. [stabilize the published release candidate](05-release-qualification/05a-stabilize-release-candidate.md) through the complete generated-vault matrix
 6. qualify and publish `1.0.0`
+
+Use the [V1 Release Operator Path](05-release-qualification/v1-release-operator-path.md) for the exact current action, practical commands, evidence requirements, signoff point, and advancement gates.
 
 Dogfood findings are numbered independently from the six core Phase 5 gates. New findings may be added and resolved continuously without renumbering release stages. Completed findings remain as durable evidence, and an empty backlog does not automatically advance the roadmap.
 

@@ -8,46 +8,75 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T14:51:00+02:00
+  at: 2026-08-10T16:33:00+02:00
 ---
 
 # Ava Internal To-Do List
 
-This file is the stable entry point for developing Ava itself. It is internal repository context and must never be copied into distributed projects.
+This file is the authoritative entry point for answering what Ava development work comes next. It is internal repository context and must never be copied into distributed projects.
 
-Read the [ordered roadmap](todo/index.md) before acting.
+Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md) for the exact ordered path from the current alpha state to `1.0.0`.
 
 ## Current phase
 
-[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains active until the user explicitly declares dogfooding complete.
+[V1 release qualification](todo/05-release-qualification/) is active.
 
-## Current next task
+[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There are currently 0 pending dogfood findings, 0 pending blockers, and 0 pending `required-v1` findings.
 
-[Build the synthetic v1 qualification vault](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) is the current next supporting qualification task. There are currently no pending dogfood findings, so the Phase 5 sequence resumes here unless new dogfood work preempts it.
+## Official next action
 
-[Permit agent-driven upgrade finalization](todo/05-release-qualification/dogfood/15-permit-agent-driven-upgrade-finalization.md) is complete. Ava Maintenance now validates successful finalization preconditions and performs the bounded terminal journal transition directly, without searching for an installer binary, while broader deterministic recovery remains installer-backed.
+**Step 1 of 6: exercise the finalized synthetic v1 qualification vault through ingestion and qualification.**
 
-[Repair Inbox Ingester project-root links](todo/05-release-qualification/dogfood/14-repair-inbox-ingester-project-root-links.md) is complete. The Inbox Ingester now names the project-owned inbox through explicit project-root paths, and installed-payload regression coverage prevents the broken role-relative resolution from returning.
+The synthetic corpus and all five specified images have been generated in a repository-external local directory and were visually accepted by the user on 2026-08-10. Image finalization and finalized-corpus verification have also been completed and recorded locally. The repository records that user-confirmed external progress without claiming direct access to the local artifacts.
 
-[Clarify release semantic-impact assessment](todo/05-release-qualification/dogfood/13-clarify-release-semantic-impact-assessment.md) is complete. Release completion now distinguishes managed behavioral change from possible incompatibility in project-owned context, requires reviewed rationale for both `semantic_review_required` outcomes, and keeps the semantic decision with maintainers rather than deterministic tooling.
+Use these user-owned local paths for the current qualification run:
 
-[Avoid redundant routing for conversational follow-ups](todo/05-release-qualification/dogfood/12-avoid-redundant-followup-routing.md) is complete. Every request keeps the managed-state gate, pure clarifications may be roleless, same-role scoped follow-ups may retain the already-active role, and new or changed scoped work performs fresh routing.
+```text
+qualification vault: ~/stuff/ava-qualification-vault/
+test project:        ~/stuff/project-vault
+```
 
-[Define release-impact-based change types](todo/05-release-qualification/dogfood/10-define-release-impact-based-change-types.md) is complete. Conventional Commit types follow supported distribution impact rather than implementation novelty or repository location.
+The immediate operator action is now the execution sequence defined in the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification):
 
-[Normalize and enforce adjacent-edge release authoring](todo/05-release-qualification/dogfood/11-enforce-adjacent-edge-release-authoring.md) is complete. The retained alpha.5 through alpha.12 graph is normalized, active cumulative `upgrade-impact.json` authoring is removed, and release gates require one immutable previous-to-target edge.
+1. materialize the eight qualification variants from `~/stuff/ava-qualification-vault/`
+2. use `~/stuff/project-vault` as the active test project for the manual OpenCode qualification flow where the scenario calls for a working project
+3. exercise the variants against the exact Ava revision under qualification
+4. complete clean OpenCode inbox ingestion in the required chronological batches
+5. perform independent semantic review and the routing, hierarchy, fidelity, recovery, upgrade, and finalization checks required by the fixture
+6. populate and validate the resulting run manifests and validate repository boundaries after any repository-side evidence updates
 
-Supporting qualification work remains pending for the synthetic vault and corrective immutable alpha. Finding 12's realistic multi-turn installed-project evidence and finding 15's fresh-agent finalization evidence remain release gates rather than pending implementation work. Dogfooding remains active and new findings can still preempt the supporting sequence when their classification requires it.
+Do not regenerate, re-finalize, or re-verify the corpus or images unless later validation exposes a fixture defect or invalid local evidence. Advance when the [synthetic qualification task](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) meets its external ingestion, review, execution-evidence, and completion criteria.
 
-## Working rule
+## Official path to `1.0.0`
 
-When asked for the next to-do:
+1. finish the synthetic v1 qualification vault
+2. qualify and publish the corrective alpha
+3. obtain explicit user closure of alpha dogfooding
+4. publish the `1.0.0` release candidate
+5. stabilize the published release candidate
+6. qualify and publish `1.0.0`
 
-1. read this entry point
-2. read the active Phase 5 index
-3. read the parent dogfood task and findings index
-4. if an actionable pending dogfood finding exists, resolve the first one in dependency order
-5. otherwise follow the current supporting qualification task from the Phase 5 sequence
-6. load only the related repository context
+The exact procedure, commands, evidence, and advancement gates are defined in the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md).
 
-A finding is complete when its bounded repository change, regression coverage, documentation, indexes, and resolution evidence are committed. Later immutable-release evidence is a release gate, not pending implementation status.
+## Dogfood signoff
+
+The user does **not** need to close dogfooding before steps 1 or 2. Dogfooding intentionally remains open while the synthetic qualification work and corrective-alpha qualification are performed.
+
+Explicit user closure is required before step 4, release-candidate publication, may begin. After step 2 is complete and no blocker or `required-v1` finding remains, a clear user statement that dogfooding is complete or that Ava should proceed to the release candidate is sufficient. Do not infer closure from an empty findings backlog or passing qualification.
+
+## Preemption rule
+
+A newly recorded dogfood finding classified as `blocker` or `required-v1` preempts the current release path until it is resolved. An approved `post-v1` finding does not preempt the path.
+
+## Answering "what is next?"
+
+For a status-only question such as "what am I doing next?":
+
+1. read this file
+2. report the **Official next action** exactly as the current step
+3. read the linked section of the V1 release operator path only when the user wants the practical steps or verification commands
+4. do not reconstruct ordering from historical findings, pending checkboxes, or unrelated roadmap phases
+
+Only read deeper task, release, or fixture context when executing the work, validating a gate, or when this entry point reports a newly preempting finding.
+
+A finding is complete when its bounded repository change, regression coverage, documentation, indexes, and resolution evidence are committed. Published-asset or realistic-project evidence may remain a later release gate without returning that finding to pending implementation status.

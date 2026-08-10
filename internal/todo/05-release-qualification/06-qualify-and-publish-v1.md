@@ -11,10 +11,12 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-07T15:45:02+02:00
+  at: 2026-08-10T16:23:00+02:00
 ---
 
 # Qualify and Publish `1.0.0`
+
+Use [Step 6 of the V1 Release Operator Path](v1-release-operator-path.md#step-6-qualify-and-publish-100) as the canonical operator entry point.
 
 ## Stable acceptance gate
 

@@ -1,7 +1,7 @@
 ---
 type: Internal Development Task
 title: Qualify and Publish the Corrective Alpha
-description: Publish the routing correction and completed dogfood fixes as one immutable alpha, then collect their required real-release evidence.
+description: Publish the completed dogfood corrections as one immutable alpha, then collect the required published-release evidence before release-candidate preparation.
 tags: [internal, roadmap, alpha, qualification, publishing, dogfood]
 status: pending
 phase: 5
@@ -10,53 +10,69 @@ order: 4.2
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-07T15:45:02+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-10T16:23:00+02:00
 ---
 
 # Qualify and Publish the Corrective Alpha
 
 ## Purpose
 
-Turn the completed alpha.10 semantic fixes and the pending mandatory-routing correction into immutable evidence before release-candidate preparation. The current release-please proposal is `1.0.0-alpha.11`; if that version becomes unusable, select a new canonical alpha identifier and never move or reuse an immutable tag.
+Publish the completed dogfood corrections through one new immutable alpha and use its pinned public assets to collect the real-release evidence required before Ava can close alpha dogfooding and prepare the release candidate.
+
+Do not hard-code a planned alpha number in this task. Release-please determines the actual next prerelease version and channel from the repository state at execution time. Never move, replace, or reuse an immutable published tag.
+
+Use [Step 2 of the V1 Release Operator Path](v1-release-operator-path.md#step-2-qualify-and-publish-the-corrective-alpha) as the practical operator sequence. Use the maintained [release publication procedure](../../release/procedure.md) as the authoritative release-authoring contract.
 
 ## Dependencies
 
 Do not complete or publish the corrective alpha until:
 
-- [mandatory role routing](dogfood/07-enforce-role-routing-before-every-response.md) is implemented with regression coverage
-- the [synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md) can be generated reproducibly
-- no pending blocker prevents prerelease publication
-- the exact target and source revision receive approval through the maintained release pull-request process
+- all currently recorded blocker and `required-v1` dogfood findings are implementation-complete
+- the [synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md) has met its Step 1 qualification gate; its corpus and images are already user-confirmed as generated, but ingestion, review, lifecycle, and execution-evidence qualification still remain
+- no newly discovered blocker prevents prerelease publication
+- the exact target version and source revision receive approval through the maintained release pull-request process
 
 ## Release preparation
 
 - let release-please derive the canonical target and channel
-- complete the reviewed `internal/release/upgrade-impact.json` on the release branch
-- include every required inherited and protected source or record an independently approved retirement
-- update the maintained transition matrix to the actual published prerelease graph and replace obsolete planned latest-alpha-to-RC assumptions
-- provide exact per-source managed deltas, semantic-impact decisions, guidance, migrations, and cumulative changelog coverage
-- assemble twice from the exact source revision and require identical asset digests
-- run repository, installed, release, boundary, OpenCode, and publication qualification against the assembled assets
+- review only the exact previous-to-target managed delta
+- complete the project-owned semantic-impact assessment and preserve reviewed rationale for the resulting `semantic_review_required` decision
+- author exactly one immutable previous-to-target record under `internal/release/catalogs/<target>.json`
+- add only transition-local guidance, migrations, and retirement decisions introduced by that edge
+- do not author or update `internal/release/upgrade-impact.json`; it is archival compatibility evidence only
+- do not author cumulative target-specific guidance or copy earlier edge records into the new release record
+- preserve every historical catalog record unchanged
+- validate the release PR against its base revision with `internal/release/validate_release_pr.py`
+- run the complete `internal/release/test.sh` suite
+- require the maintained release automation to qualify and reproducibly assemble the exact tagged revision before publication
 
 ## Published-asset qualification
 
 After publication, use version-pinned immutable assets to:
 
 - install into the empty and mature qualification-vault variants
-- upgrade every declared direct source while preserving baseline project-owned files until explicit semantic reconciliation
-- verify no terminal operation leaves an empty transaction container and Ava Maintenance reports healthy deterministic state
-- reconcile every edge that requires semantic review through the exact installed Upgrade Role guidance
-- repeat representative ingestion and obtain isolated Change Reviewer results for hierarchy and fidelity
-- ask the exact glasses-warranty question in a fresh session and prove state gating and role routing occur before handling
-- ask a no-clear-match and an ambiguous request and verify explicit unresolved routing without host-persona fallback
+- upgrade every source declared by the published release path while preserving baseline project-owned files until explicit semantic reconciliation
+- verify managed-state gating, deterministic recovery, semantic reconciliation, and terminal finalization through the actual installed contracts
+- verify no successful terminal operation leaves the transaction workspace behind
+- verify Ava Maintenance reaches healthy normal state without requiring an installed `ava` binary for successful terminal finalization
+- exercise finding 12's realistic multi-turn routing transitions in a fresh installed-project session
+- exercise finding 15's fresh-agent semantic reconciliation and agent-driven finalization path
+- repeat representative inbox ingestion and obtain isolated Change Reviewer results for hierarchy and fidelity
+- exercise no-clear-match and ambiguous requests and verify explicit unresolved routing without host-persona fallback
 - repeat a clean OpenCode session to prove canonical router discovery is not accidental session residue
+- bind the release identity, pinned asset URLs and digests, transcripts, conformance results, project-owned before-and-after hashes, and pass/fail outcomes into the qualification evidence manifests
 
 ## Completion criteria
 
 - one immutable corrective alpha is published from the approved source revision
-- every declared direct source upgrades through public assets and has recorded terminal state
-- findings 03 through 07 contain their applicable published-version and realistic-project evidence
-- the generated qualification vault passes the required routing, ingestion, review, hierarchy, upgrade, and maintenance checks
-- the release URL, revision, asset digests, per-source outcomes, transcripts, and conformance results are bound in the qualification evidence manifest
-- no blocker remains pending and any newly discovered failure has a numbered dogfood finding
+- every declared upgrade source reaches a recorded terminal state through the published assets
+- every completed dogfood finding that names a published-version or realistic-project evidence gate has that evidence recorded
+- finding 12 has realistic multi-turn installed-project evidence
+- finding 15 has fresh-agent terminal-finalization evidence with no binary lookup dependency
+- the generated qualification vault passes the required routing, ingestion, review, hierarchy, upgrade, recovery, finalization, and maintenance checks
+- the release URL, revision, asset digests, per-source outcomes, transcripts, and conformance results are bound in valid qualification evidence manifests
+- no blocker or `required-v1` finding remains pending and every newly discovered release-relevant failure has a numbered dogfood finding and disposition
 
-Completing this task does not complete dogfooding. The umbrella remains active until the user explicitly closes it.
+Completing this task does not itself complete dogfooding. After this task passes, the next step is the explicit user-owned dogfood closure gate defined in the [V1 Release Operator Path](v1-release-operator-path.md#step-3-close-alpha-dogfooding).

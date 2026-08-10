@@ -11,16 +11,18 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-07T15:45:02+02:00
+  at: 2026-08-10T16:23:00+02:00
 ---
 
 # Publish the `1.0.0` Release Candidate
+
+Use [Step 4 of the V1 Release Operator Path](v1-release-operator-path.md#step-4-publish-the-100-release-candidate) as the canonical operator entry point. This task must not start until the user has explicitly closed alpha dogfooding after the corrective-alpha qualification gate passes.
 
 ## Entry gate
 
 Do not begin until:
 
-- alpha dogfooding is complete
+- alpha dogfooding is explicitly complete by user decision
 - no blocker remains open
 - every required-v1 finding that affects public behavior is complete
 - the intended v1 format, role catalog, workflow catalog, routing, ownership, state, path, and OpenCode contracts are frozen
