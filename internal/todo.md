@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T15:58:00+02:00
+  at: 2026-08-10T16:23:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,18 +25,20 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 ## Official next action
 
-**Step 1 of 6: finish the synthetic v1 qualification vault.**
+**Step 1 of 6: validate the generated synthetic v1 qualification vault through ingestion and qualification.**
 
-The repository implementation of the fixture already exists. The immediate operator action is to complete the external qualification sequence defined in the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification):
+The synthetic corpus and all five specified images have been generated in a repository-external local directory and were visually accepted by the user on 2026-08-10. That completes the content-generation subphase. Because the artifacts are local to the user's machine, this repository records the user's confirmation rather than claiming independent byte-level verification.
 
-1. generate and verify the deterministic corpus outside the repository
-2. create and finalize the five specified images
-3. materialize the eight qualification variants
-4. exercise those variants against the exact Ava revision under qualification
-5. complete clean OpenCode ingestion and independent review evidence
+The immediate operator action is now the validation sequence defined in the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification):
+
+1. run image finalization and corpus verification locally if those mechanical checks have not already been run
+2. materialize the eight qualification variants
+3. exercise the variants against the exact Ava revision under qualification
+4. complete clean OpenCode inbox ingestion in the required chronological batches
+5. perform independent semantic review and the routing, hierarchy, fidelity, recovery, upgrade, and finalization checks required by the fixture
 6. validate the resulting run manifests and repository boundaries
 
-Do not advance merely because the fixture implementation or repository tests pass. Advance when the [synthetic qualification task](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) meets its external evidence and completion criteria.
+Do not regenerate the corpus or images unless validation exposes a defect in the fixture itself. Do not advance merely because the generated content looks correct. Advance when the [synthetic qualification task](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) meets its external ingestion, review, execution-evidence, and completion criteria.
 
 ## Official path to `1.0.0`
 
