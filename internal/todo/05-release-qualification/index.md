@@ -23,14 +23,14 @@ Core progress: 3 of 6 complete.
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 1 pending finding
+- 0 pending findings
 - 0 pending blockers
-- 1 pending required-v1 finding
-- 11 completed findings
+- 0 pending required-v1 findings
+- 12 completed findings
 
-[Avoid redundant routing for conversational follow-ups](dogfood/12-avoid-redundant-followup-routing.md) is current and blocks release-candidate publication. Its refined public routing contract requires explicit user approval before implementation.
+[Avoid redundant routing for conversational follow-ups](dogfood/12-avoid-redundant-followup-routing.md) is complete. The managed-state gate remains unconditional, while normal turns may be roleless clarifications, same-role continuations, or fresh routing according to explicit boundaries that preserve finding 07's no-bypass guarantee.
 
-[Define release-impact-based change types](dogfood/10-define-release-impact-based-change-types.md) is complete. Release classification now follows supported distribution impact rather than implementation novelty or repository location.
+[Define release-impact-based change types](dogfood/10-define-release-impact-based-change-types.md) is complete. Release classification follows supported distribution impact rather than implementation novelty or repository location.
 
 [Normalize and enforce adjacent-edge release authoring](dogfood/11-enforce-adjacent-edge-release-authoring.md) is complete. The canonical alpha.12 catalog contains the retained adjacent graph, strict inherited-versus-proposed validation is required by release policy, and legacy cumulative authoring is disabled.
 
@@ -38,11 +38,11 @@ Use the [Alpha Dogfood Findings](dogfood/) index.
 
 Every new release inherits the previous canonical catalog unchanged and authors exactly one adjacent edge. Older sources qualify through unique composition. Published legacy direct representations remain readable but cannot be selected for new authoring.
 
-The dogfood umbrella remains pending until the user explicitly declares it complete. No release-candidate task becomes current merely because no blocker remains.
+The dogfood umbrella remains pending until the user explicitly declares it complete. An empty findings backlog does not automatically advance or complete the core dogfood gate.
 
 ## Current active work
 
-Complete [avoid redundant routing for conversational follow-ups](dogfood/12-avoid-redundant-followup-routing.md) after explicit approval of its refined routing contract, then continue the supporting qualification sequence and any newly discovered higher-priority findings.
+Resume [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md), then continue the corrective immutable alpha qualification sequence and any newly discovered higher-priority dogfood findings. Finding 12's realistic multi-turn installed-project exercise remains a release qualification gate, not pending implementation work.
 
 ## Previous phase
 
