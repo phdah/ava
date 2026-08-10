@@ -6,7 +6,9 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 ## Current next finding
 
-[Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) is pending and blocks the next prerelease. Ava Maintenance currently searches for a non-existent installer binary when finalizing an upgrade, blocking every upgrade completion. The agent must be authorized to write the terminal state directly.
+There are no pending dogfood findings. New findings discovered during continued prerelease use are added here in dependency order and may preempt supporting qualification work according to their classification.
+
+[Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) is complete. Ava Maintenance now performs successful terminal finalization directly after proving the protocol preconditions, without searching for an installer binary, while resume, abort, rollback, and non-terminal mutations remain installer-backed.
 
 [Repair Inbox Ingester project-root links](14-repair-inbox-ingester-project-root-links.md) is complete. The managed role now names the project-owned inbox through explicit project-root paths rather than nested Markdown links, and installed-payload regression coverage prevents the broken role-relative resolution from returning.
 
@@ -14,14 +16,14 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) is complete. Every request retains the managed-state gate, pure clarifications may be roleless, same-objective scoped follow-ups may retain the already-active role, and new or changed scoped work performs fresh routing.
 
-The synthetic qualification vault remains the next supporting qualification task after the pending blocker is resolved. The dogfood umbrella remains active regardless of backlog state.
+The synthetic qualification vault is the next supporting qualification task. The dogfood umbrella remains active regardless of backlog state.
 
 ## Backlog status
 
-- 1 pending finding
-- 1 pending blocker
+- 0 pending findings
+- 0 pending blockers
 - 0 pending required-v1 findings
-- 14 completed findings
+- 15 completed findings
 
 ## Findings
 
@@ -41,7 +43,7 @@ The synthetic qualification vault remains the next supporting qualification task
 | 12 | completed | required-v1 | release candidate | [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) |
 | 13 | completed | blocker | next prerelease | [Clarify release semantic-impact assessment](13-clarify-release-semantic-impact-assessment.md) |
 | 14 | completed | blocker | next prerelease | [Repair Inbox Ingester project-root links](14-repair-inbox-ingester-project-root-links.md) |
-| 15 | pending | blocker | next prerelease | [Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) |
+| 15 | completed | blocker | next prerelease | [Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) |
 
 ## Backlog rules
 
@@ -52,4 +54,4 @@ The synthetic qualification vault remains the next supporting qualification task
 - Completed findings remain durable evidence.
 - Only the user may complete the parent dogfood task.
 
-Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 is implemented: every release PR must apply the project-owned semantic-impact assessment and preserve reviewed rationale before accepting its adjacent edge. Finding 14 is implemented: Inbox Ingester required reading now uses explicit project-root inbox paths with installed-payload regression coverage. Finding 15 must authorize agent-driven finalization in the Ava Maintenance instructions and upgrade protocol before any upgrade can complete without manual intervention.
+Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 is implemented: every release PR must apply the project-owned semantic-impact assessment and preserve reviewed rationale before accepting its adjacent edge. Finding 14 is implemented: Inbox Ingester required reading now uses explicit project-root inbox paths with installed-payload regression coverage. Finding 15 is implemented: Ava Maintenance owns successful terminal finalization directly, with mandatory preconditions and no installer-binary dependency, while all broader deterministic mutation boundaries remain intact.
