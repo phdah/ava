@@ -18,4 +18,6 @@ Read the root [`AGENTS.md`](./AGENTS.md) and [`roles/index.md`](../index.md) whe
 
 Read [Inbox ingestion fidelity](../../shared/instructions/inbox-ingestion-fidelity.md) when the review target includes inbox ingestion, processed-source completion, source-to-destination fidelity, or ingestion completion counts.
 
+Read [Scoped history](../../shared/instructions/scoped-history.md) when reviewed ingestion creates or updates a scoped log. Verify that the change independently meets the history threshold, that only the nearest owning scope receives the new entry, and that every pre-existing history entry remains verbatim and in its existing relative order. Treat ingestion-time cleanup, correction, consolidation, supersession, or retirement of existing history as a review failure unless it occurred as a separately authorized Project Steward or fixture-preparation operation before ingestion.
+
 Read only the reviewed change, its applicable instructions, the nearest relevant indexes, and directly related role, workflow, policy, or knowledge documents. When a diff is available, inspect both the diff and the resulting documents. Do not scan the complete project by default.

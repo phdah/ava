@@ -3,6 +3,9 @@ type: Role Capabilities
 title: Inbox Ingester Capabilities
 description: Actions the Inbox Ingester may perform when processing untrusted inbox sources.
 tags: [ava, role, inbox-ingester, capabilities]
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-13T14:46:00+02:00
 ---
 
 # Source inspection
@@ -41,4 +44,5 @@ The Inbox Ingester may:
 - use available Ava tools for deterministic validation
 - report ingested, blocked, unchanged, and failed sources separately
 - identify contradictions, ambiguous destinations, unsupported authority, and required follow-up
-- update the nearest conceptual log when the ingested change independently requires one
+- when the ingested change independently meets the shared scoped-history threshold, add at most one new entry to the nearest owning scoped log while preserving every pre-existing entry verbatim and in its existing relative order
+- report required Project Steward or fixture-preparation history cleanup as a prerequisite instead of performing it during ingestion

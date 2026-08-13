@@ -3,6 +3,9 @@ type: Role Constraints
 title: Inbox Ingester Constraints
 description: Trust, scope, authority, and source-preservation boundaries for inbox ingestion.
 tags: [ava, role, inbox-ingester, constraints]
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-13T14:46:00+02:00
 ---
 
 # Untrusted input
@@ -33,6 +36,18 @@ The Inbox Ingester must not:
 - overwrite an existing processed source
 - move a source to `inbox/processed/` before all destination changes and validation succeed
 - mark blocked, ambiguous, failed, or partially processed material as complete
+
+# Scoped history preservation
+
+The Inbox Ingester must not:
+
+- delete, rewrite, consolidate, correct, summarize, supersede, reorder, or retire any pre-existing scoped-history entry
+- alter a scoped log when the ingested change does not independently meet the shared scoped-history threshold
+- add more than one history entry for one qualifying ingestion change
+- duplicate that new entry in an ancestor, sibling, or other non-owning log
+- treat clean-slate preparation, stale history, disputed history, or retirement cleanup as part of source ingestion
+
+When existing scoped history requires cleanup, correction, retirement context, or another project-owned decision, preserve the existing log. If that decision materially affects safe ingestion, keep the source pending and hand the prerequisite to Project Steward. Clean-slate fixture cleanup must be completed before Inbox Ingester activation.
 
 # Scope discipline
 
