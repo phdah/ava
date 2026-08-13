@@ -62,7 +62,7 @@ class InboxScopedHistoryTests(unittest.TestCase):
         scoped_history = SCOPED_HISTORY.read_text()
         self.assertIn("conceptually or structurally significant", scoped_history)
         self.assertIn("routine additions", scoped_history)
-        self.assertIn("nearest meaningful conceptual scope", scoped_history)
+        self.assertIn("nearest relevant `log.md`", scoped_history)
 
     def test_routine_ingestion_leaves_log_unchanged(self) -> None:
         case = self.cases["routine-ingestion-does-not-touch-history"]
