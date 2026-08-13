@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Preserve Existing Scoped History During Ingestion
 description: Prevent Inbox Ingester operations from deleting or rewriting pre-existing scoped history while still allowing a required new history entry to be appended.
 tags: [internal, roadmap, dogfood, inbox, history, roles, trust]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 16
@@ -13,6 +13,9 @@ affected_version: 1.0.0-alpha.14
 generated:
   by: agent:opencode
   at: 2026-08-13T12:18:45+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-13T14:46:00+02:00
 ---
 
 # Preserve Existing Scoped History During Ingestion
@@ -33,15 +36,15 @@ In commit `81b0ec4`:
 - prior personal and work history was removed while the synthetic inbox batch was ingested
 - the commit was an Inbox Ingester batch rather than a separately bounded Project Steward cleanup
 
-The current Inbox Ingester constraints already prohibit general cleanup, unrelated trusted-content mutation, and takeover of broad Project Steward maintenance. Its capabilities nevertheless allow updating a required scoped log, and the contracts and fixtures do not state or enforce that pre-existing history entries must remain unchanged during ingestion.
+The previous Inbox Ingester constraints prohibited general cleanup, unrelated trusted-content mutation, and takeover of broad Project Steward maintenance, but did not state the permitted mutation shape for an existing scoped log.
 
 ## Classification
 
-This is `required-v1` and blocks the release candidate. Inbox ingestion is a core v1 behavior, and its mutation authority must not permit source processing to erase durable history. The issue does not invalidate the already ingested synthetic knowledge because the user confirmed the clean-slate intent, but the role boundary needs an explicit contract and regression coverage before stable support begins.
+This is `required-v1` and blocks the release candidate until its repository implementation is complete. Inbox ingestion is a core v1 behavior, and its mutation authority must not permit source processing to erase durable history.
 
 ## Root cause
 
-The current contracts distinguish required scoped-history updates from general cleanup but do not define the permitted mutation shape for an existing `log.md`. As a result, an agent can interpret authority to "update the nearest conceptual log" as authority to replace, prune, or rewrite prior entries while ingesting a source.
+The contracts distinguished required scoped-history updates from general cleanup but did not define additive-only authority over an existing `log.md`. An agent could therefore interpret authority to update the nearest conceptual log as authority to replace, prune, or rewrite prior entries while ingesting a source.
 
 ## Scope
 
@@ -54,21 +57,28 @@ The current contracts distinguish required scoped-history updates from general c
 
 ## Completion criteria
 
-- Inbox Ingester instructions, capabilities, constraints, and completion checks agree on append-only authority over pre-existing scoped history
-- ingestion leaves every pre-existing log entry unchanged and in its original order
-- a qualifying ingested conceptual or structural change may append the single nearest required entry without duplicating history at ancestor or sibling scopes
-- stale, disputed, obsolete, or clean-slate history cleanup is reported as a Project Steward or fixture-preparation prerequisite rather than performed by Inbox Ingester
-- a source remains pending when required cleanup or retirement decisions materially affect safe ingestion
-- regression coverage fails if Inbox Ingester deletes or rewrites an existing log entry
-- regression coverage confirms that non-qualifying routine ingestion does not alter a scoped log
-- regression coverage confirms that a qualifying change appends only the required entry and preserves prior history
-- affected role, shared-history, review, fixture, and validation contracts remain aligned
-- the resolving change records repository tests, validation, and concrete resolution evidence
+- [x] Inbox Ingester instructions, capabilities, constraints, and completion checks agree on additive-only authority over pre-existing scoped history.
+- [x] Ingestion leaves every pre-existing log entry unchanged and in its original order.
+- [x] A qualifying ingested conceptual or structural change may add the single nearest required entry without duplicating history at ancestor or sibling scopes.
+- [x] Stale, disputed, obsolete, or clean-slate history cleanup is reported as a Project Steward or fixture-preparation prerequisite rather than performed by Inbox Ingester.
+- [x] A source remains pending when required cleanup or retirement decisions materially affect safe ingestion.
+- [x] Regression coverage rejects deletion or rewriting of an existing log entry.
+- [x] Regression coverage confirms that non-qualifying routine ingestion does not alter a scoped log.
+- [x] Regression coverage confirms that a qualifying change adds only the required entry and preserves prior history.
+- [x] Affected role, shared-history, review, fixture, and validation contracts remain aligned.
+- [x] The resolving change records repository tests, validation, and concrete resolution evidence.
 
 ## Resolution evidence
 
-Pending.
+- Inbox Ingester now loads the shared scoped-history contract as required reading and records its authority change in a role-scoped history log.
+- Inbox Ingester instructions define additive-only scoped-history authority: the ingestion itself must cross the existing shared threshold, at most one nearest-scope entry may be added, and every pre-existing entry must remain verbatim and in its existing relative order.
+- Capabilities and constraints explicitly separate the permitted new history entry from cleanup, correction, consolidation, supersession, retirement, and clean-slate preparation. Material cleanup decisions keep the source pending and are handed to Project Steward; fixture cleanup occurs before role activation.
+- Change Reviewer now conditionally loads the shared scoped-history contract for ingestion reviews and treats destructive ingestion-time history mutation as a semantic review failure.
+- `internal/release/fixtures/inbox-scoped-history.json` covers routine non-qualifying ingestion, qualifying single-entry history, and cleanup handoff against a pre-existing knowledge log.
+- `internal/release/tests/test_inbox_scoped_history.py` validates assembled installed-role and reviewer contracts, preserves the existing shared threshold, checks exact prior-entry preservation, and explicitly rejects deleted or rewritten history entries.
+- The new regression module is registered in `internal/release/test.sh`, so it runs with the maintained repository release suite.
+- Dogfood and Phase 5 indexes are synchronized with finding 16 implementation-complete and synthetic-vault qualification restored as the official next work.
 
 ## Release qualification follow-up
 
-After the repository fix is merged, exercise the corrected Inbox Ingester through a published prerelease against a realistic project containing pre-existing scoped history. Confirm that ordinary ingestion preserves the log, qualifying history is appended without rewriting prior entries, and required cleanup causes a Project Steward handoff. This published evidence remains a release gate and does not keep the implementation task pending after its repository completion criteria pass.
+Exercise the corrected Inbox Ingester through a published prerelease against a realistic project containing pre-existing scoped history. Confirm that ordinary ingestion preserves the log, qualifying history is added without rewriting prior entries, and required cleanup causes a Project Steward handoff. This published evidence remains a release gate and does not keep the implementation task pending after repository completion.

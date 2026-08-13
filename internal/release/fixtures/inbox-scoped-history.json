@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "description": "Regression cases for preserving pre-existing scoped history during inbox ingestion.",
+  "cases": [
+    {
+      "id": "routine-ingestion-does-not-touch-history",
+      "source": "inbox/routine-note.md",
+      "crosses_history_threshold": false,
+      "nearest_log": "knowledge/log.md",
+      "before_entries": [
+        "2026-07-01: Work taxonomy established.",
+        "2026-06-15: Personal knowledge scope established."
+      ],
+      "expected_after_entries": [
+        "2026-07-01: Work taxonomy established.",
+        "2026-06-15: Personal knowledge scope established."
+      ],
+      "expected_added_entries": [],
+      "source_may_move": true
+    },
+    {
+      "id": "qualifying-ingestion-adds-one-entry-and-preserves-prior-history",
+      "source": "inbox/architecture-decision.md",
+      "crosses_history_threshold": true,
+      "nearest_log": "knowledge/log.md",
+      "before_entries": [
+        "2026-07-01: Work taxonomy established.",
+        "2026-06-15: Personal knowledge scope established."
+      ],
+      "expected_added_entries": [
+        "2026-08-13: Durable work classification changed."
+      ],
+      "expected_after_entries": [
+        "2026-08-13: Durable work classification changed.",
+        "2026-07-01: Work taxonomy established.",
+        "2026-06-15: Personal knowledge scope established."
+      ],
+      "forbidden_duplicate_logs": [
+        "log.md",
+        "knowledge/work/log.md"
+      ],
+      "source_may_move": true
+    },
+    {
+      "id": "history-cleanup-requires-prerequisite-handoff",
+      "source": "inbox/clean-slate-import.md",
+      "crosses_history_threshold": true,
+      "nearest_log": "knowledge/log.md",
+      "before_entries": [
+        "2026-07-01: Legacy work taxonomy established.",
+        "2026-06-15: Personal knowledge scope established."
+      ],
+      "expected_after_entries": [
+        "2026-07-01: Legacy work taxonomy established.",
+        "2026-06-15: Personal knowledge scope established."
+      ],
+      "requested_history_operation": "retire-legacy-entry",
+      "expected_action": "leave-source-pending-and-handoff",
+      "required_handoff": "project-steward-or-fixture-preparation",
+      "source_may_move": false
+    }
+  ]
+}
