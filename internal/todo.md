@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T15:15:00+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-10T16:33:00+02:00
+  by: agent:opencode
+  at: 2026-08-13T12:18:45+02:00
 ---
 
 # Ava Internal To-Do List
@@ -21,11 +21,13 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 [V1 release qualification](todo/05-release-qualification/) is active.
 
-[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There are currently 0 pending dogfood findings, 0 pending blockers, and 0 pending `required-v1` findings.
+[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There is currently 1 pending dogfood finding, 0 pending blockers, and 1 pending `required-v1` finding.
 
 ## Official next action
 
-**Step 1 of 6: exercise the finalized synthetic v1 qualification vault through ingestion and qualification.**
+**Resolve dogfood finding 16: preserve existing scoped history during ingestion.**
+
+This `required-v1` finding preempts the six-step release path until its bounded repository work is resolved. Inbox Ingester must preserve all pre-existing scoped-history entries, may append only a newly required entry, and must hand cleanup or retirement of existing history to Project Steward or prior fixture preparation.
 
 The synthetic corpus and all five specified images have been generated in a repository-external local directory and were visually accepted by the user on 2026-08-10. Image finalization and finalized-corpus verification have also been completed and recorded locally. The repository records that user-confirmed external progress without claiming direct access to the local artifacts.
 
@@ -36,7 +38,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-The immediate operator action is now the execution sequence defined in the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification):
+After [finding 16](todo/05-release-qualification/dogfood/16-preserve-existing-scoped-history-during-ingestion.md) is resolved, resume the execution sequence defined in the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification):
 
 1. materialize the eight qualification variants from `~/stuff/ava-qualification-vault/`
 2. use `~/stuff/project-vault` as the active test project for the manual OpenCode qualification flow where the scenario calls for a working project

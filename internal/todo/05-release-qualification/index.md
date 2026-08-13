@@ -40,12 +40,12 @@ Dogfooding intentionally remains open during steps 1 and 2. The user does not ne
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 0 pending findings
+- 1 pending finding
 - 0 pending blockers
-- 0 pending required-v1 findings
+- 1 pending required-v1 finding
 - 15 completed findings
 
-Findings 01 through 15 are implementation-complete. Finding 12's realistic multi-turn installed-project exercise and finding 15's fresh-agent terminal-finalization exercise remain release qualification evidence required during the corrective-alpha path rather than pending implementation work.
+Findings 01 through 15 are implementation-complete. [Finding 16](dogfood/16-preserve-existing-scoped-history-during-ingestion.md) is pending and preempts the supporting qualification sequence until Inbox Ingester's scoped-history mutation boundary and regression coverage are corrected. Finding 12's realistic multi-turn installed-project exercise and finding 15's fresh-agent terminal-finalization exercise remain release qualification evidence required during the corrective-alpha path rather than pending implementation work.
 
 ## Qualification policy
 
@@ -55,7 +55,9 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Current step: 1 of 6, exercise the finalized synthetic v1 qualification vault through ingestion and qualification.**
+**Preempting finding: preserve existing scoped history during ingestion.**
+
+Resolve [finding 16](dogfood/16-preserve-existing-scoped-history-during-ingestion.md), then resume step 1 of 6: exercise the finalized synthetic v1 qualification vault through ingestion and qualification.
 
 For this qualification run, the user has confirmed that corpus generation, all five image generations, image finalization, and finalized-corpus verification are complete and recorded locally.
 
@@ -66,7 +68,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-Continue with [Step 1 of the V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification): materialize the variants from the finalized vault, exercise them against the exact Ava revision under qualification, use the test project for the manual OpenCode flow where appropriate, complete chronological inbox ingestion and independent review, exercise recovery and upgrade lifecycle states, and validate run manifests and repository boundaries.
+After finding 16 is resolved, continue with [Step 1 of the V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification): materialize the variants from the finalized vault, exercise them against the exact Ava revision under qualification, use the test project for the manual OpenCode flow where appropriate, complete chronological inbox ingestion and independent review, exercise recovery and upgrade lifecycle states, and validate run manifests and repository boundaries.
 
 Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
 

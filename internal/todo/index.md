@@ -46,7 +46,7 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 0 pending findings, 0 pending blockers, 0 pending required-v1 findings, 3 pending supporting qualification tasks, and 15 completed findings
+5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 1 pending finding, 0 pending blockers, 1 pending required-v1 finding, 3 pending supporting qualification tasks, and 15 completed findings
 6. [Backlog.md integration](06-backlog-md/) - 0 of 2 complete; queued after release qualification
 7. [Durable interaction evidence](07-interaction-evidence/) - 0 of 1 complete; queued after Backlog.md integration
 
@@ -61,6 +61,8 @@ The alpha qualification policy composes that conformance evidence with roadmap c
 Release-please enforces supported-distribution release classification at the merge boundary, maintains version and changelog state, keeps one release pull request current, creates immutable tags and draft releases, and hands the exact prepared SHA to qualification, reproducible assembly, release conformance, attestation, non-clobbering asset upload, and automatic publication.
 
 Alpha publication is complete through immutable `1.0.0-alpha.12`. The remaining ordered path to the first stable release is:
+
+[Dogfood finding 16](05-release-qualification/dogfood/16-preserve-existing-scoped-history-during-ingestion.md) currently preempts this sequence without changing its six canonical steps:
 
 1. finish the [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md); the corpus and five images are user-confirmed as generated locally, so the current action is ingestion, review, lifecycle, and evidence qualification rather than further content generation
 2. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including normalized adjacent-edge authoring, conversational routing transitions, and agent-driven finalization

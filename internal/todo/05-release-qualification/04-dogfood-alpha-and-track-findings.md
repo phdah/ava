@@ -10,8 +10,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-10T16:23:00+02:00
+  by: agent:opencode
+  at: 2026-08-13T12:18:45+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -71,7 +71,7 @@ A clear user statement that dogfooding is complete or that Ava should proceed to
 
 ## Current state
 
-Findings 01 through 15 are complete. There are currently no pending dogfood findings, but this umbrella remains active until the user explicitly closes dogfooding.
+Findings 01 through 15 are complete. Finding 16 is pending and requires Inbox Ingester to preserve pre-existing scoped history rather than using ingestion to perform history cleanup. This umbrella remains active until the user explicitly closes dogfooding.
 
 The synthetic corpus and all five specified images are user-confirmed as generated in a repository-external local directory. The content-generation subphase is complete. Current work is to finalize and verify those local artifacts, exercise ingestion and the remaining qualification variants, collect executable evidence, and then qualify the corrective immutable alpha.
 
@@ -85,4 +85,4 @@ Finding 10 established that pull-request change types are selected from supporte
 
 Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing. Every request still performs the managed-state gate, but a pure clarification may be roleless and a same-objective scoped follow-up may retain the already-active role without repeated registry traversal or unchanged required-reading reload. New tasks, explicit workflows or roles, changed authority or domain, scoped work after roleless handling, uncertain role fit, and managed-state overrides force fresh routing.
 
-Synthetic-vault ingestion and qualification plus corrective immutable alpha qualification are the next pending supporting work. New `blocker` or `required-v1` findings may still preempt that sequence. After those two supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
+Finding 16 currently preempts synthetic-vault ingestion and qualification until its bounded repository work is resolved. After that, synthetic-vault qualification and corrective immutable alpha qualification resume as the next supporting work. New `blocker` or `required-v1` findings may still preempt that sequence. After those two supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
