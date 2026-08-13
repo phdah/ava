@@ -6,7 +6,9 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 ## Current next finding
 
-[Preserve existing scoped history during ingestion](16-preserve-existing-scoped-history-during-ingestion.md) is the current pending finding. It requires Inbox Ingester to preserve pre-existing log entries, limit its scoped-history authority to appending a newly required entry, and hand cleanup or retirement of existing history to Project Steward or prior fixture preparation.
+There is no pending dogfood finding. The bounded repository work for findings 01 through 16 is complete, so the V1 release operator path resumes with synthetic-vault qualification.
+
+[Preserve existing scoped history during ingestion](16-preserve-existing-scoped-history-during-ingestion.md) is complete. Inbox Ingester now has additive-only authority over a qualifying scoped-history update, preserves all pre-existing entries, and hands cleanup or retirement to Project Steward or prior fixture preparation.
 
 [Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) is complete. Ava Maintenance now performs successful terminal finalization directly after proving the protocol preconditions, without searching for an installer binary, while resume, abort, rollback, and non-terminal mutations remain installer-backed.
 
@@ -16,14 +18,14 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) is complete. Every request retains the managed-state gate, pure clarifications may be roleless, same-objective scoped follow-ups may retain the already-active role, and new or changed scoped work performs fresh routing.
 
-Finding 16 preempts the synthetic qualification sequence until its `required-v1` repository work is resolved. The dogfood umbrella remains active regardless of backlog state.
+The dogfood umbrella remains active regardless of backlog state. New `blocker` or `required-v1` findings still preempt the qualification sequence if discovered.
 
 ## Backlog status
 
-- 1 pending finding
+- 0 pending findings
 - 0 pending blockers
-- 1 pending required-v1 finding
-- 15 completed findings
+- 0 pending required-v1 findings
+- 16 completed findings
 
 ## Findings
 
@@ -37,14 +39,14 @@ Finding 16 preempts the synthetic qualification sequence until its `required-v1`
 | 06 | completed | blocker | next prerelease | [Remove empty upgrade transaction containers](06-remove-empty-upgrade-transaction-containers.md) |
 | 07 | completed | blocker | next prerelease | [Enforce role routing before every response](07-enforce-role-routing-before-every-response.md) |
 | 08 | completed | required-v1 | release candidate | [Define review sufficiency and termination criteria](08-define-review-sufficiency-and-termination.md) |
-| 09 | completed | required-v1 | release candidate | [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-edges.md) |
+| 09 | completed | required-v1 | release candidate | [Compose semantic upgrades from adjacent release edges](09-compose-semantic-upgrades-from-adjacent-release-edges.md) |
 | 10 | completed | required-v1 | release candidate | [Define release-impact-based change types](10-define-release-impact-based-change-types.md) |
 | 11 | completed | blocker | next prerelease | [Normalize and enforce adjacent-edge release authoring](11-enforce-adjacent-edge-release-authoring.md) |
 | 12 | completed | required-v1 | release candidate | [Avoid redundant routing for conversational follow-ups](12-avoid-redundant-followup-routing.md) |
 | 13 | completed | blocker | next prerelease | [Clarify release semantic-impact assessment](13-clarify-release-semantic-impact-assessment.md) |
 | 14 | completed | blocker | next prerelease | [Repair Inbox Ingester project-root links](14-repair-inbox-ingester-project-root-links.md) |
 | 15 | completed | blocker | next prerelease | [Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) |
-| 16 | pending | required-v1 | release candidate | [Preserve existing scoped history during ingestion](16-preserve-existing-scoped-history-during-ingestion.md) |
+| 16 | completed | required-v1 | release candidate | [Preserve existing scoped history during ingestion](16-preserve-existing-scoped-history-during-ingestion.md) |
 
 ## Backlog rules
 
@@ -55,4 +57,4 @@ Finding 16 preempts the synthetic qualification sequence until its `required-v1`
 - Completed findings remain durable evidence.
 - Only the user may complete the parent dogfood task.
 
-Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 is implemented: every release PR must apply the project-owned semantic-impact assessment and preserve reviewed rationale before accepting its adjacent edge. Finding 14 is implemented: Inbox Ingester required reading now uses explicit project-root inbox paths with installed-payload regression coverage. Finding 15 is implemented: Ava Maintenance owns successful terminal finalization directly, with mandatory preconditions and no installer-binary dependency, while all broader deterministic mutation boundaries remain intact. Finding 16 is pending and requires existing scoped history to remain immutable during ingestion except for appending a newly required entry.
+Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 is implemented: every release PR must apply the project-owned semantic-impact assessment and preserve reviewed rationale before accepting its adjacent edge. Finding 14 is implemented: Inbox Ingester required reading uses explicit project-root inbox paths with installed-payload regression coverage. Finding 15 is implemented: Ava Maintenance owns successful terminal finalization directly, with mandatory preconditions and no installer-binary dependency, while all broader deterministic mutation boundaries remain intact. Finding 16 is implemented: ingestion-time scoped-history authority is additive-only, prior entries are preserved, and cleanup or retirement remains outside Inbox Ingester authority.
