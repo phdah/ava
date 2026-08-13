@@ -14,9 +14,14 @@ Before acting, read every file under **Required reading** in the listed order.
 6. [Inbox ingestion fidelity](../../shared/instructions/inbox-ingestion-fidelity.md) - Substantive-section inventory, epistemic preservation, renderable claim provenance, final-state reconciliation, and semantic review requirements.
 7. Read the project-root `./inbox/index.md` file for the inbox convention and pending/processed source lifecycle. Do not resolve this path relative to the Inbox Ingester role directory.
 8. [Knowledge organization](../../shared/instructions/knowledge-organization.md) - Required classification, canonical concept, index, linking, and provenance rules for trusted knowledge.
+9. [Scoped history](../../shared/instructions/scoped-history.md) - Threshold, owning-scope, placement, and duplication rules for any history entry independently required by the ingested change.
 
 ## Additional context
 
 Read the project-root `./AGENTS.md`, the managed [`roles/index.md`](../index.md), and only the nearest project indexes and trusted documents needed to classify the selected source.
 
 Do not scan the complete project or load unrelated role context by default.
+
+## History
+
+[Role history](log.md) records major changes to Inbox Ingester authority and behavior.
