@@ -45,6 +45,7 @@ for path in \
   internal/release/release-please.md \
   internal/release/installer.md \
   internal/release/conformance.md \
+  internal/release/qualification-runner.md \
   internal/release/assemble.sh \
   internal/release/assemble.py \
   internal/release/conformance.py \
@@ -52,6 +53,8 @@ for path in \
   internal/release/conformance_repository.py \
   internal/release/conformance_installed.py \
   internal/release/conformance_release.py \
+  internal/release/qualification_runner.py \
+  internal/release/qualify-synthetic.sh \
   internal/release/validate-installed-paths.py \
   internal/release/validate_pr_title.py \
   internal/release/ava-install.sh \
@@ -72,6 +75,7 @@ for path in \
   internal/release/fixtures/synthetic-qualification-vault/checkpoint.py \
   internal/release/fixtures/synthetic-qualification-vault/checkpoints.md \
   internal/release/fixtures/synthetic-qualification-vault/fixture.py \
+  internal/release/fixtures/synthetic-qualification-vault/qualification-matrix.json \
   internal/release/fixtures/synthetic-qualification-vault/requirements.lock \
   internal/release/fixtures/synthetic-qualification-vault/oracle.schema.json \
   internal/release/fixtures/synthetic-qualification-vault/run-manifest.schema.json \
@@ -82,7 +86,8 @@ for path in \
   internal/release/tests/test_conformance_matrix.py \
   internal/release/tests/test_release_please.py \
   internal/release/tests/test_synthetic_qualification_vault.py \
-  internal/release/tests/test_qualification_checkpoints.py
+  internal/release/tests/test_qualification_checkpoints.py \
+  internal/release/tests/test_qualification_runner.py
 do
   require_file "$path"
 done
@@ -147,6 +152,7 @@ done
 
 sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
+sh -n "$ROOT/internal/release/qualify-synthetic.sh"
 sh -n "$ROOT/internal/release/test.sh"
 python3 -m py_compile \
   "$ROOT/internal/release/assemble.py" \
@@ -155,6 +161,7 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_repository.py" \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/conformance_release.py" \
+  "$ROOT/internal/release/qualification_runner.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/checkpoint.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \
