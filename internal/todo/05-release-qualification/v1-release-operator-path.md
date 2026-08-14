@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T11:40:00+02:00
+  at: 2026-08-14T11:46:55+02:00
 ---
 
 # V1 Release Operator Path
@@ -70,7 +70,9 @@ The user has completed managed-content damage, semantic reconciliation, finaliza
 
 [Finding 18](dogfood/18-verify-relative-calendar-dates.md) now blocks final semantic signoff after a relative weekday was persisted with the wrong absolute date.
 
-The immediate goal is therefore **resolve Finding 18, repeat its affected scenario, execute authentic resume and abort, and finish the Step 1 run-manifest/signoff gate**.
+[Finding 19](dogfood/19-add-one-command-qualification-runner.md) will compose the corrected complete matrix, including finding 17's maintained checkpoint procedure, behind one internal shell entry point.
+
+The immediate goal is therefore **resolve Finding 18, implement Finding 19, execute one complete runner matrix, and finish the Step 1 run-manifest/signoff gate**.
 
 ### Operator procedure
 

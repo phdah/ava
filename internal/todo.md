@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T11:40:00+02:00
+  at: 2026-08-14T11:46:55+02:00
 ---
 
 # Ava Internal To-Do List
@@ -21,7 +21,7 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 [V1 release qualification](todo/05-release-qualification/) is active.
 
-[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There is currently 1 pending dogfood finding, 0 pending blockers, and 1 pending `required-v1` finding.
+[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There are currently 2 pending dogfood findings, 0 pending blockers, and 2 pending `required-v1` findings.
 
 ## Official next action
 
@@ -36,7 +36,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-Implement Finding 18's deterministic calendar-verification contract and regression coverage. After it is complete, repeat the affected calendar scenario, use the maintained [checkpoint procedure](release/fixtures/synthetic-qualification-vault/checkpoints.md) to execute authentic resume and abort against the selected qualification assets, and finish the remaining Step 1 evidence and signoff gate. Do not regenerate the already finalized corpus or images unless qualification exposes a fixture defect.
+Implement Finding 18's deterministic calendar-verification contract and regression coverage. [Finding 19](todo/05-release-qualification/dogfood/19-add-one-command-qualification-runner.md) follows it and composes the complete maintained matrix, including finding 17's checkpoint procedure, behind one internal shell entry point. After both pending findings are complete, execute the runner and return to the remaining Step 1 signoff gate. Do not regenerate the already finalized corpus or images unless qualification exposes a fixture defect.
 
 ## Official path to `1.0.0`
 
