@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import runpy
 import struct
 import subprocess
@@ -21,7 +22,9 @@ GENERATOR = FIXTURE_ROOT / "fixture.py"
 BLUEPRINT = FIXTURE_ROOT / "blueprint.json"
 ORACLE_SCHEMA = FIXTURE_ROOT / "oracle.schema.json"
 RUN_SCHEMA = FIXTURE_ROOT / "run-manifest.schema.json"
+PINNED_IMAGE_MANIFEST = FIXTURE_ROOT / "images/manifest.json"
 ASSEMBLER = SOURCE_ROOT / "internal/release/assemble.py"
+GENERATE_SCRIPT = SOURCE_ROOT / "internal/release/generate-synthetic-qualification-vault.sh"
 REVISION = "0123456789abcdef0123456789abcdef01234567"
 
 
@@ -63,11 +66,29 @@ class SyntheticQualificationVaultTests(unittest.TestCase):
         }
 
     def add_images(self, output: Path) -> None:
-        blueprint = json.loads(BLUEPRINT.read_text())
-        for slot in blueprint["image_slots"]:
-            payload = PNG if slot["format"] == "png" else JPEG
-            path = output / slot["path"]
-            path.write_bytes(payload)
+        self.run_fixture("install-pinned-images", output)
+
+    def test_one_command_generator_creates_valid_finalized_vault(self) -> None:
+        result = subprocess.run(
+            [str(GENERATE_SCRIPT)],
+            cwd=SOURCE_ROOT,
+            env={**os.environ, "TMPDIR": str(self.root)},
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        if result.returncode != 0:
+            self.fail(f"one-command generation failed\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}")
+
+        outputs = list(self.root.glob("ava-synthetic-qualification-vault.*"))
+        self.assertEqual(len(outputs), 1)
+        output = outputs[0]
+        self.assertIn(f"synthetic qualification vault ready: {output}", result.stdout)
+        finalized = json.loads((output / "oracle/finalized-inventory.json").read_text())
+        variants = json.loads((output / "variants/index.json").read_text())
+        self.assertEqual(finalized["finalized_count"], 305)
+        self.assertEqual(len(finalized["external_images"]), 5)
+        self.assertEqual(len(variants["families"]), 8)
 
     def test_blueprint_fixes_narrative_counts_formats_and_image_slots(self) -> None:
         blueprint = json.loads(BLUEPRINT.read_text())
@@ -90,6 +111,10 @@ class SyntheticQualificationVaultTests(unittest.TestCase):
         self.assertIn("destinations", oracle_schema["$defs"]["file"]["properties"]["sections"]["items"]["required"])
         self.assertIn("prompt_sha256", oracle_schema["$defs"]["image"]["required"])
         self.assertEqual(len(run_schema["allOf"]), 2)
+        pinned = json.loads(PINNED_IMAGE_MANIFEST.read_text())
+        self.assertEqual(pinned["fixture_id"], blueprint["fixture_id"])
+        self.assertEqual({item["destination"] for item in pinned["images"]}, {item["path"] for item in blueprint["image_slots"]})
+        self.assertTrue(all(item["width"] == 1184 and item["height"] == 864 for item in pinned["images"]))
         completed_run = run_schema["allOf"][0]["then"]["properties"]
         self.assertEqual(completed_run["release"]["properties"]["asset_sha256"]["minProperties"], 7)
         self.assertEqual(completed_run["routing"]["properties"]["loaded_paths"]["minItems"], 1)
@@ -221,7 +246,7 @@ class SyntheticQualificationVaultTests(unittest.TestCase):
         self.run_fixture("generate", output)
         pending = self.run_fixture("finalize-images", output, check=False)
         self.assertNotEqual(pending.returncode, 0)
-        self.assertIn("all five externally generated image files", pending.stderr)
+        self.assertIn("all five pinned image files", pending.stderr)
 
         self.add_images(output)
         ready = self.run_fixture("verify", output)
@@ -409,15 +434,18 @@ class SyntheticQualificationVaultTests(unittest.TestCase):
             self.fail(f"assembly failed\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}")
 
         forbidden_names = ("synthetic-qualification-vault", "blueprint.json", "oracle.schema.json", "requirements.lock")
+        pinned_image_names = {item["file"] for item in json.loads(PINNED_IMAGE_MANIFEST.read_text())["images"]}
         marker = b"synthetic-v1-qualification-vault"
         for path in output.iterdir():
             if not path.is_file():
                 continue
             self.assertFalse(any(name in path.name for name in forbidden_names), path.name)
+            self.assertNotIn(path.name, pinned_image_names)
             if path.name.endswith(".tar.gz"):
                 with tarfile.open(path, "r:gz") as archive:
                     for member in archive.getmembers():
                         self.assertFalse(any(name in member.name for name in forbidden_names), member.name)
+                        self.assertTrue(pinned_image_names.isdisjoint(Path(member.name).parts), member.name)
                         if member.isfile():
                             extracted = archive.extractfile(member)
                             self.assertIsNotNone(extracted)

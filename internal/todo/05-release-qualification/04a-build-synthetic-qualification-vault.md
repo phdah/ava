@@ -31,7 +31,7 @@ Build and qualify this vault before qualifying the corrective prerelease so both
 
 ## Output boundary
 
-The generator must require an explicit output directory outside this repository. Generated corpus files, image-generation prompts, manifests, qualification variants, and run evidence must not be committed to the Ava repository.
+The generator must require an explicit output directory outside this repository. Generated corpus files, image-generation prompts, generated manifests, qualification variants, and run evidence must not be committed to the Ava repository. The five visually accepted canonical PNG inputs and their exact manifest are the only exception: they are pinned under the repository-only internal fixture and copied into generated output by the maintained fixture command.
 
 Use this output structure:
 
@@ -133,7 +133,7 @@ Every Markdown file under `corpus/` must begin directly with raw source content.
 
 ## Image staging
 
-The Python generator does not create image content. It must instead write exactly five deterministic, plainly named prompt specifications under `<output>/image-prompts/`, spread across the six-month timeline. At least one specification must produce a receipt image.
+The Python generator does not create image content. It writes exactly five deterministic, plainly named prompt specifications under `<output>/image-prompts/`, spread across the six-month timeline. At least one specification produces a receipt image. The externally generated and visually accepted result bytes are pinned under the internal fixture so later clean runs do not depend on a user-owned local vault or another image-generation session.
 
 Each specification must state:
 
@@ -146,7 +146,7 @@ Each specification must state:
 
 Include prompts for a representative mix such as Adam's dog, the move, a receipt, the new apartment, and a work artifact. The prompt files are staging instructions, not synthetic source data, and must remain outside `corpus/`.
 
-After an external image-capable agent writes the five images to their declared corpus paths, a finalization command must verify their presence and file type, record their hashes, and complete the final corpus inventory. Generated baseline reproducibility applies to the deterministic corpus and prompt specifications; externally generated image bytes are recorded per finalized run and are not claimed to be reproducible across image-generation runs.
+The maintained `install-pinned-images` command copies the five committed inputs to their declared corpus paths. Finalization verifies their exact committed digests, sizes, media types, and structural validity before completing the corpus inventory. Replacement image generation remains an explicit reviewed operation; accepted bytes must not be silently regenerated or recompressed in place.
 
 ## Reproducibility and oracle
 
@@ -165,7 +165,7 @@ The deterministic oracle must record:
 
 Random variation may create volume and syntax combinations, but semantic acceptance cases must have reviewable expected outcomes. Lorem ipsum, disconnected random sentences, and an unverifiable generated pile do not satisfy this task.
 
-Two clean generations with the same seed and dependencies must produce the same deterministic inventory and SHA-256 digests. Verification must separately report the generated baseline, pending image slots, and finalized run inventory so externally generated images never weaken deterministic claims.
+Two clean generations with the same seed, dependencies, and pinned image inputs must produce the same deterministic inventory and SHA-256 digests. Verification separately reports the generated baseline, pending image slots, and finalized run inventory.
 
 ## Qualification variants
 
@@ -195,14 +195,14 @@ Define a machine-readable run manifest that can bind each scenario to:
 - agent transcript, loaded paths, required-reading order, selected role, and announcement point
 - expected and actual outcome, pass or fail decision, reviewer, and linked finding
 
-Generated fictional content and execution evidence remain outside the repository. Only the reviewed generator, blueprint, oracle schema, and validators may be committed under the internal fixture scope. Real private content and unsanitized real-project transcripts must never be committed.
+Generated fictional content and execution evidence remain outside the repository. The reviewed generator, blueprint, schemas, validators, and five canonical fictional PNG inputs may be committed under the internal fixture scope. Real private content and unsanitized real-project transcripts must never be committed.
 
 ## Implementation plan
 
 1. Define and review Adam's canonical fact sheet, the February move event, monthly narrative arcs, recurring work and personal threads, and the exact corpus inventory.
 2. Add the pinned Python environment and deterministic generator for Markdown, text, Word, PDF, PowerPoint, CSV, ICS, oracle, and image-prompt output.
 3. Add normalization and verification for deterministic binary metadata, inventories, counts, and SHA-256 digests.
-4. Add the five external image specifications and a finalizer that validates and inventories their resulting files.
+4. Add the five external image specifications, pin the accepted fictional result bytes, and provide maintained installation and finalization commands that validate their exact inventory.
 5. Add validators for no corpus frontmatter, output-boundary isolation, canonical consistency, chronology, required formats, expected outcomes, and the 200-400-file limit.
 6. Materialize and verify all eight isolated qualification variants without altering the baseline corpus.
 7. Install assembled Ava assets into the generated qualification project and complete a clean OpenCode ingestion and review run.
@@ -211,24 +211,24 @@ Generated fictional content and execution evidence remain outside the repository
 
 ## Repository implementation evidence
 
-The reviewed fixture implementation is available at [`internal/release/fixtures/synthetic-qualification-vault/`](../../release/fixtures/synthetic-qualification-vault/). Its documented commands generate, verify, finalize images, materialize variants, and create authentic interrupted-upgrade qualification checkpoints only in explicit repository-external projects and asset directories.
+The reviewed fixture implementation is available at [`internal/release/fixtures/synthetic-qualification-vault/`](../../release/fixtures/synthetic-qualification-vault/). Its documented commands generate, verify, install pinned images, finalize images, materialize variants, and create authentic interrupted-upgrade qualification checkpoints only in explicit repository-external projects and asset directories.
 
-The implementation fixes a 300-file deterministic baseline and five external image slots for a finalized 305-file corpus. It writes the raw sources directly into the four chronological qualification batches, uses only Python 3.11 standard-library facilities, creates normalized DOCX, PDF, PPTX, CSV, and ICS files, emits per-source expected outcomes, and rejects repository-local generated output through resolved-path checks.
+The implementation fixes a 300-file deterministic baseline and five repository-pinned image inputs for a finalized 305-file corpus. It writes generated raw sources and copies the pinned images into four chronological qualification batches, uses only Python 3.11 standard-library facilities, creates normalized DOCX, PDF, PPTX, CSV, and ICS files, emits per-source expected outcomes, and rejects repository-local generated output through resolved-path checks.
 
-On 2026-08-09, clean retained generations under `/tmp/opencode/ava-synthetic-vault-y` with CPython 3.11.14 and `/tmp/opencode/ava-synthetic-vault-z` with CPython 3.13.12 produced byte-identical output. Draft 2020-12 validation accepted both schemas and their generated instances. Repository tests cover image-finalizer mechanics, deterministic variant workspace and execution-plan construction, baseline preservation, installed conformance of the registered-role workspace, source and chronology validation, completed-run evidence binding, interrupted-upgrade checkpoint setup and recovery, and exclusion from assembled release assets. Planned managed states and checkpoint setup JSON do not count as qualification execution evidence.
+On 2026-08-09, clean retained generations under `/tmp/opencode/ava-synthetic-vault-y` with CPython 3.11.14 and `/tmp/opencode/ava-synthetic-vault-z` with CPython 3.13.12 produced byte-identical output. Draft 2020-12 validation accepted both schemas and their generated instances. Repository tests cover pinned-image installation and finalization, deterministic variant workspace and execution-plan construction, baseline preservation, installed conformance of the registered-role workspace, source and chronology validation, completed-run evidence binding, interrupted-upgrade checkpoint setup and recovery, and explicit exclusion of every pinned PNG from assembled release assets. Planned managed states and checkpoint setup JSON do not count as qualification execution evidence.
 
 ```text
 baseline oracle SHA-256: fe65371084f6bdb2ae38da0fe31e4be3fda9be8ebe93f6fbc80b168e86d5ca46
 deterministic corpus: 300 files
 deterministic batch counts: 77 pre-move, 37 move-transition, 46 renovation, 140 settled
-pending external image slots: 5
+pinned image inputs: 5
 finalized corpus target: 305 files
 OpenCode available for clean-session qualification: 1.17.13
 ```
 
 ## External qualification progress
 
-On 2026-08-10, the user confirmed that the synthetic corpus and all five specified images have been generated in a repository-external local directory and look correct. The user subsequently confirmed that `finalize-images` and finalized-corpus `verify` have completed and their results are recorded locally. The local artifacts are not accessible from this repository session, so this records user-confirmed external progress without claiming direct repository access to those bytes.
+On 2026-08-10, the user confirmed that the synthetic corpus and all five specified images had been generated in a repository-external local directory and looked correct. On 2026-08-14, the exact five accepted PNG bytes were imported into the repository-only fixture with a checksum and dimension manifest. Generated corpus copies and run evidence remain repository-external.
 
 Use these local paths for the current qualification run:
 
@@ -240,7 +240,7 @@ test project:        ~/stuff/project-vault
 Current external progress:
 
 - [x] synthetic corpus generated locally
-- [x] five specified images generated locally and visually accepted by the user
+- [x] five specified images generated locally, visually accepted by the user, and pinned under the internal fixture
 - [x] image finalization and finalized-corpus verification recorded
 - [x] materialize the eight qualification variants
 - [x] exercise clean OpenCode ingestion and independent review using `~/stuff/project-vault` where the execution plan calls for the manual test project
@@ -263,7 +263,7 @@ Current external progress:
 - long-distance running, classic literature, cooking and Neapolitan pizza, and the first-month kitchen renovation recur coherently across the timeline
 - Word, PDF, PowerPoint, text, and useful structured formats are valid and meaningfully ingestible
 - five clear external image prompts are easy to locate, are excluded from ingestion, span the timeline, and include at least one receipt
-- image finalization verifies and records exactly five resulting image files without claiming reproducible image bytes
+- pinned-image installation and image finalization verify and record exactly five reproducible committed image inputs
 - the expected-outcome manifest makes routing, ingestion, hierarchy, fidelity, temporal state, and private/work separation reviewable
 - all eight qualification variants can be materialized without changing the baseline source corpus
 - the corpus installs successfully from assembled Ava assets and is usable in a clean OpenCode session

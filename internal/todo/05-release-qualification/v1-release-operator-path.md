@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T12:11:00+02:00
+  at: 2026-08-14T12:48:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -46,18 +46,17 @@ Do not infer closure from an empty findings backlog, passing tests, or publicati
 
 The deterministic fixture implementation is complete.
 
-The user confirmed on 2026-08-10 that the synthetic corpus and all five specified images have been generated in a repository-external local directory and look correct. The user also confirmed that image finalization and finalized-corpus verification have been completed and recorded. Treat those confirmations as completion of corpus generation and finalization for this qualification run. The repository cannot inspect the local bytes directly, so this is recorded as user-confirmed external evidence rather than repository-generated evidence.
+The user confirmed on 2026-08-10 that the synthetic corpus and all five specified images had been generated in a repository-external local directory and looked correct. The exact accepted PNG bytes are now pinned under the repository-only fixture with a checksum and dimension manifest. Clean automated runs must generate a new external vault, install those pinned images through the maintained fixture command, finalize them, and verify the complete 305-file inventory.
 
 Current subphase status:
 
 - [x] deterministic corpus generated locally
-- [x] five specified images generated locally and visually accepted by the user
+- [x] five specified images generated locally, visually accepted by the user, and pinned under the internal fixture
 - [x] image finalization and finalized-corpus verification recorded
 - [x] qualification variants materialized
 - [x] clean OpenCode ingestion and routing evidence completed
 - [x] independent semantic review and expected-outcome checks completed
-- [ ] upgrade, recovery, finalization, and lifecycle scenarios completed
-- [ ] registered-role calendar regression repeated with the corrected contract
+- [ ] complete one-command upgrade, recovery, finalization, lifecycle, and regression matrix accepted
 - [ ] run manifests validated and qualification evidence accepted
 
 Use these user-owned local paths for the current qualification run:
@@ -67,77 +66,65 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-The user has completed managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall execution. [Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete and provides deterministic repository-only setup states for authentic assembled-installer resume and abort execution.
+The user has already exercised managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall manually. [Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete and provides authentic assembled-installer resume and abort checkpoints. [Finding 18](dogfood/18-verify-relative-calendar-dates.md) is implementation-complete and defines the corrected Thursday 2026-08-13 to Friday 2026-08-14 regression.
 
-[Finding 18](dogfood/18-verify-relative-calendar-dates.md) is implementation-complete. Relevant persistence now conditionally requires deterministic calendar verification, and the original Thursday 2026-08-13 to Friday 2026-08-14 scenario remains a clean-session qualification follow-up rather than pending repository implementation.
+[Finding 19](dogfood/19-add-one-command-qualification-runner.md) is implementation-complete. The complete maintained matrix is composed behind [one internal manual shell entry point](../../release/qualification-runner.md). A required supporting task now preempts another manual execution: [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md) must compose exact input acquisition, clean fixture preparation, matrix execution, fresh-session audit, and compact release-state recording.
 
-[Finding 19](dogfood/19-add-one-command-qualification-runner.md) now blocks the remaining Step 1 execution by requiring the complete corrected matrix, including Finding 17's checkpoint procedure and Finding 18's calendar regression, behind one internal shell entry point.
-
-The immediate goal is therefore **implement Finding 19, execute one complete runner matrix including the calendar regression and authentic resume/abort operations, and finish the Step 1 run-manifest/signoff gate**.
+The immediate goal is therefore **implement the hands-off qualification and evidence-state operation, then use it to execute and audit the next exact pinned release pair before finishing the Step 1 run-manifest/signoff gate**.
 
 ### Operator procedure
 
-Use the recorded local locations:
+The procedure below remains the behavior the automated operation must compose. Do not repeat it as a manually assembled qualification run while the automation task is pending.
+
+1. Resolve the exact pinned source and target release asset directories. Do not use a mutable `latest` selection. The target must expose the semantic upgrade state required by the maintained rollback, reconciliation, and finalization scenarios.
+
+2. Run the mutation-free preflight first:
 
 ```sh
-QUALIFICATION_ROOT=~/stuff/ava-qualification-vault/
-TEST_PROJECT=~/stuff/project-vault
+internal/release/qualify-synthetic.sh \
+  --qualification-root ~/stuff/ava-qualification-vault \
+  --execution-root ~/stuff/ava-qualification-run \
+  --source-assets /absolute/path/to/pinned/source-assets \
+  --target-assets /absolute/path/to/pinned/target-assets \
+  --test-project ~/stuff/project-vault \
+  --opencode opencode \
+  --model <provider/model> \
+  --preflight-only
 ```
 
-1. The eight isolated qualification variants are already materialized for the current run. Do not rematerialize the full vault unless the affected interrupted-upgrade workspaces must be reset. If a clean rematerialization is required by the fixture contract, use:
+Require exact source and target identity, valid checksums, clean repository state, finalized corpus verification, all eight materialized families, safe repository-external output boundaries, and the deterministic 17-scenario plan.
+
+3. Run the same command without `--preflight-only`:
 
 ```sh
-python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py materialize-variants "$QUALIFICATION_ROOT"
+internal/release/qualify-synthetic.sh \
+  --qualification-root ~/stuff/ava-qualification-vault \
+  --execution-root ~/stuff/ava-qualification-run \
+  --source-assets /absolute/path/to/pinned/source-assets \
+  --target-assets /absolute/path/to/pinned/target-assets \
+  --test-project ~/stuff/project-vault \
+  --opencode opencode \
+  --model <provider/model>
 ```
 
-2. Use the execution plans recorded in the generated variants as the scenario-specific source of truth. Exercise them against the exact assembled Ava revision under qualification. Use `$TEST_PROJECT` as the active manual OpenCode test project where the scenario calls for a working project.
+Use `--transcript-dir /absolute/repository-external/path` only when a separate OpenCode transcript copy is needed. The runner-owned execution root already retains per-scenario command output, state, and the final summary for diagnosis.
 
-3. The inbox-ingestion and independent semantic-review work for this run is already complete. Preserve its recorded evidence. If a later defect requires repeating ingestion, process direct files from the four chronological batches rather than copying batch directories:
+4. Accept the runner result only when every maintained scenario reports `pass`. A `fail`, `skipped`, or `user-decision-required` result is non-terminal qualification evidence and keeps Step 1 open. Preserve the failed runner-owned workspace until the cause is understood. On rerun, passing scenarios remain retained while a non-passing scenario is recreated only from its materialized source variant.
 
-```text
-01-pre-move
-02-move-transition
-03-renovation
-04-settled
-```
+5. Confirm the runner's terminal evidence proves, at minimum:
 
-4. Execute the two remaining interrupted-upgrade scenarios with the maintained [checkpoint procedure](../../release/fixtures/synthetic-qualification-vault/checkpoints.md). For each isolated source-installed project, set the exact target asset directory and create the required authentic checkpoint:
+- finalized corpus and the supplied original test project remain byte-identical
+- fresh and mature installs reach healthy installed conformance and normal routing
+- private/work registered-role mutations stay within their owned boundaries
+- the calendar regression persists `Friday` and `2026-08-14`, never `2026-08-15`
+- complete inbox ingestion leaves no direct pending source
+- managed-content damage reports only the exact expected stable conformance rule while preserving injected evidence
+- resume and abort use Finding 17's authentic checkpoint plus real installer operation
+- rollback is invoked exactly once and restores source managed and semantic state with transaction cleanup and normal routing
+- semantic reconciliation and finalization reach a complete target state without inventing unresolved decisions
+- role-led uninstall and pinned reinstall preserve project-owned bytes and finish with healthy installed conformance
 
-```sh
-TARGET_ASSETS=/absolute/path/to/exact/target/assets
-
-python3 internal/release/fixtures/synthetic-qualification-vault/checkpoint.py \
-  abort \
-  --target "$QUALIFICATION_ROOT/variants/06-interrupted-upgrade-states/abort/project" \
-  --asset-dir "$TARGET_ASSETS"
-
-sh "$TARGET_ASSETS/ava-install.sh" \
-  --target "$QUALIFICATION_ROOT/variants/06-interrupted-upgrade-states/abort/project" \
-  --asset-dir "$TARGET_ASSETS" \
-  --abort
-```
-
-Require source restoration, transaction cleanup, unchanged project-owned hashes, and normal routing before accepting abort.
-
-Then prepare the isolated resume source state and run:
-
-```sh
-python3 internal/release/fixtures/synthetic-qualification-vault/checkpoint.py \
-  resume \
-  --target "$QUALIFICATION_ROOT/variants/06-interrupted-upgrade-states/resume/project" \
-  --asset-dir "$TARGET_ASSETS"
-
-sh "$TARGET_ASSETS/ava-install.sh" \
-  --target "$QUALIFICATION_ROOT/variants/06-interrupted-upgrade-states/resume/project" \
-  --asset-dir "$TARGET_ASSETS" \
-  --resume
-```
-
-Require deterministic target completion or the target edge's authentic semantic stage, transaction-state consistency, unchanged project-owned hashes, and the expected routing state. The checkpoint JSON proves only authentic setup state and must not be recorded as if the recovery operation itself already passed.
-
-5. Preserve deterministic state evidence for all lifecycle variants, including the already completed managed-content damage, semantic reconciliation, successful agent-driven finalization, rollback, uninstall, and reinstall results. Preserve before-and-after project-owned hashes so the evidence can prove which files changed.
-
-6. Populate the run manifest for every accepted scenario with the exact Ava version, source revision, asset identity, host/model/session identity, project-owned hashes, installer and conformance output, transcript, expected outcome, actual outcome, reviewer, and linked finding.
+6. Populate or complete the required run manifests from the accepted runner evidence with exact Ava version, source revision, asset identity, host/model/session identity, project-owned hashes, installer and conformance output, transcript, expected outcome, actual outcome, reviewer, and linked finding.
 
 7. Validate every populated run manifest before accepting its result:
 
@@ -156,7 +143,7 @@ Do not regenerate, re-finalize, or re-verify the corpus or images unless later q
 
 ### Step 1 completion gate
 
-Advance only when the synthetic-vault task's completion criteria are satisfied, including all required qualification variants exercised, clean OpenCode ingestion and review evidence recorded, lifecycle scenarios accepted, run manifests valid, and repository boundary validation passing.
+Advance only when the synthetic-vault task's completion criteria are satisfied, the complete runner matrix passes against the exact selected assets, required run manifests are valid, qualification evidence is accepted, and repository boundary validation passes.
 
 ## Step 2: qualify and publish the corrective alpha
 

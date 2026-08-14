@@ -19,7 +19,8 @@ Core progress: 3 of 6 complete.
 
 1. [ ] [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md)
 2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md)
-3. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md)
+3. [ ] [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md)
+4. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md)
 
 ## Canonical remaining path to `1.0.0`
 
@@ -40,12 +41,12 @@ Dogfooding intentionally remains open during steps 1 and 2. Explicit user closur
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 1 pending finding
+- 0 pending findings
 - 0 pending blockers
-- 1 pending required-v1 finding
-- 18 completed findings
+- 0 pending required-v1 findings
+- 19 completed findings
 
-Findings 01 through 18 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence, with source anchoring, ambiguity handling, boundary fixtures, Change Reviewer fidelity checks, and assembled-payload coverage. [Finding 19](dogfood/19-add-one-command-qualification-runner.md) now composes the complete maintained matrix behind one internal shell entry point. Finding 12's realistic multi-turn installed-project exercise, Finding 15's fresh-agent terminal-finalization exercise, Finding 16's published Inbox Ingester scoped-history exercise, Finding 17's selected-asset resume/abort execution, and Finding 18's clean-session registered-role calendar exercise remain release qualification evidence rather than pending implementation work.
+Findings 01 through 19 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence, with source anchoring, ambiguity handling, boundary fixtures, Change Reviewer fidelity checks, and assembled-payload coverage. Finding 19 composes the complete maintained matrix behind one internal manual shell entry point with pinned-input preflight, isolated runner-owned scenario workspaces, exact managed-damage rules, bounded OpenCode prompts, interrupted reruns, and final summary semantics. Finding 12's realistic multi-turn installed-project exercise, Finding 15's fresh-agent terminal-finalization exercise, Finding 16's published Inbox Ingester scoped-history exercise, Finding 17's selected-asset resume/abort execution, Finding 18's clean-session registered-role calendar exercise, and Finding 19's complete selected-asset runner execution remain release qualification evidence rather than pending implementation work.
 
 ## Qualification policy
 
@@ -55,9 +56,9 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Step 1 of 6 is preempted by Finding 19.**
+**Step 1 of 6 is active, with the required internal qualification-automation task preempting another runner execution.**
 
-The user has confirmed that corpus generation, all five image generations, image finalization, and finalized-corpus verification are complete and recorded locally.
+The user has confirmed the generated corpus and all five image results. The exact visually accepted PNG bytes are pinned under the repository-only fixture, while generated vaults and execution evidence remain external.
 
 Use:
 
@@ -66,7 +67,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-The user has materialized the variants and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior. Implement the [one-command runner](dogfood/19-add-one-command-qualification-runner.md) using Finding 17's maintained checkpoints and Finding 18's calendar regression, execute the complete matrix through that entry point, and then return to the remaining Step 1 signoff gate.
+The variants are materialized and the repository-side runner implementation is complete. Before another matrix execution, implement [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md). The automated path must acquire exact inputs, regenerate the isolated fixture from maintained sources and pinned images, run the matrix, audit every resulting OpenCode session in a fresh session, and write compact release-state evidence before Step 1 signoff can continue.
 
 Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
 
