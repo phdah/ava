@@ -15,7 +15,7 @@ generated:
   at: 2026-08-14T11:35:46+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T12:11:00+02:00
+  at: 2026-08-14T12:41:00+02:00
 ---
 
 # Verify Relative Calendar Dates Before Persisting
@@ -36,29 +36,20 @@ The shared knowledge and metadata contracts require semantic fidelity, but they 
 
 ## Implemented resolution
 
-The managed base now includes a conditional [Calendar verification](../../../../templates/base/shared/instructions/calendar-verification.md) contract for persistence work that converts relative calendar language into an absolute fact.
-
-The contract:
-
-- establishes user-specified, source-document, and current-host reference contexts without conflating them
-- requires an available deterministic calendar, date, or time operation before an inferred absolute value is persisted
-- preserves relative wording or requests clarification when timezone, locale, reference date, week semantics, or another material interpretation remains ambiguous
-- keeps source-relative historical language anchored to the source rather than the current session
-- handles weekday, week, month, year, leap-day, and timezone rollover through calendar semantics rather than approximate arithmetic
-- explicitly rejects `2026-08-15` as the Friday following Thursday `2026-08-13`; the verified result is `2026-08-14`
+The managed base now includes a conditional [Calendar verification](../../../../templates/base/shared/instructions/calendar-verification.md) contract. When a role would persist a calendar value derived from relative or relational language, it must establish the relevant reference context, verify the derived value and any material calendar relationship with an available deterministic operation, and persist only a consistent result. Missing or ambiguous reference context is preserved or clarified rather than invented, and source-relative wording remains anchored to its source context.
 
 Role Manager, Project Steward, Inbox Ingester, and Upgrade Role expose the contract only as conditional additional context for relevant persistence. Change Reviewer loads it only when calendar fidelity is material to the reviewed change. The root router does not load it globally, so unrelated requests do not perform calendar checks.
 
-`internal/release/fixtures/calendar-verification.json` freezes the required boundary and ambiguity cases. `internal/release/tests/test_calendar_verification.py` verifies the contract, the exact regression, conditional role loading, semantic-review behavior, and assembled managed payload. The release test entry point includes the new suite.
+`internal/release/fixtures/calendar-verification.json` freezes the regression and representative boundary cases. `internal/release/tests/test_calendar_verification.py` verifies the compact contract, the exact regression, conditional role loading, semantic-review behavior, and assembled managed payload. The release test entry point includes the new suite.
 
 ## Completion criteria
 
-- [x] Shared instructions define when relative calendar language requires deterministic verification before persistence.
-- [x] The contract distinguishes the current host date from source-document dates and user-specified reference dates.
-- [x] Relevant roles use an available deterministic calendar operation rather than unaided date arithmetic before writing an absolute result.
-- [x] Missing or ambiguous timezone, locale, reference date, or week interpretation causes preservation or clarification rather than invention.
+- [x] Shared instructions require deterministic verification before persisting a derived calendar value.
+- [x] Relevant reference context is established before verification, including source-relative context when applicable.
+- [x] Relevant roles use an available deterministic calendar operation rather than unaided date arithmetic before writing a derived value.
+- [x] Missing or ambiguous reference context that could change the result causes preservation or clarification rather than invention.
 - [x] A Thursday 2026-08-13 request for `Friday` resolves to 2026-08-14 and rejects 2026-08-15 as inconsistent.
-- [x] Regression cases cover day and week boundaries, month and year boundaries, leap-day handling, and an intentionally unresolved relative date.
+- [x] Regression cases cover representative day, week, month, year, leap-day, historical-source, and unresolved-relative-date behavior.
 - [x] Change Reviewer treats a contradictory persisted weekday and date as a semantic fidelity finding.
 - [x] Installed payload and routing coverage confirm that calendar verification occurs only for relevant persistence work.
 - [x] The complete release suite and repository boundary validation are wired through the maintained `internal/release/test.sh` gate for this change.
