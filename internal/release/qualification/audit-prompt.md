@@ -8,7 +8,7 @@ generated:
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T16:27:00+02:00
+  at: 2026-08-15T00:19:00+02:00
 ---
 
 # Scope
@@ -16,6 +16,8 @@ updated:
 Audit only the exact qualification run named in the appended run inputs. This is an independent, read-only review. Do not edit the Ava repository, generated fixture, isolated projects, runner evidence, transcripts, release assets, or qualification state.
 
 Use the supplied session inventory as the complete session boundary. Inspect every listed top-level and nested session and reconcile it against the runner evidence, applicable release contracts, and fixture oracle. Do not inspect or infer from unrelated OpenCode sessions.
+
+The fixture oracle is evaluator-only expected-outcome evidence. Qualification sessions under test must derive their work from the installed Ava contract and the selected source material, not from the oracle. Do not fault a qualification session for not reading, citing, or knowing the oracle. Use the oracle independently to test whether the session result preserved the expected source meaning, dispositions, provenance, chronology, and other declared outcomes. Treat evidence that a qualification session read or relied on the hidden oracle as test contamination rather than stronger proof.
 
 For each exact `session_id` in the inventory, read its complete session export with:
 
@@ -36,7 +38,7 @@ Determine whether:
 3. every mutation remained inside the active role and scenario boundary
 4. ambiguous requests remained unmodified and visibly requested clarification
 5. calendar persistence used deterministic verification and preserved the correct reference context
-6. inbox completion was independently reconciled against every selected source and the fixture oracle rather than inferred from movement or link validity
+6. inbox completion was independently reconciled against every selected source and the evaluator-only fixture oracle rather than inferred from movement or link validity
 7. semantic reconciliation recorded every inspected and changed project-owned path before completion
 8. finalization followed the target release contract without an unqualified fallback to installer-backed behavior
 9. removal and reinstall preserved project-owned bytes
