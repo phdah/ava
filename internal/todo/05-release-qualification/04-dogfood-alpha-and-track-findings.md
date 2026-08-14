@@ -71,7 +71,7 @@ A clear user statement that dogfooding is complete or that Ava should proceed to
 
 ## Current state
 
-Findings 01 through 17 are implementation-complete. There are no pending dogfood findings. This umbrella remains active until the user explicitly closes dogfooding.
+Findings 01 through 17 are implementation-complete. Finding 18 requires deterministic verification before relevant relative calendar language is persisted as an absolute fact. This umbrella remains active until the user explicitly closes dogfooding.
 
 The synthetic corpus and all five specified images are finalized and verified in a repository-external local directory. The user materialized all eight qualification families and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior.
 
@@ -85,4 +85,4 @@ Finding 10 established that pull-request change types are selected from supporte
 
 Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing while preserving the managed-state gate and fresh-routing transition rules.
 
-The immediate path is to execute resume and abort, finish the synthetic-vault signoff gate, and continue to corrective immutable alpha qualification. New `blocker` or `required-v1` findings may still preempt that sequence. After those two supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
+Finding 18 currently preempts completion of synthetic-vault qualification. Complete the calendar-verification work, repeat its affected scenario, execute resume and abort with finding 17's maintained harness, finish the synthetic-vault signoff gate, and continue to corrective immutable alpha qualification. New `blocker` or `required-v1` findings may still preempt that sequence. After those supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.

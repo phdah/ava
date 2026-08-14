@@ -21,13 +21,13 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 [V1 release qualification](todo/05-release-qualification/) is active.
 
-[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There are currently 0 pending dogfood findings, 0 pending blockers, and 0 pending `required-v1` findings.
+[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There is currently 1 pending dogfood finding, 0 pending blockers, and 1 pending `required-v1` finding.
 
 ## Official next action
 
-**Execute the authentic resume and abort synthetic-vault scenarios and finish the remaining Step 1 evidence gate.**
+**Resolve Finding 18: verify relative calendar dates before persisting.**
 
-[Finding 17](todo/05-release-qualification/dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete. The repository-only checkpoint harness now creates authentic installer-owned setup states for the real assembled `--resume` and `--abort` operations without adding a public installer mode or fabricating managed state.
+[Finding 17](todo/05-release-qualification/dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete. The repository-only checkpoint harness now creates authentic installer-owned setup states for the real assembled `--resume` and `--abort` operations without adding a public installer mode or fabricating managed state. [Finding 18](todo/05-release-qualification/dogfood/18-verify-relative-calendar-dates.md) now preempts execution of the remaining Step 1 qualification scenarios.
 
 Use these user-owned local paths for the current qualification run:
 
@@ -36,7 +36,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-Use the maintained [checkpoint procedure](release/fixtures/synthetic-qualification-vault/checkpoints.md) to prepare and execute the two affected interrupted-upgrade scenarios against the selected qualification assets. Record their terminal states and run-manifest evidence, then finish the remaining synthetic-vault Step 1 acceptance gate. Do not regenerate the already finalized corpus or images unless qualification exposes a fixture defect.
+Implement Finding 18's deterministic calendar-verification contract and regression coverage. After it is complete, repeat the affected calendar scenario, use the maintained [checkpoint procedure](release/fixtures/synthetic-qualification-vault/checkpoints.md) to execute authentic resume and abort against the selected qualification assets, and finish the remaining Step 1 evidence and signoff gate. Do not regenerate the already finalized corpus or images unless qualification exposes a fixture defect.
 
 ## Official path to `1.0.0`
 

@@ -68,7 +68,9 @@ test project:        ~/stuff/project-vault
 
 The user has completed managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall execution. [Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete and provides deterministic repository-only setup states for authentic assembled-installer resume and abort execution.
 
-The immediate goal is therefore **execute authentic resume and abort against the selected qualification assets, record their terminal evidence, and finish the Step 1 run-manifest/signoff gate**.
+[Finding 18](dogfood/18-verify-relative-calendar-dates.md) now blocks final semantic signoff after a relative weekday was persisted with the wrong absolute date.
+
+The immediate goal is therefore **resolve Finding 18, repeat its affected scenario, execute authentic resume and abort, and finish the Step 1 run-manifest/signoff gate**.
 
 ### Operator procedure
 

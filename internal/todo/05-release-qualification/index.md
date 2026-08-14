@@ -40,12 +40,12 @@ Dogfooding intentionally remains open during steps 1 and 2. Explicit user closur
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 0 pending findings
+- 1 pending finding
 - 0 pending blockers
-- 0 pending required-v1 findings
+- 1 pending required-v1 finding
 - 17 completed findings
 
-Findings 01 through 17 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 12's realistic multi-turn installed-project exercise, finding 15's fresh-agent terminal-finalization exercise, finding 16's published Inbox Ingester scoped-history exercise, and finding 17's selected-asset resume/abort execution remain release qualification evidence rather than pending implementation work.
+Findings 01 through 17 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. [Finding 18](dogfood/18-verify-relative-calendar-dates.md) requires deterministic verification of relevant relative calendar conversions. Finding 12's realistic multi-turn installed-project exercise, finding 15's fresh-agent terminal-finalization exercise, finding 16's published Inbox Ingester scoped-history exercise, and finding 17's selected-asset resume/abort execution remain release qualification evidence rather than pending implementation work.
 
 ## Qualification policy
 
@@ -55,7 +55,7 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Step 1 of 6 is active with no pending dogfood implementation finding.**
+**Step 1 of 6 is preempted by Finding 18.**
 
 The user has confirmed that corpus generation, all five image generations, image finalization, and finalized-corpus verification are complete and recorded locally.
 
@@ -66,7 +66,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-The user has materialized the variants and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior. Use the maintained interrupted-upgrade checkpoint procedure to execute authentic resume and abort against the selected qualification assets, record the terminal evidence, and then complete the remaining Step 1 run-manifest and signoff gate.
+The user has materialized the variants and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior. Resolve Finding 18, repeat its affected calendar scenario, use the maintained interrupted-upgrade checkpoint procedure to execute authentic resume and abort against the selected qualification assets, record the terminal evidence, and then complete the remaining Step 1 run-manifest and signoff gate.
 
 Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
 

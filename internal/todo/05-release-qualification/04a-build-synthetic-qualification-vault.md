@@ -246,9 +246,10 @@ Current external progress:
 - [x] exercise clean OpenCode ingestion and independent review using `~/stuff/project-vault` where the execution plan calls for the manual test project
 - [x] exercise routing, hierarchy, fidelity, damaged-state, semantic reconciliation, finalization, rollback, uninstall, and reinstall scenarios except resume and abort
 - [ ] execute authentic resume and abort using the maintained qualification checkpoint harness and exact selected target assets
+- [ ] repeat the affected calendar-fidelity scenario after finding 18 is complete
 - [ ] populate and validate the remaining required run manifests and accept final qualification evidence
 
-[Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete. The task remains pending only because the selected-asset resume and abort execution plus final qualification signoff are still required. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. The current next action is to follow the interrupted-upgrade [checkpoint procedure](../../release/fixtures/synthetic-qualification-vault/checkpoints.md), record both terminal outcomes, and return to the operator sequence in [V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification).
+[Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete. The task remains pending because finding 18's calendar correction, its bounded rerun, selected-asset resume and abort execution, and final qualification signoff are still required. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. Resolve [finding 18](dogfood/18-verify-relative-calendar-dates.md), repeat its scenario, follow the interrupted-upgrade [checkpoint procedure](../../release/fixtures/synthetic-qualification-vault/checkpoints.md), record both terminal outcomes, and return to the operator sequence in [V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification).
 
 ## Completion criteria
 
