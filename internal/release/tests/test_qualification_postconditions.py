@@ -43,6 +43,19 @@ class QualificationPostconditionTests(unittest.TestCase):
             encoding="utf-8",
         )
 
+    def test_upgrade_schema_and_role_define_inspection_only_records(self) -> None:
+        schema = postconditions.load_json(
+            postconditions.REPOSITORY_ROOT / "distribution/schemas/upgrade.schema.json"
+        )
+        change_types = schema["$defs"]["projectChange"]["properties"]["change_type"]["enum"]
+        self.assertIn("inspected", change_types)
+        role = (
+            postconditions.REPOSITORY_ROOT / "templates/base/roles/upgrade-role/instructions.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("change_type: inspected", role)
+        self.assertIn("every project-owned path inspected or changed", role)
+        self.assertIn("recorded exactly once", role)
+
     def test_inspection_only_records_satisfy_required_path_accounting(self) -> None:
         self.write_run(
             [
