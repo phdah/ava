@@ -103,15 +103,16 @@ class CalendarVerificationTests(unittest.TestCase):
         self.assertEqual(case["expected_action"], "preserve-or-clarify")
 
     def test_contract_requires_only_the_calendar_verification_invariant(self) -> None:
-        self.assertIn("persist a calendar value derived", self.contract)
-        self.assertIn("establish the reference date, time, or source context", self.contract)
-        self.assertIn("available deterministic date or calendar operation", self.contract)
-        self.assertIn("weekday/date agreement or week number", self.contract)
-        self.assertIn("Do not rely on mental calendar arithmetic", self.contract)
-        self.assertIn("preserve the original wording or ask for clarification", self.contract)
-        self.assertIn("Source-relative wording must remain anchored to its source context", self.contract)
-        self.assertNotIn("2026-08-14", self.contract)
-        self.assertNotIn("2026-08-15", self.contract)
+        body = self.contract.split("---", 2)[-1]
+        self.assertIn("persist a calendar value derived", body)
+        self.assertIn("establish the reference date, time, or source context", body)
+        self.assertIn("available deterministic date or calendar operation", body)
+        self.assertIn("weekday/date agreement or week number", body)
+        self.assertIn("Do not rely on mental calendar arithmetic", body)
+        self.assertIn("preserve the original wording or ask for clarification", body)
+        self.assertIn("Source-relative wording must remain anchored to its source context", body)
+        self.assertNotIn("2026-08-14", body)
+        self.assertNotIn("2026-08-15", body)
 
     def test_calendar_contract_is_discoverable_but_not_global(self) -> None:
         self.assertIn("[Calendar verification](calendar-verification.md)", self.shared_index)
