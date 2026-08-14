@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T11:46:55+02:00
+  at: 2026-08-14T12:11:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -71,18 +71,18 @@ A clear user statement that dogfooding is complete or that Ava should proceed to
 
 ## Current state
 
-Findings 01 through 17 are implementation-complete. Finding 18 requires deterministic verification before relevant relative calendar language is persisted as an absolute fact. Finding 19 requires one internal shell entry point for the complete maintained qualification matrix. This umbrella remains active until the user explicitly closes dogfooding.
+Findings 01 through 18 are implementation-complete. Finding 18 adds conditional deterministic calendar verification before relevant persistence converts relative language into absolute project facts, including source-versus-host reference semantics, ambiguity preservation, boundary regression fixtures, and Change Reviewer fidelity coverage. Finding 19 requires one internal shell entry point for the complete maintained qualification matrix. This umbrella remains active until the user explicitly closes dogfooding.
 
 The synthetic corpus and all five specified images are finalized and verified in a repository-external local directory. The user materialized all eight qualification families and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior.
 
-Finding 17 now provides deterministic repository-only checkpoints that execute the exact assembled target installer transaction machinery and stop at authentic abortable and resumable boundaries. The remaining interrupted-upgrade work is qualification execution: run the maintained checkpoint commands against the selected assets, exercise the real `--abort` and `--resume` operations, and record their terminal evidence and user signoff.
+Finding 17 provides deterministic repository-only checkpoints that execute the exact assembled target installer transaction machinery and stop at authentic abortable and resumable boundaries. The remaining interrupted-upgrade work is qualification execution: run the maintained checkpoint commands against the selected assets, exercise the real `--abort` and `--resume` operations, and record their terminal evidence and user signoff.
 
-Finding 13 was exposed while completing the `1.0.0-alpha.14` release PR. The implemented release procedure now separates managed delta, possible project-owned incompatibility, and required reconciliation and requires reviewed rationale for both semantic-review outcomes.
+Finding 13 was exposed while completing the `1.0.0-alpha.14` release PR. The implemented release procedure separates managed delta, possible project-owned incompatibility, and required reconciliation and requires reviewed rationale for both semantic-review outcomes.
 
-Finding 14 repaired Inbox Ingester project-root inbox references and added assembled-payload regression coverage. Finding 15 made Ava Maintenance the successful terminal finalization mechanism after proving protocol preconditions. Finding 16 bounded ingestion-time scoped-history authority to additive-only changes while preserving prior history.
+Finding 14 repaired Inbox Ingester project-root inbox references and added assembled-payload regression coverage. Finding 15 made Ava Maintenance the successful terminal finalization mechanism after proving protocol preconditions. Finding 16 bounded ingestion-time scoped-history authority to additive-only changes while preserving prior history. Finding 18 now prevents relevant roles from persisting an unaudited relative-to-absolute calendar conversion and keeps the rule out of unrelated requests.
 
 Finding 10 established that pull-request change types are selected from supported distribution impact rather than implementation novelty or source location. Repository-only qualification work remains non-releasable when it does not change produced assets or supported behavior, while internal release tooling remains releasable when its output or guarantees change.
 
 Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing while preserving the managed-state gate and fresh-routing transition rules.
 
-Findings 18 and 19 currently preempt completion of synthetic-vault qualification. Complete the calendar-verification work, compose the maintained matrix behind the one-command runner using finding 17's checkpoint harness, execute it, finish the synthetic-vault signoff gate, and continue to corrective immutable alpha qualification. New `blocker` or `required-v1` findings may still preempt that sequence. After those supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
+Finding 19 currently preempts completion of synthetic-vault qualification. Implement the one-command runner using Finding 17's checkpoint harness and Finding 18's calendar regression, execute the complete matrix, finish the synthetic-vault signoff gate, and continue to corrective immutable alpha qualification. New `blocker` or `required-v1` findings may still preempt that sequence. After those supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
