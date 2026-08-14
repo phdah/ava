@@ -10,150 +10,23 @@
     "uninstall-reinstallation"
   ],
   "scenarios": [
-    {
-      "family": "empty-before-installation",
-      "id": "fresh-empty-install",
-      "kind": "fresh-install",
-      "order": 1,
-      "source": "variants/01-empty-before-installation"
-    },
-    {
-      "family": "mature-mixed-project",
-      "id": "mature-project-install",
-      "kind": "mature-install",
-      "order": 2,
-      "source": "variants/02-mature-mixed-project"
-    },
-    {
-      "expected_role": "Private Life Steward",
-      "family": "registered-private-work-roles",
-      "id": "registered-private-routing",
-      "kind": "registered-routing",
-      "mutation_boundary": "private",
-      "order": 3,
-      "prompt": "In this isolated qualification project, record in trusted private context that Uno's next routine appointment is on 2026-09-03. Do not change work context.",
-      "source": "variants/03-registered-private-work-roles"
-    },
-    {
-      "expected_role": "Work Context Steward",
-      "family": "registered-private-work-roles",
-      "id": "registered-work-routing",
-      "kind": "registered-routing",
-      "mutation_boundary": "work",
-      "order": 4,
-      "prompt": "In this isolated qualification project, record in trusted work context that the Aurora stale-data alert review was completed on 2026-08-12. Do not change private context.",
-      "source": "variants/03-registered-private-work-roles"
-    },
-    {
-      "expected_date": "2026-08-14",
-      "expected_role": "Work Context Steward",
-      "expected_weekday": "Friday",
-      "family": "registered-private-work-roles",
-      "forbidden_date": "2026-08-15",
-      "id": "registered-calendar-regression",
-      "kind": "registered-calendar",
-      "order": 5,
-      "prompt": "Today is Thursday, 2026-08-13. In this isolated qualification project, record in trusted work context that the Aurora cache review is due Friday. Persist the verified weekday and absolute date. Do not change private context.",
-      "source": "variants/03-registered-private-work-roles"
-    },
-    {
-      "family": "registered-private-work-roles",
-      "id": "registered-ambiguous-routing",
-      "kind": "registered-clarification",
-      "order": 6,
-      "prompt": "In this isolated qualification project, record a reimbursement for a pizza oven that was used both personally and for a Northstar team event. Do not guess whether this belongs to private or work context.",
-      "source": "variants/03-registered-private-work-roles"
-    },
-    {
-      "family": "complete-pending-inbox",
-      "id": "complete-pending-inbox",
-      "kind": "complete-inbox",
-      "order": 7,
-      "prompt": "Use the ingest-inbox workflow in this isolated qualification project to process every pending direct inbox source. Apply the user's established qualification decision that the shared headset is a personal expense incurred for work, not a work reimbursement. When dated sources report differing collaborators, task states, or same-day activity and race details, preserve each source-attributed claim and chronology without selecting an unsupported canonical winner; those source reports are not by themselves a material trusted-context conflict. Preserve every source under inbox/processed, maintain only project-owned context, reconcile all source sections faithfully, and stop with a clear user-decision-required report if any source cannot be completed safely.",
-      "source": "variants/04-complete-pending-inbox"
-    },
-    {
-      "damage": "modified",
-      "expected_rule": "AVA-MANAGED-CHECKSUM",
-      "family": "managed-content-damage",
-      "id": "managed-modified",
-      "kind": "managed-damage",
-      "order": 8,
-      "source": "variants/05-managed-content-damage/modified"
-    },
-    {
-      "damage": "missing",
-      "expected_rule": "AVA-MANAGED-MISSING",
-      "family": "managed-content-damage",
-      "id": "managed-missing",
-      "kind": "managed-damage",
-      "order": 9,
-      "source": "variants/05-managed-content-damage/missing"
-    },
-    {
-      "damage": "corrupt",
-      "expected_rule": "AVA-UPGRADE-READ",
-      "family": "managed-content-damage",
-      "id": "managed-corrupt",
-      "kind": "managed-damage",
-      "order": 10,
-      "source": "variants/05-managed-content-damage/corrupt"
-    },
-    {
-      "damage": "unexpected",
-      "expected_rule": "AVA-MANAGED-UNEXPECTED",
-      "family": "managed-content-damage",
-      "id": "managed-unexpected",
-      "kind": "managed-damage",
-      "order": 11,
-      "source": "variants/05-managed-content-damage/unexpected"
-    },
-    {
-      "family": "interrupted-upgrade-states",
-      "id": "interrupted-resume",
-      "kind": "resume",
-      "order": 12,
-      "source": "variants/06-interrupted-upgrade-states/resume"
-    },
-    {
-      "family": "interrupted-upgrade-states",
-      "id": "interrupted-abort",
-      "kind": "abort",
-      "order": 13,
-      "source": "variants/06-interrupted-upgrade-states/abort"
-    },
-    {
-      "family": "interrupted-upgrade-states",
-      "id": "interrupted-rollback",
-      "kind": "rollback",
-      "order": 14,
-      "source": "variants/06-interrupted-upgrade-states/rollback"
-    },
-    {
-      "family": "interrupted-upgrade-states",
-      "finalize_prompt": "Finalize the completed Ava upgrade in this isolated qualification project now. Use Ava Maintenance, verify every required finalization precondition, perform only the supported terminal finalization, and report the resulting managed state.",
-      "id": "interrupted-finalize",
-      "kind": "finalize",
-      "order": 15,
-      "semantic_prompt": "Reconcile this isolated project's project-owned Ava context with the installed Ava version. Use the managed Upgrade Role, apply only the installed upgrade guidance, preserve project-owned meaning, and report any unresolved decision instead of inventing one.",
-      "source": "variants/06-interrupted-upgrade-states/finalize"
-    },
-    {
-      "family": "pending-semantic-reconciliation",
-      "id": "pending-semantic-reconciliation",
-      "kind": "semantic-reconciliation",
-      "order": 16,
-      "prompt": "Reconcile this isolated project's project-owned Ava context with the installed Ava version. Use the managed Upgrade Role, apply only the installed upgrade guidance, preserve project-owned meaning, and report any unresolved decision instead of inventing one.",
-      "source": "variants/07-pending-semantic-reconciliation"
-    },
-    {
-      "family": "uninstall-reinstallation",
-      "id": "uninstall-reinstall",
-      "kind": "lifecycle",
-      "order": 17,
-      "source": "variants/08-uninstall-reinstallation/installed",
-      "uninstall_prompt": "Remove Ava from this isolated qualification project. Use Ava Maintenance and follow the supported role-led removal procedure. Preserve every project-owned byte, including OpenCode configuration, and report any conflict instead of discarding uncertain content."
-    }
+    {"family":"empty-before-installation","id":"fresh-empty-install","kind":"fresh-install","order":1,"source":"variants/01-empty-before-installation"},
+    {"family":"mature-mixed-project","id":"mature-project-install","kind":"mature-install","order":2,"source":"variants/02-mature-mixed-project"},
+    {"expected_role":"Private Life Steward","family":"registered-private-work-roles","id":"registered-private-routing","kind":"registered-routing","mutation_boundary":"private","order":3,"prompt":"In this isolated qualification project, record in trusted private context that Uno's next routine appointment is on 2026-09-03. Do not change work context.","source":"variants/03-registered-private-work-roles"},
+    {"expected_role":"Work Context Steward","family":"registered-private-work-roles","id":"registered-work-routing","kind":"registered-routing","mutation_boundary":"work","order":4,"prompt":"In this isolated qualification project, record in trusted work context that the Aurora stale-data alert review was completed on 2026-08-12. Do not change private context.","source":"variants/03-registered-private-work-roles"},
+    {"expected_date":"2026-08-14","expected_role":"Work Context Steward","expected_weekday":"Friday","family":"registered-private-work-roles","forbidden_date":"2026-08-15","id":"registered-calendar-regression","kind":"registered-calendar","order":5,"prompt":"Today is Thursday, 2026-08-13. In this isolated qualification project, record in trusted work context that the Aurora cache review is due Friday. Persist the verified weekday and absolute date. Do not change private context.","source":"variants/03-registered-private-work-roles"},
+    {"family":"registered-private-work-roles","id":"registered-ambiguous-routing","kind":"registered-clarification","order":6,"prompt":"In this isolated qualification project, record a reimbursement for a pizza oven that was used both personally and for a Northstar team event. Do not guess whether this belongs to private or work context.","source":"variants/03-registered-private-work-roles"},
+    {"family":"complete-pending-inbox","id":"complete-pending-inbox","kind":"complete-inbox","order":7,"prompt":"Use the ingest-inbox workflow in this isolated qualification project to process every pending direct inbox source. Apply the user's established qualification decision that the shared headset is a personal expense incurred for work, not a work reimbursement. When dated sources report differing collaborators, task states, or same-day activity and race details, preserve each source-attributed claim and chronology without selecting an unsupported canonical winner; those source reports are not by themselves a material trusted-context conflict. Preserve every source under inbox/processed, maintain only project-owned context, reconcile all source sections faithfully, and stop with a clear user-decision-required report if any source cannot be completed safely.","source":"variants/04-complete-pending-inbox"},
+    {"damage":"modified","expected_rule":"AVA-MANAGED-CHECKSUM","family":"managed-content-damage","id":"managed-modified","kind":"managed-damage","order":8,"source":"variants/05-managed-content-damage/modified"},
+    {"damage":"missing","expected_rule":"AVA-MANAGED-MISSING","family":"managed-content-damage","id":"managed-missing","kind":"managed-damage","order":9,"source":"variants/05-managed-content-damage/missing"},
+    {"damage":"corrupt","expected_rule":"AVA-UPGRADE-READ","family":"managed-content-damage","id":"managed-corrupt","kind":"managed-damage","order":10,"source":"variants/05-managed-content-damage/corrupt"},
+    {"damage":"unexpected","expected_rule":"AVA-MANAGED-UNEXPECTED","family":"managed-content-damage","id":"managed-unexpected","kind":"managed-damage","order":11,"source":"variants/05-managed-content-damage/unexpected"},
+    {"family":"interrupted-upgrade-states","id":"interrupted-resume","kind":"resume","order":12,"source":"variants/06-interrupted-upgrade-states/resume"},
+    {"family":"interrupted-upgrade-states","id":"interrupted-abort","kind":"abort","order":13,"source":"variants/06-interrupted-upgrade-states/abort"},
+    {"family":"interrupted-upgrade-states","id":"interrupted-rollback","kind":"rollback","order":14,"source":"variants/06-interrupted-upgrade-states/rollback"},
+    {"expected_project_changes":["/index.md","/roles/index.md","/shared/index.md","/workflows/index.md"],"family":"interrupted-upgrade-states","finalize_prompt":"Finalize the completed Ava upgrade in this isolated qualification project now. Use Ava Maintenance, verify every required finalization precondition, perform only the supported terminal finalization, and report the resulting managed state.","id":"interrupted-finalize","kind":"finalize","order":15,"semantic_prompt":"Reconcile this isolated project's project-owned Ava context with the installed Ava version. Use the managed Upgrade Role, apply only the installed upgrade guidance, preserve project-owned meaning, and report any unresolved decision instead of inventing one.","source":"variants/06-interrupted-upgrade-states/finalize"},
+    {"expected_project_changes":["/index.md","/roles/index.md","/shared/index.md","/workflows/index.md"],"family":"pending-semantic-reconciliation","id":"pending-semantic-reconciliation","kind":"semantic-reconciliation","order":16,"prompt":"Reconcile this isolated project's project-owned Ava context with the installed Ava version. Use the managed Upgrade Role, apply only the installed upgrade guidance, preserve project-owned meaning, and report any unresolved decision instead of inventing one.","source":"variants/07-pending-semantic-reconciliation"},
+    {"family":"uninstall-reinstallation","id":"uninstall-reinstall","kind":"lifecycle","order":17,"source":"variants/08-uninstall-reinstallation/installed","uninstall_prompt":"Remove Ava from this isolated qualification project. Use Ava Maintenance and follow the supported role-led removal procedure. Preserve every project-owned byte, including OpenCode configuration, and report any conflict instead of discarding uncertain content."}
   ],
   "schema_version": 1
 }
