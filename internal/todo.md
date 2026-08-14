@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T12:11:00+02:00
+  at: 2026-08-14T12:48:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -21,15 +21,15 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 [V1 release qualification](todo/05-release-qualification/) is active.
 
-[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There is currently 1 pending dogfood finding, 0 pending blockers, and 1 pending `required-v1` finding.
+[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There are currently 0 pending dogfood findings, 0 pending blockers, and 0 pending `required-v1` findings.
 
 ## Official next action
 
-**Implement Finding 19: add one-command synthetic qualification runner.**
+**Execute the one-command synthetic qualification runner and finish the Step 1 signoff gate.**
 
-[Finding 18](todo/05-release-qualification/dogfood/18-verify-relative-calendar-dates.md) is implementation-complete. The managed base now conditionally requires deterministic calendar verification before relevant persistence converts relative calendar language into an absolute fact, with source-versus-host reference semantics, ambiguity preservation, boundary fixtures, Change Reviewer coverage, and assembled-payload regression coverage.
+[Finding 19](todo/05-release-qualification/dogfood/19-add-one-command-qualification-runner.md) is implementation-complete. The maintained matrix now has one internal manual shell entry point with pinned-input preflight, isolated runner-owned workspaces, Finding 17's authentic resume/abort checkpoints, Finding 18's calendar regression, exact managed-damage rules, bounded OpenCode prompts, interrupted reruns, and terminal summary semantics.
 
-[Finding 19](todo/05-release-qualification/dogfood/19-add-one-command-qualification-runner.md) now preempts execution of the remaining Step 1 qualification scenarios. It composes the complete maintained matrix, including Finding 17's authentic resume/abort checkpoints and Finding 18's calendar regression, behind one internal shell entry point. After Finding 19 is complete, execute the runner and return to the remaining Step 1 signoff gate. Do not regenerate the already finalized corpus or images unless qualification exposes a fixture defect.
+Run the completed entry point against the exact selected pinned corrective-alpha source and target assets, review and validate its evidence, and complete the remaining synthetic-vault Step 1 signoff. Do not regenerate the already finalized corpus or images unless qualification exposes a fixture defect.
 
 Use these user-owned local paths for the current qualification run:
 
@@ -37,6 +37,8 @@ Use these user-owned local paths for the current qualification run:
 qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
+
+The complete runner procedure is [One-Command Synthetic Qualification Runner](../internal/release/qualification-runner.md).
 
 ## Official path to `1.0.0`
 
