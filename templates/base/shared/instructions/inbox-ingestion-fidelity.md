@@ -6,6 +6,9 @@ tags: [ava, inbox, ingestion, fidelity, provenance, review]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-07T08:24:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-15T00:19:00+02:00
 ---
 
 # Purpose
@@ -54,6 +57,27 @@ There is no implicit ignored state. A source with any `pending` substantive sect
 
 A source containing no substantive body must be reported as having zero substantive sections. It remains unchanged and pending unless the user explicitly authorizes another non-destructive disposition.
 
+# Delegated and large-batch ingestion
+
+A large batch may be split across parallel or child sessions only as an execution strategy. Splitting the work does not split completion responsibility or weaken any per-source requirement in this contract.
+
+The coordinating Inbox Ingester owns one complete selected-source ledger for the batch. Before considering the batch complete, it must be able to reconcile every originally selected source exactly once with the final filesystem state and with sufficient evidence from any child work.
+
+Each child session must operate on an explicit, disjoint source subset and return, for every source it handled:
+
+- the source path and final source state
+- the complete substantive-section inventory with each section's `mapped`, `non-durable`, or `pending` disposition
+- destination paths for every mapped section
+- the source-local claims and material qualifiers preserved by each destination
+- every source identifier and supporting passage used where precise claim-level attribution is required
+- blockers, failed validation, unresolved decisions, and final per-source disposition totals
+
+Child-session success is provisional batch evidence, not authority for the coordinator to infer complete coverage. The coordinator must reconcile the returned source ledgers against the original selected-source inventory and the final pending and processed inventories. Missing child evidence, overlapping source ownership, an unaccounted selected source, or a source whose section inventory cannot be reconciled prevents a complete batch claim.
+
+The coordinator must also verify the resulting destinations across child boundaries. When multiple sources contribute differing dates, authors, certainty states, status reports, proposals, or other source-specific claims to one canonical destination, it must preserve those distinctions and verify the required claim-level provenance rather than accepting file-level source metadata as sufficient.
+
+Do not replace this reconciliation with child success counts, source-movement counts, destination-file counts, or a statement that every child completed its assigned chunk.
+
 # Epistemic and attribution fidelity
 
 Destination wording must preserve the source's material epistemic state.
@@ -76,6 +100,8 @@ When the source and trusted context disagree, preserve the source as evidence an
 # Renderable claim provenance
 
 Use OKF `sources` metadata for every destination containing source-derived material.
+
+Precise claim-level attribution is required when a mapped claim could otherwise be confused with another source or with canonical project state, including when sources differ in author, date, chronology, certainty, status, proposal or decision state, or reported outcome. A section inventory that marks precise attribution as required is incomplete until that attribution is present and verified in the destination.
 
 When individual claims need precise attribution, use this exact relationship:
 
@@ -146,7 +172,9 @@ Pending direct-child counts exclude the reserved `inbox/index.md` entry and the 
 
 Reconcile concept or destination counts against the final direct-child indexes and filesystem paths. Do not copy narrative totals from an earlier log entry.
 
-A batch is not complete merely because every selected source has file-level provenance. Any unresolved section, unsupported claim, unresolved marker, incorrect attribution, count mismatch, or failed final-state check prevents a complete batch report.
+For delegated work, derive these totals only after the coordinator has reconciled the per-source child evidence against the original selected-source inventory. Do not sum unreconciled child-reported totals and call that batch completion.
+
+A batch is not complete merely because every selected source has file-level provenance. Any unresolved section, unsupported claim, unresolved marker, incorrect attribution, count mismatch, missing delegated evidence, or failed final-state check prevents a complete batch report.
 
 # Independent semantic review
 
@@ -156,6 +184,7 @@ For an independent or isolated review of inbox ingestion, the Change Reviewer mu
 - no material initiative, risk, decision, dependency, or follow-up was omitted
 - uncertainty, causality, authorship, and source-versus-decision distinctions were preserved
 - each precise claim marker renders, matches `sources` metadata, and points to the source that actually supports the claim
+- delegated or parallel work still provides complete per-source evidence and a reconciled selected-source ledger
 - completion counts match the final pending, processed, destination, and index inventories
 - deterministic validation is reported separately from semantic fidelity
 
@@ -169,7 +198,8 @@ Before claiming faithful ingestion completion, verify that:
 - no substantive section has an implicit or unresolved disposition
 - all mapped meaning is present in explicit canonical destinations
 - all material epistemic and attribution qualifiers are preserved
-- every claim-level source marker has a matching metadata identifier and renderable definition
+- every claim requiring precise source distinction has a matching metadata identifier, renderable marker and definition, and supporting source passage
+- delegated work reconciles exactly once to the original selected-source inventory before batch totals are accepted
 - the cited source actually supports the claim
 - reserved inbox entries are excluded from pending counts
 - all reported counts are recomputed from the final state
