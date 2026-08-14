@@ -6,13 +6,13 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 ## Current next finding
 
-[Verify relative calendar dates before persisting](18-verify-relative-calendar-dates.md) is the current finding. It requires deterministic verification when relevant persistence work converts relative calendar language into an absolute fact.
+[Add one-command synthetic qualification runner](19-add-one-command-qualification-runner.md) is the current finding. It composes the maintained deterministic and OpenCode qualification matrix behind one internal shell entry point, including Finding 17's authentic resume/abort checkpoints and Finding 18's relative-calendar regression coverage.
 
-[Add deterministic resume and abort qualification checkpoints](17-add-resume-abort-qualification-checkpoints.md) is complete. The synthetic-vault interrupted-upgrade plans now have a repository-only harness that creates authentic abortable and resumable installer transactions without adding a public installer mode or fabricating managed state.
+[Verify relative calendar dates before persisting](18-verify-relative-calendar-dates.md) is complete. Relevant persistence work now conditionally loads a deterministic calendar-verification contract, preserves unresolved relative wording instead of inventing absolute dates, distinguishes current-host and source-document reference contexts, and gives Change Reviewer explicit semantic-fidelity coverage for contradictory weekday/date values.
 
-After finding 18 is complete, repeat its affected scenario, execute resume and abort against the selected qualification assets, record the terminal evidence, and finish the synthetic-vault Step 1 signoff gate. A newly discovered `blocker` or `required-v1` finding still preempts that sequence.
+After Finding 19 is complete, execute the complete runner matrix, record the terminal evidence, and finish the synthetic-vault Step 1 signoff gate. A newly discovered `blocker` or `required-v1` finding still preempts that sequence.
 
-[Add one-command synthetic qualification runner](19-add-one-command-qualification-runner.md) is queued after findings 17 and 18. It will compose the maintained deterministic and OpenCode scenarios behind one internal shell entry point.
+[Add deterministic resume and abort qualification checkpoints](17-add-resume-abort-qualification-checkpoints.md) is complete. The synthetic-vault interrupted-upgrade plans have a repository-only harness that creates authentic abortable and resumable installer transactions without adding a public installer mode or fabricating managed state.
 
 [Preserve existing scoped history during ingestion](16-preserve-existing-scoped-history-during-ingestion.md) is complete. Inbox Ingester now has additive-only authority over a qualifying scoped-history update, preserves all pre-existing entries, and hands cleanup or retirement to Project Steward or prior fixture preparation.
 
@@ -22,10 +22,10 @@ The dogfood umbrella remains active regardless of backlog state. New `blocker` o
 
 ## Backlog status
 
-- 2 pending findings
+- 1 pending finding
 - 0 pending blockers
-- 2 pending required-v1 findings
-- 17 completed findings
+- 1 pending required-v1 finding
+- 18 completed findings
 
 ## Findings
 
@@ -48,7 +48,7 @@ The dogfood umbrella remains active regardless of backlog state. New `blocker` o
 | 15 | completed | blocker | next prerelease | [Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) |
 | 16 | completed | required-v1 | release candidate | [Preserve existing scoped history during ingestion](16-preserve-existing-scoped-history-during-ingestion.md) |
 | 17 | completed | required-v1 | release candidate | [Add deterministic resume and abort qualification checkpoints](17-add-resume-abort-qualification-checkpoints.md) |
-| 18 | pending | required-v1 | release candidate | [Verify relative calendar dates before persisting](18-verify-relative-calendar-dates.md) |
+| 18 | completed | required-v1 | release candidate | [Verify relative calendar dates before persisting](18-verify-relative-calendar-dates.md) |
 | 19 | pending | required-v1 | release candidate | [Add one-command synthetic qualification runner](19-add-one-command-qualification-runner.md) |
 
 ## Backlog rules
@@ -60,4 +60,4 @@ The dogfood umbrella remains active regardless of backlog state. New `blocker` o
 - Completed findings remain durable evidence.
 - Only the user may complete the parent dogfood task.
 
-Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 is implemented: every release PR must apply the project-owned semantic-impact assessment and preserve reviewed rationale before accepting its adjacent edge. Finding 14 is implemented: Inbox Ingester required reading uses explicit project-root inbox paths with installed-payload regression coverage. Finding 15 is implemented: Ava Maintenance owns successful terminal finalization directly, with mandatory preconditions and no installer-binary dependency, while all broader deterministic mutation boundaries remain intact. Finding 16 is implemented: ingestion-time scoped-history authority is additive-only, prior entries are preserved, and cleanup or retirement remains outside Inbox Ingester authority. Finding 17 is implemented: the repository-only checkpoint harness executes the exact assembled installer transaction machinery, exposes no public mode, and supplies deterministic authentic setup states for the real `--abort` and `--resume` qualification operations. Finding 18 requires deterministic verification before relevant persistence work converts relative calendar language into absolute project facts. Finding 19 composes the maintained qualification matrix behind one internal shell entry point after finding 18 is complete.
+Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 is implemented: every release PR must apply the project-owned semantic-impact assessment and preserve reviewed rationale before accepting its adjacent edge. Finding 14 is implemented: Inbox Ingester required reading uses explicit project-root inbox paths with installed-payload regression coverage. Finding 15 is implemented: Ava Maintenance owns successful terminal finalization directly, with mandatory preconditions and no installer-binary dependency, while all broader deterministic mutation boundaries remain intact. Finding 16 is implemented: ingestion-time scoped-history authority is additive-only, prior entries are preserved, and cleanup or retirement remains outside Inbox Ingester authority. Finding 17 is implemented: the repository-only checkpoint harness executes the exact assembled installer transaction machinery, exposes no public mode, and supplies deterministic authentic setup states for the real `--abort` and `--resume` qualification operations. Finding 18 is implemented: relevant persistence uses conditional deterministic calendar verification, source-relative dates remain source-anchored, unresolved semantics are preserved or clarified, and contradictory weekday/date persistence is a semantic-fidelity review concern. Finding 19 now composes the maintained qualification matrix behind one internal shell entry point.
