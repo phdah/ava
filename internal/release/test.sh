@@ -21,6 +21,7 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_repository.py" \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/qualification_runner.py" \
+  "$ROOT/internal/release/qualification_postconditions.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/checkpoint.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \
@@ -55,6 +56,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_synthetic_qualification_vault \
   internal.release.tests.test_qualification_checkpoints \
   internal.release.tests.test_qualification_runner \
+  internal.release.tests.test_qualification_postconditions \
   internal.release.tests.test_adjacent_edges \
   internal.release.tests.test_release_catalog \
   internal.release.tests.test_release_catalog_history \
