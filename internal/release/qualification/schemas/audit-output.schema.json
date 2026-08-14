@@ -1,0 +1,28 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "consequence": {"type": "string"},
+          "correction": {"type": "string"},
+          "evidence": {"items": {"minLength": 1, "type": "string"}, "minItems": 1, "type": "array"},
+          "id": {"minLength": 1, "type": "string"},
+          "limitations": {"type": "string"},
+          "remediation_owner": {"enum": ["repository", "release-assets", "fixture", "runner", "agent-behavior", "user-decision"], "type": "string"},
+          "severity": {"enum": ["blocker", "major", "minor", "observation"], "type": "string"},
+          "summary": {"minLength": 1, "type": "string"}
+        },
+        "required": ["id", "severity", "summary", "evidence", "consequence", "correction", "remediation_owner", "limitations"],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "limitations": {"items": {"type": "string"}, "type": "array"},
+    "schema_version": {"const": 1, "type": "integer"},
+    "terminal_conclusion": {"enum": ["pass", "needs-review"], "type": "string"}
+  },
+  "required": ["schema_version", "findings", "limitations", "terminal_conclusion"],
+  "type": "object"
+}

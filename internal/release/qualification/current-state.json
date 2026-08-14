@@ -1,0 +1,18 @@
+{
+  "active_pair": "alpha14-to-alpha15-corrective-local",
+  "pairs": {
+    "alpha13-to-alpha14": {
+      "historical": true,
+      "latest_run_id": null,
+      "status": "not-run",
+      "user_signoff": null
+    },
+    "alpha14-to-alpha15-corrective-local": {
+      "historical": false,
+      "latest_run_id": null,
+      "status": "not-run",
+      "user_signoff": null
+    }
+  },
+  "schema_version": 1
+}
