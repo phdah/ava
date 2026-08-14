@@ -36,7 +36,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-Use the maintained [checkpoint procedure](../internal/release/fixtures/synthetic-qualification-vault/checkpoints.md) to prepare and execute the two affected interrupted-upgrade scenarios against the selected qualification assets. Record their terminal states and run-manifest evidence, then finish the remaining synthetic-vault Step 1 acceptance gate. Do not regenerate the already finalized corpus or images unless qualification exposes a fixture defect.
+Use the maintained [checkpoint procedure](release/fixtures/synthetic-qualification-vault/checkpoints.md) to prepare and execute the two affected interrupted-upgrade scenarios against the selected qualification assets. Record their terminal states and run-manifest evidence, then finish the remaining synthetic-vault Step 1 acceptance gate. Do not regenerate the already finalized corpus or images unless qualification exposes a fixture defect.
 
 ## Official path to `1.0.0`
 
