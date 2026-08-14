@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T11:21:21+02:00
+  at: 2026-08-14T11:40:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -66,9 +66,9 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-The user has completed managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall execution. The remaining lifecycle blocker is deterministic resume and abort checkpoint creation, tracked by [Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md).
+The user has completed managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall execution. [Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete and provides deterministic repository-only setup states for authentic assembled-installer resume and abort execution.
 
-The immediate goal is therefore **resolution of Finding 17, followed by authentic resume and abort execution**.
+The immediate goal is therefore **execute authentic resume and abort against the selected qualification assets, record their terminal evidence, and finish the Step 1 run-manifest/signoff gate**.
 
 ### Operator procedure
 
@@ -79,15 +79,15 @@ QUALIFICATION_ROOT=~/stuff/ava-qualification-vault/
 TEST_PROJECT=~/stuff/project-vault
 ```
 
-1. Materialize all eight isolated qualification variants from the finalized vault:
+1. The eight isolated qualification variants are already materialized for the current run. Do not rematerialize the full vault unless the affected interrupted-upgrade workspaces must be reset. If a clean rematerialization is required by the fixture contract, use:
 
 ```sh
 python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py materialize-variants "$QUALIFICATION_ROOT"
 ```
 
-2. Use the execution plans recorded in the generated variants as the scenario-specific source of truth. Exercise them against the exact assembled Ava revision under qualification. Use `$TEST_PROJECT` as the active manual OpenCode test project where the scenario calls for a working project. At minimum, complete the fresh-install, mature-project, registered-role, pending-inbox, damaged-managed-content, interrupted-upgrade, pending-semantic-reconciliation, and uninstall/reinstall scenarios required by the task.
+2. Use the execution plans recorded in the generated variants as the scenario-specific source of truth. Exercise them against the exact assembled Ava revision under qualification. Use `$TEST_PROJECT` as the active manual OpenCode test project where the scenario calls for a working project.
 
-3. For inbox-ingestion qualification, process the corpus in chronological batches where the execution plan calls for staged ingestion. Copy the direct files from each batch into the project inbox rather than copying the batch directory itself:
+3. The inbox-ingestion and independent semantic-review work for this run is already complete. Preserve its recorded evidence. If a later defect requires repeating ingestion, process direct files from the four chronological batches rather than copying batch directories:
 
 ```text
 01-pre-move
@@ -96,20 +96,41 @@ python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py mater
 04-settled
 ```
 
-For each batch, start from the scenario state defined by the execution plan, run the managed inbox-ingestion flow in a clean OpenCode session, and record the transcript, loaded paths, selected role, role announcement point, source dispositions, and resulting project-owned changes.
+4. Execute the two remaining interrupted-upgrade scenarios with the maintained [checkpoint procedure](../../release/fixtures/synthetic-qualification-vault/checkpoints.md). For each isolated source-installed project, set the exact target asset directory and create the required authentic checkpoint:
 
-4. After ingestion, run an independent semantic review against the expected outcomes in the fixture oracle. Check at minimum:
+```sh
+TARGET_ASSETS=/absolute/path/to/exact/target/assets
 
-- durable versus non-durable disposition
-- private/work routing separation
-- hierarchy and progressive discovery
-- source fidelity and attribution
-- temporal state and supersession, especially around the February move
-- repeated and duplicate facts
-- role routing and conversational follow-up behavior
-- image-derived facts against their declared expected outcomes
+python3 internal/release/fixtures/synthetic-qualification-vault/checkpoint.py \
+  abort \
+  --target "$QUALIFICATION_ROOT/variants/06-interrupted-upgrade-states/abort/project" \
+  --asset-dir "$TARGET_ASSETS"
 
-5. Exercise the remaining lifecycle variants and record deterministic state evidence for damaged managed content, interrupted upgrades, semantic reconciliation, successful agent-driven finalization, uninstall, and reinstall. Preserve before-and-after project-owned hashes so the evidence can prove which files changed.
+sh "$TARGET_ASSETS/ava-install.sh" \
+  --target "$QUALIFICATION_ROOT/variants/06-interrupted-upgrade-states/abort/project" \
+  --asset-dir "$TARGET_ASSETS" \
+  --abort
+```
+
+Require source restoration, transaction cleanup, unchanged project-owned hashes, and normal routing before accepting abort.
+
+Then prepare the isolated resume source state and run:
+
+```sh
+python3 internal/release/fixtures/synthetic-qualification-vault/checkpoint.py \
+  resume \
+  --target "$QUALIFICATION_ROOT/variants/06-interrupted-upgrade-states/resume/project" \
+  --asset-dir "$TARGET_ASSETS"
+
+sh "$TARGET_ASSETS/ava-install.sh" \
+  --target "$QUALIFICATION_ROOT/variants/06-interrupted-upgrade-states/resume/project" \
+  --asset-dir "$TARGET_ASSETS" \
+  --resume
+```
+
+Require deterministic target completion or the target edge's authentic semantic stage, transaction-state consistency, unchanged project-owned hashes, and the expected routing state. The checkpoint JSON proves only authentic setup state and must not be recorded as if the recovery operation itself already passed.
+
+5. Preserve deterministic state evidence for all lifecycle variants, including the already completed managed-content damage, semantic reconciliation, successful agent-driven finalization, rollback, uninstall, and reinstall results. Preserve before-and-after project-owned hashes so the evidence can prove which files changed.
 
 6. Populate the run manifest for every accepted scenario with the exact Ava version, source revision, asset identity, host/model/session identity, project-owned hashes, installer and conformance output, transcript, expected outcome, actual outcome, reviewer, and linked finding.
 

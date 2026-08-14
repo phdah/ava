@@ -5,6 +5,7 @@ ROOT=$(CDPATH= cd "$(dirname "$0")/../.." && pwd)
 export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
 cd "$ROOT"
 
+sh "$ROOT/internal/release/validate-boundaries.sh"
 sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
 python3 -m py_compile \
@@ -18,7 +19,7 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_common.py" \
   "$ROOT/internal/release/conformance_repository.py" \
   "$ROOT/internal/release/conformance_installed.py" \
-  "$ROOT/internal/release/conformance_release.py" \
+  "$ROOT/internal/release/fixtures/synthetic-qualification-vault/checkpoint.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \
   "$ROOT/internal/release/validate_pr_title.py" \
@@ -49,6 +50,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_inbox_scoped_history \
   internal.release.tests.test_ava_maintenance \
   internal.release.tests.test_synthetic_qualification_vault \
+  internal.release.tests.test_qualification_checkpoints \
   internal.release.tests.test_adjacent_edges \
   internal.release.tests.test_release_catalog \
   internal.release.tests.test_release_catalog_history \

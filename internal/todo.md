@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T11:21:21+02:00
+  at: 2026-08-14T11:40:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -21,13 +21,13 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 [V1 release qualification](todo/05-release-qualification/) is active.
 
-[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There is currently 1 pending dogfood finding, 0 pending blockers, and 1 pending `required-v1` finding.
+[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There are currently 0 pending dogfood findings, 0 pending blockers, and 0 pending `required-v1` findings.
 
 ## Official next action
 
-**Resolve Finding 17: add deterministic resume and abort qualification checkpoints.**
+**Execute the authentic resume and abort synthetic-vault scenarios and finish the remaining Step 1 evidence gate.**
 
-The user finalized and verified the 305-file synthetic corpus, materialized all eight qualification families, and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall scenarios. Resume and abort remain unexercised because the generated plans reference a maintained deterministic checkpoint harness that was never implemented.
+[Finding 17](todo/05-release-qualification/dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete. The repository-only checkpoint harness now creates authentic installer-owned setup states for the real assembled `--resume` and `--abort` operations without adding a public installer mode or fabricating managed state.
 
 Use these user-owned local paths for the current qualification run:
 
@@ -36,7 +36,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-Implement the bounded [Finding 17](todo/05-release-qualification/dogfood/17-add-resume-abort-qualification-checkpoints.md) harness and executable coverage without adding a public installer mode or fabricating managed state. After the finding is complete, execute the affected resume and abort scenarios and return to the remaining Step 1 evidence and signoff gate.
+Use the maintained [checkpoint procedure](release/fixtures/synthetic-qualification-vault/checkpoints.md) to prepare and execute the two affected interrupted-upgrade scenarios against the selected qualification assets. Record their terminal states and run-manifest evidence, then finish the remaining synthetic-vault Step 1 acceptance gate. Do not regenerate the already finalized corpus or images unless qualification exposes a fixture defect.
 
 ## Official path to `1.0.0`
 
