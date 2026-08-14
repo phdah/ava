@@ -6,6 +6,9 @@ tags: [internal, release, qualification, automation, evidence, opencode]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T16:27:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-14T16:27:00+02:00
 ---
 
 # Purpose
@@ -39,6 +42,14 @@ Use `--run-root-parent /absolute/external/path` to choose the parent for raw exe
 
 `--source-assets` is accepted only when the checked-in source selector is `local`. Supplying it for the current published source is an error.
 
+The shell entry point routes OpenCode through `qualification-opencode.sh` so session discovery can include task/delegation children that the normal OpenCode session-list presentation does not expose. To use a non-default OpenCode executable, set it explicitly before the command:
+
+```sh
+AVA_QUALIFICATION_OPENCODE=/absolute/path/to/opencode \
+  internal/release/qualify-release.sh \
+  --target-assets /absolute/path/to/v1.0.0-alpha.15/assets
+```
+
 Validate only the checked-in control state, schemas, and pinned image bytes with:
 
 ```sh
@@ -70,23 +81,31 @@ The execution identity binds:
 - pinned-image manifest and per-image digests
 - fixture generator digest and generated fixture inventory digest
 - qualification matrix digest
-- Ava repository revision
+- Ava repository revision, which also binds the session-discovery adapter
 - runner and automation digests
 - OpenCode version
 - qualification and audit model identifiers
 
 Runner state is namespaced by that execution-identity digest. A changed release asset, fixture, image set, matrix, repository revision, runner, automation, OpenCode version, or model therefore cannot reuse a retained passing scenario from an earlier identity.
 
-# Qualification and audit
+# Qualification and complete session inventory
 
-The operation runs the existing synthetic runner preflight, then the complete maintained matrix. It snapshots OpenCode sessions before and after execution, reconciles direct session IDs from runner command evidence, follows parent relationships to nested sessions, exports every relevant session, and records scenario, prompt digest, model, project root, transcript digest, parent, and terminal state.
+The operation runs the existing synthetic runner preflight, then the complete maintained matrix.
 
-When session evidence exists, a fresh OpenCode session runs the maintained independent audit. The audit is read-only and checks routing, required-reading order, authority, mutation boundaries, source fidelity, calendar behavior, inbox reconciliation, semantic reconciliation, finalization, lifecycle preservation, errors and retries, nested sessions, superseded attempts, and whether runner assertions support the terminal claims.
+Session snapshots use `qualification-opencode.sh`. For the exact `session list --format json` operation used by the orchestrator, the adapter queries OpenCode's session database directly for `id`, `parent_id`, and `directory`, including both roots and nested task/delegation sessions without the root-session presentation filter. Every other command, including `run`, `export`, and `--version`, is forwarded unchanged to the selected OpenCode executable.
 
-A `blocker` or `major` audit finding produces nonzero status and `needs-review`. Any mechanical failure, incomplete runner outcome, invalid session inventory, or invalid audit also produces nonzero status. A mechanically successful all-pass run with a valid audit records `awaiting-user-signoff`, never automatic acceptance.
+The orchestrator snapshots that complete session relation before and after execution, reconciles direct session IDs from runner command evidence, follows parent relationships recursively, exports every relevant new session, and records scenario, prompt digest, model, project root, transcript digest, parent, and terminal state. A successful runner with an incomplete or unbindable session inventory is a mechanical failure.
+
+# Independent audit
+
+When session evidence exists, a fresh OpenCode session runs the maintained independent audit. The audit receives the exact inventory boundary and reads each listed session through the same adapter using `export <session_id>`. Each export must match the transcript digest in the inventory.
+
+The audit is read-only and checks routing, required-reading order, authority, mutation boundaries, source fidelity, calendar behavior, inbox reconciliation, semantic reconciliation, finalization, lifecycle preservation, errors and retries, nested sessions, superseded attempts, and whether runner assertions support the terminal claims.
+
+A `blocker` or `major` audit finding produces nonzero status and `needs-review`. Any mechanical failure, incomplete runner outcome, invalid session inventory, invalid transcript binding, or invalid audit also produces nonzero status. A mechanically successful all-pass run with a valid audit records `awaiting-user-signoff`, never automatic acceptance.
 
 # Evidence and review
 
-Raw release assets, generated corpus copies, isolated workspaces, command output, and full transcripts remain in the external run root. Compact records are written under `internal/release/qualification/runs/` and `current-state.json` is updated only after execution and audit are complete.
+Raw release assets, generated corpus copies, isolated workspaces, command output, and full transcripts remain in the external run root or OpenCode session storage. Compact records are written under `internal/release/qualification/runs/` and `current-state.json` is updated only after execution and audit are complete.
 
 The operation never runs `git commit`. Review the uncommitted evidence, investigate any `failed` or `needs-review` result, and obtain explicit user signoff before a successful pair may become `accepted` or advance a release gate.
