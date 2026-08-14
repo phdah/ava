@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-08-15
+
+- **Semantic inspection postconditions**: Added fixture-declared project-path accounting for semantic reconciliation and a deterministic post-run gate that changes otherwise passing scenarios to failure when required inspected or changed paths are missing, duplicated, or unresolved.
+
 ## 2026-08-14
 
 - **Pinned synthetic image inputs**: Imported the five visually accepted fictional qualification PNGs into the repository-only fixture with an exact manifest and maintained copy command. Clean generated vaults no longer depend on user-local image bytes, while assembly regression coverage keeps every pinned image out of Ava release assets and installed projects.
