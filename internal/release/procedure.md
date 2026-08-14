@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T13:34:00+02:00
+  at: 2026-08-14T16:27:00+02:00
 ---
 
 # Ava Release Publication Procedure
@@ -109,6 +109,27 @@ Those projections are generated output, not authored release state. Their migrat
 
 Published tags, manifests, assets, checksums, and attestations are immutable. Historical installers may continue to read the representation published with their release. Repository-local cumulative alpha.10 through alpha.12 guidance remains archival and cannot be selected unless referenced by its owning release edge.
 
+## Hands-off qualification evidence
+
+Release qualification that requires the synthetic OpenCode matrix uses [Hands-Off Release Qualification and Evidence State](qualification-automation.md), not a manually reconstructed sequence of fixture generation, runner commands, transcript collection, and semantic audit.
+
+Before such a run, maintain the reviewed exact pair in `internal/release/qualification/pair-catalog.json` and select it through `config.json`. Published sides must contain exact immutable release identity and asset digests. A local side names the exact expected version and tag but receives its revision and asset digests from the caller-supplied release directory at execution time.
+
+For the current corrective-alpha gate:
+
+```sh
+internal/release/qualify-release.sh \
+  --target-assets /absolute/path/to/v1.0.0-alpha.15/assets
+```
+
+The operation must acquire or validate the exact release inputs, verify the pinned five-image fixture identity, generate a clean repository-external qualification vault, run the maintained matrix, inventory all top-level and nested OpenCode sessions, execute the independent audit in a fresh session, and write compact uncommitted evidence under `internal/release/qualification/`.
+
+A mechanical failure or incomplete matrix produces `failed`. A blocking or major audit finding produces `needs-review`. A clean result produces only `awaiting-user-signoff`. It never grants publication authority or marks a pair `accepted` automatically.
+
+When qualification is against an assembled but unpublished target, acceptance proves only the reviewed local asset set. After publication, update the pair catalog to the immutable published identity and repeat any gate that explicitly requires published-asset evidence. Historical pair records and prior run evidence cannot substitute for the new release identity.
+
+The lower-level `qualify-synthetic.sh` runner remains available for diagnosis and implementation work, but it is not the normal release operator entry point once the hands-off path applies.
+
 ## Publication
 
 After the release PR is merged, automation:
@@ -135,3 +156,5 @@ The first release after this change must prove:
 - semantic compatibility lag receives outstanding guidance exactly once
 - project-owned files remain unchanged until the Upgrade Role applies required guidance
 - the installed journal preserves the composed semantic decision and exact guidance paths
+- any required synthetic or realistic OpenCode evidence is bound to the immutable published release identity through the hands-off qualification state
+- independent audit evidence is accepted explicitly before that evidence advances a user-owned release gate
