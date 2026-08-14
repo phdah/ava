@@ -59,6 +59,25 @@ class QualificationOpenCodeAdapterTests(unittest.TestCase):
         self.assertIn("db --format json", call)
         self.assertIn("parent_id AS parentID", call)
 
+    def test_run_separates_yaml_frontmatter_prompt_from_options(self) -> None:
+        prompt = "---\ntype: Internal Release Qualification Audit\n---\nAudit this run."
+        result = self.run_adapter(
+            "run",
+            "--dir",
+            "/tmp/root",
+            "--model",
+            "openai/gpt-5.6-sol",
+            "--format",
+            "json",
+            "--title",
+            "Ava qualification independent audit",
+            prompt,
+        )
+        self.assertEqual(result.stdout.strip(), "forwarded")
+        call = self.log.read_text(encoding="utf-8")
+        self.assertIn("--title Ava qualification independent audit -- ---", call)
+        self.assertIn("type: Internal Release Qualification Audit", call)
+
     def test_non_inventory_commands_are_forwarded_unchanged(self) -> None:
         result = self.run_adapter("export", "ses_root123")
         self.assertEqual(json.loads(result.stdout), {"session": "exported"})
