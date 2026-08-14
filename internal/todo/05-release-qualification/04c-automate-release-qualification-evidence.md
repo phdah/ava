@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Automate Release Qualification and Evidence State
 description: Add one repository-only maintainer operation that acquires exact release inputs, prepares the synthetic fixture, runs qualification, audits every spawned OpenCode session, and records durable release-state evidence.
 tags: [internal, roadmap, release, qualification, automation, evidence, opencode]
-status: pending
+status: complete
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 4.3
@@ -12,6 +12,9 @@ blocks: next-qualification-run
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T15:39:53+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-14T16:27:00+02:00
 ---
 
 # Automate Release Qualification and Evidence State
@@ -44,9 +47,9 @@ This is internal release tooling. It must not create a distributed Ava CLI, pers
 
 ## State model
 
-Add a repository-owned internal qualification state scope that separates configuration, release-pair history, and immutable run records.
+The repository-owned internal qualification state scope separates configuration, release-pair history, and immutable run records.
 
-The checked-in state must represent at least:
+The checked-in state represents:
 
 - schema version
 - active source and target pair
@@ -57,43 +60,43 @@ The checked-in state must represent at least:
 - pinned qualification-image manifest and per-image digests
 - fixture generator revision and deterministic inventory digest
 - qualification matrix digest
-- runner and repository revision
+- runner, automation, and repository revision
 - latest run identifier for each release pair
 - pair status: `not-run`, `running`, `failed`, `needs-review`, `awaiting-user-signoff`, `accepted`, or `rejected`
 - explicit user signoff identity and time only after a later user-owned acceptance step
 
-Every retained scenario outcome must be bound to the complete execution identity. Passing work may be reused only when source assets, target assets, image set, fixture inventory, matrix, repository revision, OpenCode version, and both model identifiers still match.
+Every retained scenario outcome is bound to the complete execution identity. Passing work may be reused only when source assets, target assets, image set, fixture inventory, matrix, repository revision, OpenCode version, runner and automation bytes, and both model identifiers still match.
 
-Changing the active pair or any bound execution identity must not relabel or reuse evidence from an earlier pair.
+Changing the active pair or any bound execution identity cannot relabel or reuse evidence from an earlier pair.
 
 ## Hands-off procedure
 
-Implement one thin POSIX shell entry point backed by repository-only Python orchestration where structured state or process control requires it.
+The implementation provides one thin POSIX shell entry point backed by repository-only Python orchestration.
 
-The operation must:
+The operation:
 
-1. Require a clean Ava checkout before starting and load the checked-in active pair and model state.
-2. Create an isolated run root outside the repository with separate asset, fixture, execution, transcript, audit, and temporary-test-project paths.
-3. For a published side, download the exact tag's seven assets with `gh`, verify immutable-release attestations, reject mutable aliases, and verify every checksum and manifest identity.
-4. For a local side, resolve the exact supplied directory and apply the same normal-file, checksum, identity, and edge validation without claiming publication or attestation evidence.
-5. Verify the committed pinned qualification-image manifest and every image digest, size, media type, and destination.
-6. Invoke `internal/release/generate-synthetic-qualification-vault.sh` with its `TMPDIR` set to the isolated run's fixture parent, then retain the output path it reports.
-7. Require the wrapper to complete clean deterministic generation, exact committed-image verification and placement, image finalization, complete fixture verification, and variant materialization before continuing.
-8. Create a deterministic repository-external test-project boundary instead of depending on a user-owned project path.
-9. Run mutation-free qualification preflight and then the complete maintained qualification matrix with the checked-in qualification model.
-10. Preserve complete runner evidence long enough for audit and user signoff. Never delete failed or `needs-review` evidence automatically.
-11. Emit a machine-readable session inventory that binds every top-level OpenCode session and nested task session to its scenario, prompt digest, model, project root, transcript digest, and terminal state.
-12. Start a fresh OpenCode audit session with the checked-in audit model and a maintained audit prompt. Require read-only review of routing, required-reading order, authority, mutations, source fidelity, lifecycle behavior, errors, final claims, and runner acceptance gaps.
-13. Validate the audit against a maintained output schema with admitted finding severity, evidence, consequence, correction, remediation owner, limitations, and terminal conclusion.
-14. Return nonzero for mechanical failure, incomplete scenarios, unresolved required decisions, invalid audit output, or any admitted blocking or major audit finding.
-15. Write the compact run manifest, audit report, issue inventory, raw-evidence digests, and updated pair state into the repository only after external execution and audit are complete.
-16. Leave the repository changes uncommitted for maintainer and user review.
+1. Requires a clean Ava checkout before starting and loads the checked-in active pair and model state.
+2. Creates an isolated run root outside the repository with separate asset, fixture, execution, transcript, audit, and temporary-test-project paths.
+3. For a published side, downloads the exact tag's seven assets with `gh`, verifies immutable-release attestations, rejects mutable aliases, and verifies every checksum and manifest identity.
+4. For a local side, resolves the exact supplied directory and applies the same normal-file, checksum, identity, and edge validation without claiming publication or attestation evidence.
+5. Verifies the committed pinned qualification-image manifest and every image digest, size, media type, dimension, and destination.
+6. Invokes `internal/release/generate-synthetic-qualification-vault.sh` with `TMPDIR` set to the isolated run's fixture parent and retains the exact output path it reports.
+7. Requires the wrapper to complete clean deterministic generation, exact committed-image placement, image finalization, complete fixture verification, and variant materialization before continuing.
+8. Creates a deterministic repository-external test-project boundary instead of depending on a user-owned project path.
+9. Runs mutation-free qualification preflight and then the complete maintained qualification matrix with the checked-in qualification model.
+10. Preserves complete runner evidence long enough for audit and user signoff and never deletes failed or `needs-review` evidence automatically.
+11. Emits a machine-readable session inventory that binds every top-level OpenCode session and nested task session to its scenario, prompt digest, model, project root, transcript digest, parent, and terminal state.
+12. Starts a fresh OpenCode audit session with the checked-in audit model and maintained audit prompt.
+13. Validates the audit against the maintained output schema with admitted severity, evidence, consequence, correction, remediation owner, limitations, and terminal conclusion.
+14. Returns nonzero for mechanical failure, incomplete scenarios, unresolved required decisions, invalid audit output, or any admitted blocking or major audit finding.
+15. Writes the compact run manifest, audit report, issue inventory, raw-evidence digest, and updated pair state into the repository only after external execution and audit are complete.
+16. Leaves repository evidence changes uncommitted for maintainer and user review.
 
 ## Audit contract
 
-The automated audit must not be the same conversational session that performed qualification work. It must receive only the run identity, maintained audit instructions, session inventory, runner evidence paths, applicable release contracts, and fixture oracle needed for the declared audit scope.
+The automated audit is not the same conversational session that performed qualification work. It receives only the run identity, maintained audit instructions, session inventory, runner evidence paths, applicable release contracts, and fixture oracle needed for the declared audit scope.
 
-At minimum, the audit must determine:
+At minimum, the audit determines:
 
 - whether every required role was announced only after complete required reading
 - whether a missing or invalid required path was guessed around rather than treated according to the active contract
@@ -107,81 +110,76 @@ At minimum, the audit must determine:
 - whether command errors, retries, missing tools, nested sessions, or superseded attempts weaken the claimed evidence
 - whether runner pass criteria are strong enough to support each terminal claim
 
-The audit report is advisory evidence. The orchestrator may use its validated severity to select `needs-review`, but it must not apply remediation or create roadmap findings automatically.
+The audit report is advisory evidence. The orchestrator uses its validated severity to select `needs-review`, but it does not apply remediation or create roadmap findings automatically.
 
 ## Repository evidence
 
-Keep durable records small and reviewable. A run record should contain or link to:
+Compact run records contain or link to:
 
 - source and target identity
 - all bound execution inputs and digests
 - fixture and image identities
 - model and OpenCode versions
-- scenario outcomes
+- scenario outcomes through the bound runner summary
 - session inventory
 - independent audit report
 - structured issues
-- conformance and run-manifest results
-- external raw-evidence location and archive digest when retained
+- external raw-evidence location and digest
 - final automated state
 - later user signoff state
 
-Do not commit generated raw corpus files, copied corpus images, release asset archives, isolated projects, complete JSONL transcripts, provider credentials, or unrelated OpenCode session data. The five canonical pinned image inputs under the internal fixture are the only image-file exception.
+Generated raw corpus files, copied corpus images, release asset archives, isolated projects, complete JSONL transcripts, provider credentials, and unrelated OpenCode session data remain outside the repository. The five canonical pinned image inputs under the internal fixture are the only image-file exception.
 
 ## Failure and rerun policy
 
 - Preserve a failed or `needs-review` external workspace for diagnosis.
 - A corrected rerun receives a new run identifier and does not overwrite prior compact evidence.
 - Reuse passing scenarios only under the complete bound execution identity.
-- A changed pair, release digest, fixture digest, matrix digest, model, OpenCode version, repository revision, or audit contract starts a new execution identity.
+- A changed pair, release digest, fixture digest, matrix digest, model, OpenCode version, repository revision, runner, automation, audit contract, or pinned-image identity starts a new execution identity.
 - Interactive approval, clarification, or semantic judgment that cannot be resolved from checked-in approved state becomes a recorded nonzero result.
 - Never convert a failed or audited `needs-review` run into `awaiting-user-signoff` by editing only the summary state.
 
-## Implementation plan
+## Implementation
 
-1. Define and validate the internal qualification configuration, release-pair catalog, run-record, session-inventory, audit-output, and current-state schemas.
-2. Add the checked-in alpha.13-to-alpha.14 historical pair and separate qualification/audit model fields.
-3. Validate the committed pinned qualification-image manifest and exact source-to-corpus placement contract.
-4. Implement published and local release-asset resolution with strict identity, attestation, checksum, edge, and boundary checks.
-5. Compose `internal/release/generate-synthetic-qualification-vault.sh` and temporary test-project creation without duplicating the maintained fixture lifecycle in the orchestrator.
-6. Harden runner ownership and rerun state so retained scenarios are bound to the complete execution identity.
-7. Add complete top-level and nested OpenCode session inventory capture.
-8. Implement the fresh-session audit prompt, output schema, validation, and severity gate.
-9. Write compact repository evidence and current pair state without committing.
-10. Update the internal release procedure and V1 operator path to use the automated entry point.
+The completed implementation is centered on:
 
-## Test requirements
+- `internal/release/qualify-release.sh`
+- `internal/release/qualification_automation.py`
+- `internal/release/qualification-automation.md`
+- `internal/release/qualification/`
+- `internal/release/tests/test_qualification_automation.py`
 
-Automated tests must not require GitHub network access, model credentials, image generation, or a complete OpenCode qualification run.
+The checked-in pair catalog begins with historical `v1.0.0-alpha.13 -> v1.0.0-alpha.14` and keeps it distinct from the active corrective pair. The active pair is immutable published `v1.0.0-alpha.14 -> exact local v1.0.0-alpha.15`, so a caller must supply the exact local target asset directory until that corrective release is published.
 
-Use local fakes and fixtures to cover:
+`qualification_model` and `audit_model` are separate checked-in fields and both currently resolve to `openai/gpt-5.6-sol`.
 
-- exact published-tag selection and mutable-alias refusal
-- attestation and checksum failure
-- published and local asset identity
-- pinned image manifest identity, byte integrity, and five-file placement
-- one-command deterministic fixture generation composition through `internal/release/generate-synthetic-qualification-vault.sh`
-- complete execution-identity binding and safe scenario reuse
-- changed asset, model, matrix, repository, OpenCode, fixture, or image identity refusing retained outcomes
-- top-level and nested session inventory completeness
-- audit schema validation and severity exit behavior
-- compact evidence writing without raw-data leakage
-- `awaiting-user-signoff` versus `needs-review` state transitions
-- no automatic Git commit or dogfood finding creation
-- exclusion of all internal automation, configuration, and evidence from assembled release assets
+## Test coverage
 
-## Completion criteria
+The bounded repository test suite covers without network or model credentials:
 
-- one documented internal command performs the approved hands-off procedure without user interaction
-- the command supports exact published and exact local source/target assets
-- published release assets receive immutable attestation and checksum verification, and committed pinned images receive exact manifest verification
-- a clean fixture, finalized image inventory, variants, test boundary, qualification run, session audit, and compact evidence record are produced in one operation
-- every retained result is cryptographically and semantically bound to its complete execution identity
-- the audit runs in a fresh session, accounts for nested sessions, and validates against a maintained schema
-- blocking or major audit findings produce nonzero status and `needs-review`
-- a clean result produces `awaiting-user-signoff`, never automatic acceptance
-- alpha.13-to-alpha.14 appears as historical pair state without being reused for another release
-- raw release assets, generated corpus copies, workspaces, and transcripts remain outside the repository; only the five canonical internal fixture images are committed
-- generated compact evidence remains uncommitted
-- repository tests, boundary validation, and internal release tests pass
-- the V1 operator path names the automated operation as the required next qualification entry point
+- checked-in pair/config/state consistency
+- mutable-release alias refusal
+- local asset checksum and identity validation
+- published release immutable-attestation failure handling through fakes
+- exact five-image pinned manifest verification
+- use of the maintained fixture-generation wrapper as one operation
+- complete execution-identity namespacing
+- top-level and nested OpenCode session inventory
+- audit-output schema validation and severity gating
+- compact evidence writing with user signoff left unset
+- absence of automatic Git commits or dogfood finding creation
+- syntax and compile coverage from `internal/release/test.sh`
+- repository boundary validation keeping the entire automation and evidence scope internal
+
+## Completion
+
+Implementation is complete. The required supporting task no longer preempts Step 1.
+
+The normal next operator action is now:
+
+```sh
+internal/release/qualify-release.sh \
+  --target-assets /absolute/path/to/v1.0.0-alpha.15/assets
+```
+
+That execution is release qualification evidence, not unfinished implementation work. A clean automated run must end at `awaiting-user-signoff`; explicit evidence acceptance remains a separate Step 1 gate before the release path advances.
