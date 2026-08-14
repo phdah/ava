@@ -22,16 +22,4 @@ jobs:
           python-version: "3.11"
 
       - name: Run release qualification
-        shell: bash
-        run: |
-          set -o pipefail
-          log_file=$(mktemp)
-          set +e
-          internal/release/test.sh 2>&1 | tee "$log_file"
-          status=${PIPESTATUS[0]}
-          set -e
-          if [ "$status" -ne 0 ]; then
-            details=$(tail -n 12 "$log_file" | tr '\n' ' ' | sed 's/%/%25/g; s/\r/%0D/g; s/\n/%0A/g')
-            echo "::error title=Release qualification failed::$details"
-          fi
-          exit "$status"
+        run: internal/release/test.sh
