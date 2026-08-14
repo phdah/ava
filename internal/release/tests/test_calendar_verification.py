@@ -102,17 +102,16 @@ class CalendarVerificationTests(unittest.TestCase):
         self.assertIsNone(case["expected_absolute"])
         self.assertEqual(case["expected_action"], "preserve-or-clarify")
 
-    def test_contract_requires_reference_context_and_deterministic_verification(self) -> None:
-        self.assertIn("# Reference context", self.contract)
-        self.assertIn("# Deterministic verification", self.contract)
-        self.assertIn("host-provided current local date, time, and timezone", self.contract)
-        self.assertIn("source-document reference date or instant", self.contract)
-        self.assertIn("available deterministic calendar, date, or time operation", self.contract)
-        self.assertIn("Do not rely on unaided mental date arithmetic", self.contract)
-        self.assertIn("2026-08-14", self.contract)
-        self.assertIn("2026-08-15", self.contract)
-        self.assertIn("Preserve the relative wording or request clarification", self.contract)
-        self.assertIn("leap years and leap day", self.contract)
+    def test_contract_requires_only_the_calendar_verification_invariant(self) -> None:
+        self.assertIn("persist a calendar value derived", self.contract)
+        self.assertIn("establish the reference date, time, or source context", self.contract)
+        self.assertIn("available deterministic date or calendar operation", self.contract)
+        self.assertIn("weekday/date agreement or week number", self.contract)
+        self.assertIn("Do not rely on mental calendar arithmetic", self.contract)
+        self.assertIn("preserve the original wording or ask for clarification", self.contract)
+        self.assertIn("Source-relative wording must remain anchored to its source context", self.contract)
+        self.assertNotIn("2026-08-14", self.contract)
+        self.assertNotIn("2026-08-15", self.contract)
 
     def test_calendar_contract_is_discoverable_but_not_global(self) -> None:
         self.assertIn("[Calendar verification](calendar-verification.md)", self.shared_index)
@@ -130,7 +129,7 @@ class CalendarVerificationTests(unittest.TestCase):
         self.assertNotIn("calendar-verification", required)
         self.assertIn("calendar-verification", additional)
         self.assertIn("contradictory weekday and date", additional)
-        self.assertIn("semantic fidelity defect", self.contract)
+        self.assertIn("semantic-fidelity defect", self.contract)
         self.assertEqual(
             self.cases["contradictory-weekday-date-review"]["expected_action"],
             "semantic-fidelity-finding",
@@ -141,7 +140,7 @@ class CalendarVerificationTests(unittest.TestCase):
         contract_destination = "/.ava/base/shared/instructions/calendar-verification.md"
         self.assertIn(contract_destination, payloads)
         self.assertIn(
-            "Do not perform calendar conversion merely because a date appears in a request",
+            "Use this instruction only when a task would persist a calendar value derived",
             payloads[contract_destination].data.decode("utf-8"),
         )
         self.assertNotIn("calendar-verification", payloads["/AGENTS.md"].data.decode("utf-8"))
