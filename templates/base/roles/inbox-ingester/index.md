@@ -18,6 +18,8 @@ Before acting, read every file under **Required reading** in the listed order.
 
 ## Additional context
 
+Read [Calendar verification](../../shared/instructions/calendar-verification.md) when ingestion would convert source-relative calendar language into a durable absolute project fact. Resolve it against the source-established reference context rather than the current session, and do not load the contract for unrelated ingestion.
+
 Read the project-root `./AGENTS.md`, the managed [`roles/index.md`](../index.md), and only the nearest project indexes and trusted documents needed to classify the selected source.
 
 Do not scan the complete project or load unrelated role context by default.
