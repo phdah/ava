@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T16:33:00+02:00
+  at: 2026-08-14T11:21:21+02:00
 ---
 
 # V1 Release Operator Path
@@ -53,9 +53,9 @@ Current subphase status:
 - [x] deterministic corpus generated locally
 - [x] five specified images generated locally and visually accepted by the user
 - [x] image finalization and finalized-corpus verification recorded
-- [ ] qualification variants materialized
-- [ ] clean OpenCode ingestion and routing evidence completed
-- [ ] independent semantic review and expected-outcome checks completed
+- [x] qualification variants materialized
+- [x] clean OpenCode ingestion and routing evidence completed
+- [x] independent semantic review and expected-outcome checks completed
 - [ ] upgrade, recovery, finalization, and lifecycle scenarios completed
 - [ ] run manifests validated and qualification evidence accepted
 
@@ -66,7 +66,9 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-The immediate goal is therefore **execution of the finalized corpus through real ingestion and qualification**.
+The user has completed managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall execution. The remaining lifecycle blocker is deterministic resume and abort checkpoint creation, tracked by [Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md).
+
+The immediate goal is therefore **resolution of Finding 17, followed by authentic resume and abort execution**.
 
 ### Operator procedure
 

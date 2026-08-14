@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-13T14:46:00+02:00
+  at: 2026-08-14T11:21:21+02:00
 ---
 
 # Ava Internal To-Do List
@@ -21,13 +21,13 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 [V1 release qualification](todo/05-release-qualification/) is active.
 
-[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There are currently 0 pending dogfood findings, 0 pending blockers, and 0 pending `required-v1` findings. Finding 16 is implementation-complete; its published-prerelease exercise remains later qualification evidence rather than pending repository work.
+[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There is currently 1 pending dogfood finding, 0 pending blockers, and 1 pending `required-v1` finding.
 
 ## Official next action
 
-**Resume Step 1: materialize and exercise the synthetic v1 qualification variants.**
+**Resolve Finding 17: add deterministic resume and abort qualification checkpoints.**
 
-The synthetic corpus and all five specified images have been generated in a repository-external local directory and were visually accepted by the user on 2026-08-10. Image finalization and finalized-corpus verification have also been completed and recorded locally. The repository records that user-confirmed external progress without claiming direct access to the local artifacts.
+The user finalized and verified the 305-file synthetic corpus, materialized all eight qualification families, and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall scenarios. Resume and abort remain unexercised because the generated plans reference a maintained deterministic checkpoint harness that was never implemented.
 
 Use these user-owned local paths for the current qualification run:
 
@@ -36,16 +36,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-Continue the execution sequence defined in the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification):
-
-1. materialize the eight qualification variants from `~/stuff/ava-qualification-vault/`
-2. use `~/stuff/project-vault` as the active test project for the manual OpenCode qualification flow where the scenario calls for a working project
-3. exercise the variants against the exact Ava revision under qualification
-4. complete clean OpenCode inbox ingestion in the required chronological batches
-5. perform independent semantic review and the routing, hierarchy, fidelity, scoped-history, recovery, upgrade, and finalization checks required by the fixtures
-6. populate and validate the resulting run manifests and validate repository boundaries after any repository-side evidence updates
-
-Do not regenerate, re-finalize, or re-verify the corpus or images unless later validation exposes a fixture defect or invalid local evidence. Advance when the [synthetic qualification task](todo/05-release-qualification/04a-build-synthetic-qualification-vault.md) meets its external ingestion, review, execution-evidence, and completion criteria.
+Implement the bounded [Finding 17](todo/05-release-qualification/dogfood/17-add-resume-abort-qualification-checkpoints.md) harness and executable coverage without adding a public installer mode or fabricating managed state. After the finding is complete, execute the affected resume and abort scenarios and return to the remaining Step 1 evidence and signoff gate.
 
 ## Official path to `1.0.0`
 

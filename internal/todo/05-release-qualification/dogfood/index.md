@@ -6,7 +6,9 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 ## Current next finding
 
-There is no pending dogfood finding. The bounded repository work for findings 01 through 16 is complete, so the V1 release operator path resumes with synthetic-vault qualification.
+[Add deterministic resume and abort qualification checkpoints](17-add-resume-abort-qualification-checkpoints.md) is the current finding. The synthetic-vault plans require authentic abortable and resumable transactions, but the referenced maintained checkpoint harness does not exist.
+
+Finding 17 is `required-v1` and preempts completion of synthetic-vault qualification until the bounded repository harness, executable coverage, and boundary validation are complete.
 
 [Preserve existing scoped history during ingestion](16-preserve-existing-scoped-history-during-ingestion.md) is complete. Inbox Ingester now has additive-only authority over a qualifying scoped-history update, preserves all pre-existing entries, and hands cleanup or retirement to Project Steward or prior fixture preparation.
 
@@ -22,9 +24,9 @@ The dogfood umbrella remains active regardless of backlog state. New `blocker` o
 
 ## Backlog status
 
-- 0 pending findings
+- 1 pending finding
 - 0 pending blockers
-- 0 pending required-v1 findings
+- 1 pending required-v1 finding
 - 16 completed findings
 
 ## Findings
@@ -47,6 +49,7 @@ The dogfood umbrella remains active regardless of backlog state. New `blocker` o
 | 14 | completed | blocker | next prerelease | [Repair Inbox Ingester project-root links](14-repair-inbox-ingester-project-root-links.md) |
 | 15 | completed | blocker | next prerelease | [Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) |
 | 16 | completed | required-v1 | release candidate | [Preserve existing scoped history during ingestion](16-preserve-existing-scoped-history-during-ingestion.md) |
+| 17 | pending | required-v1 | release candidate | [Add deterministic resume and abort qualification checkpoints](17-add-resume-abort-qualification-checkpoints.md) |
 
 ## Backlog rules
 
@@ -57,4 +60,4 @@ The dogfood umbrella remains active regardless of backlog state. New `blocker` o
 - Completed findings remain durable evidence.
 - Only the user may complete the parent dogfood task.
 
-Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 is implemented: every release PR must apply the project-owned semantic-impact assessment and preserve reviewed rationale before accepting its adjacent edge. Finding 14 is implemented: Inbox Ingester required reading uses explicit project-root inbox paths with installed-payload regression coverage. Finding 15 is implemented: Ava Maintenance owns successful terminal finalization directly, with mandatory preconditions and no installer-binary dependency, while all broader deterministic mutation boundaries remain intact. Finding 16 is implemented: ingestion-time scoped-history authority is additive-only, prior entries are preserved, and cleanup or retirement remains outside Inbox Ingester authority.
+Finding 11 requires the next release to prove immutable catalog inheritance, one-edge authoring, multi-source composition, and exact-once semantic guidance against the tagged release. Finding 12 additionally requires realistic multi-turn evidence that full routing occurs only at defined transition points while the finding 07 no-bypass guarantee remains intact. Finding 13 is implemented: every release PR must apply the project-owned semantic-impact assessment and preserve reviewed rationale before accepting its adjacent edge. Finding 14 is implemented: Inbox Ingester required reading uses explicit project-root inbox paths with installed-payload regression coverage. Finding 15 is implemented: Ava Maintenance owns successful terminal finalization directly, with mandatory preconditions and no installer-binary dependency, while all broader deterministic mutation boundaries remain intact. Finding 16 is implemented: ingestion-time scoped-history authority is additive-only, prior entries are preserved, and cleanup or retirement remains outside Inbox Ingester authority. Finding 17 requires executable qualification-only checkpoints for the existing resume and abort operations without adding a public installer mode or fabricating managed state.

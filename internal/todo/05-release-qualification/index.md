@@ -40,12 +40,12 @@ Dogfooding intentionally remains open during steps 1 and 2. The user does not ne
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 0 pending findings
+- 1 pending finding
 - 0 pending blockers
-- 0 pending required-v1 findings
+- 1 pending required-v1 finding
 - 16 completed findings
 
-Findings 01 through 16 are implementation-complete. Finding 12's realistic multi-turn installed-project exercise, finding 15's fresh-agent terminal-finalization exercise, and finding 16's published Inbox Ingester scoped-history exercise remain release qualification evidence required during the corrective-alpha path rather than pending implementation work.
+Findings 01 through 16 are implementation-complete. [Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is pending and requires deterministic qualification-only checkpoints for authentic resume and abort execution. Finding 12's realistic multi-turn installed-project exercise, finding 15's fresh-agent terminal-finalization exercise, and finding 16's published Inbox Ingester scoped-history exercise remain release qualification evidence required during the corrective-alpha path rather than pending implementation work.
 
 ## Qualification policy
 
@@ -55,7 +55,7 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Step 1 of 6: finish synthetic v1 qualification.**
+**Step 1 of 6 is preempted by Finding 17.**
 
 The user has confirmed that corpus generation, all five image generations, image finalization, and finalized-corpus verification are complete and recorded locally.
 
@@ -66,7 +66,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-Continue with [Step 1 of the V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification): materialize the variants from the finalized vault, exercise them against the exact Ava revision under qualification, use the test project for the manual OpenCode flow where appropriate, complete chronological inbox ingestion and independent review, exercise scoped-history preservation plus recovery and upgrade lifecycle states, and validate run manifests and repository boundaries.
+The user has materialized the variants and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior. Resolve [Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md), execute the authentic resume and abort scenarios, and then return to the remaining Step 1 evidence and signoff gate.
 
 Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
 

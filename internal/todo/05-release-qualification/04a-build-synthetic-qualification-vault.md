@@ -12,7 +12,7 @@ generated:
   at: 2026-08-07T15:45:02+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T16:33:00+02:00
+  at: 2026-08-14T11:21:21+02:00
 ---
 
 # Build the Synthetic V1 Qualification Vault
@@ -245,12 +245,12 @@ Current external progress:
 - [x] synthetic corpus generated locally
 - [x] five specified images generated locally and visually accepted by the user
 - [x] image finalization and finalized-corpus verification recorded
-- [ ] materialize the eight qualification variants
-- [ ] exercise clean OpenCode ingestion and independent review using `~/stuff/project-vault` where the execution plan calls for the manual test project
-- [ ] exercise routing, hierarchy, fidelity, damaged-state, upgrade, recovery, semantic reconciliation, finalization, uninstall, and reinstall scenarios
+- [x] materialize the eight qualification variants
+- [x] exercise clean OpenCode ingestion and independent review using `~/stuff/project-vault` where the execution plan calls for the manual test project
+- [ ] exercise routing, hierarchy, fidelity, damaged-state, upgrade, recovery, semantic reconciliation, finalization, uninstall, and reinstall scenarios; resume and abort are blocked by finding 17
 - [ ] populate and validate the required run manifests
 
-The task remains pending because qualification evidence is still required. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. The current next action is to materialize and exercise the qualification variants through the operator sequence in [V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification).
+The task remains pending because deterministic resume and abort execution plus final qualification signoff are still required. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. The current next action is to resolve [finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md), execute those two scenarios, and return to the operator sequence in [V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification).
 
 ## Completion criteria
 

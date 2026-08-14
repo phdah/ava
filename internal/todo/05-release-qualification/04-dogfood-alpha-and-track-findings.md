@@ -10,8 +10,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
 updated:
-  by: agent:opencode
-  at: 2026-08-13T12:18:45+02:00
+  by: agent:openai-chatgpt
+  at: 2026-08-14T11:21:21+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -71,9 +71,9 @@ A clear user statement that dogfooding is complete or that Ava should proceed to
 
 ## Current state
 
-Findings 01 through 15 are complete. Finding 16 is pending and requires Inbox Ingester to preserve pre-existing scoped history rather than using ingestion to perform history cleanup. This umbrella remains active until the user explicitly closes dogfooding.
+Findings 01 through 16 are complete. Finding 17 is pending and requires deterministic qualification-only checkpoints for authentic resume and abort execution. This umbrella remains active until the user explicitly closes dogfooding.
 
-The synthetic corpus and all five specified images are user-confirmed as generated in a repository-external local directory. The content-generation subphase is complete. Current work is to finalize and verify those local artifacts, exercise ingestion and the remaining qualification variants, collect executable evidence, and then qualify the corrective immutable alpha.
+The synthetic corpus and all five specified images are finalized and verified in a repository-external local directory. The user materialized all eight qualification families and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior. Resume and abort remain blocked by the missing deterministic checkpoint harness tracked in finding 17.
 
 Finding 13 was exposed while completing the `1.0.0-alpha.14` release PR. The initial release-edge assessment incorrectly treated the absence of deterministic project-owned edits as evidence that semantic review was unnecessary. The implemented release procedure now separates managed delta, possible project-owned incompatibility, and required reconciliation. It requires reviewed rationale for both `true` and `false`, bounded guidance when review is required, and leaves the semantic decision with the maintainer rather than deterministic validation.
 
@@ -85,4 +85,4 @@ Finding 10 established that pull-request change types are selected from supporte
 
 Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing. Every request still performs the managed-state gate, but a pure clarification may be roleless and a same-objective scoped follow-up may retain the already-active role without repeated registry traversal or unchanged required-reading reload. New tasks, explicit workflows or roles, changed authority or domain, scoped work after roleless handling, uncertain role fit, and managed-state overrides force fresh routing.
 
-Finding 16 currently preempts synthetic-vault ingestion and qualification until its bounded repository work is resolved. After that, synthetic-vault qualification and corrective immutable alpha qualification resume as the next supporting work. New `blocker` or `required-v1` findings may still preempt that sequence. After those two supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
+Finding 17 currently preempts completion of synthetic-vault qualification until its bounded repository harness and executable coverage are complete. After that, execute resume and abort, finish the synthetic-vault signoff gate, and continue to corrective immutable alpha qualification. New `blocker` or `required-v1` findings may still preempt that sequence. After those two supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
