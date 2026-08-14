@@ -12,4 +12,17 @@ if [ "$#" -eq 4 ] \
     "SELECT id, parent_id AS parentID, directory FROM session ORDER BY id;"
 fi
 
+if [ "$#" -ge 2 ] && [ "$1" = "run" ]; then
+  exec python3 - "$REAL_OPENCODE" "$@" <<'PY'
+import os
+import sys
+
+real = sys.argv[1]
+args = sys.argv[2:]
+if "--" not in args:
+    args.insert(len(args) - 1, "--")
+os.execvp(real, [real, *args])
+PY
+fi
+
 exec "$REAL_OPENCODE" "$@"
