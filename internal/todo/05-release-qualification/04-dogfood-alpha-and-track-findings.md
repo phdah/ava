@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T11:21:21+02:00
+  at: 2026-08-14T11:40:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -71,18 +71,18 @@ A clear user statement that dogfooding is complete or that Ava should proceed to
 
 ## Current state
 
-Findings 01 through 16 are complete. Finding 17 is pending and requires deterministic qualification-only checkpoints for authentic resume and abort execution. This umbrella remains active until the user explicitly closes dogfooding.
+Findings 01 through 17 are implementation-complete. There are no pending dogfood findings. This umbrella remains active until the user explicitly closes dogfooding.
 
-The synthetic corpus and all five specified images are finalized and verified in a repository-external local directory. The user materialized all eight qualification families and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior. Resume and abort remain blocked by the missing deterministic checkpoint harness tracked in finding 17.
+The synthetic corpus and all five specified images are finalized and verified in a repository-external local directory. The user materialized all eight qualification families and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior.
 
-Finding 13 was exposed while completing the `1.0.0-alpha.14` release PR. The initial release-edge assessment incorrectly treated the absence of deterministic project-owned edits as evidence that semantic review was unnecessary. The implemented release procedure now separates managed delta, possible project-owned incompatibility, and required reconciliation. It requires reviewed rationale for both `true` and `false`, bounded guidance when review is required, and leaves the semantic decision with the maintainer rather than deterministic validation.
+Finding 17 now provides deterministic repository-only checkpoints that execute the exact assembled target installer transaction machinery and stop at authentic abortable and resumable boundaries. The remaining interrupted-upgrade work is qualification execution: run the maintained checkpoint commands against the selected assets, exercise the real `--abort` and `--resume` operations, and record their terminal evidence and user signoff.
 
-Finding 14 was exposed during realistic Inbox Ingester use. The managed role encoded project-root `./inbox/` and `./inbox/index.md` references as Markdown links from its nested role directory, and the host resolved them beneath `/.ava/base/roles/inbox-ingester/`. The implemented fix now names those project-owned paths explicitly as project-root paths in prose and adds assembled-payload regression coverage so required reading cannot silently return to the broken role-relative link shape.
+Finding 13 was exposed while completing the `1.0.0-alpha.14` release PR. The implemented release procedure now separates managed delta, possible project-owned incompatibility, and required reconciliation and requires reviewed rationale for both semantic-review outcomes.
 
-Finding 15 was exposed during a realistic alpha.13 to alpha.14 upgrade in a dogfood project. After semantic reconciliation completed, Ava Maintenance could not finalize the journal because the instructions deferred finalization to an installer or updater binary that does not exist. The implemented fix makes Ava Maintenance itself the successful finalization mechanism: it validates the terminal preconditions, atomically writes only the protocol-defined terminal journal state, removes only the exact recorded transaction workspace, and verifies normal routing without broadening resume, abort, rollback, repair, or other state-mutation authority.
+Finding 14 repaired Inbox Ingester project-root inbox references and added assembled-payload regression coverage. Finding 15 made Ava Maintenance the successful terminal finalization mechanism after proving protocol preconditions. Finding 16 bounded ingestion-time scoped-history authority to additive-only changes while preserving prior history.
 
 Finding 10 established that pull-request change types are selected from supported distribution impact rather than implementation novelty or source location. Repository-only qualification work remains non-releasable when it does not change produced assets or supported behavior, while internal release tooling remains releasable when its output or guarantees change.
 
-Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing. Every request still performs the managed-state gate, but a pure clarification may be roleless and a same-objective scoped follow-up may retain the already-active role without repeated registry traversal or unchanged required-reading reload. New tasks, explicit workflows or roles, changed authority or domain, scoped work after roleless handling, uncertain role fit, and managed-state overrides force fresh routing.
+Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing while preserving the managed-state gate and fresh-routing transition rules.
 
-Finding 17 currently preempts completion of synthetic-vault qualification until its bounded repository harness and executable coverage are complete. After that, execute resume and abort, finish the synthetic-vault signoff gate, and continue to corrective immutable alpha qualification. New `blocker` or `required-v1` findings may still preempt that sequence. After those two supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
+The immediate path is to execute resume and abort, finish the synthetic-vault signoff gate, and continue to corrective immutable alpha qualification. New `blocker` or `required-v1` findings may still preempt that sequence. After those two supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
