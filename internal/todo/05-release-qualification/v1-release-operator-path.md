@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T12:48:00+02:00
+  at: 2026-08-14T16:27:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -44,9 +44,7 @@ Do not infer closure from an empty findings backlog, passing tests, or publicati
 
 ### Current status
 
-The deterministic fixture implementation is complete.
-
-The user confirmed on 2026-08-10 that the synthetic corpus and all five specified images had been generated in a repository-external local directory and looked correct. The exact accepted PNG bytes are now pinned under the repository-only fixture with a checksum and dimension manifest. Clean automated runs must generate a new external vault, install those pinned images through the maintained fixture command, finalize them, and verify the complete 305-file inventory.
+The deterministic fixture, pinned image inputs, materialized variants, lower-level synthetic runner, authentic recovery checkpoints, calendar regression, and hands-off release qualification automation are implementation-complete.
 
 Current subphase status:
 
@@ -56,94 +54,67 @@ Current subphase status:
 - [x] qualification variants materialized
 - [x] clean OpenCode ingestion and routing evidence completed
 - [x] independent semantic review and expected-outcome checks completed
-- [ ] complete one-command upgrade, recovery, finalization, lifecycle, and regression matrix accepted
-- [ ] run manifests validated and qualification evidence accepted
+- [x] hands-off exact release acquisition, matrix execution, session inventory, independent audit, and compact evidence state implemented
+- [ ] complete automated upgrade, recovery, finalization, lifecycle, and regression matrix accepted
+- [ ] generated compact evidence accepted and Step 1 signed off
 
-Use these user-owned local paths for the current qualification run:
+[Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md), [Finding 18](dogfood/18-verify-relative-calendar-dates.md), and [Finding 19](dogfood/19-add-one-command-qualification-runner.md) are implementation-complete and are composed by [Hands-Off Release Qualification and Evidence State](../../release/qualification-automation.md).
 
-```text
-qualification vault: ~/stuff/ava-qualification-vault/
-test project:        ~/stuff/project-vault
-```
+The checked-in qualification catalog keeps the historical `v1.0.0-alpha.13 -> v1.0.0-alpha.14` pair separate from the active corrective pair. The active pair is exact immutable published `v1.0.0-alpha.14 -> exact local v1.0.0-alpha.15`. Historical evidence cannot be reused to qualify the corrective release.
 
-The user has already exercised managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall manually. [Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete and provides authentic assembled-installer resume and abort checkpoints. [Finding 18](dogfood/18-verify-relative-calendar-dates.md) is implementation-complete and defines the corrected Thursday 2026-08-13 to Friday 2026-08-14 regression.
-
-[Finding 19](dogfood/19-add-one-command-qualification-runner.md) is implementation-complete. The complete maintained matrix is composed behind [one internal manual shell entry point](../../release/qualification-runner.md). A required supporting task now preempts another manual execution: [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md) must compose exact input acquisition, clean fixture preparation, matrix execution, fresh-session audit, and compact release-state recording.
-
-The immediate goal is therefore **implement the hands-off qualification and evidence-state operation, then use it to execute and audit the next exact pinned release pair before finishing the Step 1 run-manifest/signoff gate**.
+The immediate goal is therefore **execute the hands-off operation against the exact local alpha.15 target assets, inspect the generated compact evidence, and explicitly accept it before Step 1 advances**.
 
 ### Operator procedure
 
-The procedure below remains the behavior the automated operation must compose. Do not repeat it as a manually assembled qualification run while the automation task is pending.
+1. Assemble or otherwise obtain one exact local `v1.0.0-alpha.15` release asset directory containing the complete seven-file release inventory. Do not use a mutable alias or a directory whose release manifest identifies another version or revision.
 
-1. Resolve the exact pinned source and target release asset directories. Do not use a mutable `latest` selection. The target must expose the semantic upgrade state required by the maintained rollback, reconciliation, and finalization scenarios.
-
-2. Run the mutation-free preflight first:
+2. From a clean Ava checkout, run:
 
 ```sh
-internal/release/qualify-synthetic.sh \
-  --qualification-root ~/stuff/ava-qualification-vault \
-  --execution-root ~/stuff/ava-qualification-run \
-  --source-assets /absolute/path/to/pinned/source-assets \
-  --target-assets /absolute/path/to/pinned/target-assets \
-  --test-project ~/stuff/project-vault \
-  --opencode opencode \
-  --model <provider/model> \
-  --preflight-only
+internal/release/qualify-release.sh \
+  --target-assets /absolute/path/to/v1.0.0-alpha.15/assets
 ```
 
-Require exact source and target identity, valid checksums, clean repository state, finalized corpus verification, all eight materialized families, safe repository-external output boundaries, and the deterministic 17-scenario plan.
+The operation itself must:
 
-3. Run the same command without `--preflight-only`:
+- acquire the exact immutable published alpha.14 source assets from the checked-in catalog
+- verify published release immutability, attestations, checksums, manifest identity, and exact asset digests
+- verify the exact local alpha.15 target asset set and its declared alpha.14-to-alpha.15 upgrade edge
+- verify all five committed qualification images and regenerate a clean repository-external synthetic vault through the maintained fixture wrapper
+- create a deterministic repository-external test-project integrity boundary
+- run the synthetic runner preflight and complete maintained 17-scenario matrix with the checked-in qualification model
+- preserve raw workspaces, release assets, command evidence, and transcripts outside the repository
+- inventory every relevant top-level and nested OpenCode session and bind it to scenario, prompt digest, model, project root, transcript digest, parent, and terminal state
+- run the maintained audit in a fresh OpenCode session with the checked-in audit model
+- reject invalid audit output, incomplete evidence, unresolved required decisions, or any blocking or major audit finding
+- write only compact run evidence and pair state under `internal/release/qualification/`, without creating a Git commit
 
-```sh
-internal/release/qualify-synthetic.sh \
-  --qualification-root ~/stuff/ava-qualification-vault \
-  --execution-root ~/stuff/ava-qualification-run \
-  --source-assets /absolute/path/to/pinned/source-assets \
-  --target-assets /absolute/path/to/pinned/target-assets \
-  --test-project ~/stuff/project-vault \
-  --opencode opencode \
-  --model <provider/model>
-```
+3. Treat `failed` as a mechanical or incomplete qualification failure and `needs-review` as an audit-blocked result. Preserve the external workspace and correct the underlying cause before rerunning. A corrected rerun receives a new run id and cannot reuse passing work unless the complete execution identity is unchanged.
 
-Use `--transcript-dir /absolute/repository-external/path` only when a separate OpenCode transcript copy is needed. The runner-owned execution root already retains per-scenario command output, state, and the final summary for diagnosis.
+4. A mechanically and semantically clean operation must record `awaiting-user-signoff`. That state is intentionally not acceptance. Review the generated run record, session inventory, audit report, issue inventory, source/target identities, and raw-evidence digest before accepting the qualification result.
 
-4. Accept the runner result only when every maintained scenario reports `pass`. A `fail`, `skipped`, or `user-decision-required` result is non-terminal qualification evidence and keeps Step 1 open. Preserve the failed runner-owned workspace until the cause is understood. On rerun, passing scenarios remain retained while a non-passing scenario is recreated only from its materialized source variant.
-
-5. Confirm the runner's terminal evidence proves, at minimum:
-
-- finalized corpus and the supplied original test project remain byte-identical
-- fresh and mature installs reach healthy installed conformance and normal routing
-- private/work registered-role mutations stay within their owned boundaries
-- the calendar regression persists `Friday` and `2026-08-14`, never `2026-08-15`
-- complete inbox ingestion leaves no direct pending source
-- managed-content damage reports only the exact expected stable conformance rule while preserving injected evidence
-- resume and abort use Finding 17's authentic checkpoint plus real installer operation
-- rollback is invoked exactly once and restores source managed and semantic state with transaction cleanup and normal routing
-- semantic reconciliation and finalization reach a complete target state without inventing unresolved decisions
-- role-led uninstall and pinned reinstall preserve project-owned bytes and finish with healthy installed conformance
-
-6. Populate or complete the required run manifests from the accepted runner evidence with exact Ava version, source revision, asset identity, host/model/session identity, project-owned hashes, installer and conformance output, transcript, expected outcome, actual outcome, reviewer, and linked finding.
-
-7. Validate every populated run manifest before accepting its result:
-
-```sh
-python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py verify-run-manifest /absolute/path/outside/ava/run-manifest.json
-```
-
-8. Run repository qualification after any repository-side evidence or task-link updates:
+5. After accepting the generated evidence, run repository qualification for the resulting checked-in evidence or state changes before merging them:
 
 ```sh
 internal/release/test.sh
 internal/release/validate-boundaries.sh
 ```
 
-Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalidates the recorded local evidence.
+Do not manually reconstruct the lower-level `qualify-synthetic.sh` sequence unless diagnosing the hands-off operation. The lower-level runner remains an implementation component, not the normal Step 1 operator entry point.
 
 ### Step 1 completion gate
 
-Advance only when the synthetic-vault task's completion criteria are satisfied, the complete runner matrix passes against the exact selected assets, required run manifests are valid, qualification evidence is accepted, and repository boundary validation passes.
+Advance only when:
+
+- the hands-off operation ran against the exact selected alpha.14-to-alpha.15 identities
+- every maintained scenario passed
+- the complete session inventory and independent audit are valid
+- no blocking or major audit finding remains
+- the automated pair state is `awaiting-user-signoff`
+- the generated compact evidence has been explicitly reviewed and accepted
+- repository qualification and boundary validation pass for any evidence-state commit
+
+Step 1 completion is an evidence gate. It does not publish alpha.15 and does not close alpha dogfooding.
 
 ## Step 2: qualify and publish the corrective alpha
 
@@ -178,8 +149,8 @@ internal/release/test.sh
 ```
 
 6. Merge only after the adjacent edge, semantic-impact rationale, and release PR are reviewed and accepted.
-7. After immutable publication, exercise the published pinned assets against the synthetic-vault scenarios and the realistic dogfood checks required by the corrective-alpha task. Include the realistic multi-turn routing evidence from finding 12 and fresh-agent terminal-finalization evidence from finding 15.
-8. Record exact tag, revision, asset digests, source-to-target outcomes, transcripts, conformance results, and linked findings in qualification evidence.
+7. After immutable publication, update the qualification pair catalog to the exact published corrective release identity and use the hands-off qualification operation for the required published-asset evidence. Include any additional realistic checks required by the corrective-alpha task, including finding 12's multi-turn routing evidence and finding 15's fresh-agent terminal-finalization evidence.
+8. Record exact tag, revision, asset digests, source-to-target outcomes, session inventory, audit, conformance results, and linked findings in qualification evidence.
 
 ### Step 2 completion gate
 
@@ -206,7 +177,7 @@ Follow [Publish the `1.0.0` Release Candidate](05-publish-release-candidate.md) 
 2. Let release-please determine the canonical RC version, normally `1.0.0-rc.1` unless the approved sequence requires otherwise.
 3. Author exactly one adjacent latest-alpha-to-RC edge and complete the semantic-impact assessment.
 4. Run release-PR validation and `internal/release/test.sh` using the same commands as step 2.
-5. Run the complete conformance, OpenCode, synthetic-vault, upgrade, maintenance, semantic-reconciliation, finalization, and uninstall matrix against the exact assembled revision.
+5. Run the complete conformance, OpenCode, synthetic-vault, upgrade, maintenance, semantic-reconciliation, finalization, and uninstall matrix against the exact assembled revision through the hands-off qualification path.
 6. Publish the immutable RC only after explicit approval of the exact version and revision.
 7. Re-run the required qualification against the published pinned RC assets and bind the evidence to the immutable tag and digests.
 
@@ -214,10 +185,10 @@ Follow [Publish the `1.0.0` Release Candidate](05-publish-release-candidate.md) 
 
 Follow [Stabilize the Published Release Candidate](05a-stabilize-release-candidate.md).
 
-1. Regenerate and verify the fixed synthetic-vault baseline.
+1. Generate and verify the fixed synthetic-vault baseline through the maintained automated path.
 2. Exercise the full published-RC matrix: fresh install, mature install, repeated OpenCode sessions, routing classes, workflows, ingestion, project-context maintenance, role creation, semantic review, damaged managed state, recovery, finalization, upgrade paths, uninstall, and reinstall.
-3. Validate all run manifests and retained project-owned hashes.
-4. Record every defect requiring repository work as a bounded finding.
+3. Validate the generated compact evidence, complete session inventories, audits, and retained project-owned hashes.
+4. Record every defect requiring repository work as a bounded finding after reviewing the audit evidence.
 5. If an incompatible public contract or behavior change is required, publish another RC and repeat this step completely.
 6. Accept the RC as the stable input only when no blocker or `required-v1` finding remains and every known limitation has a stable-safe disposition.
 
@@ -228,7 +199,7 @@ Follow [Qualify and Publish `1.0.0`](06-qualify-and-publish-v1.md).
 1. Confirm RC stabilization is complete and the stable acceptance gate is satisfied.
 2. Build the exact stable asset set twice from one clean source revision and require identical digests.
 3. Verify fresh installation and the declared RC-to-stable upgrade from assembled assets.
-4. Verify the complete OpenCode, recovery, finalization, semantic compatibility, uninstall, trust, and documentation requirements.
+4. Verify the complete OpenCode, recovery, finalization, semantic compatibility, uninstall, trust, and documentation requirements through the maintained hands-off evidence path.
 5. Run the complete repository and release qualification suite.
 6. Obtain explicit approval for version `1.0.0` and the exact source revision.
 7. Publish the immutable `v1.0.0` release as stable and set it as `latest` only after every maintained gate succeeds.
