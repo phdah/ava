@@ -1,0 +1,51 @@
+{
+  "fixture_id": "synthetic-v1-qualification-vault",
+  "images": [
+    {
+      "bytes": 1063250,
+      "destination": "corpus/01-pre-move/2025-01-18-uno-winter-walk.png",
+      "file": "2025-01-18-uno-winter-walk.png",
+      "height": 864,
+      "media_type": "image/png",
+      "sha256": "8a133e7c356a1750b1199a4aae59337ff4c23c3552e92a7b41ec88c7f9c65aa0",
+      "width": 1184
+    },
+    {
+      "bytes": 1110645,
+      "destination": "corpus/02-move-transition/2025-02-22-moving-boxes.png",
+      "file": "2025-02-22-moving-boxes.png",
+      "height": 864,
+      "media_type": "image/png",
+      "sha256": "b64edde4d2dc006643a6b43f6b8abaf6ef51dec3e020ed72108e6a50f17809c6",
+      "width": 1184
+    },
+    {
+      "bytes": 1482872,
+      "destination": "corpus/03-renovation/2025-03-12-kitchen-material-receipt.png",
+      "file": "2025-03-12-kitchen-material-receipt.png",
+      "height": 864,
+      "media_type": "image/png",
+      "sha256": "cc5d6dec5aa30656c7651f771bba1d2dfc70cd9e44106d7c49fe693ab52fbc91",
+      "width": 1184
+    },
+    {
+      "bytes": 1157472,
+      "destination": "corpus/04-settled/2025-04-19-settled-kitchen.png",
+      "file": "2025-04-19-settled-kitchen.png",
+      "height": 864,
+      "media_type": "image/png",
+      "sha256": "2bb60aeb592a2630052ccd9a1c3f7e236d654f3cfd77068fc147f13d0d5d809a",
+      "width": 1184
+    },
+    {
+      "bytes": 972702,
+      "destination": "corpus/04-settled/2025-06-20-aurora-status-board.png",
+      "file": "2025-06-20-aurora-status-board.png",
+      "height": 864,
+      "media_type": "image/png",
+      "sha256": "d83a4842fa03dc8dd7bc65489fb483b8b2049690a941acd627c13f9776be1141",
+      "width": 1184
+    }
+  ],
+  "schema_version": 1
+}

@@ -28,6 +28,8 @@ FIXTURE_ROOT = Path(__file__).resolve().parent
 REPOSITORY_ROOT = FIXTURE_ROOT.parents[3]
 BLUEPRINT_PATH = FIXTURE_ROOT / "blueprint.json"
 LOCK_PATH = FIXTURE_ROOT / "requirements.lock"
+PINNED_IMAGES_ROOT = FIXTURE_ROOT / "images"
+PINNED_IMAGE_MANIFEST_PATH = PINNED_IMAGES_ROOT / "manifest.json"
 SCRIPT_PATH = Path(__file__).resolve()
 _BLUEPRINT_CONSTANTS = json.loads(BLUEPRINT_PATH.read_text(encoding="utf-8"))
 _INTERVAL_START = date.fromisoformat(_BLUEPRINT_CONSTANTS["interval"]["start"])
@@ -48,6 +50,37 @@ def load_blueprint() -> dict:
     return json.loads(BLUEPRINT_PATH.read_text(encoding="utf-8"))
 
 
+def load_pinned_image_manifest(blueprint: dict) -> dict:
+    manifest = json.loads(PINNED_IMAGE_MANIFEST_PATH.read_text(encoding="utf-8"))
+    if manifest.get("schema_version") != 1 or manifest.get("fixture_id") != blueprint["fixture_id"]:
+        raise FixtureError("pinned image manifest identity is invalid")
+    images = manifest.get("images")
+    if not isinstance(images, list) or len(images) != blueprint["counts"]["external_images"]:
+        raise FixtureError("pinned image manifest must contain exactly five images")
+    expected_keys = {"file", "destination", "sha256", "bytes", "media_type", "width", "height"}
+    expected_destinations = {slot["path"] for slot in blueprint["image_slots"]}
+    if {item.get("destination") for item in images if isinstance(item, dict)} != expected_destinations:
+        raise FixtureError("pinned image destinations differ from the blueprint")
+    if {path.name for path in PINNED_IMAGES_ROOT.glob("*.png")} != {item.get("file") for item in images if isinstance(item, dict)}:
+        raise FixtureError("pinned image file inventory differs from the manifest")
+    for item in images:
+        if not isinstance(item, dict) or set(item) != expected_keys:
+            raise FixtureError(f"pinned image entry must contain exactly {sorted(expected_keys)}")
+        source = PINNED_IMAGES_ROOT / item["file"]
+        if source.is_symlink() or not source.is_file() or source.parent != PINNED_IMAGES_ROOT:
+            raise FixtureError(f"pinned image must be a direct regular file: {source}")
+        if not re.fullmatch(r"[0-9a-f]{64}", item["sha256"]):
+            raise FixtureError(f"pinned image has invalid SHA-256: {source}")
+        if sha256_file(source) != item["sha256"] or source.stat().st_size != item["bytes"]:
+            raise FixtureError(f"pinned image digest or size mismatch: {source}")
+        if image_type(source, "png") != item["media_type"]:
+            raise FixtureError(f"pinned image media type mismatch: {source}")
+        width, height = struct.unpack(">II", source.read_bytes()[16:24])
+        if width != item["width"] or height != item["height"]:
+            raise FixtureError(f"pinned image dimensions mismatch: {source}")
+    return manifest
+
+
 def canonical_json(value: object) -> bytes:
     return (json.dumps(value, indent=2, sort_keys=True, ensure_ascii=True) + "\n").encode("utf-8")
 
@@ -62,7 +95,9 @@ def sha256_file(path: Path) -> str:
 
 def generator_revision() -> str:
     digest = hashlib.sha256()
-    for path in (SCRIPT_PATH, BLUEPRINT_PATH, LOCK_PATH, FIXTURE_ROOT / "oracle.schema.json", FIXTURE_ROOT / "run-manifest.schema.json"):
+    inputs = [SCRIPT_PATH, BLUEPRINT_PATH, LOCK_PATH, FIXTURE_ROOT / "oracle.schema.json", FIXTURE_ROOT / "run-manifest.schema.json", PINNED_IMAGE_MANIFEST_PATH]
+    inputs.extend(sorted(PINNED_IMAGES_ROOT.glob("*.png"), key=lambda path: path.name.encode("utf-8")))
+    for path in inputs:
         digest.update(path.name.encode("ascii"))
         digest.update(b"\0")
         digest.update(path.read_bytes())
@@ -1196,7 +1231,7 @@ def generate(output: Path) -> None:
         newline="\n",
     )
     (variants / "README.txt").write_text(
-        "Run materialize-variants after finalizing all five external images. Variant control files are not inbox sources.\n",
+        "Run install-pinned-images and finalize-images before materialize-variants. Variant control files are not inbox sources.\n",
         encoding="utf-8",
         newline="\n",
     )
@@ -1518,6 +1553,7 @@ def verify(output: Path) -> dict:
         if sha256_file(prompt_path) != slot["prompt_sha256"] or prompt_path.stat().st_size != slot["prompt_bytes"]:
             raise FixtureError(f"image prompt digest mismatch: {slot['prompt_path']}")
 
+    pinned_images = {item["destination"]: item for item in load_pinned_image_manifest(blueprint)["images"]}
     finalized_path = output / "oracle/finalized-inventory.json"
     if finalized_path.is_symlink():
         raise FixtureError("oracle/finalized-inventory.json must not be a symlink")
@@ -1528,7 +1564,10 @@ def verify(output: Path) -> dict:
         for slot in oracle["image_slots"]:
             path = output / slot["path"]
             media_type = image_type(path, slot["format"])
-            image_records.append({"path": slot["path"], "sha256": sha256_file(path), "bytes": path.stat().st_size, "media_type": media_type})
+            pinned = pinned_images[slot["path"]]
+            if sha256_file(path) != pinned["sha256"] or path.stat().st_size != pinned["bytes"] or media_type != pinned["media_type"]:
+                raise FixtureError(f"corpus image differs from pinned fixture input: {slot['path']}")
+            image_records.append({"path": slot["path"], "sha256": pinned["sha256"], "bytes": pinned["bytes"], "media_type": media_type})
         finalized = {
             "schema_version": 1,
             "fixture_id": blueprint["fixture_id"],
@@ -1558,7 +1597,7 @@ def verify(output: Path) -> dict:
 def finalize_images(output: Path) -> None:
     result = verify(output)
     if result["image_state"] not in {"ready", "finalized"}:
-        raise FixtureError("all five externally generated image files must exist before finalization")
+        raise FixtureError("all five pinned image files must exist before finalization")
     oracle = json.loads((output / "oracle/baseline.json").read_text(encoding="utf-8"))
     records = []
     for slot in oracle["image_slots"]:
@@ -1575,6 +1614,22 @@ def finalize_images(output: Path) -> None:
     (output / "oracle/finalized-inventory.json").write_bytes(canonical_json(finalized))
     verify(output)
     print(f"finalized image inventory: {len(records)} images, {finalized['finalized_count']} total corpus files")
+
+
+def install_pinned_images(output: Path) -> None:
+    result = verify(output)
+    if result["image_state"] != "pending":
+        raise FixtureError("pinned images can be installed only into a generated vault with empty image slots")
+    blueprint = load_blueprint()
+    manifest = load_pinned_image_manifest(blueprint)
+    for item in manifest["images"]:
+        source = PINNED_IMAGES_ROOT / item["file"]
+        destination = output / item["destination"]
+        destination.write_bytes(source.read_bytes())
+    installed = verify(output)
+    if installed["image_state"] != "ready":
+        raise FixtureError("installed pinned images did not produce a ready fixture")
+    print(f"installed {len(manifest['images'])} pinned qualification images")
 
 
 def tree_inventory(root: Path) -> list[dict]:
@@ -1732,7 +1787,7 @@ def materialize_variants(output: Path) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
-    for command in ("generate", "verify", "finalize-images", "materialize-variants"):
+    for command in ("generate", "verify", "install-pinned-images", "finalize-images", "materialize-variants"):
         child = subparsers.add_parser(command)
         child.add_argument("output", help="explicit output directory outside the Ava repository")
     run_manifest_parser = subparsers.add_parser("verify-run-manifest")
@@ -1748,6 +1803,8 @@ def main(argv: list[str] | None = None) -> int:
             generate(output)
         elif args.command == "verify":
             verify(output)
+        elif args.command == "install-pinned-images":
+            install_pinned_images(output)
         elif args.command == "finalize-images":
             finalize_images(output)
         elif args.command == "materialize-variants":

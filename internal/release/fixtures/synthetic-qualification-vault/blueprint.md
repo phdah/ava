@@ -8,7 +8,7 @@ generated:
   at: 2026-08-07T16:53:38+02:00
 updated:
   by: agent:opencode
-  at: 2026-08-09T10:57:56+02:00
+  at: 2026-08-14T15:39:53+02:00
 ---
 
 # Synthetic V1 Qualification Vault Blueprint
@@ -17,7 +17,7 @@ updated:
 
 The fixture is wholly fictional. It does not derive from a private vault, employer material, production data, credentials, or another non-public source. All contact values use reserved or visibly non-functional values.
 
-Generation requires a new or empty explicit output directory outside the Ava repository. The generator resolves symlinks and rejects the repository root and every descendant. Only `<output>/corpus/` is raw ingestion input. Never ingest `image-prompts/`, `oracle/`, or `variants/`.
+Generation requires a new or empty explicit output directory outside the Ava repository. The generator resolves symlinks and rejects the repository root and every descendant. Only `<output>/corpus/` is raw ingestion input. Never ingest `image-prompts/`, `oracle/`, or `variants/`. The five accepted PNG inputs are pinned under [`images/`](images/) and copied into generated output only through the maintained fixture command.
 
 The corpus is staged in four chronological batch directories. Each batch contains only direct source files so it can be copied into the inbox for one bounded ingestion run:
 
@@ -39,7 +39,7 @@ The interval is 2025-01-01 through 2025-06-30. Adam moves from the old apartment
 
 ## Fixed Inventory
 
-The deterministic baseline contains exactly 300 raw files. Finalization adds exactly five externally generated images for a complete 305-file corpus.
+The deterministic baseline contains exactly 300 raw files. Finalization adds exactly five externally generated and repository-pinned images for a complete 305-file corpus.
 
 | Structural class | Count |
 |---|---:|
@@ -66,7 +66,7 @@ The deterministic baseline contains exactly 300 raw files. Finalization adds exa
 | PPTX | 2 |
 | ICS | 3 |
 
-The five image slots add five structurally decoded PNG files. They cover Uno, the February move, a kitchen receipt, the settled apartment, and a work artifact.
+The five image slots add five structurally decoded PNG files. They cover Uno, the February move, a kitchen receipt, the settled apartment, and a work artifact. Their accepted bytes, dimensions, sizes, and SHA-256 digests are fixed by [`images/manifest.json`](images/manifest.json).
 
 ## Reproducibility
 
@@ -84,7 +84,13 @@ Verify its structure, consistency, formats, inventory, and hashes:
 python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py verify /absolute/path/outside/ava/qualification-vault
 ```
 
-After an image-capable agent creates the five files at the exact destinations declared in `image-prompts/`, finalize their per-run inventory:
+Install the five pinned images at the exact corpus destinations declared by the fixture:
+
+```sh
+python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py install-pinned-images /absolute/path/outside/ava/qualification-vault
+```
+
+Then finalize their inventory:
 
 ```sh
 python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py finalize-images /absolute/path/outside/ava/qualification-vault
@@ -102,7 +108,7 @@ Validate a populated scenario run manifest before accepting its pass or fail res
 python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py verify-run-manifest /absolute/path/outside/ava/run-manifest.json
 ```
 
-The baseline oracle and prompt bytes are reproducible. Externally generated PNG bytes are not claimed to be reproducible; finalization structurally decodes them and records their actual SHA-256 values and file types.
+The baseline oracle, prompt bytes, and pinned PNG bytes are reproducible from the repository revision. Finalization structurally decodes the copied images and requires their exact committed SHA-256 values, byte sizes, and media types.
 
 ## Oracle
 
