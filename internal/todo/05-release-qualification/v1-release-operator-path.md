@@ -46,12 +46,12 @@ Do not infer closure from an empty findings backlog, passing tests, or publicati
 
 The deterministic fixture implementation is complete.
 
-The user confirmed on 2026-08-10 that the synthetic corpus and all five specified images have been generated in a repository-external local directory and look correct. The user also confirmed that image finalization and finalized-corpus verification have been completed and recorded. Treat those confirmations as completion of corpus generation and finalization for this qualification run. The repository cannot inspect the local bytes directly, so this is recorded as user-confirmed external evidence rather than repository-generated evidence.
+The user confirmed on 2026-08-10 that the synthetic corpus and all five specified images had been generated in a repository-external local directory and looked correct. The exact accepted PNG bytes are now pinned under the repository-only fixture with a checksum and dimension manifest. Clean automated runs must generate a new external vault, install those pinned images through the maintained fixture command, finalize them, and verify the complete 305-file inventory.
 
 Current subphase status:
 
 - [x] deterministic corpus generated locally
-- [x] five specified images generated locally and visually accepted by the user
+- [x] five specified images generated locally, visually accepted by the user, and pinned under the internal fixture
 - [x] image finalization and finalized-corpus verification recorded
 - [x] qualification variants materialized
 - [x] clean OpenCode ingestion and routing evidence completed
@@ -68,13 +68,13 @@ test project:        ~/stuff/project-vault
 
 The user has already exercised managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall manually. [Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete and provides authentic assembled-installer resume and abort checkpoints. [Finding 18](dogfood/18-verify-relative-calendar-dates.md) is implementation-complete and defines the corrected Thursday 2026-08-13 to Friday 2026-08-14 regression.
 
-[Finding 19](dogfood/19-add-one-command-qualification-runner.md) is implementation-complete. The complete maintained matrix is now composed behind [one internal manual shell entry point](../../release/qualification-runner.md). There is no preempting repository finding.
+[Finding 19](dogfood/19-add-one-command-qualification-runner.md) is implementation-complete. The complete maintained matrix is composed behind [one internal manual shell entry point](../../release/qualification-runner.md). A required supporting task now preempts another manual execution: [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md) must compose exact input acquisition, clean fixture preparation, matrix execution, fresh-session audit, and compact release-state recording.
 
-The immediate goal is therefore **execute one complete runner matrix against exact selected pinned corrective-alpha source and target assets, validate its evidence, and finish the Step 1 run-manifest/signoff gate**.
+The immediate goal is therefore **implement the hands-off qualification and evidence-state operation, then use it to execute and audit the next exact pinned release pair before finishing the Step 1 run-manifest/signoff gate**.
 
 ### Operator procedure
 
-Use the completed runner rather than reconstructing the previous manual command sequence.
+The procedure below remains the behavior the automated operation must compose. Do not repeat it as a manually assembled qualification run while the automation task is pending.
 
 1. Resolve the exact pinned source and target release asset directories. Do not use a mutable `latest` selection. The target must expose the semantic upgrade state required by the maintained rollback, reconciliation, and finalization scenarios.
 

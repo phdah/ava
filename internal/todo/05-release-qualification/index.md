@@ -19,7 +19,8 @@ Core progress: 3 of 6 complete.
 
 1. [ ] [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md)
 2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md)
-3. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md)
+3. [ ] [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md)
+4. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md)
 
 ## Canonical remaining path to `1.0.0`
 
@@ -55,9 +56,9 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Step 1 of 6 is active with no preempting repository finding.**
+**Step 1 of 6 is active, with the required internal qualification-automation task preempting another runner execution.**
 
-The user has confirmed that corpus generation, all five image generations, image finalization, and finalized-corpus verification are complete and recorded locally.
+The user has confirmed the generated corpus and all five image results. The exact visually accepted PNG bytes are pinned under the repository-only fixture, while generated vaults and execution evidence remain external.
 
 Use:
 
@@ -66,7 +67,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-The variants are materialized and the repository-side runner implementation is complete. The immediate operator action is to execute the [one-command runner](../../release/qualification-runner.md) against the exact selected pinned corrective-alpha source and target assets, review its terminal evidence, validate the resulting qualification evidence, and finish the remaining Step 1 signoff gate.
+The variants are materialized and the repository-side runner implementation is complete. Before another matrix execution, implement [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md). The automated path must acquire exact inputs, regenerate the isolated fixture from maintained sources and pinned images, run the matrix, audit every resulting OpenCode session in a fresh session, and write compact release-state evidence before Step 1 signoff can continue.
 
 Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
 

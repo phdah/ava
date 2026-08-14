@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T12:48:00+02:00
+  at: 2026-08-14T15:39:53+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,20 +25,13 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 ## Official next action
 
-**Execute the one-command synthetic qualification runner and finish the Step 1 signoff gate.**
+**Implement hands-off release qualification and evidence-state automation.**
 
-[Finding 19](todo/05-release-qualification/dogfood/19-add-one-command-qualification-runner.md) is implementation-complete. The maintained matrix now has one internal manual shell entry point with pinned-input preflight, isolated runner-owned workspaces, Finding 17's authentic resume/abort checkpoints, Finding 18's calendar regression, exact managed-damage rules, bounded OpenCode prompts, interrupted reruns, and terminal summary semantics.
+[Automate release qualification and evidence state](todo/05-release-qualification/04c-automate-release-qualification-evidence.md) is required before another synthetic qualification run. It will compose exact published or local release acquisition, immutable pinned images, clean fixture generation, the maintained matrix, complete OpenCode session inventory, a fresh-session audit, and compact checked-in release-state evidence behind one non-interactive internal operation.
 
-Run the completed entry point against the exact selected pinned corrective-alpha source and target assets, review and validate its evidence, and complete the remaining synthetic-vault Step 1 signoff. Do not regenerate the already finalized corpus or images unless qualification exposes a fixture defect.
+Implement and validate that bounded task before repeating qualification. The automated audit must fail the operation on blocking or major findings, successful execution must remain `awaiting-user-signoff`, and generated evidence must be written without an automatic Git commit.
 
-Use these user-owned local paths for the current qualification run:
-
-```text
-qualification vault: ~/stuff/ava-qualification-vault/
-test project:        ~/stuff/project-vault
-```
-
-The complete runner procedure is [One-Command Synthetic Qualification Runner](../internal/release/qualification-runner.md).
+The existing [One-Command Synthetic Qualification Runner](../internal/release/qualification-runner.md) remains an implementation component and reference procedure. It is not the next manual action while the required automation task is pending.
 
 ## Official path to `1.0.0`
 
