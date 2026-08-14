@@ -37,7 +37,7 @@ The dogfood umbrella remains active regardless of backlog state. New `blocker` o
 
 | ID | Status | Classification | Blocks | Finding |
 |---|---|---|---|---|
-| 01 | completed | blocker | next prerelease | [Restore supported prerelease upgrade paths](01-restore-supported-prerelease-upgrade-paths.md) |
+| 01 | completed | blocker | next prerelease | [Restore supported prerelease upgrade paths](01-restore-prerelease-upgrade-paths.md) |
 | 02 | completed | blocker | next prerelease | [Repair installed context link resolution](02-repair-installed-context-link-resolution.md) |
 | 03 | completed | required-v1 | release candidate | [Make knowledge hierarchy promotion predictable](03-make-knowledge-hierarchy-promotion-predictable.md) |
 | 04 | completed | required-v1 | release candidate | [Enforce faithful inbox ingestion completion](04-enforce-faithful-inbox-ingestion-completion.md) |
