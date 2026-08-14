@@ -36,7 +36,7 @@ class QualificationAutomationTests(unittest.TestCase):
         semantic_review_required: bool = True,
         edge_from: str | None = None,
     ) -> qualification_runner.ReleaseIdentity:
-        directory.mkdir(parents=True)
+        directory.mkdir(parents=True, exist_ok=True)
         edges = []
         if edge_from:
             edges.append(
