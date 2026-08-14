@@ -40,12 +40,12 @@ Dogfooding intentionally remains open during steps 1 and 2. Explicit user closur
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 2 pending findings
+- 1 pending finding
 - 0 pending blockers
-- 2 pending required-v1 findings
-- 17 completed findings
+- 1 pending required-v1 finding
+- 18 completed findings
 
-Findings 01 through 17 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. [Finding 18](dogfood/18-verify-relative-calendar-dates.md) requires deterministic verification of relevant relative calendar conversions. [Finding 19](dogfood/19-add-one-command-qualification-runner.md) then composes the complete maintained matrix behind one internal shell entry point. Finding 12's realistic multi-turn installed-project exercise, finding 15's fresh-agent terminal-finalization exercise, finding 16's published Inbox Ingester scoped-history exercise, and finding 17's selected-asset resume/abort execution remain release qualification evidence rather than pending implementation work.
+Findings 01 through 18 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence, with source anchoring, ambiguity handling, boundary fixtures, Change Reviewer fidelity checks, and assembled-payload coverage. [Finding 19](dogfood/19-add-one-command-qualification-runner.md) now composes the complete maintained matrix behind one internal shell entry point. Finding 12's realistic multi-turn installed-project exercise, Finding 15's fresh-agent terminal-finalization exercise, Finding 16's published Inbox Ingester scoped-history exercise, Finding 17's selected-asset resume/abort execution, and Finding 18's clean-session registered-role calendar exercise remain release qualification evidence rather than pending implementation work.
 
 ## Qualification policy
 
@@ -55,7 +55,7 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Step 1 of 6 is preempted by Findings 18 and 19.**
+**Step 1 of 6 is preempted by Finding 19.**
 
 The user has confirmed that corpus generation, all five image generations, image finalization, and finalized-corpus verification are complete and recorded locally.
 
@@ -66,7 +66,7 @@ qualification vault: ~/stuff/ava-qualification-vault/
 test project:        ~/stuff/project-vault
 ```
 
-The user has materialized the variants and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior. Resolve Finding 18, implement the [one-command runner](dogfood/19-add-one-command-qualification-runner.md) using finding 17's maintained checkpoints, execute the complete matrix through that entry point, and then return to the remaining Step 1 signoff gate.
+The user has materialized the variants and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior. Implement the [one-command runner](dogfood/19-add-one-command-qualification-runner.md) using Finding 17's maintained checkpoints and Finding 18's calendar regression, execute the complete matrix through that entry point, and then return to the remaining Step 1 signoff gate.
 
 Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
 
