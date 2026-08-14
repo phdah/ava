@@ -15,6 +15,8 @@ Before acting, read every file under **Required reading** in the listed order.
 
 ## Additional context
 
+Read [Calendar verification](../../shared/instructions/calendar-verification.md) when project maintenance would convert relative calendar language into a durable absolute project fact. Do not load it for unrelated maintenance.
+
 Read [Workflow lifecycle](../../shared/instructions/workflow-lifecycle.md) when creating, updating, repairing, reorganizing, renaming, deprecating, replacing, removing, or migrating project-owned workflows.
 
 Read the root [`AGENTS.md`](./AGENTS.md), [`roles/index.md`](../index.md), and the nearest relevant project indexes when routing, discovery, or ownership boundaries matter.

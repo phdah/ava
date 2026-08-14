@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T11:46:55+02:00
+  at: 2026-08-14T12:11:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -57,6 +57,7 @@ Current subphase status:
 - [x] clean OpenCode ingestion and routing evidence completed
 - [x] independent semantic review and expected-outcome checks completed
 - [ ] upgrade, recovery, finalization, and lifecycle scenarios completed
+- [ ] registered-role calendar regression repeated with the corrected contract
 - [ ] run manifests validated and qualification evidence accepted
 
 Use these user-owned local paths for the current qualification run:
@@ -68,11 +69,11 @@ test project:        ~/stuff/project-vault
 
 The user has completed managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall execution. [Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete and provides deterministic repository-only setup states for authentic assembled-installer resume and abort execution.
 
-[Finding 18](dogfood/18-verify-relative-calendar-dates.md) now blocks final semantic signoff after a relative weekday was persisted with the wrong absolute date.
+[Finding 18](dogfood/18-verify-relative-calendar-dates.md) is implementation-complete. Relevant persistence now conditionally requires deterministic calendar verification, and the original Thursday 2026-08-13 to Friday 2026-08-14 scenario remains a clean-session qualification follow-up rather than pending repository implementation.
 
-[Finding 19](dogfood/19-add-one-command-qualification-runner.md) will compose the corrected complete matrix, including finding 17's maintained checkpoint procedure, behind one internal shell entry point.
+[Finding 19](dogfood/19-add-one-command-qualification-runner.md) now blocks the remaining Step 1 execution by requiring the complete corrected matrix, including Finding 17's checkpoint procedure and Finding 18's calendar regression, behind one internal shell entry point.
 
-The immediate goal is therefore **resolve Finding 18, implement Finding 19, execute one complete runner matrix, and finish the Step 1 run-manifest/signoff gate**.
+The immediate goal is therefore **implement Finding 19, execute one complete runner matrix including the calendar regression and authentic resume/abort operations, and finish the Step 1 run-manifest/signoff gate**.
 
 ### Operator procedure
 

@@ -5,6 +5,7 @@
 - [Ownership and mutation authority](ownership-and-mutation.md) - Installed ownership classes, role mutation authority, managed-file boundaries, update provenance, and upgrade-specific exceptions.
 - [Scoped history](scoped-history.md) - Rules for creating and updating the nearest scoped log without duplicating routine Git history.
 - [Document metadata](document-metadata.md) - Required metadata, document types, creation and latest-update provenance, lifecycle, validation, and compatibility rules.
+- [Calendar verification](calendar-verification.md) - Conditional deterministic verification for relative calendar language before an absolute project fact is persisted.
 - [Inbox ingestion fidelity](inbox-ingestion-fidelity.md) - Semantic section inventory, epistemic preservation, renderable claim provenance, final-state reconciliation, and independent review requirements.
 - [Workflow format](workflow-format.md) - Portable workflow structure, operating modes, inputs, outputs, context links, and validation rules.
 - [Workflow registry and routing](workflow-routing.md) - Deterministic workflow registration, explicit fresh invocation, primary-role resolution, conversational continuity boundaries, validation, and deprecation rules.

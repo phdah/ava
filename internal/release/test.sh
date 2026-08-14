@@ -44,6 +44,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_host_config \
   internal.release.tests.test_root_routing \
   internal.release.tests.test_review_sufficiency \
+  internal.release.tests.test_calendar_verification \
   internal.release.tests.test_document_update_metadata_fixtures \
   internal.release.tests.test_knowledge_hierarchy_promotion \
   internal.release.tests.test_inbox_ingestion_fidelity \

@@ -2,6 +2,14 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-08-14
+
+* **Deterministic calendar persistence**: Required relevant persistence work to verify relative-to-absolute calendar conversions with an available deterministic calendar, date, or time operation before writing a durable absolute fact.
+* **Reference-context fidelity**: Distinguished user-specified, source-document, and current-host calendar reference contexts so historical source-relative language is not re-anchored to the current session.
+* **Ambiguity preservation**: Required materially unresolved timezone, locale, reference-date, week, or relative-period semantics to remain relative or be clarified rather than invented.
+* **Conditional activation**: Kept calendar verification out of the root router and unrelated requests by exposing it only as additional context for mutating roles when relevant persistence occurs, plus Change Reviewer when calendar fidelity is material.
+* **Calendar regression coverage**: Froze the Thursday 2026-08-13 to Friday 2026-08-14 regression together with week, month, year, leap-day, historical-source, unresolved-period, semantic-review, and assembled-payload cases.
+
 ## 2026-08-10
 
 * **Conversation-aware routing**: Split the unconditional per-request managed-state gate from full workflow and role resolution. Normal-operation turns are now classified as roleless conversational follow-ups, same-role continuations, or fresh routing.

@@ -12,7 +12,7 @@ generated:
   at: 2026-08-07T15:45:02+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T11:46:55+02:00
+  at: 2026-08-14T12:11:00+02:00
 ---
 
 # Build the Synthetic V1 Qualification Vault
@@ -250,7 +250,7 @@ Current external progress:
 - [ ] execute the complete maintained matrix through finding 19's one-command runner
 - [ ] populate and validate the remaining required run manifests and accept final qualification evidence
 
-[Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete. The task remains pending because finding 18's calendar correction and finding 19's runner must be completed before one full selected-asset matrix execution and final qualification signoff. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. Resolve [finding 18](dogfood/18-verify-relative-calendar-dates.md), then [finding 19](dogfood/19-add-one-command-qualification-runner.md), execute the complete runner using the maintained interrupted-upgrade [checkpoint procedure](../../release/fixtures/synthetic-qualification-vault/checkpoints.md), and return to the operator sequence in [V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification).
+[Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) and [Finding 18](dogfood/18-verify-relative-calendar-dates.md) are implementation-complete. The task remains pending because Finding 19's runner must be completed before one full selected-asset matrix execution, including the corrected calendar-fidelity scenario and authentic resume/abort operations, can provide final qualification signoff. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. Implement [Finding 19](dogfood/19-add-one-command-qualification-runner.md), execute the complete runner using the maintained interrupted-upgrade [checkpoint procedure](../../release/fixtures/synthetic-qualification-vault/checkpoints.md) and calendar-verification regression, and return to the operator sequence in [V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification).
 
 ## Completion criteria
 

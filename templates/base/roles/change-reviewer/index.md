@@ -14,6 +14,8 @@ Before acting, read every file under **Required reading** in the listed order.
 
 ## Additional context
 
+Read [Calendar verification](../../shared/instructions/calendar-verification.md) when the review target persists a newly resolved calendar fact, converts relative calendar language to an absolute value, or contains a weekday/date relationship whose fidelity is material. Treat contradictory weekday and date values through the normal semantic finding-admission test rather than as formatting.
+
 Read the root [`AGENTS.md`](./AGENTS.md) and [`roles/index.md`](../index.md) when routing, ownership boundaries, or role overlap matters.
 
 Read [Inbox ingestion fidelity](../../shared/instructions/inbox-ingestion-fidelity.md) when the review target includes inbox ingestion, processed-source completion, source-to-destination fidelity, or ingestion completion counts.

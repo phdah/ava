@@ -14,6 +14,8 @@ Before acting, read every file under **Required reading** in the listed order.
 
 ## Additional context
 
+Read [Calendar verification](../../shared/instructions/calendar-verification.md) when role-lifecycle work would convert relative calendar language into a durable absolute project fact. Do not load it for unrelated role work.
+
 Read the root [`AGENTS.md`](./AGENTS.md) and [`roles/index.md`](../index.md) when routing, registry consistency, or overlap with another role matters.
 
 When modifying an existing role, read that role's complete required instruction set before proposing or applying changes.

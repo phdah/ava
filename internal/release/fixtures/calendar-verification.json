@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "contract": "relative-calendar-persistence",
+  "cases": [
+    {
+      "id": "thursday-friday-regression",
+      "reference_kind": "user-specified",
+      "reference_date": "2026-08-13",
+      "reference_weekday": "Thursday",
+      "timezone": "Europe/Stockholm",
+      "input": "Friday",
+      "expected_absolute": "2026-08-14",
+      "expected_weekday": "Friday",
+      "forbidden_absolute": "2026-08-15",
+      "expected_action": "persist-verified"
+    },
+    {
+      "id": "week-boundary-next-monday",
+      "reference_kind": "user-specified",
+      "reference_date": "2026-08-16",
+      "reference_weekday": "Sunday",
+      "timezone": "Europe/Stockholm",
+      "input": "next Monday",
+      "expected_absolute": "2026-08-17",
+      "expected_weekday": "Monday",
+      "expected_action": "persist-verified"
+    },
+    {
+      "id": "month-boundary-tomorrow",
+      "reference_kind": "user-specified",
+      "reference_date": "2026-08-31",
+      "timezone": "Europe/Stockholm",
+      "input": "tomorrow",
+      "expected_absolute": "2026-09-01",
+      "expected_action": "persist-verified"
+    },
+    {
+      "id": "year-boundary-tomorrow",
+      "reference_kind": "user-specified",
+      "reference_date": "2026-12-31",
+      "timezone": "Europe/Stockholm",
+      "input": "tomorrow",
+      "expected_absolute": "2027-01-01",
+      "expected_action": "persist-verified"
+    },
+    {
+      "id": "leap-day-tomorrow",
+      "reference_kind": "user-specified",
+      "reference_date": "2028-02-28",
+      "timezone": "Europe/Stockholm",
+      "input": "tomorrow",
+      "expected_absolute": "2028-02-29",
+      "expected_action": "persist-verified"
+    },
+    {
+      "id": "source-relative-historical-tomorrow",
+      "reference_kind": "source-document",
+      "reference_date": "2025-03-10",
+      "timezone": "Europe/Stockholm",
+      "host_date": "2026-08-14",
+      "input": "tomorrow",
+      "expected_absolute": "2025-03-11",
+      "expected_action": "persist-verified",
+      "review_check": "must remain anchored to the dated source rather than the current host session"
+    },
+    {
+      "id": "unresolved-next-week-without-week-convention",
+      "reference_kind": "user-specified",
+      "reference_date": "2026-08-13",
+      "timezone": "Europe/Stockholm",
+      "locale": null,
+      "week_start": null,
+      "input": "next week",
+      "expected_absolute": null,
+      "expected_action": "preserve-or-clarify",
+      "review_check": "must not invent a week boundary when the intended week convention is material and unresolved"
+    },
+    {
+      "id": "contradictory-weekday-date-review",
+      "reference_kind": "user-specified",
+      "reference_date": "2026-08-13",
+      "timezone": "Europe/Stockholm",
+      "input": "Friday",
+      "persisted_absolute": "2026-08-15",
+      "persisted_weekday": "Friday",
+      "actual_weekday": "Saturday",
+      "expected_action": "semantic-fidelity-finding",
+      "review_check": "Change Reviewer must admit the contradiction when it passes the normal evidence, consequence, confidence, and threshold test"
+    }
+  ]
+}

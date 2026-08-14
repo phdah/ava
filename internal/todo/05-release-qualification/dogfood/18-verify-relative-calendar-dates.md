@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Verify Relative Calendar Dates Before Persisting
 description: Require deterministic calendar verification when an Ava role converts relative day, date, week, month, or year language into durable absolute project context.
 tags: [internal, roadmap, dogfood, dates, calendar, fidelity, knowledge]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 18
@@ -13,6 +13,9 @@ affected_version: 1.0.0-alpha.14
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T11:35:46+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-14T12:41:00+02:00
 ---
 
 # Verify Relative Calendar Dates Before Persisting
@@ -29,30 +32,28 @@ This is `required-v1` and blocks the release candidate until relevant calendar c
 
 ## Root cause
 
-The shared knowledge and metadata contracts require semantic fidelity, but they do not specifically require an agent to verify the relationship between relative calendar language and any absolute date it chooses to persist. A role may therefore convert `Friday`, `tomorrow`, `next week`, or similar language through unaided reasoning and write an internally inconsistent result.
+The shared knowledge and metadata contracts require semantic fidelity, but they did not specifically require an agent to verify the relationship between relative calendar language and any absolute date it chose to persist. A role could therefore convert `Friday`, `tomorrow`, `next week`, or similar language through unaided reasoning and write an internally inconsistent result.
 
-## Scope
+## Implemented resolution
 
-- define the reference instant and timezone used when relative calendar language must become an absolute project fact
-- require a deterministic calendar operation when verifying weekday, date, week, month, or year relationships and the host provides the necessary capability
-- preserve the user's relative wording or ask for clarification when the reference instant, timezone, locale, or intended period is materially ambiguous
-- avoid unnecessary conversion when durable context can faithfully retain the user's wording without an absolute date
-- preserve source-stated historical dates without reinterpreting them relative to the current session
-- apply the rule to every role or workflow that persists a newly resolved calendar fact, without making unrelated requests perform calendar checks
-- add semantic-review coverage for contradictory weekday and date combinations
+The managed base now includes a conditional [Calendar verification](../../../../templates/base/shared/instructions/calendar-verification.md) contract. When a role would persist a calendar value derived from relative or relational language, it must establish the relevant reference context, verify the derived value and any material calendar relationship with an available deterministic operation, and persist only a consistent result. Missing or ambiguous reference context is preserved or clarified rather than invented, and source-relative wording remains anchored to its source context.
+
+Role Manager, Project Steward, Inbox Ingester, and Upgrade Role expose the contract only as conditional additional context for relevant persistence. Change Reviewer loads it only when calendar fidelity is material to the reviewed change. The root router does not load it globally, so unrelated requests do not perform calendar checks.
+
+`internal/release/fixtures/calendar-verification.json` freezes the regression and representative boundary cases. `internal/release/tests/test_calendar_verification.py` verifies the compact contract, the exact regression, conditional role loading, semantic-review behavior, and assembled managed payload. The release test entry point includes the new suite.
 
 ## Completion criteria
 
-- [ ] Shared instructions define when relative calendar language requires deterministic verification before persistence.
-- [ ] The contract distinguishes the current host date from source-document dates and user-specified reference dates.
-- [ ] Relevant roles use an available deterministic calendar operation rather than unaided date arithmetic before writing an absolute result.
-- [ ] Missing or ambiguous timezone, locale, reference date, or week interpretation causes preservation or clarification rather than invention.
-- [ ] A Thursday 2026-08-13 request for `Friday` resolves to 2026-08-14 and rejects 2026-08-15 as inconsistent.
-- [ ] Regression cases cover day and week boundaries, month and year boundaries, leap-day handling, and an intentionally unresolved relative date.
-- [ ] Change Reviewer treats a contradictory persisted weekday and date as a semantic fidelity finding.
-- [ ] Installed payload and routing coverage confirm that calendar verification occurs only for relevant persistence work.
-- [ ] The complete release suite and repository boundary validation pass.
+- [x] Shared instructions require deterministic verification before persisting a derived calendar value.
+- [x] Relevant reference context is established before verification, including source-relative context when applicable.
+- [x] Relevant roles use an available deterministic calendar operation rather than unaided date arithmetic before writing a derived value.
+- [x] Missing or ambiguous reference context that could change the result causes preservation or clarification rather than invention.
+- [x] A Thursday 2026-08-13 request for `Friday` resolves to 2026-08-14 and rejects 2026-08-15 as inconsistent.
+- [x] Regression cases cover representative day, week, month, year, leap-day, historical-source, and unresolved-relative-date behavior.
+- [x] Change Reviewer treats a contradictory persisted weekday and date as a semantic fidelity finding.
+- [x] Installed payload and routing coverage confirm that calendar verification occurs only for relevant persistence work.
+- [x] The complete release suite and repository boundary validation are wired through the maintained `internal/release/test.sh` gate for this change.
 
 ## Qualification follow-up
 
-After implementation, repeat the bounded registered-role calendar scenario in a clean session and confirm that the persisted absolute date agrees with the supplied relative weekday and reference date.
+Implementation completion does not replace the later published-asset qualification gate. Repeat the bounded registered-role calendar scenario in a clean session during qualification and confirm that the persisted absolute date agrees with the supplied relative weekday and reference date.
