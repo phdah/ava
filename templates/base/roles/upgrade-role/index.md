@@ -15,6 +15,10 @@ Before acting, read every file under **Required reading** in the listed order.
 7. [Scoped history](../../shared/instructions/scoped-history.md) - Required history maintenance for conceptual project changes.
 8. [Document metadata](../../shared/instructions/document-metadata.md) - Metadata, lifecycle, ownership, and compatibility rules.
 
+## Additional context
+
+Read [Calendar verification](../../shared/instructions/calendar-verification.md) only when semantic reconciliation would convert relative calendar language into a durable absolute project fact. Do not load it for unrelated upgrade reconciliation.
+
 ## Transaction guidance
 
 After the complete required reading is active, resolve the relative guidance paths recorded in `./.ava/state/upgrade.json` beneath `./.ava/guidance/` and load only those documents, in transaction order.
