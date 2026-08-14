@@ -12,7 +12,7 @@ generated:
   at: 2026-08-07T15:45:02+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T11:21:21+02:00
+  at: 2026-08-14T11:40:00+02:00
 ---
 
 # Build the Synthetic V1 Qualification Vault
@@ -211,11 +211,11 @@ Generated fictional content and execution evidence remain outside the repository
 
 ## Repository implementation evidence
 
-The reviewed fixture implementation is available at [`internal/release/fixtures/synthetic-qualification-vault/`](../../release/fixtures/synthetic-qualification-vault/). Its documented commands generate, verify, finalize images, and materialize variants only in an explicit output directory outside the Ava repository.
+The reviewed fixture implementation is available at [`internal/release/fixtures/synthetic-qualification-vault/`](../../release/fixtures/synthetic-qualification-vault/). Its documented commands generate, verify, finalize images, materialize variants, and create authentic interrupted-upgrade qualification checkpoints only in explicit repository-external projects and asset directories.
 
-The implementation fixes a 300-file deterministic baseline and five external image slots for a finalized 305-file corpus. It writes the raw sources directly into the four chronological qualification batches, uses only Python 3.11 standard-library facilities, creates normalized DOCX, PDF, PPTX, CSV, and ICS files, emits per-source expected outcomes, and rejects repository-local output through resolved-path checks.
+The implementation fixes a 300-file deterministic baseline and five external image slots for a finalized 305-file corpus. It writes the raw sources directly into the four chronological qualification batches, uses only Python 3.11 standard-library facilities, creates normalized DOCX, PDF, PPTX, CSV, and ICS files, emits per-source expected outcomes, and rejects repository-local generated output through resolved-path checks.
 
-On 2026-08-09, clean retained generations under `/tmp/opencode/ava-synthetic-vault-y` with CPython 3.11.14 and `/tmp/opencode/ava-synthetic-vault-z` with CPython 3.13.12 produced byte-identical output. Draft 2020-12 validation accepted both schemas and their generated instances. Repository tests cover image-finalizer mechanics, deterministic variant workspace and execution-plan construction, baseline preservation, installed conformance of the registered-role workspace, source and chronology validation, completed-run evidence binding, and exclusion from assembled release assets. They do not count planned managed states or test-only image bytes as qualification evidence.
+On 2026-08-09, clean retained generations under `/tmp/opencode/ava-synthetic-vault-y` with CPython 3.11.14 and `/tmp/opencode/ava-synthetic-vault-z` with CPython 3.13.12 produced byte-identical output. Draft 2020-12 validation accepted both schemas and their generated instances. Repository tests cover image-finalizer mechanics, deterministic variant workspace and execution-plan construction, baseline preservation, installed conformance of the registered-role workspace, source and chronology validation, completed-run evidence binding, interrupted-upgrade checkpoint setup and recovery, and exclusion from assembled release assets. Planned managed states and checkpoint setup JSON do not count as qualification execution evidence.
 
 ```text
 baseline oracle SHA-256: fe65371084f6bdb2ae38da0fe31e4be3fda9be8ebe93f6fbc80b168e86d5ca46
@@ -223,10 +223,7 @@ deterministic corpus: 300 files
 deterministic batch counts: 77 pre-move, 37 move-transition, 46 renovation, 140 settled
 pending external image slots: 5
 finalized corpus target: 305 files
-focused fixture tests: 11 passed
-complete release suite: 193 passed
-repository boundary validation: passed
-OpenCode available for later clean-session qualification: 1.17.13
+OpenCode available for clean-session qualification: 1.17.13
 ```
 
 ## External qualification progress
@@ -247,10 +244,11 @@ Current external progress:
 - [x] image finalization and finalized-corpus verification recorded
 - [x] materialize the eight qualification variants
 - [x] exercise clean OpenCode ingestion and independent review using `~/stuff/project-vault` where the execution plan calls for the manual test project
-- [ ] exercise routing, hierarchy, fidelity, damaged-state, upgrade, recovery, semantic reconciliation, finalization, uninstall, and reinstall scenarios; resume and abort are blocked by finding 17
-- [ ] populate and validate the required run manifests
+- [x] exercise routing, hierarchy, fidelity, damaged-state, semantic reconciliation, finalization, rollback, uninstall, and reinstall scenarios except resume and abort
+- [ ] execute authentic resume and abort using the maintained qualification checkpoint harness and exact selected target assets
+- [ ] populate and validate the remaining required run manifests and accept final qualification evidence
 
-The task remains pending because deterministic resume and abort execution plus final qualification signoff are still required. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. The current next action is to resolve [finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md), execute those two scenarios, and return to the operator sequence in [V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification).
+[Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) is implementation-complete. The task remains pending only because the selected-asset resume and abort execution plus final qualification signoff are still required. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. The current next action is to follow the interrupted-upgrade [checkpoint procedure](../../release/fixtures/synthetic-qualification-vault/checkpoints.md), record both terminal outcomes, and return to the operator sequence in [V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification).
 
 ## Completion criteria
 
