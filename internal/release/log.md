@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-08-14
+
+- **One-command synthetic qualification**: Added one repository-only manual shell entry point for the complete pinned-input synthetic qualification matrix, with safe external workspaces, exact managed-damage interpretation, authentic resume and abort checkpoints, calendar regression coverage, bounded OpenCode execution, interrupted reruns, and deterministic terminal summaries. The complete matrix remains a local maintainer operation; CI exercises only bounded runner tests.
+
 ## 2026-08-10
 
 - **Release-impact-based change types**: Conventional Commit types now describe impact on the supported Ava distribution rather than implementation novelty or repository location. Repository-only qualification, tests, CI, documentation, and maintenance remain non-releasable when they do not change produced assets or supported behavior, while internal release tooling remains releasable when its output or guarantees change. Maintained examples and release tests freeze the boundary, including the synthetic qualification vault case.
