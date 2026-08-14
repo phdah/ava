@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T15:39:53+02:00
+  at: 2026-08-14T16:27:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,13 +25,22 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 ## Official next action
 
-**Implement hands-off release qualification and evidence-state automation.**
+**Execute the hands-off qualification for the active exact release pair.**
 
-[Automate release qualification and evidence state](todo/05-release-qualification/04c-automate-release-qualification-evidence.md) is required before another synthetic qualification run. It will compose exact published or local release acquisition, immutable pinned images, clean fixture generation, the maintained matrix, complete OpenCode session inventory, a fresh-session audit, and compact checked-in release-state evidence behind one non-interactive internal operation.
+[Automate release qualification and evidence state](todo/05-release-qualification/04c-automate-release-qualification-evidence.md) is implementation-complete. The required next action is now the automated Step 1 qualification run through [Hands-Off Release Qualification and Evidence State](release/qualification-automation.md).
 
-Implement and validate that bounded task before repeating qualification. The automated audit must fail the operation on blocking or major findings, successful execution must remain `awaiting-user-signoff`, and generated evidence must be written without an automatic Git commit.
+For the checked-in active pair, run:
 
-The existing [One-Command Synthetic Qualification Runner](../internal/release/qualification-runner.md) remains an implementation component and reference procedure. It is not the next manual action while the required automation task is pending.
+```sh
+internal/release/qualify-release.sh \
+  --target-assets /absolute/path/to/v1.0.0-alpha.15/assets
+```
+
+The operation acquires and verifies immutable published `v1.0.0-alpha.14` source assets, verifies the exact local corrective-alpha target assets, regenerates the pinned synthetic fixture, runs the complete maintained matrix, inventories every resulting top-level and nested OpenCode session, performs a fresh-session audit, and writes compact uncommitted evidence.
+
+Do not advance Step 1 unless the automated state is `awaiting-user-signoff` and the generated evidence is accepted explicitly. A `failed` or `needs-review` result preempts the release path until corrected.
+
+The existing [One-Command Synthetic Qualification Runner](release/qualification-runner.md) remains the lower-level maintained matrix component behind the hands-off operation. It is no longer the normal operator entry point.
 
 ## Official path to `1.0.0`
 
