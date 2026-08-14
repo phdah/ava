@@ -4,6 +4,7 @@ This log records major conceptual and structural changes to Ava's internal relea
 
 ## 2026-08-14
 
+- **Hands-off qualification evidence state**: Added one repository-only qualification operation that resolves the reviewed exact release pair, verifies immutable published assets or exact local assets, regenerates the pinned synthetic fixture, runs the maintained matrix, captures top-level and nested OpenCode sessions, runs a fresh read-only audit, and writes compact uncommitted evidence bound to the complete execution identity. Successful automation stops at `awaiting-user-signoff`; blocking or major audit findings stop at `needs-review`.
 - **Pinned synthetic image inputs**: Imported the five visually accepted fictional qualification PNGs into the repository-only fixture with an exact manifest and maintained copy command. Clean generated vaults no longer depend on user-local image bytes, while assembly regression coverage keeps every pinned image out of Ava release assets and installed projects.
 - **One-command synthetic qualification**: Added one repository-only manual shell entry point for the complete pinned-input synthetic qualification matrix, with safe external workspaces, exact managed-damage interpretation, authentic resume and abort checkpoints, calendar regression coverage, bounded OpenCode execution, interrupted reruns, and deterministic terminal summaries. The complete matrix remains a local maintainer operation; CI exercises only bounded runner tests.
 
