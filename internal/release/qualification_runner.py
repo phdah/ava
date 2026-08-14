@@ -504,7 +504,7 @@ class Runner:
             label="OpenCode prompt",
         )
         combined = result.stdout + "\n" + result.stderr
-        if expected_role and f"Active primary role: {expected_role}" not in combined:
+        if expected_role and f"Active role: {expected_role}" not in combined:
             raise QualificationError(f"{scenario_id}: OpenCode did not announce expected role {expected_role}")
         if self.transcript_dir:
             self.transcript_dir.mkdir(parents=True, exist_ok=True)

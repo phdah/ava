@@ -202,6 +202,24 @@ class QualificationRunnerTests(unittest.TestCase):
         self.assertTrue(already)
         self.assertEqual((retained / "project/baseline.txt").read_text(), "evidence\n")
 
+    def test_opencode_role_announcement_matches_installed_contract(self) -> None:
+        qualification = runner.Runner.__new__(runner.Runner)
+        qualification.opencode = "opencode"
+        qualification.model = "provider/model"
+        qualification.transcript_dir = None
+        qualification.run_command = lambda *args, **kwargs: runner.CommandResult(
+            0, "Active role: Private Life Steward\n", ""
+        )
+
+        result = qualification.opencode_prompt(
+            "private-routing",
+            self.root,
+            "record private context",
+            expected_role="Private Life Steward",
+        )
+
+        self.assertIn("Active role: Private Life Steward", result.stdout)
+
     def test_summary_is_nonzero_for_fail_skip_or_required_decision(self) -> None:
         self.assertEqual(runner.summary_exit_status([{"outcome": "pass"}]), 0)
         for outcome in ("fail", "skipped", "user-decision-required"):
