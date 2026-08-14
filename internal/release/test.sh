@@ -58,6 +58,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_qualification_checkpoints \
   internal.release.tests.test_qualification_runner \
   internal.release.tests.test_qualification_automation \
+  internal.release.tests.test_qualification_execution_identity \
   internal.release.tests.test_adjacent_edges \
   internal.release.tests.test_release_catalog \
   internal.release.tests.test_release_catalog_history \
