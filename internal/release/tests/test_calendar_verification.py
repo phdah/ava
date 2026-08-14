@@ -111,7 +111,7 @@ class CalendarVerificationTests(unittest.TestCase):
         self.assertIn("Do not rely on unaided mental date arithmetic", self.contract)
         self.assertIn("2026-08-14", self.contract)
         self.assertIn("2026-08-15", self.contract)
-        self.assertIn("preserve the relative wording or request clarification", self.contract)
+        self.assertIn("Preserve the relative wording or request clarification", self.contract)
         self.assertIn("leap years and leap day", self.contract)
 
     def test_calendar_contract_is_discoverable_but_not_global(self) -> None:
