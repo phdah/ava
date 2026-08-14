@@ -93,6 +93,9 @@ class QualificationRunnerTests(unittest.TestCase):
         self.assertEqual(calendar["expected_weekday"], "Friday")
         self.assertEqual(calendar["expected_date"], "2026-08-14")
         self.assertEqual(calendar["forbidden_date"], "2026-08-15")
+        inbox = next(item for item in matrix["scenarios"] if item["kind"] == "complete-inbox")
+        self.assertIn("personal expense incurred for work", inbox["prompt"])
+        self.assertIn("source-attributed claim", inbox["prompt"])
 
     def test_asset_validation_requires_pinned_checksummed_identity(self) -> None:
         source = self.make_assets(
