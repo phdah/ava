@@ -18,6 +18,7 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Alpha qualification policy](alpha-qualification.md)
 - [Hands-off release qualification procedure](qualification-automation.md)
 - [Hands-off qualification shell entry point](qualify-release.sh)
+- [Qualification OpenCode session adapter](qualification-opencode.sh)
 - [Hands-off qualification implementation](qualification_automation.py)
 - [Qualification configuration and compact evidence state](qualification/)
 - [One-command synthetic qualification component](qualification-runner.md)
