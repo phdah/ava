@@ -5,6 +5,7 @@ ROOT=$(CDPATH= cd "$(dirname "$0")/../.." && pwd)
 export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
 cd "$ROOT"
 
+sh "$ROOT/internal/release/validate-boundaries.sh"
 sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
 python3 -m py_compile \
