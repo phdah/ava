@@ -6,13 +6,26 @@ tags: [internal, release, qualification, audit, opencode]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T16:27:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-14T16:27:00+02:00
 ---
 
 # Scope
 
 Audit only the exact qualification run named in the appended run inputs. This is an independent, read-only review. Do not edit the Ava repository, generated fixture, isolated projects, runner evidence, transcripts, release assets, or qualification state.
 
-Use the supplied session inventory as the complete session boundary. Inspect every listed top-level and nested session and reconcile it against the runner evidence, applicable release contracts, and fixture oracle. Treat command errors, retries, nested work, superseded attempts, missing evidence, and runner acceptance gaps as evidence that may weaken a terminal claim.
+Use the supplied session inventory as the complete session boundary. Inspect every listed top-level and nested session and reconcile it against the runner evidence, applicable release contracts, and fixture oracle. Do not inspect or infer from unrelated OpenCode sessions.
+
+For each exact `session_id` in the inventory, read its complete session export with:
+
+```sh
+internal/release/qualification-opencode.sh export <session_id>
+```
+
+The qualification OpenCode adapter forwards export unchanged to the same underlying OpenCode installation used by the run. The inventory transcript digest is the integrity oracle for the export. If an export is missing, unreadable, or does not match the recorded transcript digest, admit that as an evidence limitation and do not treat the affected terminal claim as proven.
+
+Treat command errors, retries, nested work, superseded attempts, missing evidence, and runner acceptance gaps as evidence that may weaken a terminal claim.
 
 # Required review
 
