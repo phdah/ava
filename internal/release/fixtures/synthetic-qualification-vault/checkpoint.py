@@ -9,8 +9,9 @@ import contextlib
 import hashlib
 import io
 import json
+import sys
 from pathlib import Path
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 from typing import Any
 
 
@@ -77,9 +78,17 @@ def installer_namespace(installer: Path) -> dict[str, Any]:
         raise CheckpointError("assembled installer execution wrapper does not invoke main through SystemExit")
     tree.body.pop()
     ast.fix_missing_locations(tree)
-    namespace: dict[str, Any] = {"__name__": "__ava_qualification_checkpoint__"}
-    exec(compile(tree, str(installer), "exec"), namespace)
-    return namespace
+
+    module_name = f"_ava_qualification_installer_{hashlib.sha256(str(installer).encode()).hexdigest()[:16]}"
+    module = ModuleType(module_name)
+    module.__file__ = str(installer)
+    sys.modules[module_name] = module
+    try:
+        exec(compile(tree, str(installer), "exec"), module.__dict__)
+    except Exception as exc:
+        sys.modules.pop(module_name, None)
+        raise CheckpointError(f"cannot load assembled installer Python payload: {exc}") from exc
+    return module.__dict__
 
 
 def release_managed_paths(release: dict[str, Any]) -> set[str]:
@@ -313,7 +322,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         result = create_checkpoint(args.checkpoint, args.target, args.asset_dir)
     except (CheckpointError, OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
-        print(f"qualification checkpoint error: {exc}", file=__import__("sys").stderr)
+        print(f"qualification checkpoint error: {exc}", file=sys.stderr)
         return 1
     print(json.dumps(result, sort_keys=True))
     return 0
