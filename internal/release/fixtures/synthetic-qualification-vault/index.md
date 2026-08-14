@@ -5,6 +5,7 @@ This repository-only fixture generates the repeatable raw corpus used for Ava v1
 - [Reviewed blueprint](blueprint.md) - Narrative, inventory, safety, reproducibility, and command contract.
 - [Canonical fact sheet](blueprint.json) - Sole machine-readable source for identities, dates, recurring facts, state transitions, class counts, formats, and image slots.
 - [Generator and validator](fixture.py) - Standard-library generation, verification, image finalization, and variant materialization entry point.
+- [Qualification scenario matrix](qualification-matrix.json) - Deterministic eight-family scenario order, exact bounded OpenCode prompts, calendar assertions, and stable managed-damage rule expectations used by the one-command runner.
 - [Interrupted upgrade checkpoint harness](checkpoint.py) - Qualification-only execution of the exact assembled installer with deterministic abort and resume interruption boundaries.
 - [Interrupted upgrade checkpoint procedure](checkpoints.md) - Exact checkpoint, recovery, terminal-state, cleanup, and evidence commands for the interrupted-upgrade scenarios.
 - [Dependency lock](requirements.lock) - Runtime and dependency boundary for deterministic generation.
