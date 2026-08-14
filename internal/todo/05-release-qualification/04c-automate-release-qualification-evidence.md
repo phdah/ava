@@ -33,6 +33,7 @@ This is internal release tooling. It must not create a distributed Ava CLI, pers
 - Published assets require GitHub immutable-release attestation verification followed by verification of the exact seven-asset `SHA256SUMS` inventory.
 - Reuse one immutable five-image qualification set instead of generating new image bytes for every run.
 - Store the five visually accepted PNG files and their exact manifest under the repository-only synthetic fixture scope. Generated corpus copies remain repository-external.
+- Use `internal/release/generate-synthetic-qualification-vault.sh` as the maintained one-command fixture entry point instead of reconstructing its generation, pinned-image installation, finalization, verification, and variant-materialization sequence in the orchestrator.
 - Record `qualification_model` and `audit_model` as separate checked-in fixed fields. Initialize both to `openai/gpt-5.6-sol` while allowing a reviewed future state change to update either field independently.
 - Run the audit in a fresh OpenCode session after qualification. The audit must inspect the exact child and nested sessions bound to that run.
 - A blocking or major audit finding makes the operation nonzero and records the release pair as `needs-review`.
@@ -76,8 +77,8 @@ The operation must:
 3. For a published side, download the exact tag's seven assets with `gh`, verify immutable-release attestations, reject mutable aliases, and verify every checksum and manifest identity.
 4. For a local side, resolve the exact supplied directory and apply the same normal-file, checksum, identity, and edge validation without claiming publication or attestation evidence.
 5. Verify the committed pinned qualification-image manifest and every image digest, size, media type, and destination.
-6. Generate a clean deterministic synthetic baseline with the maintained fixture implementation.
-7. Copy only the five verified committed images to their declared corpus destinations through the maintained fixture command, then run image finalization, complete fixture verification, and variant materialization.
+6. Invoke `internal/release/generate-synthetic-qualification-vault.sh` with its `TMPDIR` set to the isolated run's fixture parent, then retain the output path it reports.
+7. Require the wrapper to complete clean deterministic generation, exact committed-image verification and placement, image finalization, complete fixture verification, and variant materialization before continuing.
 8. Create a deterministic repository-external test-project boundary instead of depending on a user-owned project path.
 9. Run mutation-free qualification preflight and then the complete maintained qualification matrix with the checked-in qualification model.
 10. Preserve complete runner evidence long enough for audit and user signoff. Never delete failed or `needs-review` evidence automatically.
@@ -142,7 +143,7 @@ Do not commit generated raw corpus files, copied corpus images, release asset ar
 2. Add the checked-in alpha.13-to-alpha.14 historical pair and separate qualification/audit model fields.
 3. Validate the committed pinned qualification-image manifest and exact source-to-corpus placement contract.
 4. Implement published and local release-asset resolution with strict identity, attestation, checksum, edge, and boundary checks.
-5. Compose fixture generation, pinned-image placement, finalization, verification, variant materialization, and temporary test-project creation.
+5. Compose `internal/release/generate-synthetic-qualification-vault.sh` and temporary test-project creation without duplicating the maintained fixture lifecycle in the orchestrator.
 6. Harden runner ownership and rerun state so retained scenarios are bound to the complete execution identity.
 7. Add complete top-level and nested OpenCode session inventory capture.
 8. Implement the fresh-session audit prompt, output schema, validation, and severity gate.
@@ -159,7 +160,7 @@ Use local fakes and fixtures to cover:
 - attestation and checksum failure
 - published and local asset identity
 - pinned image manifest identity, byte integrity, and five-file placement
-- deterministic fixture generation composition
+- one-command deterministic fixture generation composition through `internal/release/generate-synthetic-qualification-vault.sh`
 - complete execution-identity binding and safe scenario reuse
 - changed asset, model, matrix, repository, OpenCode, fixture, or image identity refusing retained outcomes
 - top-level and nested session inventory completeness

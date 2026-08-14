@@ -4,6 +4,7 @@ This repository-only fixture generates the repeatable raw corpus used for Ava v1
 
 - [Reviewed blueprint](blueprint.md) - Narrative, inventory, safety, reproducibility, and command contract.
 - [Canonical fact sheet](blueprint.json) - Sole machine-readable source for identities, dates, recurring facts, state transitions, class counts, formats, and image slots.
+- [One-command generator](../../generate-synthetic-qualification-vault.sh) - Creates and validates a complete finalized vault with all variants under `/tmp`.
 - [Generator and validator](fixture.py) - Standard-library generation, verification, image finalization, and variant materialization entry point.
 - [Pinned qualification images](images/) - Five immutable accepted PNG inputs and their exact manifest.
 - [Qualification scenario matrix](qualification-matrix.json) - Deterministic eight-family scenario order, exact bounded OpenCode prompts, calendar assertions, and stable managed-damage rule expectations used by the one-command runner.

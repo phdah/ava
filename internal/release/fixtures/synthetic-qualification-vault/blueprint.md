@@ -72,6 +72,14 @@ The five image slots add five structurally decoded PNG files. They cover Uno, th
 
 The implementation uses the repository's Python 3.11-or-newer runtime contract and no third-party packages. The baseline does not embed the executing interpreter's patch version, and date selection uses SHA-256 ranking rather than runtime-dependent pseudorandom sampling. OOXML archives use stored entries, fixed timestamps, sorted paths, fixed document properties, and no library-generated identifiers. PDF object order, metadata, line wrapping, and timestamps are fixed. Text uses UTF-8, LF endings, and deterministic ordering.
 
+Generate and validate a finalized vault with all variants in one operation. The command retains a unique output under `/tmp` and prints its path:
+
+```sh
+internal/release/generate-synthetic-qualification-vault.sh
+```
+
+The individual lifecycle commands below remain available for diagnosis and partial fixture work.
+
 Generate a clean baseline:
 
 ```sh

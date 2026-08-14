@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import runpy
 import struct
 import subprocess
@@ -23,6 +24,7 @@ ORACLE_SCHEMA = FIXTURE_ROOT / "oracle.schema.json"
 RUN_SCHEMA = FIXTURE_ROOT / "run-manifest.schema.json"
 PINNED_IMAGE_MANIFEST = FIXTURE_ROOT / "images/manifest.json"
 ASSEMBLER = SOURCE_ROOT / "internal/release/assemble.py"
+GENERATE_SCRIPT = SOURCE_ROOT / "internal/release/generate-synthetic-qualification-vault.sh"
 REVISION = "0123456789abcdef0123456789abcdef01234567"
 
 
@@ -65,6 +67,28 @@ class SyntheticQualificationVaultTests(unittest.TestCase):
 
     def add_images(self, output: Path) -> None:
         self.run_fixture("install-pinned-images", output)
+
+    def test_one_command_generator_creates_valid_finalized_vault(self) -> None:
+        result = subprocess.run(
+            [str(GENERATE_SCRIPT)],
+            cwd=SOURCE_ROOT,
+            env={**os.environ, "TMPDIR": str(self.root)},
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        if result.returncode != 0:
+            self.fail(f"one-command generation failed\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}")
+
+        outputs = list(self.root.glob("ava-synthetic-qualification-vault.*"))
+        self.assertEqual(len(outputs), 1)
+        output = outputs[0]
+        self.assertIn(f"synthetic qualification vault ready: {output}", result.stdout)
+        finalized = json.loads((output / "oracle/finalized-inventory.json").read_text())
+        variants = json.loads((output / "variants/index.json").read_text())
+        self.assertEqual(finalized["finalized_count"], 305)
+        self.assertEqual(len(finalized["external_images"]), 5)
+        self.assertEqual(len(variants["families"]), 8)
 
     def test_blueprint_fixes_narrative_counts_formats_and_image_slots(self) -> None:
         blueprint = json.loads(BLUEPRINT.read_text())
