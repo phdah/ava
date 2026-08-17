@@ -65,6 +65,35 @@
       ]
     },
     {
+      "id": "delegated-batch-requires-coordinator-reconciliation",
+      "sources": [
+        "inbox/2026-05-01.md",
+        "inbox/2026-05-02.md",
+        "inbox/2026-05-03.md",
+        "inbox/2026-05-04.md"
+      ],
+      "child_assignments": {
+        "child-a": [
+          "inbox/2026-05-01.md",
+          "inbox/2026-05-02.md"
+        ],
+        "child-b": [
+          "inbox/2026-05-03.md",
+          "inbox/2026-05-04.md"
+        ]
+      },
+      "missing_child_evidence_for": "inbox/2026-05-03.md",
+      "expected_action": "withhold-complete-batch-claim",
+      "source_may_move": false,
+      "review_checks": [
+        "The coordinator retains the exact original selected-source inventory.",
+        "Every child returns a complete per-source section ledger rather than only success counts.",
+        "Every selected source reconciles exactly once across disjoint child assignments.",
+        "Missing child evidence prevents batch completion even when all source files were moved.",
+        "Cross-child source-specific claims retain precise claim provenance in shared destinations."
+      ]
+    },
+    {
       "id": "unresolved-footnote-marker-blocks-completion",
       "source": "inbox/incident-summary.md",
       "destination_marker": "[^incident-2026-06-10]",

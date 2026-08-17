@@ -31,6 +31,7 @@ class InboxIngestionFidelityTests(unittest.TestCase):
                 "long-multi-topic-source-requires-complete-inventory",
                 "uncertain-causal-language-remains-uncertain",
                 "claims-from-different-sources-keep-distinct-attribution",
+                "delegated-batch-requires-coordinator-reconciliation",
                 "unresolved-footnote-marker-blocks-completion",
                 "incorrect-source-attribution-blocks-completion",
                 "frontmatter-only-source-remains-unchanged",
@@ -80,14 +81,31 @@ class InboxIngestionFidelityTests(unittest.TestCase):
         self.assertIn("footnote label must exactly equal one `sources[].id`", self.fidelity)
         self.assertIn("same preserved source identified by `sources[].resource`", self.fidelity)
         self.assertIn("actual source passage must support the attributed claim", self.fidelity)
+        self.assertIn("source-specific claims", self.fidelity)
+        self.assertIn("differ in author, date, chronology, certainty, status", self.fidelity)
         self.assertIn("A bare marker", self.fidelity)
+
+    def test_delegated_batches_require_one_coordinator_ledger(self) -> None:
+        case = self.cases["delegated-batch-requires-coordinator-reconciliation"]
+        self.assertFalse(case["source_may_move"])
+        self.assertEqual(len(case["sources"]), 4)
+        self.assertEqual(
+            set(case["child_assignments"]["child-a"]) & set(case["child_assignments"]["child-b"]),
+            set(),
+        )
+        self.assertIn("# Delegated and large-batch ingestion", self.fidelity)
+        self.assertIn("owns one complete selected-source ledger", self.fidelity)
+        self.assertIn("explicit, disjoint source subset", self.fidelity)
+        self.assertIn("Child-session success is provisional batch evidence", self.fidelity)
+        self.assertIn("reconcile every originally selected source exactly once", self.workflow)
+        self.assertIn("Missing or overlapping child evidence prevents a complete batch result", self.workflow)
 
     def test_workflow_requires_inventory_and_final_reconciliation(self) -> None:
         self.assertIn("inventory every substantive section", self.workflow)
         self.assertIn("preserving uncertainty, causality, attribution", self.workflow)
         self.assertIn("renderable claim-level Markdown footnotes", self.workflow)
         self.assertIn("read-only final-state reconciliation", self.workflow)
-        self.assertIn("counts recomputed from the final", self.workflow)
+        self.assertIn("reconciled final pending, processed, destination, and index inventories", self.workflow)
 
     def test_reviewer_loads_semantic_fidelity_contract(self) -> None:
         self.assertIn(
@@ -97,6 +115,7 @@ class InboxIngestionFidelityTests(unittest.TestCase):
         self.assertIn("processed-source completion", self.reviewer_index)
         self.assertIn("# Independent semantic review", self.fidelity)
         self.assertIn("every selected source", self.fidelity)
+        self.assertIn("delegated or parallel work still provides complete per-source evidence", self.fidelity)
         self.assertIn("deterministic validation is reported separately", self.fidelity)
         self.assertIn(
             "must not claim that machine-readable fixtures or link validation prove meaning preservation",
@@ -115,6 +134,7 @@ class InboxIngestionFidelityTests(unittest.TestCase):
     def test_semantic_failures_block_source_movement(self) -> None:
         for case_id in (
             "long-multi-topic-source-requires-complete-inventory",
+            "delegated-batch-requires-coordinator-reconciliation",
             "unresolved-footnote-marker-blocks-completion",
             "incorrect-source-attribution-blocks-completion",
             "frontmatter-only-source-remains-unchanged",

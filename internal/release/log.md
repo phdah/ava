@@ -9,6 +9,10 @@ This log records major conceptual and structural changes to Ava's internal relea
 - **Revision-bound merge safety**: Release acceptance is bound to the qualified repository revision and local asset identity. Any non-qualification content change after qualification requires a fresh run and signoff.
 - **Historical release-quality backfill**: Releases `v1.0.0-alpha.1` through `v1.0.0-alpha.14` are explicitly grandfathered as accepted with `basis: historical-backfill`, without claiming they ran the current qualification system.
 
+## 2026-08-15
+
+- **Semantic inspection postconditions**: Added fixture-declared project-path accounting for semantic reconciliation and a deterministic post-run gate that changes otherwise passing scenarios to failure when required inspected or changed paths are missing, duplicated, or unresolved.
+
 ## 2026-08-14
 
 - **Hands-off qualification evidence state**: Added one repository-only qualification operation that resolves the reviewed exact release pair, verifies immutable published assets or exact local assets, regenerates the pinned synthetic fixture, runs the maintained matrix, captures top-level and nested OpenCode sessions, runs a fresh read-only audit, and writes compact uncommitted evidence bound to the complete execution identity. Successful automation stops at `awaiting-user-signoff`; blocking or major audit findings stop at `needs-review`.

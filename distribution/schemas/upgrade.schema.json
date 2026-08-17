@@ -114,7 +114,7 @@
       "required": ["path", "change_type", "recorded_at", "resolution"],
       "properties": {
         "path": {"type": "string", "pattern": "^/"},
-        "change_type": {"enum": ["created", "modified", "deleted", "moved"]},
+        "change_type": {"enum": ["inspected", "created", "modified", "deleted", "moved"]},
         "recorded_at": {"type": "string", "format": "date-time"},
         "resolution": {"enum": ["unresolved", "retained", "reverted", "reconciled"]}
       }
