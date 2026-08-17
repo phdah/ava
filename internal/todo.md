@@ -8,70 +8,59 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T16:27:00+02:00
+  at: 2026-08-17T12:26:00+02:00
 ---
 
 # Ava Internal To-Do List
 
 This file is the authoritative entry point for answering what Ava development work comes next. It is internal repository context and must never be copied into distributed projects.
 
-Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md) for the exact ordered path from the current alpha state to `1.0.0`.
+Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md) for the exact path to `1.0.0`.
 
 ## Current phase
 
 [V1 release qualification](todo/05-release-qualification/) is active.
 
-[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open while the remaining alpha qualification work is performed. There are currently 0 pending dogfood findings, 0 pending blockers, and 0 pending `required-v1` findings.
+[Dogfood the alpha and track findings](todo/05-release-qualification/04-dogfood-alpha-and-track-findings.md) remains open until the user explicitly closes it. Any new blocker or `required-v1` finding preempts release progression until resolved.
 
 ## Official next action
 
-**Execute the hands-off qualification for the active exact release pair.**
+**Prepare the corrective-alpha release PR and qualify its exact candidate before merge.**
 
-[Automate release qualification and evidence state](todo/05-release-qualification/04c-automate-release-qualification-evidence.md) is implementation-complete. The required next action is now the automated Step 1 qualification run through [Hands-Off Release Qualification and Evidence State](release/qualification-automation.md).
+The hands-off qualification system is implementation-complete. Release-specific qualification now belongs inside the mandatory [release publication procedure](release/procedure.md):
 
-For the checked-in active pair, run:
+1. let release-please establish the target version/PR
+2. complete semantic-impact assessment and adjacent release record
+3. run deterministic validation/tests
+4. assemble the exact local target assets from the clean release PR revision
+5. run `internal/release/qualify-release.sh`
+6. obtain explicit user signoff on `awaiting-user-signoff`
+7. record acceptance with `internal/release/accept-release-qualification.sh`
+8. require the Release PR policy check to pass before merge
 
-```sh
-internal/release/qualify-release.sh \
-  --target-assets /absolute/path/to/v1.0.0-alpha.15/assets
-```
-
-The operation acquires and verifies immutable published `v1.0.0-alpha.14` source assets, verifies the exact local corrective-alpha target assets, regenerates the pinned synthetic fixture, runs the complete maintained matrix, inventories every resulting top-level and nested OpenCode session, performs a fresh-session audit, and writes compact uncommitted evidence.
-
-Do not advance Step 1 unless the automated state is `awaiting-user-signoff` and the generated evidence is accepted explicitly. A `failed` or `needs-review` result preempts the release path until corrected.
-
-The existing [One-Command Synthetic Qualification Runner](release/qualification-runner.md) remains the lower-level maintained matrix component behind the hands-off operation. It is no longer the normal operator entry point.
+Do not publish or merge a new release without accepted qualification state.
 
 ## Official path to `1.0.0`
 
-1. finish the synthetic v1 qualification vault
-2. qualify and publish the corrective alpha
+1. finish the synthetic v1 qualification system
+2. prepare, qualify, accept, and publish the corrective alpha
 3. obtain explicit user closure of alpha dogfooding
-4. publish the `1.0.0` release candidate
+4. prepare, qualify, accept, and publish the `1.0.0` release candidate
 5. stabilize the published release candidate
-6. qualify and publish `1.0.0`
+6. prepare, qualify, accept, and publish `1.0.0`
 
-The exact procedure, commands, evidence, and advancement gates are defined in the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md).
+The exact ordering and gates are defined in the [V1 release operator path](todo/05-release-qualification/v1-release-operator-path.md).
 
 ## Dogfood signoff
 
-The user does **not** need to close dogfooding before steps 1 or 2. Dogfooding intentionally remains open while the synthetic qualification work and corrective-alpha qualification are performed.
-
-Explicit user closure is required before step 4, release-candidate publication, may begin. After step 2 is complete and no blocker or `required-v1` finding remains, a clear user statement that dogfooding is complete or that Ava should proceed to the release candidate is sufficient. Do not infer closure from an empty findings backlog or passing qualification.
-
-## Preemption rule
-
-A newly recorded dogfood finding classified as `blocker` or `required-v1` preempts the current release path until it is resolved. An approved `post-v1` finding does not preempt the path.
+The user does not need to close dogfooding before the corrective alpha. Explicit closure is required before release-candidate publication begins.
 
 ## Answering "what is next?"
 
-For a status-only question such as "what am I doing next?":
+For a status-only question:
 
 1. read this file
-2. report the **Official next action** exactly as the current step
-3. read the linked section of the V1 release operator path only when the user wants the practical steps or verification commands
-4. do not reconstruct ordering from historical findings, pending checkboxes, or unrelated roadmap phases
+2. report the **Official next action**
+3. read the linked V1 operator-path section only when practical steps or gates are requested
 
-Only read deeper task, release, or fixture context when executing the work, validating a gate, or when this entry point reports a newly preempting finding.
-
-A finding is complete when its bounded repository change, regression coverage, documentation, indexes, and resolution evidence are committed. Published-asset or realistic-project evidence may remain a later release gate without returning that finding to pending implementation status.
+Do not reconstruct ordering from historical findings or unrelated roadmap phases.
