@@ -1,0 +1,26 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": 1, "type": "integer"},
+    "sessions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "model": {"minLength": 1, "type": "string"},
+          "parent_session_id": {"type": ["string", "null"]},
+          "project_root": {"minLength": 1, "type": "string"},
+          "prompt_sha256": {"pattern": "[0-9a-f]{64}", "type": "string"},
+          "scenario": {"minLength": 1, "type": "string"},
+          "session_id": {"pattern": "ses_[A-Za-z0-9]+", "type": "string"},
+          "terminal_state": {"enum": ["completed", "failed", "unknown"], "type": "string"},
+          "transcript_sha256": {"pattern": "[0-9a-f]{64}", "type": "string"}
+        },
+        "required": ["session_id", "parent_session_id", "scenario", "prompt_sha256", "model", "project_root", "transcript_sha256", "terminal_state"],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": ["schema_version", "sessions"],
+  "type": "object"
+}

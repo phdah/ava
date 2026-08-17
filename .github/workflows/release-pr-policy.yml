@@ -40,7 +40,13 @@ jobs:
           PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
             internal.release.tests.release_pr_policy_test \
             internal.release.tests.test_release_catalog \
-            internal.release.tests.test_release_catalog_history
+            internal.release.tests.test_release_catalog_history \
+            internal.release.tests.test_qualification_acceptance
           python3 -m internal.release.validate_release_pr \
+            --previous-version "$previous_version" \
+            --base-revision "$BASE_SHA"
+          python3 -m internal.release.qualification_acceptance \
+            --root . \
+            validate-release-pr \
             --previous-version "$previous_version" \
             --base-revision "$BASE_SHA"

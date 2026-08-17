@@ -1,0 +1,23 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "pairs": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "historical": {"type": "boolean"},
+          "id": {"minLength": 1, "type": "string"},
+          "source": {"type": "object"},
+          "target": {"type": "object"}
+        },
+        "required": ["id", "historical", "source", "target"],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "schema_version": {"const": 1, "type": "integer"}
+  },
+  "required": ["schema_version", "pairs"],
+  "type": "object"
+}

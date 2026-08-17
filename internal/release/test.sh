@@ -9,6 +9,9 @@ sh "$ROOT/internal/release/validate-boundaries.sh"
 sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
 sh -n "$ROOT/internal/release/qualify-synthetic.sh"
+sh -n "$ROOT/internal/release/qualify-release.sh"
+sh -n "$ROOT/internal/release/accept-release-qualification.sh"
+sh -n "$ROOT/internal/release/qualification-opencode.sh"
 python3 -m py_compile \
   "$ROOT/internal/release/adjacent_edges.py" \
   "$ROOT/internal/release/release_catalog.py" \
@@ -22,6 +25,8 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/qualification_runner.py" \
   "$ROOT/internal/release/qualification_postconditions.py" \
+  "$ROOT/internal/release/qualification_automation.py" \
+  "$ROOT/internal/release/qualification_acceptance.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/checkpoint.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \
@@ -57,6 +62,10 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_qualification_checkpoints \
   internal.release.tests.test_qualification_runner \
   internal.release.tests.test_qualification_postconditions \
+  internal.release.tests.test_qualification_automation \
+  internal.release.tests.test_qualification_execution_identity \
+  internal.release.tests.test_qualification_opencode_adapter \
+  internal.release.tests.test_qualification_acceptance \
   internal.release.tests.test_adjacent_edges \
   internal.release.tests.test_release_catalog \
   internal.release.tests.test_release_catalog_history \

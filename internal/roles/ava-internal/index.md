@@ -29,7 +29,7 @@ Read these files before acting:
 2. [Repository README](/README.md) - Project purpose, architectural direction, and boundaries.
 3. [Role definition](role.md) - Purpose, authority, activation, and scope.
 4. [Instructions](instructions.md) - Required working behaviour, scoped delegation, and repository maintenance rules.
-5. [Capabilities](capabilities.md) - Actions the role is allowed to perform.
+5. [Capabilities](capabilities.md) - Actions this role is allowed to perform.
 6. [Constraints](constraints.md) - Actions and decisions the role must avoid or escalate.
 
 # Conditional specialist reading
@@ -46,6 +46,7 @@ Use the selected base role only as delegated specialist instructions under the p
 Read these only when relevant:
 
 - [Internal to-do list](/internal/todo.md) - Planned Ava development work. Read this when the user asks about the to-do list, asks to select or complete a listed task, or refers to planned repository work.
+- [Release publication procedure](/internal/release/procedure.md) - Authoritative release flow. Read this whenever the user asks to make, prepare, review, accept, merge, publish, or qualify an Ava release or release-please PR.
 - [Role update log](log.md) - Major conceptual changes to this role.
 - [Internal update log](/internal/log.md) - Major conceptual changes across internal development instructions.
 - [Repository update log](/log.md) - Major conceptual and structural changes across the repository.
