@@ -1,111 +1,93 @@
 ---
 type: Internal Release Qualification Procedure
 title: Hands-Off Release Qualification and Evidence State
-description: One non-interactive maintainer operation for exact release acquisition, clean synthetic qualification, complete OpenCode session audit, and compact reviewable evidence state.
+description: Mandatory pre-merge release qualification, independent audit, explicit user acceptance, and release-quality state.
 tags: [internal, release, qualification, automation, evidence, opencode]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-14T16:27:00+02:00
+  at: 2026-08-17T12:26:00+02:00
 ---
 
 # Purpose
 
-`qualify-release.sh` is the maintainer entry point for a complete release qualification run. It resolves the one reviewed active release pair, creates a fresh isolated synthetic vault and test boundary, runs the maintained qualification matrix, inventories every OpenCode session created by that run including nested sessions, performs an independent read-only audit in a fresh session, and writes compact evidence for review.
+Every Ava release must pass `qualify-release.sh` before its release-please PR may merge.
 
-This is repository-only release tooling. It does not create a distributed Ava command, commit generated evidence, authorize publication, or change dogfood findings automatically.
+The operation qualifies the exact previous published release against one exact locally assembled target from the release PR branch. It runs the maintained matrix, inventories every top-level and nested OpenCode session, performs an independent audit, and writes compact evidence.
 
-# Checked-in control state
+A clean automated run stops at `awaiting-user-signoff`. Publication remains blocked until the user explicitly accepts that run.
+
+# Control state
 
 `internal/release/qualification/` contains:
 
-- one explicit active pair in `config.json`
-- fixed `qualification_model` and `audit_model` fields
-- exact reviewed release selectors and the historical pair ledger in `pair-catalog.json`
-- current automated and later user-owned signoff state in `current-state.json`
-- schemas, the independent audit contract, and compact run evidence
+- `config.json`: the active qualification pair and models
+- `pair-catalog.json`: exact source/target selectors used to execute qualification
+- `current-state.json`: pair execution state plus the durable release-acceptance ledger
+- `runs/`: compact run, session, issue, and audit evidence
+- `schemas/`: state and evidence schemas
+- `audit-prompt.md`: the prompt/contract used by the independent audit session
 
-The historical `1.0.0-alpha.13 -> 1.0.0-alpha.14` pair is retained separately. Its evidence can never qualify the active corrective pair.
+Historical releases through `v1.0.0-alpha.14` are explicitly accepted with `basis: historical-backfill`. This does not claim they were run through the current qualification system. New releases must use `basis: qualified-run`.
 
-# Current command
+# Pre-merge candidate
 
-The active pair uses immutable published `v1.0.0-alpha.14` as the source and an exact caller-supplied local `v1.0.0-alpha.15` asset directory as the corrective target:
+Release qualification runs after the release PR has its target version, adjacent edge, semantic-impact decision, and candidate assets prepared, but before merge.
+
+The previous side is the exact immutable published release. The target side is local and must be assembled from the clean release PR revision being qualified.
+
+For the current corrective alpha:
 
 ```sh
 internal/release/qualify-release.sh \
   --target-assets /absolute/path/to/v1.0.0-alpha.15/assets
 ```
 
-Use `--run-root-parent /absolute/external/path` to choose the parent for raw execution evidence. Otherwise the system temporary directory is used. The run root must remain outside the Ava repository.
+The run identity binds the release assets, fixture, images, matrix, repository revision, runner, automation, OpenCode version, and qualification/audit models.
 
-`--source-assets` is accepted only when the checked-in source selector is `local`. Supplying it for the current published source is an error.
+# Automated result
 
-The shell entry point routes OpenCode through `qualification-opencode.sh` so session discovery can include task/delegation children that the normal OpenCode session-list presentation does not expose. To use a non-default OpenCode executable, set it explicitly before the command:
+The operation produces one of:
+
+- `failed`: mechanical, evidence, or incomplete-run failure
+- `needs-review`: independent audit found a blocker/major issue or cannot support the terminal claim
+- `awaiting-user-signoff`: complete mechanical and semantic pass
+
+The automation never accepts a release itself and never commits evidence.
+
+# User acceptance
+
+After reviewing a clean run, explicit user approval is recorded with:
 
 ```sh
-AVA_QUALIFICATION_OPENCODE=/absolute/path/to/opencode \
-  internal/release/qualify-release.sh \
-  --target-assets /absolute/path/to/v1.0.0-alpha.15/assets
+internal/release/accept-release-qualification.sh \
+  --identity user:<stable-identity> \
+  [--run-id <run-id>]
 ```
 
-Validate only the checked-in control state, schemas, and pinned image bytes with:
+If `--run-id` is omitted, the latest run for the active pair is used.
 
-```sh
-internal/release/qualify-release.sh --validate-config-only
-```
+Acceptance updates the run signoff, pair state, and `release_acceptance` entry in `current-state.json` to `accepted` with `basis: qualified-run`. The resulting qualification-state changes are then committed to the release PR branch.
 
-# Exact release acquisition
+# Release PR blocker
 
-A published selector:
+The Release PR policy check rejects merge unless:
 
-1. rejects mutable `latest` selection
-2. requires the exact tag to be published, non-draft, and immutable
-3. downloads exactly the seven Ava release assets with `gh`
-4. verifies the release attestation and each downloaded asset with `gh release verify` and `gh release verify-asset`
-5. verifies the seven-file `SHA256SUMS` inventory and release manifest identity
-6. requires the downloaded manifest and asset digests to equal the checked-in catalog
+1. every historical release through the previous version has accepted release-quality state
+2. the target release has `basis: qualified-run` and status `accepted`
+3. its run ended cleanly at `awaiting-user-signoff`
+4. the run source and target match the release PR edge
+5. the local target assets identify the exact repository revision that was qualified
+6. explicit user signoff matches the acceptance ledger
+7. the qualified revision belongs to the release PR
+8. after that revision, only files under `internal/release/qualification/` changed
 
-A local selector requires an exact normal directory supplied by the caller. It receives the same normal-file, seven-asset, checksum, manifest, version, tag, revision, and upgrade-edge validation, but records `attested: false` and never claims publication evidence.
+Any release-content change after qualification invalidates acceptance and requires a new run.
 
-# Isolated execution identity
+# Evidence boundary
 
-Each run receives a new external root with separate release assets, fixture, execution, transcript, audit, and test-project scopes.
+Raw workspaces, release assets, transcripts, and command evidence remain outside the repository. Compact evidence and release-quality state remain under `internal/release/qualification/`.
 
-The operation invokes `generate-synthetic-qualification-vault.sh` as the single fixture lifecycle entry point. Before that, it validates all five committed PNGs against the pinned image manifest, including bytes, SHA-256, PNG dimensions, media type, and corpus destination.
-
-The execution identity binds:
-
-- complete source and target release identities and asset digests
-- pinned-image manifest and per-image digests
-- fixture generator digest and generated fixture inventory digest
-- qualification matrix digest
-- Ava repository revision, which also binds the session-discovery adapter
-- runner and automation digests
-- OpenCode version
-- qualification and audit model identifiers
-
-Runner state is namespaced by that execution-identity digest. A changed release asset, fixture, image set, matrix, repository revision, runner, automation, OpenCode version, or model therefore cannot reuse a retained passing scenario from an earlier identity.
-
-# Qualification and complete session inventory
-
-The operation runs the existing synthetic runner preflight, then the complete maintained matrix.
-
-Session snapshots use `qualification-opencode.sh`. For the exact `session list --format json` operation used by the orchestrator, the adapter queries OpenCode's session database directly for `id`, `parent_id`, and `directory`, including both roots and nested task/delegation sessions without the root-session presentation filter. Every other command, including `run`, `export`, and `--version`, is forwarded unchanged to the selected OpenCode executable.
-
-The orchestrator snapshots that complete session relation before and after execution, reconciles direct session IDs from runner command evidence, follows parent relationships recursively, exports every relevant new session, and records scenario, prompt digest, model, project root, transcript digest, parent, and terminal state. A successful runner with an incomplete or unbindable session inventory is a mechanical failure.
-
-# Independent audit
-
-When session evidence exists, a fresh OpenCode session runs the maintained independent audit. The audit receives the exact inventory boundary and reads each listed session through the same adapter using `export <session_id>`. Each export must match the transcript digest in the inventory.
-
-The audit is read-only and checks routing, required-reading order, authority, mutation boundaries, source fidelity, calendar behavior, inbox reconciliation, semantic reconciliation, finalization, lifecycle preservation, errors and retries, nested sessions, superseded attempts, and whether runner assertions support the terminal claims.
-
-A `blocker` or `major` audit finding produces nonzero status and `needs-review`. Any mechanical failure, incomplete runner outcome, invalid session inventory, invalid transcript binding, or invalid audit also produces nonzero status. A mechanically successful all-pass run with a valid audit records `awaiting-user-signoff`, never automatic acceptance.
-
-# Evidence and review
-
-Raw release assets, generated corpus copies, isolated workspaces, command output, and full transcripts remain in the external run root or OpenCode session storage. Compact records are written under `internal/release/qualification/runs/` and `current-state.json` is updated only after execution and audit are complete.
-
-The operation never runs `git commit`. Review the uncommitted evidence, investigate any `failed` or `needs-review` result, and obtain explicit user signoff before a successful pair may become `accepted` or advance a release gate.
+The fixture oracle is evaluator-only. Qualification agents must not rely on it; the independent audit uses it to judge the resulting behavior.
