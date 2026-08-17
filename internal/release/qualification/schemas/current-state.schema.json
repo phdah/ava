@@ -3,8 +3,9 @@
   "properties": {
     "active_pair": {"minLength": 1, "type": "string"},
     "pairs": {"type": "object"},
-    "schema_version": {"const": 1, "type": "integer"}
+    "release_acceptance": {"type": "object"},
+    "schema_version": {"const": 2, "type": "integer"}
   },
-  "required": ["schema_version", "active_pair", "pairs"],
+  "required": ["schema_version", "active_pair", "pairs", "release_acceptance"],
   "type": "object"
 }
