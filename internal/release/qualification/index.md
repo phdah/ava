@@ -1,12 +1,14 @@
 # Release Qualification State
 
-This directory is the repository-owned control and compact-evidence scope for hands-off release qualification. It is internal maintainer state and is never distributed to Ava projects.
+This directory is the repository-owned control and compact-evidence scope for mandatory release qualification. It is internal maintainer state and is never distributed to Ava projects.
 
 - [Qualification configuration](config.json) - Active release pair plus fixed qualification and audit models.
-- [Release-pair catalog](pair-catalog.json) - Reviewed exact published or local release selectors and historical pair ledger.
-- [Current pair state](current-state.json) - Latest automated state and later explicit user signoff per pair.
-- [Independent audit prompt](audit-prompt.md) - Read-only semantic audit contract applied in a fresh OpenCode session.
-- [Schemas](schemas/) - Validation contracts for checked-in control state and generated compact evidence.
-- [Run evidence](runs/) - Generated compact run records, session inventories, audit reports, and issue inventories.
+- [Release-pair catalog](pair-catalog.json) - Reviewed exact published or local selectors used to execute qualification.
+- [Current state](current-state.json) - Pair execution state plus the durable per-release acceptance ledger.
+- [Independent audit prompt](audit-prompt.md) - Prompt/contract used by the fresh independent audit session.
+- [Schemas](schemas/) - Validation contracts for control state and compact evidence.
+- [Run evidence](runs/) - Compact run records, session inventories, audit reports, and issue inventories.
 
-Raw release assets, generated qualification vaults, isolated projects, command logs, and full transcripts remain repository-external. The hands-off operation writes compact evidence here but never commits it.
+Historical releases are distinguished with `basis: historical-backfill`. New releases may satisfy the merge gate only with `basis: qualified-run` and explicit user signoff.
+
+Raw release assets, generated qualification vaults, isolated projects, command logs, and full transcripts remain repository-external. Qualification and acceptance update compact state here but never create Git commits automatically.
