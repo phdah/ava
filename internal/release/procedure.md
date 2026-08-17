@@ -57,11 +57,15 @@ Existing release records must not be rewritten or copied into cumulative state.
 
 For the exact previous-to-target managed delta, answer:
 
-1. What managed contracts, behavior, authority, routing, validation, metadata, paths, or lifecycle rules changed?
-2. Could otherwise valid project-owned context become conflicting, misleading, or incompatible under the target?
-3. If so, what bounded project-owned concepts must be inspected or reconciled?
+1. **Managed delta:** Which managed contracts, behavior, authority, routing, validation, metadata, paths, or lifecycle rules changed?
+2. **Project-owned compatibility:** Could valid active project-owned context remain structurally unchanged yet become conflicting, misleading, semantically invalid, or behaviorally incompatible under the target?
+3. **Required reconciliation:** If yes, which bounded project-owned concepts must be inspected or reconciled before semantic compatibility may advance?
 
 Set `semantic_review_required: true` only when project-owned semantic reconciliation may be required. When true, transition-local guidance must define affected concepts, bounded discovery conditions, and completion criteria.
+
+A managed behavior change alone does not decide semantic impact, and the presence or absence of a deterministic project-file migration does not decide it either. The release PR must preserve the reviewed rationale for the decision.
+
+Tooling must not guess semantic migration need from changed file paths, managed behavior categories, or the presence or absence of deterministic project-file migrations.
 
 This decision is separate from release qualification. Full release qualification is always required.
 
