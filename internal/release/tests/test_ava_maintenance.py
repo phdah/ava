@@ -107,7 +107,7 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
         self.assertEqual(case["expected_operation"], "finalize")
         self.assertEqual(case["mechanism"], "agent-terminal-state-transition")
         self.assertFalse(case["requires_installer_binary"])
-        self.assertEqual(case["cleanup"], "recorded-transaction-workspace")
+        self.assertEqual(case["cleanup"], "exact-transaction-id-directory")
         self.assertEqual(
             set(case["required_preconditions"]),
             {
@@ -117,7 +117,7 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
                 "path-edges-complete",
                 "managed-changes-classified",
                 "journal-finalizable",
-                "transaction-workspace-safe",
+                "transaction-directory-safe",
             },
         )
         self.assertEqual(
@@ -138,11 +138,16 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
         protocol = UPGRADE_PROTOCOL.read_text()
         self.assertIn("Finalization is the only deterministic journal transition Ava Maintenance performs directly", instructions)
         self.assertIn("must not trigger a search for an `ava` binary", instructions)
+        self.assertIn("`./.ava/state/transactions/<transaction_id>/` directory recursively", instructions)
+        self.assertIn("any sibling transaction directory", instructions)
         self.assertIn("The finalization exception permits only the terminal fields", constraints)
+        self.assertIn("sibling transaction directories", constraints)
         self.assertIn("This transition is the agent's finalization mechanism", routing)
         self.assertIn("does not require or imply an installed `ava` command", routing)
+        self.assertIn("transaction-directory absence", routing)
         self.assertIn("Finalization is agent-driven and does not require an `ava` binary", protocol)
         self.assertIn("This is the only direct journal-mutation exception for Ava Maintenance", protocol)
+        self.assertIn("not only the nested path recorded in `staging.workspace`", protocol)
 
     def test_uninstall_removes_only_managed_roots(self) -> None:
         case = self.cases["uninstall-healthy"]

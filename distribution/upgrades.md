@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-10T14:51:00+02:00
+  by: agent:openai-opencode
+  at: 2026-08-17T15:56:40+00:00
 ---
 
 # Ava Upgrade and Migration Protocol
@@ -54,6 +54,8 @@ The updater replaces the live manifest last. The new manifest records the target
 - current failure and permitted operations
 
 The updater writes and validates the journal before live mutation and through deterministic recovery. Each transition uses temporary-file write, flush, and atomic rename. The only agent-owned journal mutation is the terminal finalization transition defined below, which uses the same atomic-write requirement.
+
+`transaction_id` names the exact transaction directory at `/.ava/state/transactions/<transaction_id>/`. Every recorded staging, backup, candidate-manifest, and transaction-plan path must resolve beneath that directory without symlink escape. Terminal cleanup removes this exact transaction directory, not only the nested path recorded in `staging.workspace`.
 
 Terminal states may remain for reporting. Normal routing requires both a safe terminal journal state and `semantic_compatibility.status: complete`.
 
@@ -209,7 +211,7 @@ Ava Maintenance remains responsible for deterministic status explanation, finali
 
 ## Completion
 
-After full validation and semantic completion, Ava Maintenance performs the protocol-defined terminal finalization transition directly. Before any journal write it validates that semantic compatibility is complete, no unresolved decisions remain, the managed commit and selected edges are complete, every managed change has a terminal classification, the journal is in a finalizable post-commit state, and any recorded transaction workspace resolves safely to this transaction.
+After full validation and semantic completion, Ava Maintenance performs the protocol-defined terminal finalization transition directly. Before any journal write it validates that semantic compatibility is complete, no unresolved decisions remain, the managed commit and selected edges are complete, every managed change has a terminal classification, the journal is in a finalizable post-commit state, and the exact transaction directory derived from `transaction_id` resolves safely beneath `/.ava/state/transactions/` with every recorded transaction-local path contained beneath it.
 
 The atomic terminal journal write records:
 
@@ -224,7 +226,7 @@ The atomic terminal journal write records:
 }
 ```
 
-It also refreshes `updated_at` and preserves unrelated journal fields. Only after that atomic write succeeds does Ava Maintenance remove the exact transaction workspace recorded by the journal. It then verifies the terminal journal, complete semantic compatibility, and workspace absence.
+It also refreshes `updated_at` and preserves unrelated journal fields. Only after that atomic write succeeds does Ava Maintenance remove the exact `/.ava/state/transactions/<transaction_id>/` directory, including its workspace, backup, plan, and other transaction-local state. It must not remove the transaction container or any sibling transaction directory unless a separate protocol rule authorizes that path. It then verifies the terminal journal, complete semantic compatibility, and transaction-directory absence.
 
 Finalization is agent-driven and does not require an `ava` binary, updater executable, or transaction-local installer path. This is the only direct journal-mutation exception for Ava Maintenance.
 
@@ -296,7 +298,7 @@ After project-owned edits, automatic rollback still restores managed state but n
 
 A fresh invocation resumes by validating the source manifest, journal, workspace, planned paths, recorded migration checksums, and completed postconditions. It continues from the earliest unverified operation. If safe continuation cannot be proven, it blocks and offers rollback.
 
-After Upgrade Role marks semantic compatibility complete, Ava Maintenance validates the finalization preconditions and atomically writes the exact terminal journal transition itself. It then removes only the recorded transaction workspace and verifies that normal routing is enabled. It must not search for or require an installer binary to finalize.
+After Upgrade Role marks semantic compatibility complete, Ava Maintenance validates the finalization preconditions and atomically writes the exact terminal journal transition itself. It then removes only the exact transaction directory derived from `transaction_id` and verifies that the directory is absent and normal routing is enabled. It must not search for or require an installer binary to finalize.
 
 Resume, abort, rollback, repair, and non-terminal journal mutation remain installer or updater responsibilities. Direct finalization does not broaden Ava Maintenance authority beyond the terminal transition above.
 

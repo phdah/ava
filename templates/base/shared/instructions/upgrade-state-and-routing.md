@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-07-31T15:35:00+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-10T14:51:00+02:00
+  by: agent:openai-opencode
+  at: 2026-08-17T15:56:40+00:00
 ---
 
 # Purpose
@@ -102,7 +102,7 @@ An operation may proceed only when both the protocol state and journal `allowed_
 - `abort` and `rollback` permit Ava Maintenance to invoke the exact deterministic updater operations.
 - `reconcile-semantic` permits Upgrade Role to apply installed guidance to project-owned context.
 - `resolve` applies only to the owning deterministic or semantic mechanism established by the current stage.
-- finalization permits Ava Maintenance to write the exact terminal journal transition directly only when the manifest reports semantic compatibility complete, no unresolved decisions remain, the managed commit and classifications are complete, the journal is protocol-finalizable, and any transaction workspace selected for cleanup is exact and safe.
+- finalization permits Ava Maintenance to write the exact terminal journal transition directly only when the manifest reports semantic compatibility complete, no unresolved decisions remain, the managed commit and classifications are complete, the journal is protocol-finalizable, and the exact transaction directory derived from `transaction_id` and every path beneath it are proven safe.
 - `normal` permits ordinary workflow and role routing only in a safe terminal state with semantic compatibility complete.
 
 Finalization is not an implicit grant of general state-mutation authority. Ava Maintenance must not invent or search for an installer binary to perform it, and it must not apply the direct-write exception to resume, abort, rollback, repair, semantic state, or any non-terminal journal mutation.
@@ -135,11 +135,11 @@ Before the write, it must validate the installed manifest and journal relationsh
 - the managed commit is complete
 - every selected edge is complete and every changed managed path has a terminal classification
 - the journal is `active/semantic` or another protocol-defined finalizable state after managed commit, with no unresolved failure requiring another deterministic operation
-- any recorded transaction workspace resolves safely to the exact transaction owned by the journal
+- `transaction_id` identifies one exact directory beneath `./.ava/state/transactions/`, and every recorded workspace, backup, candidate-manifest, and plan path resolves beneath it without symlink escape
 
 If any condition is unproven, finalization stops without mutation.
 
-When every condition passes, Ava Maintenance atomically updates `./.ava/state/upgrade.json` to `status: "complete"`, `stage: "complete"`, `current_edge: null`, `staging: null`, `failure: null`, and `allowed_operations: ["normal"]`, refreshes `updated_at`, and preserves unrelated journal fields. It then removes only the exact recorded transaction workspace and verifies the terminal journal, complete semantic compatibility, and workspace absence.
+When every condition passes, Ava Maintenance atomically updates `./.ava/state/upgrade.json` to `status: "complete"`, `stage: "complete"`, `current_edge: null`, `staging: null`, `failure: null`, and `allowed_operations: ["normal"]`, refreshes `updated_at`, and preserves unrelated journal fields. It then removes only the exact `./.ava/state/transactions/<transaction_id>/` directory, including all transaction-local workspace, backup, plan, and candidate state, and verifies the terminal journal, complete semantic compatibility, and transaction-directory absence. The transaction container and sibling transaction directories must remain untouched.
 
 This transition is the agent's finalization mechanism. It does not require or imply an installed `ava` command or updater executable.
 

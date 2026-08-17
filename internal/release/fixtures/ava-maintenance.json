@@ -164,7 +164,7 @@
         "path-edges-complete",
         "managed-changes-classified",
         "journal-finalizable",
-        "transaction-workspace-safe"
+        "transaction-directory-safe"
       ],
       "expected_terminal_state": {
         "journal_status": "complete",
@@ -174,7 +174,7 @@
         "failure": null,
         "allowed_operations": ["normal"]
       },
-      "cleanup": "recorded-transaction-workspace"
+      "cleanup": "exact-transaction-id-directory"
     },
     {
       "id": "unavailable-host-capability",

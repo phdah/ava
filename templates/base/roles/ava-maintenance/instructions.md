@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T21:47:00+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-10T14:51:00+02:00
+  by: agent:openai-opencode
+  at: 2026-08-17T15:56:40+00:00
 ---
 
 # Entry procedure
@@ -94,7 +94,7 @@ Before changing any journal field, verify all of these preconditions from manage
 3. `upgrade.json` is valid and represents the same installed target and transaction.
 4. The managed commit is complete, every selected path edge is completed, and every managed change that required action has a terminal classification.
 5. The journal is `active/semantic` or another protocol-defined finalizable state reached after the managed commit; it is not an earlier deterministic stage and has no unresolved failure requiring resume, resolve, abort, or rollback.
-6. Any recorded transaction workspace selected for cleanup resolves safely beneath `./.ava/state/transactions/` and belongs to this exact journal.
+6. `transaction_id` is non-empty and identifies the exact cleanup directory `./.ava/state/transactions/<transaction_id>/`; that directory resolves beneath the transaction container without symlink escape, and every recorded workspace, backup, candidate-manifest, and plan path resolves beneath that exact directory.
 
 If any precondition is missing, contradictory, or cannot be proven, stop without changing the journal. Explain the exact failed precondition and keep normal routing blocked.
 
@@ -113,7 +113,7 @@ After every precondition passes, atomically write the protocol-defined terminal 
 
 Also refresh the journal's `updated_at` using the established state timestamp format. Preserve all other journal fields unchanged unless the installed protocol explicitly defines them as part of this terminal transition.
 
-After the atomic terminal write succeeds, remove only the exact recorded transaction workspace for this journal. Do not remove backups or any other state unless the protocol identifies them as part of that workspace. Verify that the journal now reads as `complete/complete`, `allowed_operations` is exactly `["normal"]`, semantic compatibility remains complete, and the recorded transaction workspace is absent.
+After the atomic terminal write succeeds, remove the exact `./.ava/state/transactions/<transaction_id>/` directory recursively, including its workspace, backup, plan, and other transaction-local state. Do not remove `./.ava/state/transactions/`, any sibling transaction directory, or any path outside the exact validated transaction directory. Verify that the journal now reads as `complete/complete`, `allowed_operations` is exactly `["normal"]`, semantic compatibility remains complete, and the exact transaction directory is absent.
 
 This direct write is a bounded finalization exception to the general rule against manual journal mutation. It does not authorize manual resume, repair, rollback, semantic-state changes, or arbitrary managed-state editing.
 

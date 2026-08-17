@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T21:47:00+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-10T14:51:00+02:00
+  by: agent:openai-opencode
+  at: 2026-08-17T15:56:40+00:00
 ---
 
 # Managed-state integrity
@@ -43,7 +43,7 @@ The role must not:
 - interpret a general uninstall request as permission to discard managed conflicts
 - remove or modify project-owned host entrypoints, OpenCode configuration, roles, workflows, shared instructions, knowledge, inbox content, indexes, or logs
 
-During finalization, transaction cleanup is limited to the exact workspace recorded by the validated journal and occurs only after the terminal journal write. No other managed or project-owned path may be removed under that authority.
+During finalization, transaction cleanup is limited to the exact `./.ava/state/transactions/<transaction_id>/` directory derived from the validated journal and occurs only after the terminal journal write. The transaction container, sibling transaction directories, and every other managed or project-owned path remain outside that authority.
 
 # Interface boundary
 
