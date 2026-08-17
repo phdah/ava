@@ -19,7 +19,7 @@ Core progress: 3 of 6 complete.
 
 1. [ ] [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md)
 2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md)
-3. [ ] [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md)
+3. [x] [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md)
 4. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md)
 
 ## Canonical remaining path to `1.0.0`
@@ -56,20 +56,22 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Step 1 of 6 is active, with the required internal qualification-automation task preempting another runner execution.**
+**Step 1 of 6 is active. The required qualification-automation implementation is complete, so execute the automated evidence gate next.**
 
 The user has confirmed the generated corpus and all five image results. The exact visually accepted PNG bytes are pinned under the repository-only fixture, while generated vaults and execution evidence remain external.
 
-Use:
+The reviewed active pair is immutable published `v1.0.0-alpha.14` to exact caller-supplied local `v1.0.0-alpha.15`. Execute:
 
-```text
-qualification vault: ~/stuff/ava-qualification-vault/
-test project:        ~/stuff/project-vault
+```sh
+internal/release/qualify-release.sh \
+  --target-assets /absolute/path/to/v1.0.0-alpha.15/assets
 ```
 
-The variants are materialized and the repository-side runner implementation is complete. Before another matrix execution, implement [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md). The automated path must acquire exact inputs, regenerate the isolated fixture from maintained sources and pinned images, run the matrix, audit every resulting OpenCode session in a fresh session, and write compact release-state evidence before Step 1 signoff can continue.
+The operation owns exact input acquisition, pinned-image verification, clean fixture generation, isolated test boundaries, the complete maintained matrix, top-level and nested OpenCode session inventory, a fresh-session independent audit, and compact uncommitted release evidence.
 
-Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
+Do not manually reconstruct the earlier runner sequence. Step 1 may advance only from a mechanically clean result whose audit state is `awaiting-user-signoff` and whose generated compact evidence is explicitly accepted. A `failed` or `needs-review` run preempts the path until corrected.
+
+After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
 
 ## Previous phase
 

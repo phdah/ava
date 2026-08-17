@@ -2,8 +2,16 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-08-17
+
+- **Mandatory pre-merge release qualification**: Every release-please PR must qualify its exact locally assembled candidate through the full hands-off OpenCode matrix and independent audit before merge.
+- **Explicit qualification acceptance**: A clean automated result stops at `awaiting-user-signoff`; explicit user approval records `qualified-run` acceptance and enables the release PR policy gate.
+- **Revision-bound merge safety**: Release acceptance is bound to the qualified repository revision and local asset identity. Any non-qualification content change after qualification requires a fresh run and signoff.
+- **Historical release-quality backfill**: Releases `v1.0.0-alpha.1` through `v1.0.0-alpha.14` are explicitly grandfathered as accepted with `basis: historical-backfill`, without claiming they ran the current qualification system.
+
 ## 2026-08-14
 
+- **Hands-off qualification evidence state**: Added one repository-only qualification operation that resolves the reviewed exact release pair, verifies immutable published assets or exact local assets, regenerates the pinned synthetic fixture, runs the maintained matrix, captures top-level and nested OpenCode sessions, runs a fresh read-only audit, and writes compact uncommitted evidence bound to the complete execution identity. Successful automation stops at `awaiting-user-signoff`; blocking or major audit findings stop at `needs-review`.
 - **Pinned synthetic image inputs**: Imported the five visually accepted fictional qualification PNGs into the repository-only fixture with an exact manifest and maintained copy command. Clean generated vaults no longer depend on user-local image bytes, while assembly regression coverage keeps every pinned image out of Ava release assets and installed projects.
 - **One-command synthetic qualification**: Added one repository-only manual shell entry point for the complete pinned-input synthetic qualification matrix, with safe external workspaces, exact managed-damage interpretation, authentic resume and abort checkpoints, calendar regression coverage, bounded OpenCode execution, interrupted reruns, and deterministic terminal summaries. The complete matrix remains a local maintainer operation; CI exercises only bounded runner tests.
 

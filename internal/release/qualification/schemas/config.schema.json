@@ -1,0 +1,12 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "active_pair": {"minLength": 1, "type": "string"},
+    "audit_model": {"minLength": 3, "type": "string"},
+    "qualification_model": {"minLength": 3, "type": "string"},
+    "repository": {"pattern": "[^/]+/[^/]+", "type": "string"},
+    "schema_version": {"const": 1, "type": "integer"}
+  },
+  "required": ["schema_version", "repository", "active_pair", "qualification_model", "audit_model"],
+  "type": "object"
+}
