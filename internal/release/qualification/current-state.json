@@ -14,5 +14,133 @@
       "user_signoff": null
     }
   },
-  "schema_version": 1
+  "release_acceptance": {
+    "1.0.0-alpha.1": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "0.0.0",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.2": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.1",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.3": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.2",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.4": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.3",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.5": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.4",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.6": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.5",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.7": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.6",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.8": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.7",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.9": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.8",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.10": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.9",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.11": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.10",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.12": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.11",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.13": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.12",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.14": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.13",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    }
+  },
+  "schema_version": 2
 }
