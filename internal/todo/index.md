@@ -46,7 +46,7 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 0 pending findings, 0 pending blockers, 0 pending dogfood `required-v1` findings, 4 pending supporting qualification tasks, 19 completed findings, and 1 required internal automation task
+5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 2 pending findings, 0 pending blockers, 1 pending dogfood `required-v1` finding, 3 pending supporting qualification tasks, and 23 completed findings
 6. [Backlog.md integration](06-backlog-md/) - 0 of 2 complete; queued after release qualification
 7. [Durable interaction evidence](07-interaction-evidence/) - 0 of 1 complete; queued after Backlog.md integration
 
@@ -60,12 +60,12 @@ The alpha qualification policy composes that conformance evidence with roadmap c
 
 Release-please enforces supported-distribution release classification at the merge boundary, maintains version and changelog state, keeps one release pull request current, creates immutable tags and draft releases, and hands the exact prepared SHA to qualification, reproducible assembly, release conformance, attestation, non-clobbering asset upload, and automatic publication.
 
-Alpha publication is complete through immutable `1.0.0-alpha.14`. The remaining ordered path to the first stable release is:
+Alpha publication is complete through immutable `1.0.0-alpha.14`. Findings 22 and 23 are implementation-complete; the remaining ordered path to the first stable release is:
 
-Dogfood findings [22](05-release-qualification/dogfood/22-report-inspected-paths-during-interrupted-finalize.md) and [23](05-release-qualification/dogfood/23-report-inspected-path-during-pending-semantic-reconciliation.md) currently preempt another qualification run without changing the six canonical release steps:
+The next qualification run must use a new exact candidate containing both fixes. A new blocker may still preempt that run without changing the six canonical release steps:
 
-1. resolve findings 22 and 23, then finish the [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) through a fresh complete matrix run and explicit signoff
-2. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including normalized adjacent-edge authoring, conversational routing transitions, and agent-driven finalization
+1. finish the [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) through a fresh complete matrix run and explicit signoff against the corrected candidate
+2. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including normalized adjacent-edge authoring, conversational routing transitions, agent-driven finalization, and semantic inspection reporting
 3. complete [finding 24](05-release-qualification/dogfood/24-fix-opencode-session-export-pipe-truncation.md), then obtain explicit user closure of [alpha dogfooding](05-release-qualification/04-dogfood-alpha-and-track-findings.md) after the corrective alpha passes and before RC work begins
 4. publish the release candidate only after dogfood closure, blockers, and required RC work are resolved
 5. [stabilize the published release candidate](05-release-qualification/05a-stabilize-release-candidate.md) through the complete generated-vault matrix
