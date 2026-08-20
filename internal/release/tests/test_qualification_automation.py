@@ -99,8 +99,8 @@ class QualificationAutomationTests(unittest.TestCase):
 
     def test_checked_in_configuration_has_separate_historical_and_active_pairs(self) -> None:
         config, catalog, current = automation.load_configuration()
-        self.assertEqual(config["qualification_model"], "openai/gpt-5.6-sol")
-        self.assertEqual(config["audit_model"], "openai/gpt-5.6-sol")
+        automation.validate_model_identifier(config["qualification_model"], field="qualification_model")
+        automation.validate_model_identifier(config["audit_model"], field="audit_model")
         self.assertEqual(config["active_pair"], "alpha14-to-alpha15-corrective-local")
         pairs = {item["id"]: item for item in catalog["pairs"]}
         historical = pairs["alpha13-to-alpha14"]
@@ -115,6 +115,18 @@ class QualificationAutomationTests(unittest.TestCase):
             {"kind": "local", "tag": "v1.0.0-alpha.15", "version": "1.0.0-alpha.15"},
         )
         self.assertEqual(current["pairs"]["alpha13-to-alpha14"]["status"], "not-run")
+
+    def test_model_identifiers_require_an_explicit_author_for_any_provider_or_tool(self) -> None:
+        for value in (
+            "openai/gpt-5.6-sol",
+            "opencode/big-pickle",
+            "anthropic/claude-4",
+            "opencode/deepseek-v4-flash-free",
+        ):
+            automation.validate_model_identifier(value, field="qualification_model")
+        for value in ("big-pickle", "/big-pickle", "opencode/", "", "opencode"):
+            with self.assertRaises(automation.AutomationError):
+                automation.validate_model_identifier(value, field="qualification_model")
 
     def test_pinned_image_manifest_validates_exact_five_committed_pngs(self) -> None:
         manifest = automation.validate_pinned_images()

@@ -567,9 +567,16 @@ def load_configuration(repository_root: Path = REPOSITORY_ROOT) -> tuple[dict[st
         validate_catalog_selection(pair["source"], label=f"{pair['id']} source")
         validate_catalog_selection(pair["target"], label=f"{pair['id']} target")
     for field in ("qualification_model", "audit_model"):
-        if "/" not in config[field]:
-            raise AutomationError(f"{field} must be an explicit provider/model")
+        validate_model_identifier(config[field], field=field)
     return config, catalog, current
+
+
+def validate_model_identifier(value: str, *, field: str) -> None:
+    author, separator, model = value.partition("/")
+    if not separator or not author or not model:
+        raise AutomationError(
+            f"{field} must be an explicit author/model identifier (any provider or tool)"
+        )
 
 
 def validate_catalog_selection(selection: dict[str, Any], *, label: str) -> None:
