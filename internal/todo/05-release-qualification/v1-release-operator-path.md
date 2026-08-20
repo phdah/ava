@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-10T15:58:00+02:00
 updated:
-  by: agent:openai-opencode
-  at: 2026-08-20T15:58:41Z
+  by: agent:openai-chatgpt
+  at: 2026-08-20T18:28:44+02:00
 ---
 
 # V1 Release Operator Path
@@ -24,13 +24,13 @@ updated:
 
 A new blocker preempts the next prerelease. A `required-v1` dogfood finding preempts the release gate named by its `blocks` field.
 
-Current ordering: findings 22 and 23 preempt completion of Step 1 and the corrective-alpha release. Finding 24 must be complete before Step 4 begins but does not block the corrective alpha because its current qualification run has a verified external workaround. Finding 25 is post-v1 and does not preempt this path.
+Current ordering: findings 22 and 23 are implementation-complete, so Step 1 now requires a new exact corrective-alpha candidate containing both fixes and a fresh complete qualification run. Finding 24 must be complete before Step 4 begins but does not block the corrective alpha because its current qualification run has a verified external workaround. Finding 25 is post-v1 and does not preempt this path.
 
 ## Step 1: finish the qualification system
 
 The synthetic fixture, pinned images, maintained 17-scenario runner, recovery checkpoints, session inventory, independent audit, compact evidence, explicit user acceptance, historical acceptance ledger, and release-PR merge gate are the qualification system.
 
-The qualification-system implementation is complete. Step 1 remains open until findings 22 and 23 are resolved and a fresh complete matrix run reaches accepted qualification evidence. Release-specific qualification remains mandatory inside every release flow in Step 2 and later release steps.
+The qualification-system implementation is complete. Step 1 remains open until a fresh complete matrix run against a candidate containing the finding 22 and 23 fixes reaches accepted qualification evidence. Release-specific qualification remains mandatory inside every release flow in Step 2 and later release steps.
 
 ## Step 2: corrective alpha
 
