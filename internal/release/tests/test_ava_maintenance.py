@@ -197,7 +197,7 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
             self.assertIn("interrupted terminal cleanup", text.lower())
             self.assertIn("non-recursive empty-directory operation", text)
         self.assertIn("carry every recorded project-owned path into the completion report", instructions)
-        self.assertIn("`/index.md`, `/roles/index.md`, `/shared/index.md`, and `/workflows/index.md`", instructions)
+        self.assertIn("`./index.md`, `./roles/index.md`, `./shared/index.md`, and `./workflows/index.md`", instructions)
         self.assertIn("does not grant maintenance authority to inspect or modify those project-owned files", instructions)
         self.assertIn("`./.ava/state/transactions/` is absent", routing)
         self.assertIn("no `/.ava/state/transactions/` container", protocol)
