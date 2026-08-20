@@ -27,7 +27,7 @@ Every Ava release uses the same flow. Full `qualify-release.sh` qualification an
 6. Assemble the exact target release assets from a clean release PR revision.
 7. Configure the qualification active pair as exact published previous release -> exact local target.
 8. Run `qualify-release.sh` against those local target assets.
-9. Investigate and correct any `failed` or `needs-review` result, then rerun from the changed candidate.
+9. Any `failed` or `needs-review` result leaves the release PR blocked; report it to the user without modifying repository or release content to make it pass.
 10. When the run reaches `awaiting-user-signoff`, present the evidence to the user.
 11. Only after explicit user approval, record acceptance with `accept-release-qualification.sh` and commit the qualification-state changes to the release PR.
 12. Require the Release PR policy check to pass.
@@ -154,13 +154,10 @@ Post-publication verification checks immutable tag, asset inventory, checksums, 
 
 # Failure handling
 
-If qualification finds a blocker or required release fix:
+Any failure leaves publication blocked. Existing tags and assets are never moved, overwritten, or reused.
 
-1. keep the release PR unmerged
-2. correct the underlying repository or release content
-3. rerun deterministic validation/tests
-4. assemble a new candidate from the new revision
-5. rerun full qualification
-6. obtain fresh user acceptance
+A `failed` or `needs-review` qualification result leaves the release PR unmerged. Report the exact result to the user. Do not modify repository or release content to resolve it.
+
+If the user directs a repository change in response, treat it as ordinary repository work outside the qualification loop: it requires its own review, and any resulting release-content change requires a new candidate, a new full qualification run, and fresh user acceptance.
 
 Never carry acceptance forward across changed release content.
