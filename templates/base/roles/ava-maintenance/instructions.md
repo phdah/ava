@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T21:47:00+02:00
 updated:
-  by: agent:openai-opencode
-  at: 2026-08-20T15:36:31Z
+  by: agent:openai-chatgpt
+  at: 2026-08-20T18:11:00+02:00
 ---
 
 # Entry procedure
@@ -119,6 +119,8 @@ After the atomic terminal write succeeds, remove the exact `./.ava/state/transac
 
 If cleanup is interrupted after a `complete`, `aborted`, or `rolled-back` terminal write, first revalidate the terminal journal, complete semantic compatibility for the active terminal state, empty unresolved decisions, non-empty `transaction_id`, and that the exact cleanup path resolves beneath the transaction container without symlink escape. Do not rewrite the terminal journal. Idempotently remove the exact transaction directory when present, then attempt the same non-recursive empty-container removal.
 
+During interrupted terminal cleanup, do not reread project-owned semantic inputs. Instead, when the validated terminal journal contains durable `project_changes` evidence from semantic reconciliation, carry every recorded project-owned path into the completion report and identify its recorded inspection or mutation outcome. Inspection-only retained records for `./index.md`, `./roles/index.md`, `./shared/index.md`, and `./workflows/index.md` must therefore be reported when present. Reporting this durable evidence does not grant maintenance authority to inspect or modify those project-owned files.
+
 Any valid safe terminal journal with complete semantic compatibility and no unresolved decisions permits removal of an empty transaction container. If the container has one direct entry that the live journal does not identify, remove that exact residual directory only after proving all of these conditions:
 
 1. the entry is a normal directory directly beneath `./.ava/state/transactions/` and its name is the non-empty transaction ID in its valid `plan.json`
@@ -184,6 +186,7 @@ State:
 - managed integrity findings
 - deterministic mechanism invoked, or direct terminal finalization performed, when any
 - exact removed, preserved, or conflicted paths
+- project-owned paths previously inspected or changed during semantic reconciliation, sourced from durable journal `project_changes` evidence when terminal cleanup is replayed
 - host accessibility or stale-reference findings
 - validation performed
 - unresolved decisions and required user action

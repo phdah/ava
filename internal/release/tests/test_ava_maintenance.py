@@ -170,12 +170,35 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
         self.assertFalse(case["ordinary_routing"])
         self.assertEqual(case["cleanup"], "exact-transaction-id-directory-and-empty-container")
 
+        expected_paths = {
+            "/index.md",
+            "/roles/index.md",
+            "/shared/index.md",
+            "/workflows/index.md",
+        }
+        self.assertEqual(set(case["expected_reported_project_owned_paths"]), expected_paths)
+        self.assertEqual(
+            {change["path"] for change in case["state"]["project_changes"]},
+            expected_paths,
+        )
+        self.assertTrue(
+            all(
+                change["change_type"] == "inspected" and change["resolution"] == "retained"
+                for change in case["state"]["project_changes"]
+            )
+        )
+        self.assertEqual(case["project_owned_path_evidence"], "journal.project_changes")
+        self.assertFalse(case["reread_project_owned_paths"])
+
         instructions = (ROLE_ROOT / "instructions.md").read_text()
         routing = ROUTING.read_text()
         protocol = UPGRADE_PROTOCOL.read_text()
         for text in (instructions, routing, protocol):
             self.assertIn("interrupted terminal cleanup", text.lower())
             self.assertIn("non-recursive empty-directory operation", text)
+        self.assertIn("carry every recorded project-owned path into the completion report", instructions)
+        self.assertIn("`./index.md`, `./roles/index.md`, `./shared/index.md`, and `./workflows/index.md`", instructions)
+        self.assertIn("does not grant maintenance authority to inspect or modify those project-owned files", instructions)
         self.assertIn("`./.ava/state/transactions/` is absent", routing)
         self.assertIn("no `/.ava/state/transactions/` container", protocol)
 

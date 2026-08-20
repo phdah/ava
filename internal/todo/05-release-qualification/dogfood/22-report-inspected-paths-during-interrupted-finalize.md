@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Report Inspected Project-Owned Paths During Interrupted-Finalize
 description: Make Ava Maintenance's interrupted-terminal-cleanup replay report confirm inspection of every required project-owned path.
 tags: [internal, roadmap, dogfood, release, upgrades, maintenance]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 22
@@ -13,6 +13,9 @@ affected_version: 1.0.0-alpha.15
 generated:
   by: agent:openai-opencode
   at: 2026-08-20T00:00:00Z
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-20T18:11:00+02:00
 ---
 
 # Report Inspected Project-Owned Paths During Interrupted-Finalize
@@ -33,7 +36,9 @@ This is a `blocker` for the next prerelease. It blocks acceptance of the current
 
 ## Root cause
 
-Unknown. The interrupted-terminal-cleanup replay instructions added in `8927a3c` describe the cleanup-replay procedure itself but do not clearly require the report to enumerate inspection of the standard project-owned paths (`/index.md`, `/roles/index.md`, `/shared/index.md`, `/workflows/index.md`) the way other Ava Maintenance report paths already do. Investigate whether this is a reporting-instruction gap or a deeper behavioral gap in the replay path.
+The interrupted-terminal-cleanup replay procedure preserved the bounded cleanup authority correctly, but its reporting contract only required generic removed, preserved, or conflicted paths. It did not require Ava Maintenance to carry the durable semantic inspection evidence already present in terminal `upgrade.json.project_changes` into the cleanup completion report.
+
+The correct fix is reporting-only. Ava Maintenance must not reread project-owned semantic inputs during terminal cleanup because semantic inspection authority belongs to Upgrade Role. It should instead report the exact project-owned paths and outcomes already recorded in the validated terminal journal.
 
 ## Scope
 
@@ -44,15 +49,19 @@ Unknown. The interrupted-terminal-cleanup replay instructions added in `8927a3c`
 
 ## Completion criteria
 
-- the interrupted-terminal-cleanup replay report explicitly confirms inspection of `/index.md`, `/roles/index.md`, `/shared/index.md`, and `/workflows/index.md`
-- regression coverage coversthis reporting requirement
-- a fresh full qualification run against a new candidate passes the `interrupted-finalize` scenario
-- affected documentation and indexes remain aligned
+- [x] the interrupted-terminal-cleanup replay report explicitly confirms inspection of `/index.md`, `/roles/index.md`, `/shared/index.md`, and `/workflows/index.md` when those paths are present in durable journal evidence
+- [x] regression coverage covers this reporting requirement
+- [x] the reporting fix does not broaden Ava Maintenance authority to reread or modify project-owned semantic inputs
+- [x] affected documentation and indexes remain aligned
 
 ## Resolution evidence
 
-_Complete in the resolving implementation PR._
+`templates/base/roles/ava-maintenance/instructions.md` now requires interrupted terminal cleanup to carry every project-owned path recorded in validated terminal `project_changes` evidence into the completion report, including inspection-only retained records for `/index.md`, `/roles/index.md`, `/shared/index.md`, and `/workflows/index.md`. It explicitly prohibits rereading those project-owned semantic inputs under maintenance authority.
+
+`internal/release/fixtures/ava-maintenance.json` models the four inspection-only retained journal records for `terminal-cleanup-replay`, requires those exact paths in the report, identifies `journal.project_changes` as the evidence source, and asserts that project-owned files are not reread.
+
+`internal/release/tests/test_ava_maintenance.py` verifies the recorded-path set, inspection-only classification, durable evidence source, no-reread boundary, and the corresponding maintenance instruction contract.
 
 ## Release qualification follow-up
 
-The corrective alpha release PR must run a complete fresh 17-scenario qualification against the new candidate revision produced by this fix before it may be accepted. Append that evidence here after the run.
+The corrective alpha release PR must run a complete fresh 17-scenario qualification against the new candidate revision produced by this fix before it may be accepted. The `interrupted-finalize` scenario must pass and confirm all four project-owned paths in the resulting report. Append that immutable qualification evidence here after the run; this release gate does not return the implemented finding to pending.

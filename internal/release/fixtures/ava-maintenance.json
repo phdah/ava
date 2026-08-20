@@ -186,13 +186,27 @@
         "unresolved_decisions": [],
         "allowed_operations": ["normal"],
         "transaction_directory": "exact-residual",
-        "transaction_container": "present"
+        "transaction_container": "present",
+        "project_changes": [
+          {"path": "/index.md", "change_type": "inspected", "resolution": "retained"},
+          {"path": "/roles/index.md", "change_type": "inspected", "resolution": "retained"},
+          {"path": "/shared/index.md", "change_type": "inspected", "resolution": "retained"},
+          {"path": "/workflows/index.md", "change_type": "inspected", "resolution": "retained"}
+        ]
       },
       "expected_role": "maintenance",
       "expected_operation": "replay-finalization-cleanup",
       "mechanism": "agent-bounded-filesystem-cleanup",
       "journal_rewrite": false,
       "cleanup": "exact-transaction-id-directory-and-empty-container",
+      "expected_reported_project_owned_paths": [
+        "/index.md",
+        "/roles/index.md",
+        "/shared/index.md",
+        "/workflows/index.md"
+      ],
+      "project_owned_path_evidence": "journal.project_changes",
+      "reread_project_owned_paths": false,
       "ordinary_routing": false
     },
     {

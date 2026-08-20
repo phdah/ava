@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T15:15:00+02:00
 updated:
-  by: agent:openai-opencode
-  at: 2026-08-20T15:58:41Z
+  by: agent:openai-chatgpt
+  at: 2026-08-20T18:11:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,15 +25,14 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 ## Official next action
 
-**Resolve dogfood blockers 22 and 23, then run fresh full qualification against the corrected candidate.**
+**Resolve dogfood blocker 23, then run fresh full qualification against the corrected candidate.**
 
-The current candidate failed two required scenarios. Complete these implementation tasks before another qualification run:
+Finding 22 is implemented. One blocker from the failed candidate remains before another qualification run:
 
-1. [report inspected project-owned paths during interrupted-finalize](todo/05-release-qualification/dogfood/22-report-inspected-paths-during-interrupted-finalize.md)
-2. [report the inspected root index during pending semantic reconciliation](todo/05-release-qualification/dogfood/23-report-inspected-path-during-pending-semantic-reconciliation.md)
-3. assemble a new exact candidate containing those fixes
-4. rerun the complete qualification matrix and obtain explicit user signoff
-5. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
+1. [report the inspected root index during pending semantic reconciliation](todo/05-release-qualification/dogfood/23-report-inspected-path-during-pending-semantic-reconciliation.md)
+2. assemble a new exact candidate containing the finding 22 and 23 fixes
+3. rerun the complete qualification matrix and obtain explicit user signoff
+4. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
 
 [Finding 24](todo/05-release-qualification/dogfood/24-fix-opencode-session-export-pipe-truncation.md) must be complete before release-candidate qualification. [Finding 25](todo/05-release-qualification/dogfood/25-offer-qualification-failure-todo-tracking.md) is post-v1 and does not block release progression.
 
@@ -41,7 +40,7 @@ Do not publish or merge a new release without accepted qualification state. Do n
 
 ## Official path to `1.0.0`
 
-1. resolve findings 22 and 23 and finish the synthetic v1 qualification gate
+1. resolve finding 23 and finish the synthetic v1 qualification gate; finding 22 is implemented and awaits the same fresh qualification run
 2. prepare, qualify, accept, and publish the corrective alpha
 3. complete finding 24 and obtain explicit user closure of alpha dogfooding
 4. prepare, qualify, accept, and publish the `1.0.0` release candidate
