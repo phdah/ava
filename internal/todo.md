@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-20T18:11:00+02:00
+  at: 2026-08-20T18:28:44+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,14 +25,13 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 ## Official next action
 
-**Resolve dogfood blocker 23, then run fresh full qualification against the corrected candidate.**
+**Assemble a new exact candidate containing the finding 22 and 23 fixes, then run fresh full qualification.**
 
-Finding 22 is implemented. One blocker from the failed candidate remains before another qualification run:
+Both blockers from the failed candidate are implemented. The next sequence is:
 
-1. [report the inspected root index during pending semantic reconciliation](todo/05-release-qualification/dogfood/23-report-inspected-path-during-pending-semantic-reconciliation.md)
-2. assemble a new exact candidate containing the finding 22 and 23 fixes
-3. rerun the complete qualification matrix and obtain explicit user signoff
-4. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
+1. assemble a new exact candidate containing the completed finding 22 and 23 fixes
+2. rerun the complete 17-scenario qualification matrix and obtain explicit user signoff
+3. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
 
 [Finding 24](todo/05-release-qualification/dogfood/24-fix-opencode-session-export-pipe-truncation.md) must be complete before release-candidate qualification. [Finding 25](todo/05-release-qualification/dogfood/25-offer-qualification-failure-todo-tracking.md) is post-v1 and does not block release progression.
 
@@ -40,7 +39,7 @@ Do not publish or merge a new release without accepted qualification state. Do n
 
 ## Official path to `1.0.0`
 
-1. resolve finding 23 and finish the synthetic v1 qualification gate; finding 22 is implemented and awaits the same fresh qualification run
+1. finish the synthetic v1 qualification gate through a fresh full run against a candidate containing the implemented finding 22 and 23 fixes
 2. prepare, qualify, accept, and publish the corrective alpha
 3. complete finding 24 and obtain explicit user closure of alpha dogfooding
 4. prepare, qualify, accept, and publish the `1.0.0` release candidate
