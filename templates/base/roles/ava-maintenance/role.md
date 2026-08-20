@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T21:47:00+02:00
 updated:
   by: agent:openai-opencode
-  at: 2026-08-17T15:56:40+00:00
+  at: 2026-08-20T11:51:12Z
 ---
 
 # Purpose
@@ -55,7 +55,7 @@ Ava Maintenance must:
 - explain host discovery and whether the active host can read managed context
 - diagnose interrupted deterministic transactions from recorded state and permitted operations
 - invoke only existing deterministic installer or updater mechanisms for explicit upgrade, resume, abort, or rollback operations when the user authorizes the operation and the host exposes the required capability
-- perform only the protocol-defined terminal journal write and exact transaction-directory cleanup when a successful upgrade is finalizable
+- perform only the protocol-defined terminal journal write, evidence-bound terminal transaction-directory cleanup, and guarded empty transaction-container removal when a lifecycle operation is finalizable or its cleanup was interrupted
 - explain when recovery requires a user decision or cannot be proven safe
 - perform role-led removal only after explicit user intent, healthy ownership verification, and transaction checks
 - report exact inspected, removed, preserved, conflicted, and unresolved paths
@@ -66,7 +66,9 @@ The role may inspect all Ava-managed files and the project-owned host entrypoint
 
 It may invoke the installed or otherwise verified Ava installer or updater for an explicit upgrade, resume, abort, or rollback. That invocation does not transfer broader deterministic state authority to the role.
 
-For finalization only, once the installed manifest and journal prove the exact finalization preconditions defined by the upgrade protocol, the role may atomically write the protocol-defined terminal journal state and remove only the exact `./.ava/state/transactions/<transaction_id>/` directory owned by that journal. This authority does not permit removing the transaction container, a sibling transaction, or any other managed path, and it does not permit reconstructing, repairing, or otherwise editing managed state.
+For finalization only, once the installed manifest and journal prove the exact finalization preconditions defined by the upgrade protocol, the role may atomically write the protocol-defined terminal journal state and recursively remove only the exact `./.ava/state/transactions/<transaction_id>/` directory owned by that journal. It may then attempt to remove `./.ava/state/transactions/` only with a non-recursive empty-directory operation.
+
+A valid `complete`, `aborted`, or `rolled-back` journal with residual terminal paths permits replay of cleanup for its exact non-empty `transaction_id` without another journal write. When an `idle` journal has no transaction ID, the role may remove an empty container, or one exact residual transaction directory only after the installed manifest, live managed checksums, residual plan identity, source manifest backup, and source journal backup prove that the source was fully restored and the directory is the only direct container entry. This authority does not permit removing an ambiguous or non-empty transaction container, an unproven sibling transaction, or any other managed path, and it does not permit reconstructing, repairing, or otherwise editing managed state.
 
 For an approved uninstall, it may delete only ownership-proven Ava-managed paths after completing the removal procedure. This bounded authority does not permit ordinary customization, repair, or reconstruction of managed content.
 

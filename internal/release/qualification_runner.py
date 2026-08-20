@@ -789,8 +789,8 @@ def assert_project_owned_digest(project: Path, expected: str, scenario_id: str) 
 
 def assert_no_transactions(project: Path, scenario_id: str) -> None:
     transactions = project / ".ava/state/transactions"
-    if transactions.exists() and any(transactions.iterdir()):
-        raise QualificationError(f"{scenario_id}: transaction workspace remains after terminal operation")
+    if transactions.exists():
+        raise QualificationError(f"{scenario_id}: transaction container remains after terminal operation")
 
 
 def assert_terminal_journal(project: Path, scenario_id: str, allowed_status: set[str]) -> None:

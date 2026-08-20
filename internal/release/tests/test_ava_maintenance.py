@@ -48,6 +48,10 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
             "semantic-reconciliation-route",
             "semantic-status-inspection-route",
             "semantic-finalization-route",
+            "terminal-cleanup-replay",
+            "rolled-back-cleanup-replay",
+            "idle-cleanup-replay",
+            "idle-ambiguous-cleanup",
             "unavailable-host-capability",
             "opencode-accessible",
             "opencode-permission-missing",
@@ -86,6 +90,10 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
             "interrupted-live-rollback",
             "semantic-status-inspection-route",
             "semantic-finalization-route",
+            "terminal-cleanup-replay",
+            "rolled-back-cleanup-replay",
+            "idle-cleanup-replay",
+            "idle-ambiguous-cleanup",
         ):
             self.assertEqual(self.cases[case_id]["expected_role"], "maintenance", case_id)
 
@@ -107,7 +115,7 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
         self.assertEqual(case["expected_operation"], "finalize")
         self.assertEqual(case["mechanism"], "agent-terminal-state-transition")
         self.assertFalse(case["requires_installer_binary"])
-        self.assertEqual(case["cleanup"], "exact-transaction-id-directory")
+        self.assertEqual(case["cleanup"], "exact-transaction-id-directory-and-empty-container")
         self.assertEqual(
             set(case["required_preconditions"]),
             {
@@ -133,6 +141,7 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
         )
 
         instructions = (ROLE_ROOT / "instructions.md").read_text()
+        capabilities = (ROLE_ROOT / "capabilities.md").read_text()
         constraints = (ROLE_ROOT / "constraints.md").read_text()
         routing = ROUTING.read_text()
         protocol = UPGRADE_PROTOCOL.read_text()
@@ -140,6 +149,7 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
         self.assertIn("must not trigger a search for an `ava` binary", instructions)
         self.assertIn("`./.ava/state/transactions/<transaction_id>/` directory recursively", instructions)
         self.assertIn("any sibling transaction directory", instructions)
+        self.assertIn("non-recursive empty-directory operation", capabilities)
         self.assertIn("The finalization exception permits only the terminal fields", constraints)
         self.assertIn("sibling transaction directories", constraints)
         self.assertIn("This transition is the agent's finalization mechanism", routing)
@@ -148,6 +158,50 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
         self.assertIn("Finalization is agent-driven and does not require an `ava` binary", protocol)
         self.assertIn("This is the only direct journal-mutation exception for Ava Maintenance", protocol)
         self.assertIn("not only the nested path recorded in `staging.workspace`", protocol)
+
+    def test_interrupted_terminal_cleanup_blocks_normal_routing_and_replays_bounded_cleanup(self) -> None:
+        case = self.cases["terminal-cleanup-replay"]
+        self.assertEqual(case["expected_role"], "maintenance")
+        self.assertEqual(case["expected_operation"], "replay-finalization-cleanup")
+        self.assertEqual(case["mechanism"], "agent-bounded-filesystem-cleanup")
+        self.assertFalse(case["journal_rewrite"])
+        self.assertFalse(case["ordinary_routing"])
+        self.assertEqual(case["cleanup"], "exact-transaction-id-directory-and-empty-container")
+
+        instructions = (ROLE_ROOT / "instructions.md").read_text()
+        routing = ROUTING.read_text()
+        protocol = UPGRADE_PROTOCOL.read_text()
+        for text in (instructions, routing, protocol):
+            self.assertIn("interrupted terminal cleanup", text.lower())
+            self.assertIn("non-recursive empty-directory operation", text)
+        self.assertIn("`./.ava/state/transactions/` is absent", routing)
+        self.assertIn("no `/.ava/state/transactions/` container", protocol)
+
+    def test_terminal_cleanup_replay_covers_recorded_and_restored_source_states(self) -> None:
+        rolled_back = self.cases["rolled-back-cleanup-replay"]
+        self.assertEqual(rolled_back["cleanup_authority"], "journal-transaction-id")
+        self.assertFalse(rolled_back["journal_rewrite"])
+
+        idle = self.cases["idle-cleanup-replay"]
+        self.assertEqual(idle["cleanup_authority"], "proven-restored-source")
+        self.assertEqual(idle["state"]["transaction_container_entries"], 1)
+        self.assertEqual(idle["state"]["source_manifest_backup"], "matches-live")
+        self.assertEqual(idle["state"]["source_journal_backup"], "matches-live")
+        self.assertEqual(idle["state"]["managed_payload"], "matches-source")
+        self.assertFalse(idle["journal_rewrite"])
+
+        ambiguous = self.cases["idle-ambiguous-cleanup"]
+        self.assertEqual(ambiguous["expected_outcome"], "report-managed-state-conflict")
+        self.assertFalse(ambiguous["automatic_delete"])
+
+        instructions = (ROLE_ROOT / "instructions.md").read_text()
+        capabilities = (ROLE_ROOT / "capabilities.md").read_text()
+        routing = ROUTING.read_text()
+        protocol = UPGRADE_PROTOCOL.read_text()
+        for text in (instructions, capabilities, routing, protocol):
+            self.assertIn("source manifest backup", text)
+            self.assertIn("source journal backup", text)
+        self.assertIn("More than one direct entry", instructions)
 
     def test_uninstall_removes_only_managed_roots(self) -> None:
         case = self.cases["uninstall-healthy"]

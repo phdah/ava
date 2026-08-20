@@ -174,7 +174,82 @@
         "failure": null,
         "allowed_operations": ["normal"]
       },
-      "cleanup": "exact-transaction-id-directory"
+      "cleanup": "exact-transaction-id-directory-and-empty-container"
+    },
+    {
+      "id": "terminal-cleanup-replay",
+      "request": "Continue the interrupted Ava finalization cleanup",
+      "state": {
+        "journal_status": "complete",
+        "journal_stage": "complete",
+        "semantic_status": "complete",
+        "unresolved_decisions": [],
+        "allowed_operations": ["normal"],
+        "transaction_directory": "exact-residual",
+        "transaction_container": "present"
+      },
+      "expected_role": "maintenance",
+      "expected_operation": "replay-finalization-cleanup",
+      "mechanism": "agent-bounded-filesystem-cleanup",
+      "journal_rewrite": false,
+      "cleanup": "exact-transaction-id-directory-and-empty-container",
+      "ordinary_routing": false
+    },
+    {
+      "id": "rolled-back-cleanup-replay",
+      "request": "Continue cleanup after the Ava rollback",
+      "state": {
+        "journal_status": "rolled-back",
+        "journal_stage": "rolled-back",
+        "semantic_status": "complete",
+        "transaction_id": "recorded-terminal-transaction",
+        "allowed_operations": ["normal"],
+        "transaction_directory": "exact-residual"
+      },
+      "expected_role": "maintenance",
+      "expected_operation": "replay-terminal-cleanup",
+      "cleanup_authority": "journal-transaction-id",
+      "journal_rewrite": false,
+      "ordinary_routing": false
+    },
+    {
+      "id": "idle-cleanup-replay",
+      "request": "Continue cleanup after the restored Ava upgrade",
+      "state": {
+        "journal_status": "idle",
+        "journal_stage": "idle",
+        "semantic_status": "complete",
+        "transaction_id": null,
+        "allowed_operations": ["normal"],
+        "transaction_container_entries": 1,
+        "residual_plan_identity": "valid",
+        "source_manifest_backup": "matches-live",
+        "source_journal_backup": "matches-live",
+        "managed_payload": "matches-source",
+        "project_changes": []
+      },
+      "expected_role": "maintenance",
+      "expected_operation": "replay-terminal-cleanup",
+      "cleanup_authority": "proven-restored-source",
+      "journal_rewrite": false,
+      "ordinary_routing": false
+    },
+    {
+      "id": "idle-ambiguous-cleanup",
+      "request": "Continue cleanup after the restored Ava upgrade",
+      "state": {
+        "journal_status": "idle",
+        "journal_stage": "idle",
+        "semantic_status": "complete",
+        "transaction_id": null,
+        "allowed_operations": ["normal"],
+        "transaction_container_entries": 2
+      },
+      "expected_role": "maintenance",
+      "expected_operation": "inspect",
+      "expected_outcome": "report-managed-state-conflict",
+      "automatic_delete": false,
+      "ordinary_routing": false
     },
     {
       "id": "unavailable-host-capability",

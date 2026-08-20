@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-opencode
-  at: 2026-08-17T15:56:40+00:00
+  at: 2026-08-20T11:51:12Z
 ---
 
 # Ava Upgrade and Migration Protocol
@@ -57,7 +57,7 @@ The updater writes and validates the journal before live mutation and through de
 
 `transaction_id` names the exact transaction directory at `/.ava/state/transactions/<transaction_id>/`. Every recorded staging, backup, candidate-manifest, and transaction-plan path must resolve beneath that directory without symlink escape. Terminal cleanup removes this exact transaction directory, not only the nested path recorded in `staging.workspace`.
 
-Terminal states may remain for reporting. Normal routing requires both a safe terminal journal state and `semantic_compatibility.status: complete`.
+Terminal states may remain for reporting. Normal routing requires a safe terminal journal state, `semantic_compatibility.status: complete`, and no `/.ava/state/transactions/` container.
 
 # Explicit release graph
 
@@ -226,7 +226,9 @@ The atomic terminal journal write records:
 }
 ```
 
-It also refreshes `updated_at` and preserves unrelated journal fields. Only after that atomic write succeeds does Ava Maintenance remove the exact `/.ava/state/transactions/<transaction_id>/` directory, including its workspace, backup, plan, and other transaction-local state. It must not remove the transaction container or any sibling transaction directory unless a separate protocol rule authorizes that path. It then verifies the terminal journal, complete semantic compatibility, and transaction-directory absence.
+It also refreshes `updated_at` and preserves unrelated journal fields. Only after that atomic write succeeds does Ava Maintenance recursively remove the exact `/.ava/state/transactions/<transaction_id>/` directory, including its workspace, backup, plan, and other transaction-local state. It then attempts to remove `/.ava/state/transactions/` only with a non-recursive empty-directory operation. A sibling transaction or any other entry prevents container removal and remains untouched. Finalization verifies the terminal journal, complete semantic compatibility, and absence of both the exact transaction directory and the empty transaction container.
+
+Interrupted terminal cleanup occurs when transaction storage remains after a safe terminal write. Managed pre-routing activates Ava Maintenance despite the journal's `normal` operation. A valid `complete`, `aborted`, or `rolled-back` journal identifies its exact cleanup directory through `transaction_id`; Ava Maintenance revalidates semantic completion for that state and replays only exact directory cleanup plus guarded empty-container removal. An `idle` journal has no transaction ID and permits direct removal only of an empty container, or of its sole direct entry when that directory's valid plan identity, source manifest backup, source journal backup, and live managed checksums prove the fully restored source. Ambiguous or additional entries are managed-state conflicts and keep normal routing blocked.
 
 Finalization is agent-driven and does not require an `ava` binary, updater executable, or transaction-local installer path. This is the only direct journal-mutation exception for Ava Maintenance.
 
@@ -236,12 +238,13 @@ Before ordinary workflow, role, instruction, or project-registry discovery, root
 
 1. minimally validate `/.ava/state/upgrade.json`
 2. validate the supported envelope of `manifest.json`
-3. activate Ava Maintenance when state is malformed, contradictory, in a deterministic stage, or the request is installation inspection or deterministic recovery
-4. activate Upgrade Role only when semantic reconciliation is required and the requested outcome changes or validates project-owned context
-5. keep unrelated ordinary requests blocked while deterministic or semantic work remains incomplete
-6. load exact installed guidance paths only after Upgrade Role activation
-7. enforce the operation allowlist and role authority boundary
-8. read project-owned registries only after normal routing is permitted, or as bounded migration inputs after Upgrade Role activation
+3. inspect whether `/.ava/state/transactions/` exists and which direct entries it contains
+4. activate Ava Maintenance when state is malformed, contradictory, in a deterministic stage, retains terminal cleanup residue, contains another transaction entry, or the request is installation inspection or deterministic recovery
+5. activate Upgrade Role only when semantic reconciliation is required and the requested outcome changes or validates project-owned context
+6. keep unrelated ordinary requests blocked while deterministic, semantic, or finalization-cleanup work remains incomplete
+7. load exact installed guidance paths only after Upgrade Role activation
+8. enforce the operation allowlist and role authority boundary
+9. read project-owned registries only after normal routing is permitted, or as bounded migration inputs after Upgrade Role activation
 
 Both managed roles must be reachable entirely from managed files.
 
@@ -255,6 +258,7 @@ Malformed managed state enters read-only Ava Maintenance recovery rather than no
 | active or blocked deterministic stage | inspect, resume, abort, rollback, finalize, or explain | Ava Maintenance |
 | semantic status incomplete | reconcile project-owned context | Upgrade Role |
 | semantic status incomplete | inspect status, explain blockage, finalize, or invoke rollback | Ava Maintenance |
+| safe terminal journal with transaction residue | replay evidence-bound terminal cleanup or report conflict | Ava Maintenance |
 | safe terminal state and semantic complete | ordinary project work | ordinary routing |
 | safe terminal state and semantic complete | installation health, host access, explicit upgrade, or removal | Ava Maintenance through ordinary routing |
 
@@ -278,7 +282,7 @@ The role selected for an explanation does not gain mutation authority owned by t
 | `blocked/semantic` | inspect, capture decisions, resolve, rollback preparation | Upgrade Role for project context, Ava Maintenance for deterministic actions | blocked |
 | `active/rollback` | inspect, resolve, resume rollback | Ava Maintenance invoking updater | blocked |
 | `blocked/rollback` | inspect, prepare project resolution, resume rollback | Upgrade Role for project resolution, Ava Maintenance for updater invocation | blocked |
-| `complete` | normal | ordinary routing | allowed |
+| `complete` | normal, or bounded cleanup replay when transaction residue remains | ordinary routing or Ava Maintenance | allowed only when the transaction container is absent |
 | `aborted` | normal | ordinary routing | only with unchanged source state and semantic complete |
 | `rolled-back` | normal | ordinary routing | only after source compatibility validation |
 
@@ -298,7 +302,7 @@ After project-owned edits, automatic rollback still restores managed state but n
 
 A fresh invocation resumes by validating the source manifest, journal, workspace, planned paths, recorded migration checksums, and completed postconditions. It continues from the earliest unverified operation. If safe continuation cannot be proven, it blocks and offers rollback.
 
-After Upgrade Role marks semantic compatibility complete, Ava Maintenance validates the finalization preconditions and atomically writes the exact terminal journal transition itself. It then removes only the exact transaction directory derived from `transaction_id` and verifies that the directory is absent and normal routing is enabled. It must not search for or require an installer binary to finalize.
+After Upgrade Role marks semantic compatibility complete, Ava Maintenance validates the finalization preconditions and atomically writes the exact terminal journal transition itself. It then removes only the exact transaction directory derived from `transaction_id`, attempts guarded removal of its empty parent, and verifies that both the directory and empty container are absent before normal routing is enabled. Interrupted cleanup is replayed idempotently from a terminal transaction ID or the bounded restored-source evidence required for `idle`. Ava Maintenance must not search for or require an installer binary to finalize.
 
 Resume, abort, rollback, repair, and non-terminal journal mutation remain installer or updater responsibilities. Direct finalization does not broaden Ava Maintenance authority beyond the terminal transition above.
 

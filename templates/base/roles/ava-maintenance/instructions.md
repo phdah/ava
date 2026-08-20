@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T21:47:00+02:00
 updated:
   by: agent:openai-opencode
-  at: 2026-08-17T15:56:40+00:00
+  at: 2026-08-20T11:51:12Z
 ---
 
 # Entry procedure
@@ -18,7 +18,7 @@ Before reporting or mutating installation state:
 1. Resolve the project root used by the active host.
 2. Read `./.ava/state/manifest.json` and `./.ava/state/upgrade.json` when present.
 3. Validate their supported envelopes and internal relationship before trusting version, ownership, stage, or operation fields.
-4. Classify the request as read-only inspection, deterministic operation coordination, explicit upgrade, semantic handoff, finalization, or removal.
+4. Classify the request as read-only inspection, deterministic operation coordination, explicit upgrade, semantic handoff, finalization, interrupted finalization cleanup, or removal.
 5. Stop before mutation when managed state cannot prove the requested authority or exact target paths.
 
 Do not read project-owned registries to establish maintenance authority.
@@ -54,7 +54,7 @@ For every managed payload entry:
 
 Validate managed state files through their schemas and allowed transitions rather than expecting self-checksums.
 
-Report unrecorded content beneath `./.ava/` as unexpected unless the journal identifies it as the current transaction workspace, backup, or candidate state. Do not delete or adopt unexpected content automatically.
+Report unrecorded content beneath `./.ava/` as unexpected unless the journal identifies it as current transaction state or exact residual finalization state. An exact terminal transaction directory or empty transaction container is interrupted finalization cleanup, not ordinary unrecorded content. Do not delete or adopt other unexpected content automatically.
 
 A modified, missing, or corrupt managed path remains Ava-managed conflict evidence. Do not overwrite, merge, reclassify, or manually reconstruct it.
 
@@ -80,6 +80,8 @@ Use journal status, stage, staging state, failure, and `allowed_operations` to e
 - Use the exact existing installer or updater operation for resume, abort, and rollback. Do not reproduce those state transitions manually.
 
 When the journal requires `reconcile-semantic`, hand the project-owned reconciliation task to the Upgrade Role. Ava Maintenance may continue to explain the deterministic state, but it must not mark semantic compatibility pending, partial, blocked, or complete.
+
+A valid safe terminal journal with semantic compatibility complete does not permit normal routing while its transaction directory or the transaction container remains. Treat proven residual state as interrupted terminal cleanup and apply only the replay procedure below. An unproven or ambiguous non-empty container is a managed-state conflict; report it without deleting its contents.
 
 If the host cannot execute a required installer-backed operation, report the exact command or action the user must run. Do not claim that the operation completed.
 
@@ -113,7 +115,21 @@ After every precondition passes, atomically write the protocol-defined terminal 
 
 Also refresh the journal's `updated_at` using the established state timestamp format. Preserve all other journal fields unchanged unless the installed protocol explicitly defines them as part of this terminal transition.
 
-After the atomic terminal write succeeds, remove the exact `./.ava/state/transactions/<transaction_id>/` directory recursively, including its workspace, backup, plan, and other transaction-local state. Do not remove `./.ava/state/transactions/`, any sibling transaction directory, or any path outside the exact validated transaction directory. Verify that the journal now reads as `complete/complete`, `allowed_operations` is exactly `["normal"]`, semantic compatibility remains complete, and the exact transaction directory is absent.
+After the atomic terminal write succeeds, remove the exact `./.ava/state/transactions/<transaction_id>/` directory recursively, including its workspace, backup, plan, and other transaction-local state. Then attempt to remove `./.ava/state/transactions/` with a non-recursive empty-directory operation. The operation succeeds only when no sibling transaction or other entry remains. Never recursively remove the transaction container, any sibling transaction directory, or any path outside the exact validated transaction directory.
+
+If cleanup is interrupted after a `complete`, `aborted`, or `rolled-back` terminal write, first revalidate the terminal journal, complete semantic compatibility for the active terminal state, empty unresolved decisions, non-empty `transaction_id`, and that the exact cleanup path resolves beneath the transaction container without symlink escape. Do not rewrite the terminal journal. Idempotently remove the exact transaction directory when present, then attempt the same non-recursive empty-container removal.
+
+An `idle` journal has no transaction ID. If its transaction container is empty, remove only that empty container. If it has one direct entry, remove that exact residual directory only after proving all of these conditions:
+
+1. the entry is a normal directory directly beneath `./.ava/state/transactions/` and its name is the non-empty transaction ID in its valid `plan.json`
+2. the plan records the installed release as its source and contains no unresolved project-owned change
+3. the plan's source manifest backup is byte-identical to the live valid manifest
+4. the plan's source journal backup is byte-identical to the live valid `idle` journal
+5. every live managed payload matches the source manifest checksum
+
+Then recursively remove only that proven directory and attempt the same non-recursive empty-container removal. More than one direct entry, a symlink, missing or contradictory evidence, a checksum mismatch, or any unresolved project change is a conflict and prohibits deletion.
+
+Verify that the journal remains in its validated safe terminal state with `allowed_operations` exactly `["normal"]`, semantic compatibility remains complete for that state, the proven transaction directory is absent, and `./.ava/state/transactions/` is absent. If the container remains because it is non-empty, keep normal routing blocked and report every remaining entry without deleting it.
 
 This direct write is a bounded finalization exception to the general rule against manual journal mutation. It does not authorize manual resume, repair, rollback, semantic-state changes, or arbitrary managed-state editing.
 

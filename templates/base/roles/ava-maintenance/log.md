@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to the managed Ava Maintenance role. It does not replace Git history.
 
+## 2026-08-20
+
+- **Recoverable terminal cleanup**: Required managed pre-routing to block normal work when a safe terminal operation leaves transaction storage, and authorized Ava Maintenance to replay only cleanup proven by a terminal transaction ID or exact restored-source evidence, followed by guarded non-recursive empty-container removal.
+
 ## 2026-08-10
 
 - **Agent-driven upgrade finalization**: Made Ava Maintenance the finalization mechanism after semantic compatibility is complete. The role validates the protocol preconditions, atomically writes only the terminal journal state, removes only the exact transaction directory derived from the journal's `transaction_id`, and verifies normal routing is enabled without searching for an installer binary.
