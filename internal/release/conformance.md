@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T22:30:00+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-10T11:49:00+02:00
+  by: agent:openai-opencode
+  at: 2026-08-20T15:36:31Z
 ---
 
 # Purpose
@@ -53,6 +53,7 @@ Installed validation reports `normal_routing_permitted` separately from overall 
 
 - the journal is in a safe terminal state with `allowed_operations: [normal]`
 - semantic compatibility is complete for the installed `ava_version`
+- `/.ava/state/transactions/` is absent
 - no blocking deterministic, semantic, or routing finding exists
 
 `normal_routing_permitted` means the managed-state gate allows ordinary conversation-aware routing. It does not mean every turn must traverse workflow and role registries.

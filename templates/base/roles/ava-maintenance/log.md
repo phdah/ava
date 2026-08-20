@@ -4,7 +4,7 @@ This log records major conceptual and structural changes to the managed Ava Main
 
 ## 2026-08-20
 
-- **Recoverable terminal cleanup**: Required managed pre-routing to block normal work when a safe terminal operation leaves transaction storage, and authorized Ava Maintenance to replay only cleanup proven by a terminal transaction ID or exact restored-source evidence, followed by guarded non-recursive empty-container removal.
+- **Recoverable terminal cleanup**: Required managed pre-routing to block normal work when a safe terminal operation leaves transaction storage, and authorized Ava Maintenance to replay only cleanup proven by a terminal transaction ID or exact restored-safe-terminal source evidence, followed by guarded non-recursive empty-container removal.
 
 ## 2026-08-10
 

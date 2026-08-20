@@ -4,7 +4,7 @@ This log records major conceptual and structural changes across the Ava reposito
 
 ## 2026-08-20
 
-* **Recoverable terminal cleanup**: Kept normal routing blocked after a terminal journal write until transaction storage is absent, with idempotent Ava Maintenance cleanup replay bound to a terminal transaction ID or exact restored-source evidence and guarded preservation of every ambiguous container or sibling entry.
+* **Recoverable terminal cleanup**: Kept normal routing blocked after a terminal or restored-source journal write until transaction storage is absent, with idempotent Ava Maintenance cleanup replay bound to a terminal transaction ID or exact restored-safe-terminal source evidence and guarded preservation of every ambiguous container or sibling entry.
 
 ## 2026-08-14
 

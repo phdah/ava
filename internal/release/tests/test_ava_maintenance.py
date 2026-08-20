@@ -51,6 +51,7 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
             "terminal-cleanup-replay",
             "rolled-back-cleanup-replay",
             "idle-cleanup-replay",
+            "prior-terminal-cleanup-replay",
             "idle-ambiguous-cleanup",
             "unavailable-host-capability",
             "opencode-accessible",
@@ -93,6 +94,7 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
             "terminal-cleanup-replay",
             "rolled-back-cleanup-replay",
             "idle-cleanup-replay",
+            "prior-terminal-cleanup-replay",
             "idle-ambiguous-cleanup",
         ):
             self.assertEqual(self.cases[case_id]["expected_role"], "maintenance", case_id)
@@ -190,6 +192,16 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
         self.assertEqual(idle["state"]["managed_payload"], "matches-source")
         self.assertFalse(idle["journal_rewrite"])
 
+        prior_terminal = self.cases["prior-terminal-cleanup-replay"]
+        self.assertEqual(prior_terminal["state"]["journal_status"], "complete")
+        self.assertNotEqual(
+            prior_terminal["state"]["transaction_id"],
+            prior_terminal["state"]["residual_transaction_id"],
+        )
+        self.assertEqual(prior_terminal["cleanup_authority"], "proven-restored-source")
+        self.assertEqual(prior_terminal["state"]["source_journal_backup"], "matches-live")
+        self.assertFalse(prior_terminal["journal_rewrite"])
+
         ambiguous = self.cases["idle-ambiguous-cleanup"]
         self.assertEqual(ambiguous["expected_outcome"], "report-managed-state-conflict")
         self.assertFalse(ambiguous["automatic_delete"])
@@ -201,6 +213,10 @@ class AvaMaintenanceFixtureTests(unittest.TestCase):
         for text in (instructions, capabilities, routing, protocol):
             self.assertIn("source manifest backup", text)
             self.assertIn("source journal backup", text)
+        self.assertIn(
+            "live valid `idle`, `complete`, `aborted`, or `rolled-back` journal",
+            instructions,
+        )
         self.assertIn("More than one direct entry", instructions)
 
     def test_uninstall_removes_only_managed_roots(self) -> None:

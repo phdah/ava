@@ -8,7 +8,7 @@ generated:
   at: 2026-07-31T15:35:00+02:00
 updated:
   by: agent:openai-opencode
-  at: 2026-08-20T11:51:12Z
+  at: 2026-08-20T15:36:31Z
 ---
 
 # Purpose
@@ -47,7 +47,7 @@ Before ordinary instruction resolution:
 6. Enter Upgrade Role mode only when selected journal edges require semantic review, carried semantic state remains incomplete, or the journal stage is `semantic`, and the requested outcome is to reconcile or resolve project-owned semantic context.
 7. Require every explicit semantic edge decision to agree with its guidance list: `true` requires one or more exact guidance paths and `false` requires none.
 8. When semantic work blocks an unrelated request, activate Ava Maintenance to explain the blocked state and required handoff rather than performing ordinary routing.
-9. Enter Ava Maintenance mode when `./.ava/state/transactions/` exists with a safe terminal journal. Treat a directory identified by a `complete`, `aborted`, or `rolled-back` transaction ID, an empty container, or one restored-source transaction proven under the `idle` replay rules as interrupted terminal cleanup that permits only bounded replay; any other entry is a managed-state conflict.
+9. Enter Ava Maintenance mode when `./.ava/state/transactions/` exists with a safe terminal journal. Treat a directory identified by a `complete`, `aborted`, or `rolled-back` transaction ID, an empty container, or one restored-source transaction proven against the live safe terminal state as interrupted terminal cleanup that permits only bounded replay; any other entry is a managed-state conflict.
 10. Enter normal routing only when the journal is in a protocol-defined safe terminal state, semantic compatibility is `complete`, and `./.ava/state/transactions/` is absent.
 
 A journal state must never broaden its `allowed_operations` beyond the upgrade protocol.
@@ -61,7 +61,7 @@ In Ava Maintenance mode:
 3. Announce `Active role: Ava Maintenance`.
 4. Compare the requested deterministic operation with the journal state and `allowed_operations`.
 5. Inspect only managed state, manifest-declared payloads, recorded transaction paths, and exact recorded host integration needed for the request.
-6. Use existing installer or updater operations for upgrade, resume, abort, and rollback. For successful upgrade finalization only, use the protocol-defined direct terminal state transition after proving every finalization precondition. Replay bounded terminal cleanup only when the terminal journal identifies the exact transaction, the container is empty, or the `idle` restored-source evidence proves one exact residual transaction.
+6. Use existing installer or updater operations for upgrade, resume, abort, and rollback. For successful upgrade finalization only, use the protocol-defined direct terminal state transition after proving every finalization precondition. Replay bounded terminal cleanup only when the terminal journal identifies the exact transaction, the container is empty, or restored-source evidence proves one exact residual transaction against the live safe terminal state.
 7. Keep project-owned registries and ordinary routing blocked until normal operation is permitted.
 
 Ava Maintenance may explain semantic state and direct the user to Upgrade Role, but it must not apply project-owned reconciliation or update semantic compatibility.
@@ -104,7 +104,7 @@ An operation may proceed only when both the protocol state and journal `allowed_
 - `abort` and `rollback` permit Ava Maintenance to invoke the exact deterministic updater operations.
 - `reconcile-semantic` permits Upgrade Role to apply installed guidance to project-owned context.
 - `resolve` applies only to the owning deterministic or semantic mechanism established by the current stage.
-- finalization permits Ava Maintenance to write the exact terminal journal transition directly only when the manifest reports semantic compatibility complete, no unresolved decisions remain, the managed commit and classifications are complete, the journal is protocol-finalizable, and the exact transaction directory derived from `transaction_id` and every path beneath it are proven safe. A valid `complete`, `aborted`, or `rolled-back` journal permits replay only of its exact directory cleanup and guarded empty-container removal. An `idle` journal permits empty-container removal, or exact cleanup of its sole direct entry only when the residual plan and source backups match the live restored source under the protocol.
+- finalization permits Ava Maintenance to write the exact terminal journal transition directly only when the manifest reports semantic compatibility complete, no unresolved decisions remain, the managed commit and classifications are complete, the journal is protocol-finalizable, and the exact transaction directory derived from `transaction_id` and every path beneath it are proven safe. A valid `complete`, `aborted`, or `rolled-back` journal permits replay only of its exact directory cleanup and guarded empty-container removal. Any safe terminal journal permits empty-container removal, or exact cleanup of its sole unidentified direct entry only when the residual plan and source backups match the live restored source under the protocol.
 - `normal` permits ordinary workflow and role routing only in a safe terminal state with semantic compatibility complete and no transaction container.
 
 Finalization is not an implicit grant of general state-mutation authority. Ava Maintenance must not invent or search for an installer binary to perform it, and it must not apply the direct-write exception to resume, abort, rollback, repair, semantic state, or any non-terminal journal mutation.
@@ -143,7 +143,7 @@ If any condition is unproven, finalization stops without mutation.
 
 When every condition passes, Ava Maintenance atomically updates `./.ava/state/upgrade.json` to `status: "complete"`, `stage: "complete"`, `current_edge: null`, `staging: null`, `failure: null`, and `allowed_operations: ["normal"]`, refreshes `updated_at`, and preserves unrelated journal fields. It then recursively removes only the exact `./.ava/state/transactions/<transaction_id>/` directory, including all transaction-local workspace, backup, plan, and candidate state, and attempts to remove `./.ava/state/transactions/` only with a non-recursive empty-directory operation. Sibling transaction directories and other entries remain untouched and keep normal routing blocked. Verification requires terminal journal integrity, complete semantic compatibility, transaction-directory absence, and transaction-container absence.
 
-If interruption leaves terminal transaction storage, the managed-state gate activates Ava Maintenance despite `allowed_operations: ["normal"]`. For `complete`, `aborted`, or `rolled-back`, Ava Maintenance revalidates semantic completion for that state, transaction identity, and the exact cleanup path, then idempotently replays only the directory cleanup and guarded empty-container removal without rewriting the journal. For `idle`, it removes an empty container directly, or removes one residual transaction directory only when that directory's valid plan identifies it and its source manifest backup, source journal backup, and live managed checksums prove the fully restored source. Ambiguous or additional entries remain untouched and block normal routing.
+If interruption leaves terminal transaction storage, the managed-state gate activates Ava Maintenance despite `allowed_operations: ["normal"]`. For `complete`, `aborted`, or `rolled-back`, Ava Maintenance revalidates semantic completion for that state, transaction identity, and the exact cleanup path, then idempotently replays only the identified directory cleanup and guarded empty-container removal without rewriting the journal. When any safe terminal journal does not identify the sole residual transaction directory, Ava Maintenance removes it only when that directory's valid plan identifies it and its source manifest backup, source journal backup, and live managed checksums prove that the live installation and journal are the fully restored source. Ambiguous or additional entries remain untouched and block normal routing.
 
 This transition is the agent's finalization mechanism. It does not require or imply an installed `ava` command or updater executable.
 

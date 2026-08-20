@@ -235,6 +235,30 @@
       "ordinary_routing": false
     },
     {
+      "id": "prior-terminal-cleanup-replay",
+      "request": "Continue cleanup after abort restored the previous completed Ava state",
+      "state": {
+        "journal_status": "complete",
+        "journal_stage": "complete",
+        "semantic_status": "complete",
+        "transaction_id": "previous-completed-transaction",
+        "allowed_operations": ["normal"],
+        "transaction_container_entries": 1,
+        "journal_transaction_directory": "absent",
+        "residual_transaction_id": "interrupted-aborted-transaction",
+        "residual_plan_identity": "valid",
+        "source_manifest_backup": "matches-live",
+        "source_journal_backup": "matches-live",
+        "managed_payload": "matches-source",
+        "project_changes": []
+      },
+      "expected_role": "maintenance",
+      "expected_operation": "replay-terminal-cleanup",
+      "cleanup_authority": "proven-restored-source",
+      "journal_rewrite": false,
+      "ordinary_routing": false
+    },
+    {
       "id": "idle-ambiguous-cleanup",
       "request": "Continue cleanup after the restored Ava upgrade",
       "state": {

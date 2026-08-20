@@ -177,6 +177,46 @@ def validate_upgrade_state(upgrade: Any, semantic_complete: bool, findings: list
     return normal
 
 
+def validate_transaction_storage(root: Path, upgrade: Any, findings: list[Finding]) -> bool:
+    transactions = root / ".ava/state/transactions"
+    if not transactions.exists() and not transactions.is_symlink():
+        return False
+    if not isinstance(upgrade, dict) or upgrade.get("status") not in {
+        "idle",
+        "complete",
+        "aborted",
+        "rolled-back",
+    }:
+        return False
+    if transactions.is_symlink() or not transactions.is_dir():
+        findings.append(
+            Finding(
+                "AVA-TRANSACTION-RESIDUE",
+                "error",
+                ".ava/state/transactions",
+                "transaction container is not a normal directory; ordinary routing must remain blocked",
+                decision_required=True,
+                category="deterministic",
+                related={"role": "Ava Maintenance"},
+            )
+        )
+        return True
+    entries = list(transactions.iterdir())
+    findings.append(
+        Finding(
+            "AVA-TRANSACTION-RESIDUE",
+            "error",
+            ".ava/state/transactions",
+            "transaction container remains after a terminal operation; ordinary routing must remain blocked",
+            fix_available=not entries,
+            decision_required=bool(entries),
+            category="deterministic",
+            related={"role": "Ava Maintenance"},
+        )
+    )
+    return True
+
+
 def validate_opencode(root: Path, findings: list[Finding]) -> None:
     for name in ("opencode.json", "opencode.jsonc"):
         path = root / name
@@ -320,6 +360,8 @@ def validate_installed(root: Path) -> ValidationResult:
         semantic_complete = False
 
     normal = validate_upgrade_state(upgrade, semantic_complete, findings) if upgrade is not None else False
+    if validate_transaction_storage(root, upgrade, findings):
+        normal = False
     validate_opencode(root, findings)
     blocking_categories = {"deterministic", "semantic", "routing"}
     if any(finding.severity == "error" and finding.category in blocking_categories for finding in findings):

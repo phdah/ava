@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-opencode
-  at: 2026-08-20T11:51:12Z
+  at: 2026-08-20T15:36:31Z
 ---
 
 # Ava Upgrade and Migration Protocol
@@ -228,7 +228,7 @@ The atomic terminal journal write records:
 
 It also refreshes `updated_at` and preserves unrelated journal fields. Only after that atomic write succeeds does Ava Maintenance recursively remove the exact `/.ava/state/transactions/<transaction_id>/` directory, including its workspace, backup, plan, and other transaction-local state. It then attempts to remove `/.ava/state/transactions/` only with a non-recursive empty-directory operation. A sibling transaction or any other entry prevents container removal and remains untouched. Finalization verifies the terminal journal, complete semantic compatibility, and absence of both the exact transaction directory and the empty transaction container.
 
-Interrupted terminal cleanup occurs when transaction storage remains after a safe terminal write. Managed pre-routing activates Ava Maintenance despite the journal's `normal` operation. A valid `complete`, `aborted`, or `rolled-back` journal identifies its exact cleanup directory through `transaction_id`; Ava Maintenance revalidates semantic completion for that state and replays only exact directory cleanup plus guarded empty-container removal. An `idle` journal has no transaction ID and permits direct removal only of an empty container, or of its sole direct entry when that directory's valid plan identity, source manifest backup, source journal backup, and live managed checksums prove the fully restored source. Ambiguous or additional entries are managed-state conflicts and keep normal routing blocked.
+Interrupted terminal cleanup occurs when transaction storage remains after a safe terminal write or restored-source journal write. Managed pre-routing activates Ava Maintenance despite the journal's `normal` operation. A valid `complete`, `aborted`, or `rolled-back` journal identifies its exact cleanup directory through `transaction_id`; Ava Maintenance revalidates semantic completion for that state and replays only exact directory cleanup plus guarded empty-container removal. Any safe terminal journal permits direct removal of an empty container. When the journal does not identify the sole direct entry, Ava Maintenance may remove that entry only when its valid plan identity, source manifest backup, source journal backup, and live managed checksums prove that the live installation and journal are the fully restored source. Ambiguous or additional entries are managed-state conflicts and keep normal routing blocked.
 
 Finalization is agent-driven and does not require an `ava` binary, updater executable, or transaction-local installer path. This is the only direct journal-mutation exception for Ava Maintenance.
 
@@ -302,7 +302,7 @@ After project-owned edits, automatic rollback still restores managed state but n
 
 A fresh invocation resumes by validating the source manifest, journal, workspace, planned paths, recorded migration checksums, and completed postconditions. It continues from the earliest unverified operation. If safe continuation cannot be proven, it blocks and offers rollback.
 
-After Upgrade Role marks semantic compatibility complete, Ava Maintenance validates the finalization preconditions and atomically writes the exact terminal journal transition itself. It then removes only the exact transaction directory derived from `transaction_id`, attempts guarded removal of its empty parent, and verifies that both the directory and empty container are absent before normal routing is enabled. Interrupted cleanup is replayed idempotently from a terminal transaction ID or the bounded restored-source evidence required for `idle`. Ava Maintenance must not search for or require an installer binary to finalize.
+After Upgrade Role marks semantic compatibility complete, Ava Maintenance validates the finalization preconditions and atomically writes the exact terminal journal transition itself. It then removes only the exact transaction directory derived from `transaction_id`, attempts guarded removal of its empty parent, and verifies that both the directory and empty container are absent before normal routing is enabled. Interrupted cleanup is replayed idempotently from a terminal transaction ID or bounded evidence that the live state exactly matches a restored safe terminal source journal. Ava Maintenance must not search for or require an installer binary to finalize.
 
 Resume, abort, rollback, repair, and non-terminal journal mutation remain installer or updater responsibilities. Direct finalization does not broaden Ava Maintenance authority beyond the terminal transition above.
 
@@ -371,7 +371,7 @@ Implementations and fixtures must cover:
 - normal-routing blocks for pending, partial, and blocked semantics
 - deterministic pre-routing to Ava Maintenance
 - semantic pre-routing to Upgrade Role
-- agent-driven terminal finalization without binary discovery, including exact terminal journal fields and recorded transaction-workspace cleanup
+- agent-driven terminal finalization without binary discovery, including exact terminal journal fields, exact transaction-directory cleanup, guarded empty-container removal, and interrupted cleanup replay from journal identity or restored-safe-terminal source evidence
 - finalization precondition failure leaving the journal unchanged and normal routing blocked
 - preservation of installer-backed resume, abort, rollback, and non-terminal mutation boundaries
 - managed recovery with missing or incompatible project registries

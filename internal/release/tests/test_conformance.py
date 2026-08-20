@@ -275,6 +275,24 @@ class ConformanceTests(unittest.TestCase):
         self.assertTrue(result.valid)
         self.assertTrue(result.normal_routing_permitted)
 
+    def test_transaction_residue_is_blocking(self) -> None:
+        for entry in (None, "stale-transaction"):
+            with self.subTest(entry=entry):
+                self.create_installed()
+                transactions = self.root / ".ava/state/transactions"
+                transactions.mkdir(parents=True, exist_ok=True)
+                if entry:
+                    (transactions / entry).mkdir()
+                result = CONFORMANCE.validate(self.root, "installed")
+                findings = [
+                    item for item in result.findings if item.rule_id == "AVA-TRANSACTION-RESIDUE"
+                ]
+                self.assertEqual(len(findings), 1)
+                self.assertEqual(findings[0].fix_available, entry is None)
+                self.assertEqual(findings[0].decision_required, entry is not None)
+                self.assertFalse(result.normal_routing_permitted)
+                self.assertFalse(result.valid)
+
     def test_managed_checksum_failure_is_blocking(self) -> None:
         self.create_installed()
         self.write("AGENTS.md", "changed\n")

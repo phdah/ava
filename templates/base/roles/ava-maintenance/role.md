@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T21:47:00+02:00
 updated:
   by: agent:openai-opencode
-  at: 2026-08-20T11:51:12Z
+  at: 2026-08-20T15:36:31Z
 ---
 
 # Purpose
@@ -68,7 +68,7 @@ It may invoke the installed or otherwise verified Ava installer or updater for a
 
 For finalization only, once the installed manifest and journal prove the exact finalization preconditions defined by the upgrade protocol, the role may atomically write the protocol-defined terminal journal state and recursively remove only the exact `./.ava/state/transactions/<transaction_id>/` directory owned by that journal. It may then attempt to remove `./.ava/state/transactions/` only with a non-recursive empty-directory operation.
 
-A valid `complete`, `aborted`, or `rolled-back` journal with residual terminal paths permits replay of cleanup for its exact non-empty `transaction_id` without another journal write. When an `idle` journal has no transaction ID, the role may remove an empty container, or one exact residual transaction directory only after the installed manifest, live managed checksums, residual plan identity, source manifest backup, and source journal backup prove that the source was fully restored and the directory is the only direct container entry. This authority does not permit removing an ambiguous or non-empty transaction container, an unproven sibling transaction, or any other managed path, and it does not permit reconstructing, repairing, or otherwise editing managed state.
+A valid `complete`, `aborted`, or `rolled-back` journal with residual terminal paths permits replay of cleanup for its exact non-empty `transaction_id` without another journal write. Any safe terminal journal permits removal of an empty container, or one exact residual transaction directory only after the installed manifest, live managed checksums, residual plan identity, source manifest backup, and source journal backup prove that the live installation and journal are the fully restored source and the directory is the only direct container entry. This authority does not permit removing an ambiguous or non-empty transaction container, an unproven sibling transaction, or any other managed path, and it does not permit reconstructing, repairing, or otherwise editing managed state.
 
 For an approved uninstall, it may delete only ownership-proven Ava-managed paths after completing the removal procedure. This bounded authority does not permit ordinary customization, repair, or reconstruction of managed content.
 

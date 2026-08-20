@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T21:47:00+02:00
 updated:
   by: agent:openai-opencode
-  at: 2026-08-20T11:51:12Z
+  at: 2026-08-20T15:36:31Z
 ---
 
 # Managed-state integrity
@@ -43,7 +43,7 @@ The role must not:
 - interpret a general uninstall request as permission to discard managed conflicts
 - remove or modify project-owned host entrypoints, OpenCode configuration, roles, workflows, shared instructions, knowledge, inbox content, indexes, or logs
 
-During finalization, recursive transaction cleanup is limited to the exact `./.ava/state/transactions/<transaction_id>/` directory derived from the validated journal and occurs only after the terminal journal write. Terminal cleanup replay is limited to an exact directory identified by a valid terminal journal, or to the sole direct container entry when an `idle` journal and complete restored-source evidence prove its transaction identity and safe terminal state. The role may remove `./.ava/state/transactions/` only through a non-recursive empty-directory operation. An ambiguous or non-empty transaction container, unproven sibling transaction directories, and every other managed or project-owned path remain outside that authority and keep normal routing blocked until their state is resolved.
+During finalization, recursive transaction cleanup is limited to the exact `./.ava/state/transactions/<transaction_id>/` directory derived from the validated journal and occurs only after the terminal journal write. Terminal cleanup replay is limited to an exact directory identified by a valid terminal journal, or to the sole direct container entry when complete restored-source evidence proves its transaction identity and the live safe terminal state. The role may remove `./.ava/state/transactions/` only through a non-recursive empty-directory operation. An ambiguous or non-empty transaction container, unproven sibling transaction directories, and every other managed or project-owned path remain outside that authority and keep normal routing blocked until their state is resolved.
 
 # Interface boundary
 

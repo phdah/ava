@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T21:47:00+02:00
 updated:
   by: agent:openai-opencode
-  at: 2026-08-20T11:51:12Z
+  at: 2026-08-20T15:36:31Z
 ---
 
 # Managed inspection
@@ -29,7 +29,7 @@ The role may:
 - invoke an existing verified installer or updater for an explicit upgrade
 - invoke existing resume, abort, or rollback operations when the protocol and user authorization permit them
 - directly perform the protocol-defined terminal journal write, recursively remove the exact transaction directory derived from the validated journal, and remove its transaction container only through a non-recursive empty-directory operation when semantic compatibility is complete and every finalization precondition is proven
-- replay only bounded terminal cleanup when a valid `complete`, `aborted`, or `rolled-back` journal identifies the exact transaction, or when an `idle` journal and one residual transaction plan, source manifest backup, source journal backup, and live managed checksums prove an exact restored-source cleanup path
+- replay only bounded terminal cleanup when a valid `complete`, `aborted`, or `rolled-back` journal identifies the exact transaction, or when any safe terminal journal and one residual transaction plan, source manifest backup, source journal backup, and live managed checksums prove an exact restored-source cleanup path
 - remove an empty transaction container through the same non-recursive operation when no transaction directory remains
 - provide the exact required user command when the host cannot invoke an installer-backed operation
 - diagnose why deterministic recovery or finalization is blocked and identify the required decision or prerequisite

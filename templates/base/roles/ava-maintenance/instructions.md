@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T21:47:00+02:00
 updated:
   by: agent:openai-opencode
-  at: 2026-08-20T11:51:12Z
+  at: 2026-08-20T15:36:31Z
 ---
 
 # Entry procedure
@@ -119,12 +119,12 @@ After the atomic terminal write succeeds, remove the exact `./.ava/state/transac
 
 If cleanup is interrupted after a `complete`, `aborted`, or `rolled-back` terminal write, first revalidate the terminal journal, complete semantic compatibility for the active terminal state, empty unresolved decisions, non-empty `transaction_id`, and that the exact cleanup path resolves beneath the transaction container without symlink escape. Do not rewrite the terminal journal. Idempotently remove the exact transaction directory when present, then attempt the same non-recursive empty-container removal.
 
-An `idle` journal has no transaction ID. If its transaction container is empty, remove only that empty container. If it has one direct entry, remove that exact residual directory only after proving all of these conditions:
+Any valid safe terminal journal with complete semantic compatibility and no unresolved decisions permits removal of an empty transaction container. If the container has one direct entry that the live journal does not identify, remove that exact residual directory only after proving all of these conditions:
 
 1. the entry is a normal directory directly beneath `./.ava/state/transactions/` and its name is the non-empty transaction ID in its valid `plan.json`
 2. the plan records the installed release as its source and contains no unresolved project-owned change
 3. the plan's source manifest backup is byte-identical to the live valid manifest
-4. the plan's source journal backup is byte-identical to the live valid `idle` journal
+4. the plan's source journal backup is byte-identical to the live valid `idle`, `complete`, `aborted`, or `rolled-back` journal
 5. every live managed payload matches the source manifest checksum
 
 Then recursively remove only that proven directory and attempt the same non-recursive empty-container removal. More than one direct entry, a symlink, missing or contradictory evidence, a checksum mismatch, or any unresolved project change is a conflict and prohibits deletion.
