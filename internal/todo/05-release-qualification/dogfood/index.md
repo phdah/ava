@@ -6,7 +6,11 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 ## Current next finding
 
-There is no pending blocker or `required-v1` dogfood finding.
+[Report inspected project-owned paths during interrupted-finalize](22-report-inspected-paths-during-interrupted-finalize.md) and [report the inspected root index during pending-semantic-reconciliation](23-report-inspected-path-during-pending-semantic-reconciliation.md) are pending blockers. Release qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local` against candidate `8927a3c` failed both scenarios; the release PR remains unmerged until they are resolved and a fresh full qualification run passes.
+
+[Fix the OpenCode session-export pipe truncation](24-fix-opencode-session-export-pipe-truncation.md) is a pending `required-v1` finding from the same run; a verified external workaround exists for now.
+
+[Offer optional todo tracking for qualification failures](25-offer-qualification-failure-todo-tracking.md) is a pending `post-v1` process improvement, not release-blocking.
 
 [Record semantic inspection paths before completion](21-record-semantic-inspection-paths.md) is complete. Upgrade Role now records guidance-driven inspection-only paths explicitly, and the synthetic qualification gate fails known semantic scenarios whose required path accounting is missing, duplicated, or unresolved.
 
@@ -28,9 +32,10 @@ The dogfood umbrella remains active regardless of backlog state. New `blocker` o
 
 ## Backlog status
 
-- 0 pending findings
-- 0 pending blockers
-- 0 pending required-v1 findings
+- 4 pending findings
+- 2 pending blockers
+- 1 pending required-v1 finding
+- 1 pending post-v1 finding
 - 21 completed findings
 
 ## Findings
@@ -58,6 +63,10 @@ The dogfood umbrella remains active regardless of backlog state. New `blocker` o
 | 19 | completed | required-v1 | release candidate | [Add one-command synthetic qualification runner](19-add-one-command-qualification-runner.md) |
 | 20 | completed | required-v1 | release candidate | [Preserve large-batch inbox fidelity and claim provenance](20-preserve-large-batch-inbox-fidelity.md) |
 | 21 | completed | required-v1 | release candidate | [Record semantic inspection paths before completion](21-record-semantic-inspection-paths.md) |
+| 22 | pending | blocker | next prerelease | [Report inspected project-owned paths during interrupted-finalize](22-report-inspected-paths-during-interrupted-finalize.md) |
+| 23 | pending | blocker | next prerelease | [Report the inspected root index during pending-semantic-reconciliation](23-report-inspected-path-during-pending-semantic-reconciliation.md) |
+| 24 | pending | required-v1 | release candidate | [Fix OpenCode session-export pipe truncation](24-fix-opencode-session-export-pipe-truncation.md) |
+| 25 | pending | post-v1 | none | [Offer optional todo tracking for qualification failures](25-offer-qualification-failure-todo-tracking.md) |
 
 ## Backlog rules
 

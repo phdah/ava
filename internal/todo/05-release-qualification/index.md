@@ -41,10 +41,11 @@ Dogfooding intentionally remains open during steps 1 and 2. Explicit user closur
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 0 pending findings
-- 0 pending blockers
-- 0 pending required-v1 findings
-- 19 completed findings
+- 4 pending findings
+- 2 pending blockers
+- 1 pending required-v1 finding
+- 1 pending post-v1 finding
+- 21 completed findings
 
 Findings 01 through 19 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence, with source anchoring, ambiguity handling, boundary fixtures, Change Reviewer fidelity checks, and assembled-payload coverage. Finding 19 composes the complete maintained matrix behind one internal manual shell entry point with pinned-input preflight, isolated runner-owned scenario workspaces, exact managed-damage rules, bounded OpenCode prompts, interrupted reruns, and final summary semantics. Finding 12's realistic multi-turn installed-project exercise, Finding 15's fresh-agent terminal-finalization exercise, Finding 16's published Inbox Ingester scoped-history exercise, Finding 17's selected-asset resume/abort execution, Finding 18's clean-session registered-role calendar exercise, and Finding 19's complete selected-asset runner execution remain release qualification evidence rather than pending implementation work.
 
