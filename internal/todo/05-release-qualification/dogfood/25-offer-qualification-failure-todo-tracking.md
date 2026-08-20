@@ -13,6 +13,9 @@ affected_version: n/a
 generated:
   by: agent:openai-opencode
   at: 2026-08-20T00:00:00Z
+updated:
+  by: agent:openai-opencode
+  at: 2026-08-20T15:36:31Z
 ---
 
 # Offer Optional Todo Tracking for Qualification Failures
@@ -32,6 +35,7 @@ Add a small, explicit step to `internal/release/procedure.md`'s failure-handling
 1. After reporting a `failed` or `needs-review` qualification result, ask the user whether its individual findings should be recorded as todos.
 2. If the user answers yes, create the bounded dogfood-finding-style todo entries on `main` (never on the release branch) as ordinary repository work, following the existing finding template and backlog index conventions.
 3. If the user answers no, or does not respond, do not create any todo entries.
+4. Align the active release summaries in `internal/todo/05-release-qualification/v1-release-operator-path.md` and `internal/todo/05-release-qualification/04c-automate-release-qualification-evidence.md` so they require reporting and explicit user direction instead of instructing the maintainer to fix and rerun automatically.
 
 ## Hard constraints (must not be weakened by the implementation)
 
@@ -39,10 +43,12 @@ Add a small, explicit step to `internal/release/procedure.md`'s failure-handling
 - This step must require an explicit answer for each qualification failure it applies to. It must not be pre-authorized, defaulted to yes, or triggered without the user being asked.
 - Todo entries created this way must be committed to `main`, not to the release branch under qualification.
 - This step must not replace or shortcut the existing requirement that a fixed defect requires a new candidate and a full fresh qualification run.
+- No active release procedure or operator summary may instruct the maintainer to modify repository or release content after qualification failure without explicit user direction.
 
 ## Completion criteria
 
 - `internal/release/procedure.md` documents the ask-then-record step with the constraints above
+- the V1 operator path and qualification-automation task no longer contain self-correcting `failed` or `needs-review` handling
 - the step is exercised at least once in an actual release qualification failure and confirmed to behave as described
 
 ## Resolution evidence
