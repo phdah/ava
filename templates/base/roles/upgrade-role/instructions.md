@@ -8,7 +8,7 @@ generated:
   at: 2026-07-31T15:35:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-15T00:19:00+02:00
+  at: 2026-08-20T18:28:44+02:00
 ---
 
 # Entry procedure
@@ -123,7 +123,8 @@ Report:
 - final semantic status
 - selected edge semantic-review decisions
 - exact guidance documents applied
-- every project-owned path inspected or changed and its recorded journal classification
+- every project-owned path inspected or changed and its recorded journal classification and resolution
+- for every `change_type: inspected` record, explicitly state that the exact recorded path was inspected during semantic reconciliation and retained without mutation; listing the path or its journal classification alone is not sufficient confirmation
 - validations performed
 - unresolved decisions
 - whether finalization or another deterministic action remains for Ava Maintenance
