@@ -55,6 +55,8 @@ class QualificationPostconditionTests(unittest.TestCase):
         self.assertIn("change_type: inspected", role)
         self.assertIn("every project-owned path inspected or changed", role)
         self.assertIn("recorded exactly once", role)
+        self.assertIn("explicitly state that the exact recorded path was inspected", role)
+        self.assertIn("listing the path or its journal classification alone is not sufficient", role)
 
     def test_inspection_only_records_satisfy_required_path_accounting(self) -> None:
         self.write_run(
@@ -112,6 +114,10 @@ class QualificationPostconditionTests(unittest.TestCase):
         expected = ["/index.md", "/roles/index.md", "/shared/index.md", "/workflows/index.md"]
         self.assertEqual(scenarios["interrupted-finalize"]["expected_project_changes"], expected)
         self.assertEqual(scenarios["pending-semantic-reconciliation"]["expected_project_changes"], expected)
+        self.assertEqual(
+            scenarios["pending-semantic-reconciliation"]["expected_reported_project_owned_paths"],
+            expected,
+        )
 
 
 if __name__ == "__main__":
