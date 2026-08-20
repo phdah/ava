@@ -11,8 +11,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-07T15:45:02+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-10T16:23:00+02:00
+  by: agent:openai-opencode
+  at: 2026-08-20T15:58:41Z
 ---
 
 # Qualify and Publish the Corrective Alpha
@@ -29,7 +29,7 @@ Use [Step 2 of the V1 Release Operator Path](v1-release-operator-path.md#step-2-
 
 Do not complete or publish the corrective alpha until:
 
-- all currently recorded blocker and `required-v1` dogfood findings are implementation-complete
+- all dogfood findings classified to block the next prerelease are implementation-complete
 - the [synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md) has met its Step 1 qualification gate; its corpus and images are already user-confirmed as generated, but ingestion, review, lifecycle, and execution-evidence qualification still remain
 - no newly discovered blocker prevents prerelease publication
 - the exact target version and source revision receive approval through the maintained release pull-request process
@@ -73,6 +73,6 @@ After publication, use version-pinned immutable assets to:
 - finding 15 has fresh-agent terminal-finalization evidence with no binary lookup dependency
 - the generated qualification vault passes the required routing, ingestion, review, hierarchy, upgrade, recovery, finalization, and maintenance checks
 - the release URL, revision, asset digests, per-source outcomes, transcripts, and conformance results are bound in valid qualification evidence manifests
-- no blocker or `required-v1` finding remains pending and every newly discovered release-relevant failure has a numbered dogfood finding and disposition
+- no finding classified to block the next prerelease remains pending, every newly discovered release-relevant failure has a numbered dogfood finding and disposition, and any remaining `required-v1` finding retains an explicit pre-RC completion gate
 
 Completing this task does not itself complete dogfooding. After this task passes, the next step is the explicit user-owned dogfood closure gate defined in the [V1 Release Operator Path](v1-release-operator-path.md#step-3-close-alpha-dogfooding).

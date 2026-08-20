@@ -11,8 +11,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-07T15:45:02+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-14T12:11:00+02:00
+  by: agent:openai-opencode
+  at: 2026-08-20T15:58:41Z
 ---
 
 # Build the Synthetic V1 Qualification Vault
@@ -245,12 +245,13 @@ Current external progress:
 - [x] materialize the eight qualification variants
 - [x] exercise clean OpenCode ingestion and independent review using `~/stuff/project-vault` where the execution plan calls for the manual test project
 - [x] exercise routing, hierarchy, fidelity, damaged-state, semantic reconciliation, finalization, rollback, uninstall, and reinstall scenarios except resume and abort
-- [ ] execute authentic resume and abort using the maintained qualification checkpoint harness and exact selected target assets
-- [ ] repeat the affected calendar-fidelity scenario after finding 18 is complete
-- [ ] execute the complete maintained matrix through finding 19's one-command runner
+- [x] execute authentic resume and abort using the maintained qualification checkpoint harness and exact selected target assets
+- [x] repeat the affected calendar-fidelity scenario after finding 18 is complete
+- [x] execute the complete maintained matrix through finding 19's one-command runner
+- [ ] resolve findings 22 and 23 and rerun the complete matrix against the new exact candidate
 - [ ] populate and validate the remaining required run manifests and accept final qualification evidence
 
-[Finding 17](dogfood/17-add-resume-abort-qualification-checkpoints.md) and [Finding 18](dogfood/18-verify-relative-calendar-dates.md) are implementation-complete. The task remains pending because Finding 19's runner must be completed before one full selected-asset matrix execution, including the corrected calendar-fidelity scenario and authentic resume/abort operations, can provide final qualification signoff. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence. Implement [Finding 19](dogfood/19-add-one-command-qualification-runner.md), execute the complete runner using the maintained interrupted-upgrade [checkpoint procedure](../../release/fixtures/synthetic-qualification-vault/checkpoints.md) and calendar-verification regression, and return to the operator sequence in [V1 Release Operator Path](v1-release-operator-path.md#step-1-finish-synthetic-vault-qualification).
+[Findings 17](dogfood/17-add-resume-abort-qualification-checkpoints.md), [18](dogfood/18-verify-relative-calendar-dates.md), and [19](dogfood/19-add-one-command-qualification-runner.md) are implementation-complete and were exercised by qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local`. The run passed 15 of 17 scenarios and created blockers [22](dogfood/22-report-inspected-paths-during-interrupted-finalize.md) and [23](dogfood/23-report-inspected-path-during-pending-semantic-reconciliation.md). Resolve those blockers, assemble a new exact candidate, and rerun the complete matrix before final signoff. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence.
 
 ## Completion criteria
 

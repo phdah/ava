@@ -62,11 +62,11 @@ Release-please enforces supported-distribution release classification at the mer
 
 Alpha publication is complete through immutable `1.0.0-alpha.14`. The remaining ordered path to the first stable release is:
 
-[Automate release qualification and evidence state](05-release-qualification/04c-automate-release-qualification-evidence.md) currently preempts another qualification run without changing the six canonical release steps:
+Dogfood findings [22](05-release-qualification/dogfood/22-report-inspected-paths-during-interrupted-finalize.md) and [23](05-release-qualification/dogfood/23-report-inspected-path-during-pending-semantic-reconciliation.md) currently preempt another qualification run without changing the six canonical release steps:
 
-1. finish the [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md); the immediate action is implementing the required hands-off qualification, fresh-session audit, and release-state evidence operation before another matrix execution
+1. resolve findings 22 and 23, then finish the [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) through a fresh complete matrix run and explicit signoff
 2. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including normalized adjacent-edge authoring, conversational routing transitions, and agent-driven finalization
-3. obtain explicit user closure of [alpha dogfooding](05-release-qualification/04-dogfood-alpha-and-track-findings.md) after the corrective alpha passes and before RC work begins
+3. complete [finding 24](05-release-qualification/dogfood/24-fix-opencode-session-export-pipe-truncation.md), then obtain explicit user closure of [alpha dogfooding](05-release-qualification/04-dogfood-alpha-and-track-findings.md) after the corrective alpha passes and before RC work begins
 4. publish the release candidate only after dogfood closure, blockers, and required RC work are resolved
 5. [stabilize the published release candidate](05-release-qualification/05a-stabilize-release-candidate.md) through the complete generated-vault matrix
 6. qualify and publish `1.0.0`

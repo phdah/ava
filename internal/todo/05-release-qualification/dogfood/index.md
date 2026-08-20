@@ -20,7 +20,7 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 [Verify relative calendar dates before persisting](18-verify-relative-calendar-dates.md) is complete. Relevant persistence work conditionally loads a deterministic calendar-verification contract, preserves unresolved relative wording instead of inventing absolute dates, distinguishes current-host and source-document reference contexts, and gives Change Reviewer explicit semantic-fidelity coverage for contradictory weekday/date values.
 
-The immediate qualification action remains to execute the complete runner matrix against the selected pinned corrective-alpha assets, record the terminal evidence, and finish the synthetic-vault Step 1 signoff gate after the required implementation PRs are merged. A newly discovered `blocker` or `required-v1` finding still preempts that sequence.
+The immediate qualification action remains to execute the complete runner matrix against the selected pinned corrective-alpha assets, record the terminal evidence, and finish the synthetic-vault Step 1 signoff gate after the required implementation PRs are merged. A newly discovered blocker preempts that run; a `required-v1` finding preempts the release gate named by its `blocks` field.
 
 [Add deterministic resume and abort qualification checkpoints](17-add-resume-abort-qualification-checkpoints.md) is complete. The synthetic-vault interrupted-upgrade plans have a repository-only harness that creates authentic abortable and resumable installer transactions without adding a public installer mode or fabricating managed state.
 
@@ -28,7 +28,7 @@ The immediate qualification action remains to execute the complete runner matrix
 
 [Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) is complete. Ava Maintenance now performs successful terminal finalization directly after proving the protocol preconditions, without searching for an installer binary, while resume, abort, rollback, and non-terminal mutations remain installer-backed.
 
-The dogfood umbrella remains active regardless of backlog state. New `blocker` or `required-v1` findings still preempt the qualification sequence if discovered.
+The dogfood umbrella remains active regardless of backlog state. New blockers preempt the next prerelease, while `required-v1` findings preempt their declared release gates.
 
 ## Backlog status
 

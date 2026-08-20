@@ -26,14 +26,14 @@ Core progress: 3 of 6 complete.
 
 The official remaining sequence is:
 
-1. finish the synthetic v1 qualification vault
+1. resolve findings 22 and 23 and finish the synthetic v1 qualification vault
 2. qualify and publish the corrective alpha
-3. obtain explicit user closure of alpha dogfooding
+3. complete finding 24 and obtain explicit user closure of alpha dogfooding
 4. publish the `1.0.0` release candidate
 5. stabilize the published release candidate
 6. qualify and publish `1.0.0`
 
-A newly discovered `blocker` or `required-v1` finding preempts this sequence until resolved. An approved `post-v1` finding does not.
+A newly discovered blocker preempts the next prerelease. A `required-v1` finding preempts the release gate named by its `blocks` field. An approved `post-v1` finding does not preempt this sequence.
 
 Dogfooding intentionally remains open during steps 1 and 2. Explicit user closure is required before step 4 may begin, and an empty findings backlog does not substitute for that closure.
 
@@ -57,11 +57,13 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Step 1 of 6 is active. The required qualification-automation implementation is complete, so execute the automated evidence gate next.**
+**Step 1 of 6 is active. Resolve dogfood findings 22 and 23, then rerun the complete automated evidence gate against a new exact candidate.**
 
 The user has confirmed the generated corpus and all five image results. The exact visually accepted PNG bytes are pinned under the repository-only fixture, while generated vaults and execution evidence remain external.
 
-The reviewed active pair is immutable published `v1.0.0-alpha.14` to exact caller-supplied local `v1.0.0-alpha.15`. Execute:
+Qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local` passed 15 of 17 scenarios. Findings 22 and 23 capture the two failed required-path accounting scenarios and block another prerelease qualification attempt until their implementation PRs are merged.
+
+After those fixes, assemble a new exact candidate for immutable published `v1.0.0-alpha.14` to caller-supplied local `v1.0.0-alpha.15`, then execute:
 
 ```sh
 internal/release/qualify-release.sh \
@@ -72,7 +74,7 @@ The operation owns exact input acquisition, pinned-image verification, clean fix
 
 Do not manually reconstruct the earlier runner sequence. Step 1 may advance only from a mechanically clean result whose audit state is `awaiting-user-signoff` and whose generated compact evidence is explicitly accepted. A `failed` or `needs-review` run preempts the path until corrected.
 
-After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification unless a new blocker or `required-v1` finding has preempted the path.
+After the Step 1 qualification gate passes, continue directly to corrective-alpha qualification. Finding 24 blocks the release candidate, not this corrective prerelease, because the current run has a verified external workaround. Finding 25 is post-v1 and does not block this sequence.
 
 ## Previous phase
 

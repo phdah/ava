@@ -10,8 +10,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
 updated:
-  by: agent:openai-chatgpt
-  at: 2026-08-14T12:11:00+02:00
+  by: agent:openai-opencode
+  at: 2026-08-20T15:58:41Z
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -71,7 +71,7 @@ A clear user statement that dogfooding is complete or that Ava should proceed to
 
 ## Current state
 
-Findings 01 through 18 are implementation-complete. Finding 18 adds conditional deterministic calendar verification before relevant persistence converts relative language into absolute project facts, including source-versus-host reference semantics, ambiguity preservation, boundary regression fixtures, and Change Reviewer fidelity coverage. Finding 19 requires one internal shell entry point for the complete maintained qualification matrix. This umbrella remains active until the user explicitly closes dogfooding.
+Findings 01 through 21 are implementation-complete. The one-command qualification runner executed the complete maintained matrix against the corrective-alpha candidate and produced three new release-relevant findings. This umbrella remains active until the user explicitly closes dogfooding.
 
 The synthetic corpus and all five specified images are finalized and verified in a repository-external local directory. The user materialized all eight qualification families and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior.
 
@@ -85,4 +85,4 @@ Finding 10 established that pull-request change types are selected from supporte
 
 Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing while preserving the managed-state gate and fresh-routing transition rules.
 
-Finding 19 currently preempts completion of synthetic-vault qualification. Implement the one-command runner using Finding 17's checkpoint harness and Finding 18's calendar regression, execute the complete matrix, finish the synthetic-vault signoff gate, and continue to corrective immutable alpha qualification. New `blocker` or `required-v1` findings may still preempt that sequence. After those supporting tasks pass, the next action is the explicit user-owned closure gate before RC publication.
+Findings 22 and 23 currently preempt completion of synthetic-vault qualification and the corrective prerelease. Resolve both reporting/accounting blockers, assemble a new exact candidate, rerun the complete matrix, and obtain fresh qualification signoff. Finding 24 must be complete before release-candidate qualification; its verified external workaround permits the corrective alpha to proceed first. Finding 25 is post-v1 and does not block release progression. After the corrective alpha passes and finding 24 is complete, the next action is the explicit user-owned closure gate before RC publication.
