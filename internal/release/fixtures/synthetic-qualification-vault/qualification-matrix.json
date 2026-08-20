@@ -151,6 +151,12 @@
         "/shared/index.md",
         "/workflows/index.md"
       ],
+      "expected_reported_project_owned_paths": [
+        "/index.md",
+        "/roles/index.md",
+        "/shared/index.md",
+        "/workflows/index.md"
+      ],
       "family": "pending-semantic-reconciliation",
       "id": "pending-semantic-reconciliation",
       "kind": "semantic-reconciliation",
