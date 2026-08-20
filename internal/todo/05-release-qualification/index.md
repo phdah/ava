@@ -26,7 +26,7 @@ Core progress: 3 of 6 complete.
 
 The official remaining sequence is:
 
-1. resolve findings 22 and 23 and finish the synthetic v1 qualification vault
+1. finish the synthetic v1 qualification vault through a fresh full run against a candidate containing the implemented finding 22 and 23 fixes
 2. qualify and publish the corrective alpha
 3. complete finding 24 and obtain explicit user closure of alpha dogfooding
 4. publish the `1.0.0` release candidate
@@ -41,13 +41,13 @@ Dogfooding intentionally remains open during steps 1 and 2. Explicit user closur
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 4 pending findings
-- 2 pending blockers
+- 2 pending findings
+- 0 pending blockers
 - 1 pending required-v1 finding
 - 1 pending post-v1 finding
-- 21 completed findings
+- 23 completed findings
 
-Findings 01 through 19 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence, with source anchoring, ambiguity handling, boundary fixtures, Change Reviewer fidelity checks, and assembled-payload coverage. Finding 19 composes the complete maintained matrix behind one internal manual shell entry point with pinned-input preflight, isolated runner-owned scenario workspaces, exact managed-damage rules, bounded OpenCode prompts, interrupted reruns, and final summary semantics. Finding 12's realistic multi-turn installed-project exercise, Finding 15's fresh-agent terminal-finalization exercise, Finding 16's published Inbox Ingester scoped-history exercise, Finding 17's selected-asset resume/abort execution, Finding 18's clean-session registered-role calendar exercise, and Finding 19's complete selected-asset runner execution remain release qualification evidence rather than pending implementation work.
+Findings 01 through 23 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence, with source anchoring, ambiguity handling, boundary fixtures, Change Reviewer fidelity checks, and assembled-payload coverage. Finding 19 composes the complete maintained matrix behind one internal manual shell entry point with pinned-input preflight, isolated runner-owned scenario workspaces, exact managed-damage rules, bounded OpenCode prompts, interrupted reruns, and final summary semantics. Findings 22 and 23 repair the two failed semantic-path reporting scenarios from the latest corrective-alpha candidate. Finding 12's realistic multi-turn installed-project exercise, Finding 15's fresh-agent terminal-finalization exercise, Finding 16's published Inbox Ingester scoped-history exercise, Finding 17's selected-asset resume/abort execution, Finding 18's clean-session registered-role calendar exercise, Finding 19's complete selected-asset runner execution, and the fresh qualification evidence for findings 22 and 23 remain release qualification evidence rather than pending implementation work.
 
 ## Qualification policy
 
@@ -57,13 +57,13 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Step 1 of 6 is active. Resolve dogfood findings 22 and 23, then rerun the complete automated evidence gate against a new exact candidate.**
+**Step 1 of 6 is active. Assemble a new exact candidate containing the finding 22 and 23 fixes, then rerun the complete automated evidence gate.**
 
 The user has confirmed the generated corpus and all five image results. The exact visually accepted PNG bytes are pinned under the repository-only fixture, while generated vaults and execution evidence remain external.
 
-Qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local` passed 15 of 17 scenarios. Findings 22 and 23 capture the two failed required-path accounting scenarios and block another prerelease qualification attempt until their implementation PRs are merged.
+Qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local` passed 15 of 17 scenarios. Findings 22 and 23 capture the two failed required-path reporting scenarios and are now implementation-complete; that failed run remains unaccepted and must not be reused as qualification evidence for the corrected candidate.
 
-After those fixes, assemble a new exact candidate for immutable published `v1.0.0-alpha.14` to caller-supplied local `v1.0.0-alpha.15`, then execute:
+Assemble a new exact candidate for immutable published `v1.0.0-alpha.14` to caller-supplied local `v1.0.0-alpha.15`, then execute:
 
 ```sh
 internal/release/qualify-release.sh \
