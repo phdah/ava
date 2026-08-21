@@ -176,6 +176,15 @@ class ReleasePleasePolicyTests(unittest.TestCase):
             "for output in release-a release-b",
             self.release_workflow,
         )
+        self.assertNotIn("PYTHONPATH:", self.release_workflow)
+        self.assertIn(
+            "python3 -m internal.release.conformance",
+            self.release_workflow,
+        )
+        self.assertNotIn(
+            "python3 internal/release/conformance.py",
+            self.release_workflow,
+        )
         self.assertIn("actions/attest@v4", self.release_workflow)
         self.assertIn("gh release upload", self.release_workflow)
         self.assertNotIn("--clobber", self.release_workflow)
