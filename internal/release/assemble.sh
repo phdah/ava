@@ -1,6 +1,7 @@
 #!/bin/sh
 set -eu
 ROOT=$(CDPATH= cd "$(dirname "$0")/../.." && pwd)
+export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
 python3 "$ROOT/internal/release/validate-installed-paths.py" --root "$ROOT"
 if [ -n "${AVA_UPGRADE_CATALOG:-}" ]; then
   exec python3 "$ROOT/internal/release/assemble_reviewed.py" \
