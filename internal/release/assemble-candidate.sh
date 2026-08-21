@@ -32,14 +32,14 @@ if [ ! -f "$catalog" ]; then
 fi
 
 output_parent=${AVA_CANDIDATE_ROOT:-${TMPDIR:-/tmp}}
-mkdir -p "$output_parent"
-output_parent=$(CDPATH= cd "$output_parent" && pwd -P)
+output_parent=$(python3 -c 'import pathlib, sys; print(pathlib.Path(sys.argv[1]).expanduser().resolve())' "$output_parent")
 case "$output_parent" in
   "$ROOT"|"$ROOT"/*)
     echo "ERROR: candidate output must be outside the Ava repository" >&2
     exit 1
     ;;
 esac
+mkdir -p "$output_parent"
 
 short_revision=$(printf '%s' "$revision" | cut -c1-7)
 output="$output_parent/ava-$version-$short_revision"
