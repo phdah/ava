@@ -8,7 +8,7 @@ generated:
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-17T12:26:00+02:00
+  at: 2026-08-21T08:50:00+02:00
 ---
 
 # Purpose
@@ -46,6 +46,14 @@ internal/release/qualify-release.sh \
 ```
 
 The run identity binds the release assets, fixture, images, matrix, repository revision, runner, automation, OpenCode version, and qualification/audit models.
+
+# OpenCode JSON capture
+
+`qualify-release.sh` uses the maintained `qualification-opencode.sh` adapter. For session inventory, the adapter translates `session list --format json` to the required OpenCode database query. The adapter also handles session `export` capture.
+
+OpenCode environments affected by the 65,536-byte stdout-pipe truncation must not require an external wrapper. For both the session-list database query and `opencode export`, the maintained adapter first lets the real OpenCode process write JSON to a temporary regular file and then re-emits those bytes to qualification automation. Python-side parsing remains the JSON validation boundary.
+
+`AVA_QUALIFICATION_OPENCODE` may still select the real OpenCode executable when needed, but normal qualification does not require a large-JSON shim.
 
 # Automated result
 
