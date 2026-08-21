@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-17T12:26:00+02:00
+  at: 2026-08-21T09:03:00+02:00
 ---
 
 # Ava Release Publication Procedure
@@ -24,7 +24,7 @@ Every Ava release uses the same flow. Full `qualify-release.sh` qualification an
 3. Complete the project-owned semantic-impact assessment.
 4. Author exactly one adjacent release record for `<previous> -> <target>`.
 5. Run release-PR validation and the complete repository test suite.
-6. Assemble the exact target release assets from a clean release PR revision.
+6. Assemble the exact target release assets from a clean release PR revision with `assemble-candidate.sh`.
 7. Configure the qualification active pair as exact published previous release -> exact local target.
 8. Run `qualify-release.sh` against those local target assets.
 9. Any `failed` or `needs-review` result leaves the release PR blocked; report it to the user without modifying repository or release content to make it pass.
@@ -81,15 +81,23 @@ Before qualification, the release PR must contain the complete candidate release
 
 Prepare the qualification pair so the source is the exact immutable previous published release and the target is local with the release PR target version.
 
-Assemble the target assets from the clean release PR revision being qualified. The local release manifest `source_revision` must equal that revision.
+From the clean release PR checkout, assemble the target with:
+
+```sh
+internal/release/assemble-candidate.sh
+```
+
+The command derives version, channel, current `HEAD`, source-date epoch, published timestamp, adjacent catalog, release notes, and a repository-external output path. It refuses a dirty checkout, a missing target catalog, repository-local output, or reuse of an existing candidate directory. It writes assembly diagnostics to stderr and prints only the absolute candidate asset directory to stdout.
+
+Set `AVA_CANDIDATE_ROOT` when a specific repository-external output parent is desired. The local release manifest `source_revision` must equal the clean revision being qualified.
 
 # Mandatory qualification
 
-Run:
+The two commands may be composed directly:
 
 ```sh
 internal/release/qualify-release.sh \
-  --target-assets /absolute/path/to/target/assets
+  --target-assets "$(internal/release/assemble-candidate.sh)"
 ```
 
 The operation must run the maintained 17-scenario matrix, capture all top-level and nested OpenCode sessions, execute the independent audit, and write compact evidence.
