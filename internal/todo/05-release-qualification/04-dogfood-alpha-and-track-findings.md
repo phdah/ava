@@ -10,8 +10,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T18:13:00+02:00
 updated:
-  by: agent:openai-opencode
-  at: 2026-08-20T15:58:41Z
+  by: agent:openai-chatgpt
+  at: 2026-08-21T08:50:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -71,7 +71,7 @@ A clear user statement that dogfooding is complete or that Ava should proceed to
 
 ## Current state
 
-Findings 01 through 21 are implementation-complete. The one-command qualification runner executed the complete maintained matrix against the corrective-alpha candidate and produced three new release-relevant findings. This umbrella remains active until the user explicitly closes dogfooding.
+Findings 01 through 24 are implementation-complete. The one-command qualification runner previously executed the complete maintained matrix against a corrective-alpha candidate, and the resulting findings 22 through 24 have now been resolved in repository code, tests, and instructions. This umbrella remains active until the user explicitly closes dogfooding.
 
 The synthetic corpus and all five specified images are finalized and verified in a repository-external local directory. The user materialized all eight qualification families and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior.
 
@@ -85,4 +85,4 @@ Finding 10 established that pull-request change types are selected from supporte
 
 Finding 12 refined finding 07's unconditional no-bypass guarantee into conversation-aware routing while preserving the managed-state gate and fresh-routing transition rules.
 
-Findings 22 and 23 currently preempt completion of synthetic-vault qualification and the corrective prerelease. Resolve both reporting/accounting blockers, assemble a new exact candidate, rerun the complete matrix, and obtain fresh qualification signoff. Finding 24 must be complete before release-candidate qualification; its verified external workaround permits the corrective alpha to proceed first. Finding 25 is post-v1 and does not block release progression. After the corrective alpha passes and finding 24 is complete, the next action is the explicit user-owned closure gate before RC publication.
+Findings 22 and 23 repair the two failed semantic-path reporting scenarios from qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local`. Finding 24 removes the need for that run's external OpenCode large-JSON shim by buffering session inventory and export JSON inside the maintained adapter. The next action is to let release-please update the corrective-alpha PR, assemble a new exact candidate from that clean release PR revision, rerun the complete matrix without the external shim, and obtain fresh qualification signoff. Finding 25 is post-v1 and does not block release progression. After the corrective alpha passes, the next gate is the explicit user-owned dogfood closure before RC publication.
