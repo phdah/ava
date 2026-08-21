@@ -3,6 +3,7 @@
 This directory contains maintainer-only release assembly, publication, qualification, validation, fixtures, and tests. It is never distributed to Ava projects.
 
 - [Release assembler entry point](assemble.sh)
+- [One-command qualification candidate assembler](assemble-candidate.sh)
 - [Release assembler implementation](assemble.py)
 - [Reviewed recursive-edge assembler](assemble_reviewed.py)
 - [Immutable release edge records](catalogs/)
