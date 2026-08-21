@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.0.0-alpha.15](https://github.com/phdah/ava/compare/v1.0.0-alpha.14...v1.0.0-alpha.15) (2026-08-21)
+
+
+### Bug Fixes
+
+* buffer large OpenCode qualification JSON ([#100](https://github.com/phdah/ava/issues/100)) ([a8db2ca](https://github.com/phdah/ava/commit/a8db2ca731931cb3af1eefd636e2778d3aa319af))
+* close qualification audit findings ([#97](https://github.com/phdah/ava/issues/97)) ([ca07c95](https://github.com/phdah/ava/commit/ca07c951f2eea3c31cc22019bebd76cf26af1937))
+* preserve scoped history during inbox ingestion ([#92](https://github.com/phdah/ava/issues/92)) ([b13e32c](https://github.com/phdah/ava/commit/b13e32cfc11335dfa124fc6ef8f42576c5bd1635))
+* **qualification:** validate model identifiers by structure, not literal name ([e6edce9](https://github.com/phdah/ava/commit/e6edce954bedc60868907d86ad1e7519a7a74130))
+* repair Inbox Ingester project-root links ([#88](https://github.com/phdah/ava/issues/88)) ([4ddbbfc](https://github.com/phdah/ava/commit/4ddbbfc30f8bdd1d99818ca19b7e045293f2b652))
+* report semantic inspection paths during terminal cleanup ([#98](https://github.com/phdah/ava/issues/98)) ([87a7e8c](https://github.com/phdah/ava/commit/87a7e8ca092bb84f422bc18978260cd468fbbc34))
+* report semantic inspections during reconciliation ([#99](https://github.com/phdah/ava/issues/99)) ([61d3a83](https://github.com/phdah/ava/commit/61d3a8370c1f0eb29f9bc812d1b274059fa13255))
+* **upgrades:** permit agent-driven finalization ([#90](https://github.com/phdah/ava/issues/90)) ([8df64b6](https://github.com/phdah/ava/commit/8df64b62d46c120647bb4170aa14a516fddbd24a))
+* **upgrades:** recover interrupted terminal cleanup ([8ab49b8](https://github.com/phdah/ava/commit/8ab49b89f52252c573f145b5bde77d22ed1307e9))
+* **upgrades:** remove complete finalized transaction ([16fd8ee](https://github.com/phdah/ava/commit/16fd8ee47372b49615b0667d81d89f388d546331))
+* **upgrades:** validate terminal cleanup recovery ([c861828](https://github.com/phdah/ava/commit/c86182873e3d322fa8ffffae3fea53d53ba6557c))
+* verify relative calendar dates before persisting ([#94](https://github.com/phdah/ava/issues/94)) ([ee10119](https://github.com/phdah/ava/commit/ee1011931025df4a23babb8f63d683c5ceff6291))
+
 ## [1.0.0-alpha.14](https://github.com/phdah/ava/compare/v1.0.0-alpha.13...v1.0.0-alpha.14) (2026-08-10)
 
 
