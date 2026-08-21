@@ -7,6 +7,7 @@ cd "$ROOT"
 
 sh "$ROOT/internal/release/validate-boundaries.sh"
 sh -n "$ROOT/internal/release/assemble.sh"
+sh -n "$ROOT/internal/release/assemble-candidate.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
 sh -n "$ROOT/internal/release/qualify-synthetic.sh"
 sh -n "$ROOT/internal/release/qualify-release.sh"
@@ -65,6 +66,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_qualification_automation \
   internal.release.tests.test_qualification_execution_identity \
   internal.release.tests.test_qualification_opencode_adapter \
+  internal.release.tests.test_assemble_candidate \
   internal.release.tests.test_qualification_acceptance \
   internal.release.tests.test_adjacent_edges \
   internal.release.tests.test_release_catalog \
