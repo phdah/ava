@@ -20,8 +20,6 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    env:
-      PYTHONPATH: ${{ github.workspace }}
     steps:
       - name: Create or update release pull request
         id: release
@@ -101,7 +99,7 @@ jobs:
           (cd release-a && find . -type f -print0 | sort -z | xargs -0 sha256sum) > release-a.sha256
           (cd release-b && find . -type f -print0 | sort -z | xargs -0 sha256sum) > release-b.sha256
           cmp release-a.sha256 release-b.sha256
-          python3 internal/release/conformance.py --root release-a --mode release --format text
+          python3 -m internal.release.conformance --root release-a --mode release --format text
 
       - name: Confirm draft release state
         if: ${{ steps.release.outputs.release_created == 'true' }}
