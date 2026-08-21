@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-20T18:28:44+02:00
+  at: 2026-08-21T08:50:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -24,13 +24,13 @@ updated:
 
 A new blocker preempts the next prerelease. A `required-v1` dogfood finding preempts the release gate named by its `blocks` field.
 
-Current ordering: findings 22 and 23 are implementation-complete, so Step 1 now requires a new exact corrective-alpha candidate containing both fixes and a fresh complete qualification run. Finding 24 must be complete before Step 4 begins but does not block the corrective alpha because its current qualification run has a verified external workaround. Finding 25 is post-v1 and does not preempt this path.
+Current ordering: findings 22, 23, and 24 are implementation-complete. Step 1 now requires the release-please corrective-alpha branch to include those fixes, a new exact candidate assembled from that clean release PR revision, and a fresh complete qualification run through the normal repository-owned OpenCode adapter. Finding 25 is post-v1 and does not preempt this path.
 
 ## Step 1: finish the qualification system
 
 The synthetic fixture, pinned images, maintained 17-scenario runner, recovery checkpoints, session inventory, independent audit, compact evidence, explicit user acceptance, historical acceptance ledger, and release-PR merge gate are the qualification system.
 
-The qualification-system implementation is complete. Step 1 remains open until a fresh complete matrix run against a candidate containing the finding 22 and 23 fixes reaches accepted qualification evidence. Release-specific qualification remains mandatory inside every release flow in Step 2 and later release steps.
+The qualification-system implementation is complete. Step 1 remains open until a fresh complete matrix run against the updated corrective-alpha candidate reaches accepted qualification evidence. The run must not use the former external OpenCode large-JSON shim; finding 24's repository-owned buffering is part of the qualification implementation being exercised. Release-specific qualification remains mandatory inside every release flow in Step 2 and later release steps.
 
 ## Step 2: corrective alpha
 
@@ -52,7 +52,7 @@ Step 2 completes only when the corrective alpha is published and its pre-merge q
 
 ## Step 3: close alpha dogfooding
 
-After Step 2, complete finding 24 and verify no blocker or `required-v1` finding remains. Then obtain an explicit user statement that alpha dogfooding is complete or Ava should proceed to the release candidate.
+After Step 2, verify no blocker or `required-v1` finding remains. Then obtain an explicit user statement that alpha dogfooding is complete or Ava should proceed to the release candidate.
 
 Do not infer closure from passing tests or an empty findings backlog.
 

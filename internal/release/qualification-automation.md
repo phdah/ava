@@ -8,7 +8,7 @@ generated:
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-17T12:26:00+02:00
+  at: 2026-08-21T09:03:00+02:00
 ---
 
 # Purpose
@@ -38,14 +38,30 @@ Release qualification runs after the release PR has its target version, adjacent
 
 The previous side is the exact immutable published release. The target side is local and must be assembled from the clean release PR revision being qualified.
 
-For the current corrective alpha:
+From that clean release PR checkout, run:
+
+```sh
+internal/release/assemble-candidate.sh
+```
+
+The candidate assembler derives the target version and channel from `version.txt`, binds the current `HEAD`, derives deterministic publication metadata, selects `internal/release/catalogs/<version>.json`, and creates a repository-external candidate directory. It refuses dirty source state, missing catalog state, repository-local output, and reuse of an existing candidate directory. Set `AVA_CANDIDATE_ROOT` only when a specific external output parent is desired.
+
+Because assembly diagnostics go to stderr and only the absolute asset path is written to stdout, assembly and qualification can be composed directly:
 
 ```sh
 internal/release/qualify-release.sh \
-  --target-assets /absolute/path/to/v1.0.0-alpha.15/assets
+  --target-assets "$(internal/release/assemble-candidate.sh)"
 ```
 
 The run identity binds the release assets, fixture, images, matrix, repository revision, runner, automation, OpenCode version, and qualification/audit models.
+
+# OpenCode JSON capture
+
+`qualify-release.sh` uses the maintained `qualification-opencode.sh` adapter. For session inventory, the adapter translates `session list --format json` to the required OpenCode database query. The adapter also handles session `export` capture.
+
+OpenCode environments affected by the 65,536-byte stdout-pipe truncation must not require an external wrapper. For both the session-list database query and `opencode export`, the maintained adapter first lets the real OpenCode process write JSON to a temporary regular file and then re-emits those bytes to qualification automation. Python-side parsing remains the JSON validation boundary.
+
+`AVA_QUALIFICATION_OPENCODE` may still select the real OpenCode executable when needed, but normal qualification does not require a large-JSON shim.
 
 # Automated result
 

@@ -3,13 +3,26 @@ set -eu
 
 REAL_OPENCODE=${AVA_QUALIFICATION_OPENCODE:-opencode}
 
+buffer_json_command() {
+  output=$(mktemp "${TMPDIR:-/tmp}/ava-qualification-opencode.XXXXXX")
+  trap 'rm -f "$output"' EXIT HUP INT TERM
+  "$@" > "$output"
+  cat "$output"
+}
+
 if [ "$#" -eq 4 ] \
   && [ "$1" = "session" ] \
   && [ "$2" = "list" ] \
   && [ "$3" = "--format" ] \
   && [ "$4" = "json" ]; then
-  exec "$REAL_OPENCODE" db --format json \
+  buffer_json_command "$REAL_OPENCODE" db --format json \
     "SELECT id, parent_id AS parentID, directory FROM session ORDER BY id;"
+  exit 0
+fi
+
+if [ "$#" -ge 2 ] && [ "$1" = "export" ]; then
+  buffer_json_command "$REAL_OPENCODE" "$@"
+  exit 0
 fi
 
 if [ "$#" -ge 2 ] && [ "$1" = "run" ]; then

@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-20T18:28:44+02:00
+  at: 2026-08-21T08:50:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,23 +25,24 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 ## Official next action
 
-**Assemble a new exact candidate containing the finding 22 and 23 fixes, then run fresh full qualification.**
+**Assemble a new exact corrective-alpha candidate from the updated release PR revision, then run fresh full qualification without the external OpenCode large-JSON shim.**
 
-Both blockers from the failed candidate are implemented. The next sequence is:
+Findings 22, 23, and 24 are implementation-complete. The next sequence is:
 
-1. assemble a new exact candidate containing the completed finding 22 and 23 fixes
-2. rerun the complete 17-scenario qualification matrix and obtain explicit user signoff
-3. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
+1. let release-please update the corrective-alpha release PR with the merged finding 24 change
+2. assemble a new exact candidate from that clean release PR revision
+3. rerun the complete 17-scenario qualification matrix through the normal repository-owned OpenCode adapter and obtain explicit user signoff
+4. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
 
-[Finding 24](todo/05-release-qualification/dogfood/24-fix-opencode-session-export-pipe-truncation.md) must be complete before release-candidate qualification. [Finding 25](todo/05-release-qualification/dogfood/25-offer-qualification-failure-todo-tracking.md) is post-v1 and does not block release progression.
+[Finding 25](todo/05-release-qualification/dogfood/25-offer-qualification-failure-todo-tracking.md) is post-v1 and does not block release progression. No pending dogfood finding currently blocks the corrective alpha or release candidate.
 
-Do not publish or merge a new release without accepted qualification state. Do not begin release-candidate work before finding 24 is complete and the user explicitly closes alpha dogfooding.
+Do not publish or merge a new release without accepted qualification state. Do not begin release-candidate publication before the user explicitly closes alpha dogfooding.
 
 ## Official path to `1.0.0`
 
-1. finish the synthetic v1 qualification gate through a fresh full run against a candidate containing the implemented finding 22 and 23 fixes
+1. finish the synthetic v1 qualification gate through a fresh full run against the updated corrective-alpha candidate
 2. prepare, qualify, accept, and publish the corrective alpha
-3. complete finding 24 and obtain explicit user closure of alpha dogfooding
+3. obtain explicit user closure of alpha dogfooding
 4. prepare, qualify, accept, and publish the `1.0.0` release candidate
 5. stabilize the published release candidate
 6. prepare, qualify, accept, and publish `1.0.0`
