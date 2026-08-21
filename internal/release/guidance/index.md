@@ -8,6 +8,7 @@ Each release-local edge record selects its own guidance by exact path and SHA-25
 
 - `1.0.0-alpha.10/1.0.0-alpha.9-to-1.0.0-alpha.10/UPGRADE.md` is the canonical obligation introduced by the alpha.9 to alpha.10 transition and is owned by `catalogs/1.0.0-alpha.10.json`.
 - `1.0.0-alpha.14/1.0.0-alpha.13-to-1.0.0-alpha.14/UPGRADE.md` is the canonical routing-compatibility obligation introduced by the alpha.13 to alpha.14 transition and is owned by `catalogs/1.0.0-alpha.14.json`.
+- `1.0.0-alpha.15/1.0.0-alpha.14-to-1.0.0-alpha.15/UPGRADE.md` is the canonical inbox, ingestion, and calendar compatibility obligation introduced by the alpha.14 to alpha.15 transition and is owned by `catalogs/1.0.0-alpha.15.json`.
 
 ## Archival cumulative guidance
 
