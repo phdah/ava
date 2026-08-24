@@ -968,7 +968,15 @@ def qualification_exit(summary: dict[str, Any]) -> int:
     outcomes = summary.get("outcomes")
     if not isinstance(outcomes, list) or not outcomes:
         return 1
-    return 0 if all(isinstance(item, dict) and item.get("outcome") == "pass" for item in outcomes) else 1
+    return (
+        0
+        if all(
+            isinstance(item, dict)
+            and item.get("outcome") in qualification_runner.PASSING_OUTCOMES
+            for item in outcomes
+        )
+        else 1
+    )
 
 
 def write_compact_evidence(

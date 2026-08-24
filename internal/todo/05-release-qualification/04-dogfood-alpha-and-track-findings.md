@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T15:58:00+02:00
+  at: 2026-08-24T17:23:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -71,7 +71,7 @@ A clear user statement that dogfooding is complete or that Ava should proceed to
 
 ## Current state
 
-Findings 01 through 27 are implementation-complete. The one-command qualification runner has now executed the complete maintained matrix against three successive corrective-alpha candidates, resolving findings 22 through 24, 26, and 27. Findings 28 and 29 remain pending from the independent audit on the most recent run. This umbrella remains active until the user explicitly closes dogfooding.
+Findings 01 through 29 except post-v1 finding 25 are implementation-complete. The one-command qualification runner has executed the complete maintained matrix against three successive corrective-alpha candidates, resolving findings 22 through 24 and 26 through 29. This umbrella remains active until the user explicitly closes dogfooding.
 
 The synthetic corpus and all five specified images are finalized and verified in a repository-external local directory. The user materialized all eight qualification families and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior.
 
@@ -87,4 +87,6 @@ Finding 12 refined finding 07's unconditional no-bypass guarantee into conversat
 
 Findings 22 and 23 repair the two failed semantic-path reporting scenarios from qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local`. Finding 24 removes the need for that run's external OpenCode large-JSON shim by buffering session inventory and export JSON inside the maintained adapter. Finding 26 removes a hardcoded, edge-agnostic semantic-path-accounting gate that then failed qualification run `20260821T100350003229Z-alpha14-to-alpha15-corrective-local` without being a real regression.
 
-Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review`: the independent audit found inbox ingestion promoted non-durable passages via an unauthorized ad hoc script, and that the runner's own pass criteria cannot detect that class of defect. Findings 27, 28, and 29 record those issues. Finding 27 is now implementation-complete and closes the ad hoc code execution scope gap plus the transient direct-root regression gap. The next action is to resolve findings 28 and 29, let release-please update the corrective-alpha PR, assemble a new exact candidate from that clean release PR revision, rerun the complete matrix, and obtain fresh qualification signoff. Finding 25 is post-v1 and does not block release progression. After the corrective alpha passes, the next gate is the explicit user-owned dogfood closure before RC publication.
+Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review`: the independent audit found inbox ingestion promoted non-durable passages via an unauthorized ad hoc script, and that the runner's own pass criteria could not detect that class of defect. Findings 27, 28, and 29 record those issues and are now implementation-complete. Finding 27 closes the ad hoc execution and transient direct-root gaps. Finding 28 requires rendered per-section disposition reconciliation. Finding 29 separates structural runner evidence from semantic audit evidence and adds bounded non-oracle source/metadata/footnote checks.
+
+The next action is to let release-please update the corrective-alpha PR, assemble a new exact candidate from that clean release PR revision, rerun the complete matrix, and obtain fresh qualification signoff. Finding 25 is post-v1 and does not block release progression. After the corrective alpha passes, the next gate is the explicit user-owned dogfood closure before RC publication.

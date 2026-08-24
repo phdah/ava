@@ -46,7 +46,7 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 3 pending findings, 2 pending blockers, 0 pending dogfood `required-v1` findings, 3 pending supporting qualification tasks, and 26 completed findings
+5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 1 pending finding, 0 pending blockers, 0 pending dogfood `required-v1` findings, 3 pending supporting qualification tasks, and 28 completed findings
 6. [Backlog.md integration](06-backlog-md/) - 0 of 2 complete; queued after release qualification
 7. [Durable interaction evidence](07-interaction-evidence/) - 0 of 1 complete; queued after Backlog.md integration
 
@@ -60,9 +60,9 @@ The alpha qualification policy composes that conformance evidence with roadmap c
 
 Release-please enforces supported-distribution release classification at the merge boundary, maintains version and changelog state, keeps one release pull request current, creates immutable tags and draft releases, and hands the exact prepared SHA to qualification, reproducible assembly, release conformance, attestation, non-clobbering asset upload, and automatic publication.
 
-Alpha publication is complete through immutable `1.0.0-alpha.14`. Findings 22 through 27 are implementation-complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review` on independent-audit findings in inbox ingestion. Finding 27 resolves the execution-scope issue from that audit. Findings 28 and 29 remain and currently block the next prerelease; 28 has a bounded resolution scope, while 29 needs an explicit approach decision before implementation. The remaining ordered path to the first stable release is:
+Alpha publication is complete through immutable `1.0.0-alpha.14`. Findings 22 through 29 are implementation-complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review` on independent-audit findings in inbox ingestion. Findings 27 through 29 resolve the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues from that audit. No release-blocking dogfood finding remains from the run. The remaining ordered path to the first stable release is:
 
-Resolve findings 28 and 29, assemble a new exact candidate from the updated corrective-alpha release PR revision, and rerun the complete qualification matrix. A new blocker may still preempt that run without changing the six canonical release steps:
+Assemble a new exact candidate from the updated corrective-alpha release PR revision and rerun the complete qualification matrix. A new blocker may still preempt that run without changing the six canonical release steps:
 
 1. finish the [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) through a fresh complete matrix run and explicit signoff against the corrected candidate
 2. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including normalized adjacent-edge authoring, conversational routing transitions, agent-driven finalization, semantic inspection reporting, and complete OpenCode session evidence capture

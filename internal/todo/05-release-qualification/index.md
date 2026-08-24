@@ -41,13 +41,13 @@ Dogfooding intentionally remains open during steps 1 and 2. Explicit user closur
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 3 pending findings
-- 2 pending blockers
+- 1 pending finding
+- 0 pending blockers
 - 0 pending required-v1 findings
 - 1 pending post-v1 finding
-- 26 completed findings
+- 28 completed findings
 
-Findings 01 through 27 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence, with source anchoring, ambiguity handling, boundary fixtures, Change Reviewer fidelity checks, and assembled-payload coverage. Finding 19 composes the complete maintained matrix behind one internal manual shell entry point with pinned-input preflight, isolated runner-owned scenario workspaces, exact managed-damage rules, bounded OpenCode prompts, interrupted reruns, and final summary semantics. Findings 22 and 23 repair the two failed semantic-path reporting scenarios from qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local`. Finding 24 removes the OpenCode 65,536-byte pipe truncation dependency by buffering session-list and export JSON through the repository-owned adapter. Finding 26 removes a hardcoded, edge-agnostic semantic-path-accounting gate that failed qualification run `20260821T100350003229Z-alpha14-to-alpha15-corrective-local` without being a real regression. Finding 27 prohibits ad hoc ingestion code and adds complete-inbox coverage for transient direct project-root helper artifacts. Findings 28 and 29 remain pending from qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`, result `needs-review`) and currently block the next prerelease.
+Findings 01 through 29 except post-v1 finding 25 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence, with source anchoring, ambiguity handling, boundary fixtures, Change Reviewer fidelity checks, and assembled-payload coverage. Finding 19 composes the complete maintained matrix behind one internal manual shell entry point with pinned-input preflight, isolated runner-owned scenario workspaces, exact managed-damage rules, bounded OpenCode prompts, interrupted reruns, and final summary semantics. Findings 22 and 23 repair the two failed semantic-path reporting scenarios from qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local`. Finding 24 removes the OpenCode 65,536-byte pipe truncation dependency by buffering session-list and export JSON through the repository-owned adapter. Finding 26 removes a hardcoded, edge-agnostic semantic-path-accounting gate that failed qualification run `20260821T100350003229Z-alpha14-to-alpha15-corrective-local` without being a real regression. Findings 27 through 29 resolve the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues from qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`, result `needs-review`).
 
 ## Qualification policy
 
@@ -57,22 +57,22 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Step 1 of 6 is active. Resolve dogfood findings 28 and 29, then assemble a new exact candidate from the updated corrective-alpha release PR revision and rerun the complete qualification matrix.**
+**Step 1 of 6 is active. Assemble a new exact candidate from the updated corrective-alpha release PR revision and rerun the complete qualification matrix.**
 
 The user has confirmed the generated corpus and all five image results. The exact visually accepted PNG bytes are pinned under the repository-only fixture, while generated vaults and execution evidence remain external.
 
-Qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local` passed 15 of 17 scenarios; findings 22, 23, and 24 (implementation-complete) resolved that run's failures. Qualification run `20260821T100350003229Z-alpha14-to-alpha15-corrective-local` then failed 2 of 17 scenarios on a hardcoded, edge-agnostic semantic-path-accounting gate that did not generalize across release edges; finding 26 (implementation-complete) removed that gate as a qualification-tooling defect rather than a real regression.
+Qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local` passed 15 of 17 scenarios; findings 22, 23, and 24 resolved that run's failures. Qualification run `20260821T100350003229Z-alpha14-to-alpha15-corrective-local` then failed 2 of 17 scenarios on a hardcoded, edge-agnostic semantic-path-accounting gate that did not generalize across release edges; finding 26 removed that gate as a qualification-tooling defect rather than a real regression.
 
-Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) then passed all 17 runner scenarios and all 286 repository tests, but the independent audit found two major issues and one minor issue in inbox ingestion, ending the run `needs-review`. Finding 27 is implementation-complete and resolves the minor execution-scope issue. Finding 28 remains a bounded disposition-fidelity fix; finding 29 still needs an explicit approach decision before implementation. Both remaining findings block the next prerelease. Every qualification run that did not reach accepted evidence remains unaccepted and must not be reused as qualification evidence for a later candidate.
+Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) then passed all 17 runner scenarios and all 286 repository tests, but the independent audit found two major issues and one minor issue in inbox ingestion, ending the run `needs-review`. Findings 27 through 29 are implementation-complete and resolve the execution-scope, disposition-fidelity, and runner-evidence issues. Every qualification run that did not reach accepted evidence remains unaccepted and must not be reused as qualification evidence for a later candidate.
 
-Once findings 28 and 29 are resolved, assemble a new exact candidate for immutable published `v1.0.0-alpha.14` to caller-supplied local `v1.0.0-alpha.15`, then execute:
+Assemble a new exact candidate for immutable published `v1.0.0-alpha.14` to caller-supplied local `v1.0.0-alpha.15`, then execute:
 
 ```sh
 internal/release/qualify-release.sh \
   --target-assets /absolute/path/to/v1.0.0-alpha.15/assets
 ```
 
-The operation owns exact input acquisition, pinned-image verification, clean fixture generation, isolated test boundaries, the complete maintained matrix, top-level and nested OpenCode session inventory, a fresh-session independent audit, and compact uncommitted release evidence. The maintained OpenCode adapter now handles oversized session-list and export JSON internally, so this run must not use the former external large-JSON shim.
+The operation owns exact input acquisition, pinned-image verification, clean fixture generation, isolated test boundaries, the complete maintained matrix, top-level and nested OpenCode session inventory, a fresh-session independent audit, and compact uncommitted release evidence. The maintained OpenCode adapter handles oversized session-list and export JSON internally, so this run must not use the former external large-JSON shim. The complete pending-inbox scenario now reports audit-gated structural success rather than claiming semantic success before evaluator-only review.
 
 Do not manually reconstruct the earlier runner sequence. Step 1 may advance only from a mechanically clean result whose audit state is `awaiting-user-signoff` and whose generated compact evidence is explicitly accepted. A `failed` or `needs-review` run preempts the path until corrected.
 

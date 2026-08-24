@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T15:58:00+02:00
+  at: 2026-08-24T17:23:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -24,13 +24,15 @@ updated:
 
 A new blocker preempts the next prerelease. A `required-v1` dogfood finding preempts the release gate named by its `blocks` field.
 
-Current ordering: findings 22 through 27 are implementation-complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) ended `needs-review` on independent-audit findings in inbox ingestion. Finding 27 resolves the execution-scope issue from that audit. Findings 28 and 29 remain and must be resolved before Step 1 can assemble a new exact candidate and run a fresh complete qualification. Finding 25 is post-v1 and does not preempt this path.
+Current ordering: findings 22 through 29 are implementation-complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) ended `needs-review` on independent-audit findings in inbox ingestion. Findings 27 through 29 resolve the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues from that audit. Step 1 can now assemble a new exact candidate and run fresh complete qualification. Finding 25 is post-v1 and does not preempt this path.
 
 ## Step 1: finish the qualification system
 
 The synthetic fixture, pinned images, maintained 17-scenario runner, recovery checkpoints, session inventory, independent audit, compact evidence, explicit user acceptance, historical acceptance ledger, and release-PR merge gate are the qualification system.
 
-The qualification-system implementation is complete. Step 1 remains open until a fresh complete matrix run against the updated corrective-alpha candidate reaches accepted qualification evidence. The run must not use the former external OpenCode large-JSON shim; finding 24's repository-owned buffering is part of the qualification implementation being exercised. Release-specific qualification remains mandatory inside every release flow in Step 2 and later release steps.
+The qualification-system implementation is complete. Step 1 remains open until a fresh complete matrix run against the updated corrective-alpha candidate reaches accepted qualification evidence. The run must not use the former external OpenCode large-JSON shim; finding 24's repository-owned buffering is part of the qualification implementation being exercised. The complete pending-inbox scenario now reports `structural-pass` with semantic status pending audit when deterministic checks succeed, so the independent audit remains the semantic gate rather than the runner overstating its evidence. Release-specific qualification remains mandatory inside every release flow in Step 2 and later release steps.
+
+The immediate action is to assemble the exact corrective-alpha candidate from the updated clean release PR revision and run the complete qualification operation. A `failed` or `needs-review` result must be corrected and rerun. A clean result must receive explicit user signoff before Step 1 advances.
 
 ## Step 2: corrective alpha
 
