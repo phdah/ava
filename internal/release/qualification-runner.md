@@ -6,6 +6,9 @@ tags: [internal, release, qualification, runner, opencode]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T12:48:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-24T15:58:00+02:00
 ---
 
 # Purpose
@@ -111,6 +114,8 @@ Conformance runs through `python3 -m internal.release.conformance` with the repo
 Resume and abort use `checkpoint.py` to create authentic transaction states and then invoke the real selected target `ava-install.sh --resume` or `--abort`. Rollback is invoked exactly once through the real target installer. Finalization is exercised through Ava Maintenance after Upgrade Role has completed semantic reconciliation.
 
 OpenCode is invoked only for the exact scenario prompt in its isolated copied project. The runner never passes a global auto-approval flag. If required semantic work remains partial or blocked, the outcome is `user-decision-required` and the complete run exits nonzero.
+
+For complete pending-inbox ingestion, the runner snapshots the copied project's direct root entries before the OpenCode prompt and observes that root for the duration of the process. Any new direct root entry fails the scenario even when it is deleted before the prompt returns. This bounded regression catches temporary helper scripts and other out-of-scope implementation artifacts without changing the existing source, destination, or semantic-fidelity checks.
 
 # Result
 

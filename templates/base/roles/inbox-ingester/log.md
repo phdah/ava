@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to the Inbox Ingester. It does not replace Git history.
 
+## 2026-08-24
+
+- **Ingestion execution boundary**: Prohibited creating or executing ad hoc scripts, generated code, temporary implementation files, or programmatic bulk-content transformers as an ingestion mechanism. Destination content remains direct source or section reasoning and editing; existing deterministic Ava validation tools remain allowed only within their existing scope.
+
 ## 2026-08-15
 
 - **Delegated batch evidence**: Kept child sessions as a permitted execution strategy while making the coordinating Inbox Ingester responsible for one exact selected-source ledger, disjoint child ownership, complete per-source section evidence, and final reconciliation before any complete batch claim.

@@ -7,8 +7,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-10T15:58:00+02:00
 updated:
-  by: agent:opencode
-  at: 2026-08-24T00:00:00Z
+  by: agent:openai-chatgpt
+  at: 2026-08-24T15:58:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -24,7 +24,7 @@ updated:
 
 A new blocker preempts the next prerelease. A `required-v1` dogfood finding preempts the release gate named by its `blocks` field.
 
-Current ordering: findings 22 through 26 are implementation-complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) ended `needs-review` on independent-audit findings in inbox ingestion. Findings 27, 28, and 29 record those findings and must be resolved before Step 1 can assemble a new exact candidate and run a fresh complete qualification. Finding 25 is post-v1 and does not preempt this path.
+Current ordering: findings 22 through 27 are implementation-complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) ended `needs-review` on independent-audit findings in inbox ingestion. Finding 27 resolves the execution-scope issue from that audit. Findings 28 and 29 remain and must be resolved before Step 1 can assemble a new exact candidate and run a fresh complete qualification. Finding 25 is post-v1 and does not preempt this path.
 
 ## Step 1: finish the qualification system
 
