@@ -85,18 +85,25 @@ def _trusted_markdown(project: Path) -> Iterable[Path]:
         yield path
 
 
-def _resource_path(project: Path, document: Path, resource: str) -> Path:
-    resource_path = resource.split("#", 1)[0]
-    if not resource_path:
-        raise InboxStructuralError(f"{document}: empty source resource path")
-    if "://" in resource_path:
-        raise InboxStructuralError(f"{document}: source resource must be a local path: {resource}")
-    candidate = (
-        project / resource_path.lstrip("/")
-        if resource_path.startswith("/")
-        else document.parent / resource_path
-    )
-    return candidate.resolve()
+def _local_target(value: str, *, document: Path) -> str:
+    target = value.split("#", 1)[0]
+    if not target:
+        raise InboxStructuralError(f"{document}: empty local source path")
+    if "://" in target or target.startswith("/"):
+        raise InboxStructuralError(f"{document}: source path must be project-local: {value}")
+    return target
+
+
+def _metadata_resource_path(project: Path, document: Path, resource: str) -> Path:
+    resource_path = _local_target(resource, document=document)
+    if resource_path.startswith("./"):
+        return (project / resource_path[2:]).resolve()
+    return (document.parent / resource_path).resolve()
+
+
+def _markdown_link_path(document: Path, target: str) -> Path:
+    link_path = _local_target(target, document=document)
+    return (document.parent / link_path).resolve()
 
 
 def _markdown_link_target(value: str) -> str | None:
@@ -140,7 +147,7 @@ def validate_inbox_structural_fidelity(
             source_id = row["id"]
             if source_id in sources_by_id:
                 raise InboxStructuralError(f"{document}: duplicate sources id {source_id!r}")
-            resource = _resource_path(project, document, row["resource"])
+            resource = _metadata_resource_path(project, document, row["resource"])
             if not resource.is_file():
                 raise InboxStructuralError(
                     f"{document}: sources resource does not resolve to a file: {row['resource']}"
@@ -186,7 +193,7 @@ def validate_inbox_structural_fidelity(
                 raise InboxStructuralError(
                     f"{document}: footnote definition {label!r} has no renderable Markdown link"
                 )
-            linked = _resource_path(project, document, target)
+            linked = _markdown_link_path(document, target)
             if linked != sources_by_id[label]:
                 raise InboxStructuralError(
                     f"{document}: footnote {label!r} does not resolve to the same source as metadata"
