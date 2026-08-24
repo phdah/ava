@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T16:30:00+02:00
+  at: 2026-08-24T17:23:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,16 +25,15 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 ## Official next action
 
-**Decide an approach for and resolve dogfood finding 29, then assemble a new exact corrective-alpha candidate and run fresh full qualification.**
+**Assemble a new exact corrective-alpha candidate from the updated release PR revision and run fresh full qualification.**
 
-Findings 22 through 28 are implementation-complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review`: the independent audit found two major issues and one minor issue in inbox ingestion. Findings 27 and 28 resolve the execution-scope and rendered disposition-reconciliation issues. The next sequence is:
+Findings 22 through 29 are implementation-complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review`: the independent audit found two major issues and one minor issue in inbox ingestion. Findings 27 through 29 resolve the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues. The next sequence is:
 
-1. decide an approach for and resolve [finding 29](todo/05-release-qualification/dogfood/29-decide-runner-inbox-semantic-detection-approach.md) (no bounded scope yet; needs an explicit approach decision first)
-2. assemble a new exact candidate from the updated corrective-alpha release PR revision
-3. rerun the complete 17-scenario qualification matrix through the normal repository-owned OpenCode adapter and obtain explicit user signoff
-4. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
+1. assemble a new exact candidate from the updated corrective-alpha release PR revision
+2. rerun the complete 17-scenario qualification matrix through the normal repository-owned OpenCode adapter and obtain explicit user signoff
+3. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
 
-[Finding 25](todo/05-release-qualification/dogfood/25-offer-qualification-failure-todo-tracking.md) is post-v1 and does not block release progression. Finding 29 is the only pending dogfood finding blocking the corrective alpha.
+[Finding 25](todo/05-release-qualification/dogfood/25-offer-qualification-failure-todo-tracking.md) is post-v1 and does not block release progression. No pending dogfood finding currently blocks the corrective alpha.
 
 Do not publish or merge a new release without accepted qualification state. Do not begin release-candidate publication before the user explicitly closes alpha dogfooding.
 
