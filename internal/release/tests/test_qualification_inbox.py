@@ -35,7 +35,7 @@ class QualificationInboxTests(unittest.TestCase):
             "type: Knowledge\n"
             "sources:\n"
             "  - id: source-fact\n"
-            f"    resource: ../inbox/processed/{source_name}\n"
+            f"    resource: ./inbox/processed/{source_name}\n"
             "    title: Source\n"
             "---\n\n"
             "# Topic\n\n"
@@ -45,7 +45,7 @@ class QualificationInboxTests(unittest.TestCase):
         )
         return path
 
-    def test_accepts_preserved_traceable_source_and_renderable_footnote(self) -> None:
+    def test_accepts_project_root_metadata_and_document_relative_footnote(self) -> None:
         _, selected = self.source()
         self.destination()
         qualification_inbox.validate_inbox_structural_fidelity(self.project, selected)
