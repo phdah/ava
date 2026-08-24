@@ -135,5 +135,55 @@ class AssembleCandidateTests(unittest.TestCase):
         self.assertIn("already exists", second.stderr)
 
 
+class AssembleEntrypointTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+        self.repo = self.root / "repo"
+        release = self.repo / "internal/release"
+        release.mkdir(parents=True)
+        (self.repo / "internal/__init__.py").write_text("", encoding="utf-8")
+        (release / "__init__.py").write_text("", encoding="utf-8")
+
+        source = automation.REPOSITORY_ROOT / "internal/release/assemble.sh"
+        self.script = release / "assemble.sh"
+        shutil.copy2(source, self.script)
+        self.script.chmod(0o755)
+
+        (release / "validate-installed-paths.py").write_text(
+            "raise SystemExit(0)\n", encoding="utf-8"
+        )
+        (release / "marker.py").write_text("VALUE = 'ok'\n", encoding="utf-8")
+        (release / "assemble_reviewed.py").write_text(
+            "from internal.release import marker\n"
+            "if marker.VALUE != 'ok':\n"
+            "    raise SystemExit(2)\n"
+            "print('reviewed-import-ok')\n",
+            encoding="utf-8",
+        )
+        (release / "assemble.py").write_text(
+            "print('plain-assembly-ok')\n", encoding="utf-8"
+        )
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def test_reviewed_assembler_sets_repository_pythonpath_itself(self) -> None:
+        env = dict(os.environ)
+        env.pop("PYTHONPATH", None)
+        env["AVA_UPGRADE_CATALOG"] = "dummy.json"
+        result = subprocess.run(
+            [str(self.script)],
+            cwd=self.root,
+            env=env,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "reviewed-import-ok")
+
+
 if __name__ == "__main__":
     unittest.main()
