@@ -223,6 +223,50 @@ class QualificationRunnerTests(unittest.TestCase):
 
         self.assertIn("Active role: Private Life Steward", result.stdout)
 
+    def test_complete_inbox_guard_rejects_transient_project_root_file(self) -> None:
+        project = self.root / "guarded-project"
+        project.mkdir()
+        (project / "inbox").mkdir()
+        execution = self.root / "execution"
+        (execution / "scenarios/complete-pending-inbox").mkdir(parents=True)
+        fake_opencode = self.root / "fake-opencode"
+        fake_opencode.write_text(
+            "#!/usr/bin/env python3\n"
+            "import sys\n"
+            "import time\n"
+            "from pathlib import Path\n"
+            "args = sys.argv[1:]\n"
+            "project = Path(args[args.index('--dir') + 1])\n"
+            "helper = project / '.tmp_ingest.py'\n"
+            "helper.write_text('print(\\\"bulk\\\")\\n', encoding='utf-8')\n"
+            "time.sleep(0.1)\n"
+            "helper.unlink()\n"
+            "print('Active role: Inbox Ingester')\n",
+            encoding="utf-8",
+        )
+        fake_opencode.chmod(0o755)
+
+        qualification = runner.Runner.__new__(runner.Runner)
+        qualification.repository_root = self.repo
+        qualification.execution_root = execution
+        qualification.opencode = str(fake_opencode)
+        qualification.model = "provider/model"
+        qualification.transcript_dir = None
+
+        with self.assertRaisesRegex(
+            runner.QualificationError,
+            r"out-of-scope direct project-root entries.*\.tmp_ingest\.py",
+        ):
+            qualification.opencode_prompt(
+                "complete-pending-inbox",
+                project,
+                "ingest the inbox",
+                expected_role="Inbox Ingester",
+                guard_project_root=True,
+            )
+
+        self.assertFalse((project / ".tmp_ingest.py").exists())
+
     def test_summary_is_nonzero_for_fail_skip_or_required_decision(self) -> None:
         self.assertEqual(runner.summary_exit_status([{"outcome": "pass"}]), 0)
         for outcome in ("fail", "skipped", "user-decision-required"):

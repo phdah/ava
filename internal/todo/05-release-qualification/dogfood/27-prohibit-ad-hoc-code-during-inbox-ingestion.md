@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Prohibit Ad Hoc Code Execution During Inbox Ingestion
 description: Stop Inbox Ingester from creating and executing scripts to bulk-transform inbox content, since doing so bypasses per-section disposition curation and exceeds the role's declared project mutation scope.
 tags: [internal, roadmap, dogfood, inbox, scope, qualification]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 27
@@ -13,6 +13,9 @@ affected_version: 1.0.0-alpha.15
 generated:
   by: agent:opencode
   at: 2026-08-24T00:00:00Z
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-24T15:58:00+02:00
 ---
 
 # Prohibit Ad Hoc Code Execution During Inbox Ingestion
@@ -48,14 +51,18 @@ Neither `templates/base/roles/inbox-ingester/capabilities.md` nor `constraints.m
 
 ## Completion criteria
 
-- [ ] `inbox-ingester` role documents explicitly prohibit ad hoc script creation or code execution as an ingestion mechanism
-- [ ] regression coverage exercises this boundary
-- [ ] affected documentation and indexes remain aligned
-- [ ] repository test suite passes
+- [x] `inbox-ingester` role documents explicitly prohibit ad hoc script creation or code execution as an ingestion mechanism
+- [x] regression coverage exercises this boundary
+- [x] affected documentation and indexes remain aligned
+- [x] repository test suite passes
 
 ## Resolution evidence
 
-_Complete in the resolving implementation PR._
+Inbox Ingester `instructions.md` and `constraints.md` now require direct source or section reasoning and editing and explicitly prohibit ad hoc scripts, generated code, temporary implementation files, and programmatic bulk transformation during ingestion. The role-scoped log records the authority boundary.
+
+The synthetic `complete-pending-inbox` runner now observes direct project-root entries for the full OpenCode prompt and fails when a new entry appears, including a helper that is deleted before final conformance. `test_qualification_runner.py` reproduces the observed create-delete pattern with `.tmp_ingest.py`, while the qualification procedure and release implementation log document the guard.
+
+The repository test suite remains the PR validation gate for this completed implementation.
 
 ## Release qualification follow-up
 

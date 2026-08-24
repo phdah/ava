@@ -4,6 +4,7 @@ This log records major conceptual and structural changes to Ava's internal relea
 
 ## 2026-08-24
 
+- **Transient inbox root guard**: The complete pending-inbox qualification scenario now observes direct project-root entries throughout the OpenCode process and fails on any new entry, including one deleted before final conformance. This closes the evidence gap that allowed a temporary ingestion helper script to escape deterministic qualification checks.
 - **Removed the hardcoded semantic-inspection-path qualification gate**: The deterministic postcondition added on 2026-08-15 compared each semantic scenario's recorded inspected paths against one fixed, edge-agnostic list. The list was copied from a single prior release edge and did not generalize: it produced false failures against correctly behaving candidates whose guidance named different affected paths. `qualification_postconditions.py` and its dedicated test suite are removed; `qualify-synthetic.sh` runs the scenario runner directly. Judging whether an edge's actual inspected-path set satisfies its own guidance remains an independent-audit responsibility rather than a fixed structural check.
 
 ## 2026-08-17

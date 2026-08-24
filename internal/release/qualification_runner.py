@@ -11,6 +11,7 @@ import re
 import shutil
 import subprocess
 import sys
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Sequence
@@ -374,6 +375,24 @@ def command_text(args: Sequence[str]) -> str:
     return " ".join(args)
 
 
+def project_root_entries(project: Path) -> set[str]:
+    return {path.name for path in project.iterdir()}
+
+
+def watch_new_project_root_entries(
+    project: Path,
+    baseline: set[str],
+    stop: threading.Event,
+    observed: set[str],
+) -> None:
+    while not stop.is_set():
+        try:
+            observed.update(project_root_entries(project) - baseline)
+        except FileNotFoundError:
+            pass
+        stop.wait(0.001)
+
+
 class Runner:
     def __init__(
         self,
@@ -409,18 +428,40 @@ class Runner:
         cwd: Path | None = None,
         check: bool = True,
         label: str = "command",
+        watch_project_root: Path | None = None,
     ) -> CommandResult:
         env = os.environ.copy()
         existing = env.get("PYTHONPATH")
         env["PYTHONPATH"] = str(self.repository_root) + (os.pathsep + existing if existing else "")
-        result = subprocess.run(
-            list(args),
-            cwd=str(cwd or self.repository_root),
-            env=env,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
+        unexpected_root_entries: set[str] = set()
+        watcher: threading.Thread | None = None
+        stop: threading.Event | None = None
+        baseline: set[str] = set()
+        if watch_project_root is not None:
+            baseline = project_root_entries(watch_project_root)
+            stop = threading.Event()
+            watcher = threading.Thread(
+                target=watch_new_project_root_entries,
+                args=(watch_project_root, baseline, stop, unexpected_root_entries),
+                daemon=True,
+                name=f"ava-qualification-root-watch-{scenario_id}",
+            )
+            watcher.start()
+        try:
+            result = subprocess.run(
+                list(args),
+                cwd=str(cwd or self.repository_root),
+                env=env,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+        finally:
+            if stop is not None and watcher is not None and watch_project_root is not None:
+                stop.set()
+                watcher.join()
+                if watch_project_root.exists():
+                    unexpected_root_entries.update(project_root_entries(watch_project_root) - baseline)
         record = {
             "label": label,
             "command": list(args),
@@ -428,9 +469,16 @@ class Runner:
             "stdout": result.stdout,
             "stderr": result.stderr,
         }
+        if watch_project_root is not None:
+            record["new_project_root_entries"] = sorted(unexpected_root_entries)
         log = self.execution_root / "scenarios" / scenario_id / "runner-commands.jsonl"
         with log.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(record, sort_keys=True) + "\n")
+        if unexpected_root_entries:
+            raise QualificationError(
+                f"{scenario_id}: out-of-scope direct project-root entries appeared during {label}: "
+                f"{', '.join(sorted(unexpected_root_entries))}"
+            )
         if check and result.returncode != 0:
             raise QualificationError(
                 f"{scenario_id}: {label} failed ({result.returncode}): {command_text(args)}\n{result.stderr.strip()}"
@@ -487,6 +535,7 @@ class Runner:
         prompt: str,
         *,
         expected_role: str | None = None,
+        guard_project_root: bool = False,
     ) -> CommandResult:
         result = self.run_command(
             scenario_id,
@@ -502,6 +551,7 @@ class Runner:
                 prompt,
             ],
             label="OpenCode prompt",
+            watch_project_root=project if guard_project_root else None,
         )
         combined = result.stdout + "\n" + result.stderr
         if expected_role and f"Active role: {expected_role}" not in combined:
@@ -594,7 +644,13 @@ class Runner:
                 raise QualificationError(f"{scenario_id}: ambiguous routing did not visibly request clarification")
         elif kind == "complete-inbox":
             self.fresh_install(scenario_id, project, self.target)
-            self.opencode_prompt(scenario_id, project, scenario["prompt"], expected_role="Inbox Ingester")
+            self.opencode_prompt(
+                scenario_id,
+                project,
+                scenario["prompt"],
+                expected_role="Inbox Ingester",
+                guard_project_root=True,
+            )
             pending = [
                 path
                 for path in (project / "inbox").iterdir()
