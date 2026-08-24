@@ -4,6 +4,7 @@ This log records major conceptual and structural changes to the Inbox Ingester. 
 
 ## 2026-08-24
 
+- **Rendered disposition reconciliation**: Required per-section `mapped` and `non-durable` decisions to be verified against final rendered trusted destinations before completion totals are accepted. Whole-source promotion fails when it carries non-durable meaning into trusted knowledge, and ambiguous sections remain pending instead of being promoted to complete a source.
 - **Ingestion execution boundary**: Prohibited creating or executing ad hoc scripts, generated code, temporary implementation files, or programmatic bulk-content transformers as an ingestion mechanism. Destination content remains direct source or section reasoning and editing; existing deterministic Ava validation tools remain allowed only within their existing scope.
 
 ## 2026-08-15
