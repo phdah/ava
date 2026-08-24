@@ -8,7 +8,7 @@ generated:
   at: 2026-08-14T12:48:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T15:58:00+02:00
+  at: 2026-08-24T17:23:00+02:00
 ---
 
 # Purpose
@@ -85,7 +85,7 @@ The finalized qualification root and supplied test project are read-only inputs.
 
 A new execution root may be absent or empty. Once initialized it contains `.ava-qualification-runner.json`, which binds that directory to the selected qualification root and finalized corpus digest. The runner refuses any other non-empty directory and refuses reuse if the finalized corpus no longer matches the recorded digest.
 
-Passing scenarios are retained and reused on an interrupted rerun without reporting them as skipped qualification outcomes. A non-passing or interrupted scenario is recreated only from its corresponding materialized variant before another attempt. The runner never resets the finalized corpus, the original variants, the source or target assets, or the supplied test project.
+Mechanically passing scenarios are retained and reused on an interrupted rerun without reporting them as skipped qualification outcomes. This includes both ordinary `pass` outcomes and audit-gated `structural-pass` outcomes. A non-passing or interrupted scenario is recreated only from its corresponding materialized variant before another attempt. The runner never resets the finalized corpus, the original variants, the source or target assets, or the supplied test project.
 
 # Maintained scenario order
 
@@ -115,12 +115,16 @@ Resume and abort use `checkpoint.py` to create authentic transaction states and 
 
 OpenCode is invoked only for the exact scenario prompt in its isolated copied project. The runner never passes a global auto-approval flag. If required semantic work remains partial or blocked, the outcome is `user-decision-required` and the complete run exits nonzero.
 
-For complete pending-inbox ingestion, the runner snapshots the copied project's direct root entries before the OpenCode prompt and observes that root for the duration of the process. Any new direct root entry fails the scenario even when it is deleted before the prompt returns. This bounded regression catches temporary helper scripts and other out-of-scope implementation artifacts without changing the existing source, destination, or semantic-fidelity checks.
+For complete pending-inbox ingestion, the runner snapshots the copied project's direct root entries before the OpenCode prompt and observes that root for the duration of the process. Any new direct root entry fails the scenario even when it is deleted before the prompt returns. The runner also snapshots every selected direct inbox source before ingestion and then checks deterministic fidelity after the session: every selected source must be preserved exactly once under `inbox/processed/`, preserved sources must remain traceable from trusted `sources:` metadata, metadata resources must resolve to the preserved source, and every used claim footnote must have a matching source id, one renderable definition, and a link resolving to the same preserved source.
+
+These deterministic checks do not judge whether mapped meaning was preserved or whether `non-durable` or `pending` material was handled semantically correctly. The runner has no access to the evaluator-only oracle. The complete pending-inbox scenario therefore ends as `structural-pass` with `semantic_status: pending-audit` when its deterministic checks succeed. Its semantic result remains owned by the independent audit.
 
 # Result
 
 `summary.json` records the pinned source and target identities plus every scenario outcome. The terminal prints the same concise scenario summary. Scenarios not run after an earlier non-passing result are explicitly reported as `skipped`.
 
-The complete command succeeds only when every scenario is `pass`, the finalized corpus inventory is byte-identical, and the supplied test project remains byte-identical. A failed command, mismatched rule, unsafe mutation, unexpected skip, or unresolved required user decision returns nonzero.
+The runner command succeeds when every scenario reaches a mechanically passing outcome, meaning `pass` or `structural-pass`, the finalized corpus inventory is byte-identical, and the supplied test project remains byte-identical. A failed command, mismatched rule, unsafe mutation, unexpected skip, or unresolved required user decision returns nonzero.
+
+A `structural-pass` is deliberately not a semantic pass. The hands-off qualification automation must still run the independent audit before the release can reach `awaiting-user-signoff`; blocker or major audit findings produce `needs-review`.
 
 The runner intentionally does not turn its local evidence into publication authority. Validate the resulting qualification evidence and obtain the required user semantic signoff before advancing the release path.
