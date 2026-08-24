@@ -8,7 +8,7 @@ generated:
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-21T09:03:00+02:00
+  at: 2026-08-24T17:23:00+02:00
 ---
 
 # Purpose
@@ -63,6 +63,14 @@ OpenCode environments affected by the 65,536-byte stdout-pipe truncation must no
 
 `AVA_QUALIFICATION_OPENCODE` may still select the real OpenCode executable when needed, but normal qualification does not require a large-JSON shim.
 
+# Runner and audit boundary
+
+The synthetic runner owns deterministic and structural evidence. A scenario whose complete terminal claim can be proven mechanically returns `pass`. A scenario that deliberately requires evaluator-only semantic judgment may return `structural-pass` with `semantic_status: pending-audit` after every deterministic check succeeds.
+
+`structural-pass` is a mechanically successful runner outcome, so it does not stop the remaining matrix and does not prevent the independent audit from running. It is not interpreted as semantic acceptance. The independent audit remains the authority for meaning preservation, including inbox section dispositions that require the evaluator-only oracle.
+
+The hands-off operation reaches `awaiting-user-signoff` only after all runner outcomes are mechanically successful and the independent audit concludes cleanly. A semantic defect discovered by the audit therefore produces `needs-review` without rewriting the runner's original structural evidence.
+
 # Automated result
 
 The operation produces one of:
@@ -106,4 +114,4 @@ Any release-content change after qualification invalidates acceptance and requir
 
 Raw workspaces, release assets, transcripts, and command evidence remain outside the repository. Compact evidence and release-quality state remain under `internal/release/qualification/`.
 
-The fixture oracle is evaluator-only. Qualification agents must not rely on it; the independent audit uses it to judge the resulting behavior.
+The fixture oracle is evaluator-only. Qualification agents and deterministic runner checks must not rely on it; the independent audit uses it to judge the resulting behavior.
