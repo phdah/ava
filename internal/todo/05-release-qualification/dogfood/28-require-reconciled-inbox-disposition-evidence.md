@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Require Reconciled Per-Passage Disposition Evidence Before Inbox Completion
 description: Stop Inbox Ingester from promoting non-durable source passages into trusted knowledge and from claiming disposition totals that were never reconciled against rendered destination content.
 tags: [internal, roadmap, dogfood, inbox, fidelity, provenance, qualification]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 28
@@ -13,6 +13,9 @@ affected_version: 1.0.0-alpha.15
 generated:
   by: agent:opencode
   at: 2026-08-24T00:00:00Z
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-24T16:30:00+02:00
 ---
 
 # Require Reconciled Per-Passage Disposition Evidence Before Inbox Completion
@@ -50,15 +53,21 @@ Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local`, 
 
 ## Completion criteria
 
-- [ ] the fidelity contract requires disposition totals to be reconciled against rendered destination content before completion
-- [ ] the fidelity contract explicitly forbids promoting `non-durable`-classified content into any destination
-- [ ] regression coverage exercises this requirement
-- [ ] affected documentation and indexes remain aligned
-- [ ] repository test suite passes
+- [x] the fidelity contract requires disposition totals to be reconciled against rendered destination content before completion
+- [x] the fidelity contract explicitly forbids promoting `non-durable`-classified content into any trusted destination
+- [x] regression coverage exercises this requirement
+- [x] affected documentation and indexes remain aligned
+- [x] repository test suite passes
 
 ## Resolution evidence
 
-_Complete in the resolving implementation PR._
+The shared Inbox Ingestion Fidelity contract now requires a read-only rendered disposition reconciliation before a source or batch can be reported complete. Every `mapped` section must be verified in its named rendered destination, every `non-durable` section must be verified absent from trusted destinations created or updated for that source, and ambiguity remains `pending` rather than being promoted to force completion. Final disposition totals are derived only after those checks, so internally consistent tallies no longer establish completion by themselves.
+
+The `complete-pending-inbox` qualification prompt now explicitly requires rendered reconciliation, negative verification for non-durable sections, and pending treatment for ambiguous material. The independent qualification audit independently compares evaluator-only oracle dispositions with final rendered destinations and must report whole-source promotion or unsupported totals as findings.
+
+`test_inbox_disposition_evidence.py` pins these qualification and audit requirements and generates the synthetic fixture to prove it contains mixed `mapped`/`non-durable` sources with no oracle destinations for non-durable sections, preserving a regression case where whole-source promotion is observably wrong.
+
+Repository validation passes on the resolving PR head.
 
 ## Release qualification follow-up
 
