@@ -11,8 +11,8 @@ generated:
   by: agent:openai-chatgpt
   at: 2026-08-07T15:45:02+02:00
 updated:
-  by: agent:openai-opencode
-  at: 2026-08-20T15:58:41Z
+  by: agent:openai-chatgpt
+  at: 2026-08-24T17:23:00+02:00
 ---
 
 # Build the Synthetic V1 Qualification Vault
@@ -249,10 +249,11 @@ Current external progress:
 - [x] repeat the affected calendar-fidelity scenario after finding 18 is complete
 - [x] execute the complete maintained matrix through finding 19's one-command runner
 - [x] resolve findings 22 and 23 and rerun the complete matrix against the new exact candidate
-- [ ] resolve findings 27, 28, and 29 and rerun the complete matrix against the new exact candidate
+- [x] resolve findings 27, 28, and 29
+- [ ] assemble a new exact candidate and rerun the complete matrix
 - [ ] populate and validate the remaining required run manifests and accept final qualification evidence
 
-[Findings 17](dogfood/17-add-resume-abort-qualification-checkpoints.md), [18](dogfood/18-verify-relative-calendar-dates.md), and [19](dogfood/19-add-one-command-qualification-runner.md) are implementation-complete and were exercised by qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local`. That run passed 15 of 17 scenarios and created blockers [22](dogfood/22-report-inspected-paths-during-interrupted-finalize.md) and [23](dogfood/23-report-inspected-path-during-pending-semantic-reconciliation.md), both now implementation-complete. The following run, `20260821T100350003229Z-alpha14-to-alpha15-corrective-local`, failed on a hardcoded semantic-path-accounting gate; [finding 26](dogfood/26-remove-hardcoded-semantic-inspection-path-gate.md) removed that gate as a qualification-tooling defect. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) then passed all 17 scenarios but ended `needs-review` on independent-audit findings in inbox ingestion, recorded as [findings 27](dogfood/27-prohibit-ad-hoc-code-during-inbox-ingestion.md), [28](dogfood/28-require-reconciled-inbox-disposition-evidence.md), and [29](dogfood/29-decide-runner-inbox-semantic-detection-approach.md). Resolve those findings, assemble a new exact candidate, and rerun the complete matrix before final signoff. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence.
+[Findings 17](dogfood/17-add-resume-abort-qualification-checkpoints.md), [18](dogfood/18-verify-relative-calendar-dates.md), and [19](dogfood/19-add-one-command-qualification-runner.md) are implementation-complete and were exercised by qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local`. That run passed 15 of 17 scenarios and created blockers [22](dogfood/22-report-inspected-paths-during-interrupted-finalize.md) and [23](dogfood/23-report-inspected-path-during-pending-semantic-reconciliation.md), both now implementation-complete. The following run, `20260821T100350003229Z-alpha14-to-alpha15-corrective-local`, failed on a hardcoded semantic-path-accounting gate; [finding 26](dogfood/26-remove-hardcoded-semantic-inspection-path-gate.md) removed that gate as a qualification-tooling defect. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) then passed all 17 scenarios but ended `needs-review` on independent-audit findings in inbox ingestion, recorded as [findings 27](dogfood/27-prohibit-ad-hoc-code-during-inbox-ingestion.md), [28](dogfood/28-require-reconciled-inbox-disposition-evidence.md), and [29](dogfood/29-decide-runner-inbox-semantic-detection-approach.md). Those findings are implementation-complete. Assemble a new exact candidate and rerun the complete matrix before final signoff. Do not regenerate, re-finalize, or re-verify the corpus or images unless later qualification exposes a fixture defect or invalid local evidence.
 
 ## Completion criteria
 
