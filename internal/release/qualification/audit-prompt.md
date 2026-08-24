@@ -8,7 +8,7 @@ generated:
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T16:30:00+02:00
+  at: 2026-08-24T17:23:00+02:00
 ---
 
 # Scope
@@ -42,9 +42,11 @@ Determine whether:
 7. semantic reconciliation recorded every inspected and changed project-owned path before completion
 8. finalization followed the target release contract without an unqualified fallback to installer-backed behavior
 9. removal and reinstall preserved project-owned bytes
-10. runner pass criteria actually support each claimed terminal result
+10. each runner outcome is supported by the evidence level it claims, including that `structural-pass` proves only deterministic structure and leaves `semantic_status: pending-audit` for this independent review
 
 For `complete-pending-inbox`, review section dispositions against the final rendered trusted destinations, not only the session's ledger or reported totals. Use the evaluator-only oracle to identify expected `mapped`, `non-durable`, and `pending` sections. Verify that mapped meaning is present with required qualifiers, that non-durable source passages or meaning are absent from trusted destinations, and that ambiguous or pending material was not promoted merely to complete the source. A whole-source copy or summary that carries a non-durable passage into trusted knowledge is a fidelity failure even when source movement, provenance, links, and disposition totals are otherwise consistent. A completion claim whose totals were not reconciled against the rendered destinations is unsupported and must be reported as a finding.
+
+A runner `structural-pass` for this scenario is not evidence that the semantic checks above passed. It means the runner's bounded non-oracle checks succeeded and deliberately hands the remaining semantic claim to this audit. Do not fault the runner merely for leaving that semantic status pending; fault it only if its structural claim is unsupported or if qualification automation treats the pending semantic status as final semantic acceptance without this audit.
 
 # Findings
 
