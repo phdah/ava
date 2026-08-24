@@ -6,9 +6,15 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 ## Current next finding
 
-There is no pending dogfood blocker or `required-v1` finding. Finding 26 is implementation-complete; the immediate release-qualification action is to assemble a new exact corrective-alpha candidate from the updated release PR revision and rerun the complete 17-scenario matrix through the normal repository-owned OpenCode adapter.
+Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) ended `needs-review`. Findings 27, 28, and 29 record its independent-audit findings. 27 and 28 have a defined bounded scope; 29 records a problem that needs an explicit approach decision before implementation. All three block the next prerelease.
 
-[Offer optional todo tracking for qualification failures](25-offer-qualification-failure-todo-tracking.md) is the only pending finding. It is a `post-v1` process improvement and is not release-blocking.
+[Decide how qualification should detect inbox semantic-disposition failures](29-decide-runner-inbox-semantic-detection-approach.md) is pending. The deterministic runner cannot itself judge semantic fidelity without exposing the evaluator-only oracle to the qualification session; several viable approaches exist and the finding records them without prescribing one.
+
+[Require reconciled per-passage disposition evidence before inbox completion](28-require-reconciled-inbox-disposition-evidence.md) is pending. The `complete-pending-inbox` scenario promoted oracle-classified non-durable passages into trusted knowledge and reported disposition totals that were never reconciled against the rendered destinations. This is the same defect class as the prior attempt's `AVA-AUD-INBOX-FIDELITY-005`, now confirmed to recur.
+
+[Prohibit ad hoc code execution during inbox ingestion](27-prohibit-ad-hoc-code-during-inbox-ingestion.md) is pending. The session that produced finding 28's violation did so by generating and executing a project-root script that bulk-routed whole source files instead of curating them per section; the role has no boundary against this today.
+
+[Offer optional todo tracking for qualification failures](25-offer-qualification-failure-todo-tracking.md) is pending. It is a `post-v1` process improvement and is not release-blocking.
 
 [Remove the hardcoded semantic-inspection-path qualification gate](26-remove-hardcoded-semantic-inspection-path-gate.md) is complete. The deterministic qualification-matrix gate that compared recorded inspection paths against a fixed, edge-agnostic list is removed; semantic-inspection adequacy is judged by the independent audit instead.
 
@@ -38,8 +44,8 @@ The dogfood umbrella remains active regardless of backlog state. New blockers pr
 
 ## Backlog status
 
-- 1 pending finding
-- 0 pending blockers
+- 4 pending findings
+- 3 pending blockers
 - 0 pending required-v1 findings
 - 1 pending post-v1 finding
 - 25 completed findings
@@ -74,6 +80,9 @@ The dogfood umbrella remains active regardless of backlog state. New blockers pr
 | 24 | completed | required-v1 | release candidate | [Fix OpenCode session-export pipe truncation](24-fix-opencode-session-export-pipe-truncation.md) |
 | 25 | pending | post-v1 | none | [Offer optional todo tracking for qualification failures](25-offer-qualification-failure-todo-tracking.md) |
 | 26 | completed | blocker | next prerelease | [Remove hardcoded semantic-inspection-path qualification gate](26-remove-hardcoded-semantic-inspection-path-gate.md) |
+| 27 | pending | blocker | next prerelease | [Prohibit ad hoc code execution during inbox ingestion](27-prohibit-ad-hoc-code-during-inbox-ingestion.md) |
+| 28 | pending | blocker | next prerelease | [Require reconciled per-passage disposition evidence before inbox completion](28-require-reconciled-inbox-disposition-evidence.md) |
+| 29 | pending | blocker | next prerelease | [Decide how qualification should detect inbox semantic-disposition failures](29-decide-runner-inbox-semantic-detection-approach.md) |
 
 ## Backlog rules
 
