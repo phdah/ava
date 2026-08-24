@@ -65,3 +65,7 @@ The correct fix is reporting-only. Ava Maintenance must not reread project-owned
 ## Release qualification follow-up
 
 The corrective alpha release PR must run a complete fresh 17-scenario qualification against the new candidate revision produced by this fix before it may be accepted. The `interrupted-finalize` scenario must pass and confirm all four project-owned paths in the resulting report. Append that immutable qualification evidence here after the run; this release gate does not return the implemented finding to pending.
+
+## Superseded
+
+[Finding 26](26-remove-hardcoded-semantic-inspection-path-gate.md) removes the deterministic qualification-matrix gate that compared recorded paths against a fixed list, because that list does not generalize across release edges. The reporting behavior fixed here (carrying durable journal evidence into the cleanup report) remains in place.

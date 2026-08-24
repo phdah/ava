@@ -68,3 +68,7 @@ This is independent of finding 22's ownership boundary. Finding 22 repaired Ava 
 The corrective alpha release PR must run a complete fresh 17-scenario qualification against a new candidate revision containing the finding 22 and 23 fixes before it may be accepted. The `pending-semantic-reconciliation` scenario must pass and explicitly confirm inspection of `/index.md` in its resulting report.
 
 Append immutable qualification evidence here after that run. This release gate does not return the implemented finding to `pending`.
+
+## Superseded
+
+[Finding 26](26-remove-hardcoded-semantic-inspection-path-gate.md) removes the `qualification-matrix.json` hardcoded expected-path declarations and the deterministic postcondition that compared recorded paths against them, because that fixed list does not generalize across release edges. The Upgrade Role completion-report wording fixed here remains in place.

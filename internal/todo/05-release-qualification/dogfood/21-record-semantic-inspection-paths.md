@@ -75,3 +75,7 @@ The synthetic qualification matrix names `/index.md`, `/roles/index.md`, `/share
 ## Release qualification follow-up
 
 Rerun the semantic reconciliation and finalization scenarios through the corrective release. Both must retain complete project-path accounting, and the independent audit must report no blocking or major semantic-accounting finding.
+
+## Superseded
+
+The fixed four-path deterministic qualification gate described above did not generalize across release edges and produced false failures against correctly behaving candidates. [Finding 26](26-remove-hardcoded-semantic-inspection-path-gate.md) removes that gate. The `inspected`/`retained` journal representation and Upgrade Role recording contract introduced here remain in place.

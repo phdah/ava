@@ -130,12 +130,6 @@
       "source": "variants/06-interrupted-upgrade-states/rollback"
     },
     {
-      "expected_project_changes": [
-        "/index.md",
-        "/roles/index.md",
-        "/shared/index.md",
-        "/workflows/index.md"
-      ],
       "family": "interrupted-upgrade-states",
       "finalize_prompt": "Finalize the completed Ava upgrade in this isolated qualification project now. Use Ava Maintenance, verify every required finalization precondition, perform only the supported terminal finalization, and report the resulting managed state.",
       "id": "interrupted-finalize",
@@ -145,18 +139,6 @@
       "source": "variants/06-interrupted-upgrade-states/finalize"
     },
     {
-      "expected_project_changes": [
-        "/index.md",
-        "/roles/index.md",
-        "/shared/index.md",
-        "/workflows/index.md"
-      ],
-      "expected_reported_project_owned_paths": [
-        "/index.md",
-        "/roles/index.md",
-        "/shared/index.md",
-        "/workflows/index.md"
-      ],
       "family": "pending-semantic-reconciliation",
       "id": "pending-semantic-reconciliation",
       "kind": "semantic-reconciliation",

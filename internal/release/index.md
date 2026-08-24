@@ -27,7 +27,6 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [One-command synthetic qualification component](qualification-runner.md)
 - [Synthetic qualification shell entry point](qualify-synthetic.sh)
 - [Synthetic qualification runner implementation](qualification_runner.py)
-- [Synthetic qualification postconditions](qualification_postconditions.py)
 - [Conformance validation contract](conformance.md)
 - [Unified conformance validator](conformance.py)
 - [Release publication procedure](procedure.md)

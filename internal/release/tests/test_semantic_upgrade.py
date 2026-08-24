@@ -295,5 +295,22 @@ class SemanticUpgradeContractTests(unittest.TestCase):
         self.assertEqual(project_path.read_text(), "project-owned unchanged\n")
 
 
+class InspectionOnlyProjectChangeContractTests(unittest.TestCase):
+    def test_upgrade_schema_and_role_define_inspection_only_records(self) -> None:
+        schema = json.loads(
+            (SOURCE_ROOT / "distribution/schemas/upgrade.schema.json").read_text(encoding="utf-8")
+        )
+        change_types = schema["$defs"]["projectChange"]["properties"]["change_type"]["enum"]
+        self.assertIn("inspected", change_types)
+        role = (
+            SOURCE_ROOT / "templates/base/roles/upgrade-role/instructions.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("change_type: inspected", role)
+        self.assertIn("every project-owned path inspected or changed", role)
+        self.assertIn("recorded exactly once", role)
+        self.assertIn("explicitly state that the exact recorded path was inspected", role)
+        self.assertIn("listing the path or its journal classification alone is not sufficient", role)
+
+
 if __name__ == "__main__":
     unittest.main()

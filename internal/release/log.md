@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-08-24
+
+- **Removed the hardcoded semantic-inspection-path qualification gate**: The deterministic postcondition added on 2026-08-15 compared each semantic scenario's recorded inspected paths against one fixed, edge-agnostic list. The list was copied from a single prior release edge and did not generalize: it produced false failures against correctly behaving candidates whose guidance named different affected paths. `qualification_postconditions.py` and its dedicated test suite are removed; `qualify-synthetic.sh` runs the scenario runner directly. Judging whether an edge's actual inspected-path set satisfies its own guidance remains an independent-audit responsibility rather than a fixed structural check.
+
 ## 2026-08-17
 
 - **Mandatory pre-merge release qualification**: Every release-please PR must qualify its exact locally assembled candidate through the full hands-off OpenCode matrix and independent audit before merge.
