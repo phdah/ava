@@ -16,6 +16,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Sequence
 
+from internal.release.qualification_inbox import (
+    InboxStructuralError,
+    validate_inbox_structural_fidelity,
+)
+
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 FIXTURE_ROOT = REPOSITORY_ROOT / "internal/release/fixtures/synthetic-qualification-vault"
 FIXTURE = FIXTURE_ROOT / "fixture.py"
@@ -33,7 +38,8 @@ RELEASE_ASSETS = (
 SENTINEL = ".ava-qualification-runner.json"
 STATE_FILE = "runner-state.json"
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
-OUTCOMES = {"pass", "fail", "skipped", "user-decision-required"}
+OUTCOMES = {"pass", "structural-pass", "fail", "skipped", "user-decision-required"}
+PASSING_OUTCOMES = {"pass", "structural-pass"}
 
 
 class QualificationError(RuntimeError):
@@ -240,6 +246,11 @@ def load_matrix(path: Path = MATRIX_PATH) -> dict[str, Any]:
     seen_order = [family_order.get(item.get("family"), -1) for item in scenarios]
     if any(index < 0 for index in seen_order) or seen_order != sorted(seen_order):
         raise QualificationError("qualification scenarios are not ordered by the maintained family order")
+    for scenario in scenarios:
+        if "semantic_audit_required" in scenario and not isinstance(scenario["semantic_audit_required"], bool):
+            raise QualificationError(
+                f"qualification scenario {scenario.get('id')} has invalid semantic_audit_required"
+            )
     return value
 
 
@@ -362,7 +373,7 @@ def scenario_workspace(
     scenario_id = scenario["id"]
     prior = state["scenarios"].get(scenario_id)
     destination = execution_root / "scenarios" / scenario_id
-    if isinstance(prior, dict) and prior.get("outcome") == "pass" and destination.is_dir():
+    if isinstance(prior, dict) and prior.get("outcome") in PASSING_OUTCOMES and destination.is_dir():
         return destination, True
     if destination.exists():
         shutil.rmtree(destination)
@@ -644,6 +655,14 @@ class Runner:
                 raise QualificationError(f"{scenario_id}: ambiguous routing did not visibly request clarification")
         elif kind == "complete-inbox":
             self.fresh_install(scenario_id, project, self.target)
+            selected_sources = [
+                {
+                    "path": path.relative_to(project).as_posix(),
+                    "sha256": sha256_file(path),
+                }
+                for path in (project / "inbox").iterdir()
+                if path.is_file() and path.name not in {"index.md", "log.md"}
+            ]
             self.opencode_prompt(
                 scenario_id,
                 project,
@@ -658,6 +677,10 @@ class Runner:
             ]
             if pending:
                 raise QualificationError(f"{scenario_id}: {len(pending)} direct inbox sources remain pending")
+            try:
+                validate_inbox_structural_fidelity(project, selected_sources)
+            except InboxStructuralError as exc:
+                raise QualificationError(f"{scenario_id}: inbox structural fidelity failed: {exc}") from exc
             self.conformance(scenario_id, project)
         elif kind == "managed-damage":
             self.fresh_install(scenario_id, project, self.target)
@@ -766,6 +789,8 @@ class Runner:
             self.conformance(scenario_id, project)
         else:
             raise QualificationError(f"{scenario_id}: unsupported scenario kind: {kind}")
+        if scenario.get("semantic_audit_required") is True:
+            return {"outcome": "structural-pass", "semantic_status": "pending-audit"}
         return {"outcome": "pass"}
 
     def upgrade_source_checkpoint(self, scenario_id: str, project: Path) -> str:
@@ -817,7 +842,7 @@ class Runner:
             self.state["scenarios"][scenario_id] = result
             save_state(self.execution_root, self.state)
             outcomes.append({"id": scenario_id, **result})
-            if result["outcome"] != "pass":
+            if result["outcome"] not in PASSING_OUTCOMES:
                 blocked_by = scenario_id
 
         if inventory_digest(self.qualification_root / "corpus") != baseline_before:
@@ -919,7 +944,7 @@ def verify_damage_unchanged(project: Path, evidence: dict[str, Any]) -> None:
 
 
 def summary_exit_status(outcomes: list[dict[str, Any]]) -> int:
-    return 0 if outcomes and all(item.get("outcome") == "pass" for item in outcomes) else 1
+    return 0 if outcomes and all(item.get("outcome") in PASSING_OUTCOMES for item in outcomes) else 1
 
 
 def write_summary(
