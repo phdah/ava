@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-25T17:13:00+02:00
+  at: 2026-08-25T20:02:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,18 +25,18 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 ## Official next action
 
-**Resolve dogfood findings 30, 31, 32, and 34 (blockers), before rerunning full qualification.**
+**Resolve dogfood findings 31, 32, and 34 (blockers), before rerunning full qualification.**
 
-Findings 22 through 29 are implementation-complete. Finding 33 is also complete: the multi-hour `complete-pending-inbox` scenario is retained but its live qualification fixture is deterministically shrunk from 305 sources to the exact seven-source format lower bound while preserving `mapped`, `non-durable`, and `pending` section dispositions. The immutable 305-file corpus remains unchanged.
+Findings 22 through 30 are implementation-complete. Finding 30 adds the sanctioned detached qualification launcher and SIGHUP lifecycle coverage, so a closed terminal or dropped operator session no longer owns the qualification process tree. Finding 33 is also complete: the multi-hour `complete-pending-inbox` scenario is retained but its live qualification fixture is deterministically shrunk from 305 sources to the exact seven-source format lower bound while preserving `mapped`, `non-durable`, and `pending` section dispositions. The immutable 305-file corpus remains unchanged.
 
-A 2026-08-24/25 operational-reliability investigation into the qualification pipeline itself recorded findings 30 through 36. Findings 30, 31, 32, and 34 remain `blocker`/next-prerelease; findings 35 and 36 are `required-v1`/release-candidate. The next sequence is:
+A 2026-08-24/25 operational-reliability investigation into the qualification pipeline itself recorded findings 30 through 36. Findings 31, 32, and 34 remain `blocker`/next-prerelease; findings 35 and 36 are `required-v1`/release-candidate. The next sequence is:
 
-1. resolve dogfood findings 30, 31, 32, and 34 (see [Alpha Dogfood Findings](todo/05-release-qualification/dogfood/))
+1. resolve dogfood findings 31, 32, and 34 (see [Alpha Dogfood Findings](todo/05-release-qualification/dogfood/))
 2. assemble a new exact candidate from the updated corrective-alpha release PR revision
 3. rerun the complete qualification matrix through the normal repository-owned OpenCode adapter and obtain explicit user signoff
 4. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
 
-[Finding 25](todo/05-release-qualification/dogfood/25-offer-qualification-failure-todo-tracking.md) is post-v1 and does not block release progression. Findings 30, 31, 32, and 34 currently block the corrective alpha; findings 35 and 36 block the release-candidate gate.
+[Finding 25](todo/05-release-qualification/dogfood/25-offer-qualification-failure-todo-tracking.md) is post-v1 and does not block release progression. Findings 31, 32, and 34 currently block the corrective alpha; findings 35 and 36 block the release-candidate gate.
 
 Do not publish or merge a new release without accepted qualification state. Do not begin release-candidate publication before the user explicitly closes alpha dogfooding.
 
