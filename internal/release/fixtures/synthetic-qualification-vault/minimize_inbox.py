@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -46,28 +47,56 @@ def record_dispositions(record: dict[str, Any]) -> set[str]:
 
 
 def select_minimum_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    selected: list[dict[str, Any]] = []
+    by_format = {
+        format_name: [record for record in records if record.get("format") == format_name]
+        for format_name in FORMAT_ORDER
+    }
+    missing_formats = [format_name for format_name, candidates in by_format.items() if not candidates]
+    if missing_formats:
+        raise MinimizationError(f"oracle has no source for required formats: {missing_formats}")
+
+    pending_candidates = [
+        record
+        for format_name in FORMAT_ORDER
+        for record in by_format[format_name]
+        if "pending" in record_dispositions(record)
+    ]
+    if not pending_candidates:
+        raise MinimizationError("oracle has no source carrying the required pending disposition")
+    pending_record = min(
+        pending_candidates,
+        key=lambda record: (
+            FORMAT_ORDER.index(str(record["format"])),
+            str(record.get("path", "")).encode("utf-8"),
+        ),
+    )
+
+    selected_by_format: dict[str, dict[str, Any]] = {
+        str(pending_record["format"]): pending_record
+    }
     for format_name in FORMAT_ORDER:
-        candidates = [record for record in records if record.get("format") == format_name]
-        if not candidates:
-            raise MinimizationError(f"oracle has no source for required format: {format_name}")
-        selected.append(
-            min(
-                candidates,
-                key=lambda record: (
-                    -len(record_dispositions(record)),
-                    str(record.get("path", "")).encode("utf-8"),
-                ),
-            )
+        if format_name in selected_by_format:
+            continue
+        candidates = by_format[format_name]
+        non_pending = [
+            record for record in candidates if "pending" not in record_dispositions(record)
+        ]
+        pool = non_pending or candidates
+        selected_by_format[format_name] = min(
+            pool,
+            key=lambda record: (
+                -len(record_dispositions(record)),
+                str(record.get("path", "")).encode("utf-8"),
+            ),
         )
 
-    observed_formats = {record.get("format") for record in selected}
+    selected = [selected_by_format[format_name] for format_name in FORMAT_ORDER]
     observed_dispositions = {
         disposition
         for record in selected
         for disposition in record_dispositions(record)
     }
-    if len(selected) != len(FORMAT_ORDER) or observed_formats != set(FORMAT_ORDER):
+    if len(selected) != len(FORMAT_ORDER) or set(selected_by_format) != set(FORMAT_ORDER):
         raise MinimizationError("selection does not contain exactly one source per required format")
     if observed_dispositions != REQUIRED_DISPOSITIONS:
         raise MinimizationError(
@@ -140,6 +169,7 @@ def minimize(output: Path) -> list[dict[str, Any]]:
             {
                 "path": Path(str(record["path"])).name,
                 "format": record["format"],
+                "class": record.get("class"),
                 "dispositions": sorted(record_dispositions(record)),
                 "sha256": record["sha256"],
             }
@@ -166,7 +196,11 @@ def minimize(output: Path) -> list[dict[str, Any]]:
     families = variants_index.get("families")
     if not isinstance(families, list):
         raise MinimizationError("variants/index.json has no family inventory")
-    matches = [family for family in families if isinstance(family, dict) and family.get("id") == "complete-pending-inbox"]
+    matches = [
+        family
+        for family in families
+        if isinstance(family, dict) and family.get("id") == "complete-pending-inbox"
+    ]
     if len(matches) != 1:
         raise MinimizationError("variants/index.json must contain exactly one complete-pending-inbox family")
     matches[0]["inventory"] = tree_inventory(output / VARIANT_RELATIVE)
@@ -185,7 +219,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         selected = minimize(Path(args.output))
     except (MinimizationError, OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
-        print(f"qualification inbox minimization error: {exc}", file=__import__("sys").stderr)
+        print(f"qualification inbox minimization error: {exc}", file=sys.stderr)
         return 1
     formats = ", ".join(record["format"] for record in selected)
     print(f"minimized complete-pending-inbox: {len(selected)} sources ({formats})")
