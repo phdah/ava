@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Detach Qualification Automation's Process Tree From the Operator Session Lifecycle
 description: Provide a sanctioned way to run qualify-release.sh fully detached from the invoking shell/session so a closed laptop, dropped connection, or killed tool call does not silently kill a multi-hour qualification run.
 tags: [internal, roadmap, dogfood, release, qualification, reliability, process]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 30
@@ -13,6 +13,9 @@ affected_version: 1.0.0-alpha.15
 generated:
   by: agent:opencode
   at: 2026-08-25T00:00:00Z
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-25T20:02:00+02:00
 ---
 
 # Detach Qualification Automation's Process Tree From the Operator Session Lifecycle
@@ -31,7 +34,7 @@ Run `20260824T155755925230Z-alpha14-to-alpha15-corrective-local`: no correspondi
 
 ## Root cause
 
-`qualify-release.sh` execs `qualification_automation.py`, which is a single foreground Python process. It itself runs the multi-hour `qualify-synthetic.sh` matrix and every nested `opencode` invocation through plain `subprocess.run(...)` calls (`qualification_automation.py:223-243`, `qualification_runner.py:434-497`) with no `setsid`/`start_new_session`, no process-group detachment, and no supervising init-like wrapper. Nothing in `internal/release/*.sh`, `qualification-automation.md`, or `procedure.md` documents or provides a detached invocation path (`nohup`, `setsid`, `systemd-run`, `tmux`, or equivalent). When the invoking session or terminal dies, the entire process tree — the automation process, the runner, and every live or spawned `opencode` process — dies with it, because none of it was ever moved into its own session or kept alive by a supervisor independent of the invoking shell.
+`qualify-release.sh` execs `qualification_automation.py`, which is a single foreground Python process. It itself runs the multi-hour `qualify-synthetic.sh` matrix and every nested `opencode` invocation through plain `subprocess.run(...)` calls (`qualification_automation.py:223-243`, `qualification_runner.py:434-497`) with no `setsid`/`start_new_session`, no process-group detachment, and no supervising init-like wrapper. Nothing in `internal/release/*.sh`, `qualification-automation.md`, or `procedure.md` documents or provides a detached invocation path (`nohup`, `setsid`, `systemd-run`, `tmux`, or equivalent). When the invoking session or terminal dies, the entire process tree - the automation process, the runner, and every live or spawned `opencode` process - dies with it, because none of it was ever moved into its own session or kept alive by a supervisor independent of the invoking shell.
 
 ## Scope
 
@@ -42,12 +45,16 @@ Run `20260824T155755925230Z-alpha14-to-alpha15-corrective-local`: no correspondi
 
 ## Completion criteria
 
-- [ ] a documented command starts qualification fully detached from the invoking shell/session and returns immediately with a PID and log path
-- [ ] killing or closing the invoking shell/session (verified with a real process-group test, for example sending SIGHUP to the launcher's process group) does not terminate the detached qualification process tree
-- [ ] `qualification-automation.md` and `procedure.md` document the detached launch and status-check commands as the standard operator flow
-- [ ] regression coverage exercises the detachment mechanism
-- [ ] repository test suite passes
+- [x] a documented command starts qualification fully detached from the invoking shell/session and returns immediately with a PID and log path
+- [x] killing or closing the invoking shell/session (verified with a real process-group test, for example sending SIGHUP to the launcher's process group) does not terminate the detached qualification process tree
+- [x] `qualification-automation.md` and `procedure.md` document the detached launch and status-check commands as the standard operator flow
+- [x] regression coverage exercises the detachment mechanism
+- [x] repository test suite passes
 
 ## Resolution evidence
 
-_Complete in the resolving implementation PR._
+`internal/release/qualify-release-detached.sh` is now the sanctioned operator launcher. It requires `nohup` and `setsid`, creates a repository-external launch root, redirects qualification output to `qualification.log`, records the detached process PID, starts `qualify-release.sh` in a separate session with stdin detached from the terminal, and groups the automation's external run root below the same launch root. It prints the PID, log, launch root, and exact evidence root when initialization has already created it.
+
+`internal/release/tests/test_qualification_detached.py` launches the real detached wrapper against a controlled fake qualification child, sends SIGHUP to the invoking shell's process group, proves the detached child remains alive, and waits for it to complete. `internal/release/test.sh` syntax-checks the launcher and runs that regression with the repository suite.
+
+`internal/release/qualification-automation.md` and `internal/release/procedure.md` now make detached launch the standard operator flow and document `kill -0`, log inspection, evidence-root discovery, and `AVA_QUALIFICATION_RUN_ROOT_PARENT`.
