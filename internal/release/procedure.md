@@ -8,14 +8,14 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-21T09:03:00+02:00
+  at: 2026-08-25T20:02:00+02:00
 ---
 
 # Ava Release Publication Procedure
 
 When the user asks to make, prepare, review, accept, merge, publish, or qualify an Ava release, the Ava Internal Maintainer must follow this procedure.
 
-Every Ava release uses the same flow. Full `qualify-release.sh` qualification and explicit user acceptance are mandatory before the release-please PR may merge.
+Every Ava release uses the same flow. Full `qualify-release.sh` qualification and explicit user acceptance are mandatory before the release-please PR may merge. Operators launch the multi-hour qualification through `qualify-release-detached.sh` so the qualification process tree is independent of the invoking terminal or remote session.
 
 # Release flow
 
@@ -26,7 +26,7 @@ Every Ava release uses the same flow. Full `qualify-release.sh` qualification an
 5. Run release-PR validation and the complete repository test suite.
 6. Assemble the exact target release assets from a clean release PR revision with `assemble-candidate.sh`.
 7. Configure the qualification active pair as exact published previous release -> exact local target.
-8. Run `qualify-release.sh` against those local target assets.
+8. Launch `qualify-release.sh` through `qualify-release-detached.sh` against those local target assets and retain the returned PID, log path, and external run location.
 9. Any `failed` or `needs-review` result leaves the release PR blocked; report it to the user without modifying repository or release content to make it pass.
 10. When the run reaches `awaiting-user-signoff`, present the evidence to the user.
 11. Only after explicit user approval, record acceptance with `accept-release-qualification.sh` and commit the qualification-state changes to the release PR.
@@ -93,12 +93,31 @@ Set `AVA_CANDIDATE_ROOT` when a specific repository-external output parent is de
 
 # Mandatory qualification
 
-The two commands may be composed directly:
+Assemble the target, then launch the qualification in its own session:
 
 ```sh
-internal/release/qualify-release.sh \
-  --target-assets "$(internal/release/assemble-candidate.sh)"
+target_assets=$(internal/release/assemble-candidate.sh)
+internal/release/qualify-release-detached.sh \
+  --target-assets "$target_assets"
 ```
+
+The detached launcher returns immediately with the qualification PID, detached log path, launch root, and the exact external evidence root when initialization has already created it. If the exact evidence root is still pending, it will appear as `ava-qualification-*` below the returned launch root.
+
+Set `AVA_QUALIFICATION_RUN_ROOT_PARENT` when a specific repository-external parent is required. The detached launcher owns the automation's `--run-root-parent` argument so the launch log and raw evidence remain grouped together.
+
+Check process existence with:
+
+```sh
+kill -0 <qualification-pid>
+```
+
+Inspect progress through the returned log instead of keeping the invoking shell attached:
+
+```sh
+tail -n 100 -f <detached-log>
+```
+
+Closing the invoking shell, ending an SSH session, or sending SIGHUP to its process group must not terminate the qualification process tree. `qualify-release.sh` remains the foreground implementation entry point but is not the standard operator launch path for a full multi-hour run.
 
 The operation must run the maintained 17-scenario matrix, capture all top-level and nested OpenCode sessions, execute the independent audit, and write compact evidence.
 
