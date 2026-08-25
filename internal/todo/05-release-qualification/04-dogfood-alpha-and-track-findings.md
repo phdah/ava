@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T17:23:00+02:00
+  at: 2026-08-25T20:02:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -71,7 +71,7 @@ A clear user statement that dogfooding is complete or that Ava should proceed to
 
 ## Current state
 
-Findings 01 through 29 except post-v1 finding 25 are implementation-complete. The one-command qualification runner has executed the complete maintained matrix against three successive corrective-alpha candidates, resolving findings 22 through 24 and 26 through 29. This umbrella remains active until the user explicitly closes dogfooding.
+Findings 01 through 30 except post-v1 finding 25 are implementation-complete. Finding 33 is also implementation-complete. The one-command qualification runner has executed the complete maintained matrix against three successive corrective-alpha candidates, resolving findings 22 through 24 and 26 through 30. This umbrella remains active until the user explicitly closes dogfooding.
 
 The synthetic corpus and all five specified images are finalized and verified in a repository-external local directory. The user materialized all eight qualification families and exercised ingestion, routing, managed-content damage, semantic reconciliation, finalization, rollback, uninstall, and reinstall behavior.
 
@@ -89,6 +89,8 @@ Findings 22 and 23 repair the two failed semantic-path reporting scenarios from 
 
 Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review`: the independent audit found inbox ingestion promoted non-durable passages via an unauthorized ad hoc script, and that the runner's own pass criteria could not detect that class of defect. Findings 27, 28, and 29 record those issues and are now implementation-complete. Finding 27 closes the ad hoc execution and transient direct-root gaps. Finding 28 requires rendered per-section disposition reconciliation. Finding 29 separates structural runner evidence from semantic audit evidence and adds bounded non-oracle source/metadata/footnote checks.
 
-A 2026-08-24/25 investigation into the qualification pipeline's own operational reliability (not a content/fidelity finding) found it cannot currently complete a run reliably: the process tree is not resilient to the operator session dying, a dead run cannot resume already-passed scenarios, there is no pollable run-status artifact in place of a bounded-timeout monitoring loop, and the maintained `complete-pending-inbox` fixture contains `.docx`/`.pptx` sources Inbox Ingester has no sanctioned way to read. Findings 30, 31, 32, and 34 record these as `blocker`/next-prerelease; findings 35 and 36 record related provider-stall and duplicate-run risks as `required-v1`/release-candidate. Finding 33 decides whether the `complete-pending-inbox` scenario itself should be kept as-is, shrunk to a smaller batch, or removed from the maintained matrix, and is `blocker`/next-prerelease because that decision is upstream of findings 30, 31, 32, and 34. All seven are pending.
+A 2026-08-24/25 investigation into the qualification pipeline's own operational reliability recorded findings 30 through 36. Finding 30 is now complete: full qualification has a repository-owned `nohup`/`setsid` detached launcher, an external log, PID reporting, and a SIGHUP lifecycle regression, so a closed operator terminal no longer owns the qualification process tree. Finding 33 is also complete: `complete-pending-inbox` remains in the matrix but its live workload is deterministically reduced to the seven-source format lower bound.
 
-The next action is to resolve finding 33 first, then findings 30, 31, 32, and 34, then let release-please update the corrective-alpha PR, assemble a new exact candidate from that clean release PR revision, rerun the complete matrix, and obtain fresh qualification signoff. Finding 25 is post-v1 and does not block release progression. After the corrective alpha passes, the next gate is the explicit user-owned dogfood closure before RC publication.
+The remaining next-prerelease blockers are findings 31, 32, and 34: a dead qualification run cannot yet resume already-passed scenarios across invocations, there is no pollable run-status artifact, and Inbox Ingester has no sanctioned deterministic reader for the retained `.docx` and `.pptx` sources. Findings 35 and 36 record related provider-stall and duplicate-run risks as `required-v1`/release-candidate work.
+
+The next action is to resolve findings 31, 32, and 34, then let release-please update the corrective-alpha PR, assemble a new exact candidate from that clean release PR revision, rerun the complete matrix through the detached operator flow, and obtain fresh qualification signoff. Finding 25 is post-v1 and does not block release progression. After the corrective alpha passes, the next gate is the explicit user-owned dogfood closure before RC publication.
