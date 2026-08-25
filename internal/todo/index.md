@@ -46,7 +46,7 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - 5 of 5 complete
 3. [Workflow system](03-workflows/) - 6 of 6 complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - 10 of 10 complete
-5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 1 pending finding, 0 pending blockers, 0 pending dogfood `required-v1` findings, 3 pending supporting qualification tasks, and 28 completed findings
+5. [V1 release qualification](05-release-qualification/) - 3 of 6 core gates complete; dogfood active with 8 pending findings, 4 pending blockers, 3 pending dogfood `required-v1` findings, 3 pending supporting qualification tasks, and 28 completed findings
 6. [Backlog.md integration](06-backlog-md/) - 0 of 2 complete; queued after release qualification
 7. [Durable interaction evidence](07-interaction-evidence/) - 0 of 1 complete; queued after Backlog.md integration
 
@@ -60,9 +60,9 @@ The alpha qualification policy composes that conformance evidence with roadmap c
 
 Release-please enforces supported-distribution release classification at the merge boundary, maintains version and changelog state, keeps one release pull request current, creates immutable tags and draft releases, and hands the exact prepared SHA to qualification, reproducible assembly, release conformance, attestation, non-clobbering asset upload, and automatic publication.
 
-Alpha publication is complete through immutable `1.0.0-alpha.14`. Findings 22 through 29 are implementation-complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review` on independent-audit findings in inbox ingestion. Findings 27 through 29 resolve the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues from that audit. No release-blocking dogfood finding remains from the run. The remaining ordered path to the first stable release is:
+Alpha publication is complete through immutable `1.0.0-alpha.14`. Findings 22 through 29 are implementation-complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review` on independent-audit findings in inbox ingestion. Findings 27 through 29 resolve the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues from that audit. A 2026-08-24/25 investigation then found the qualification pipeline itself operationally unreliable (session-lifecycle fragility, no cross-run resume, no pollable status, and no sanctioned Office-document reader), recorded as findings 30-36; findings 30, 31, 32, and 34 are pending blockers that currently preempt the corrective alpha, and findings 33, 35, and 36 are pending `required-v1` findings that block the release-candidate gate. The remaining ordered path to the first stable release is:
 
-Assemble a new exact candidate from the updated corrective-alpha release PR revision and rerun the complete qualification matrix. A new blocker may still preempt that run without changing the six canonical release steps:
+Resolve dogfood findings 30, 31, 32, and 34, then assemble a new exact candidate from the updated corrective-alpha release PR revision and rerun the complete qualification matrix. A new blocker may still preempt that run without changing the six canonical release steps:
 
 1. finish the [synthetic v1 qualification vault](05-release-qualification/04a-build-synthetic-qualification-vault.md) through a fresh complete matrix run and explicit signoff against the corrected candidate
 2. [qualify and publish the corrective alpha](05-release-qualification/04b-qualify-and-publish-corrective-alpha.md), collecting immutable evidence for completed findings, including normalized adjacent-edge authoring, conversational routing transitions, agent-driven finalization, semantic inspection reporting, and complete OpenCode session evidence capture

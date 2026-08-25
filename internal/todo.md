@@ -25,15 +25,16 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 ## Official next action
 
-**Assemble a new exact corrective-alpha candidate from the updated release PR revision and run fresh full qualification.**
+**Resolve dogfood findings 30-32 and 34 (blockers) before rerunning full qualification.**
 
-Findings 22 through 29 are implementation-complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review`: the independent audit found two major issues and one minor issue in inbox ingestion. Findings 27 through 29 resolve the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues. The next sequence is:
+Findings 22 through 29 are implementation-complete. A 2026-08-24/25 operational-reliability investigation into the qualification pipeline itself (not a content/fidelity finding) found the pipeline currently cannot reliably complete a run and recorded findings 30 through 36. Findings 30, 31, 32, and 34 are `blocker`/next-prerelease and preempt any new qualification attempt; findings 33, 35, and 36 are `required-v1`/release-candidate. The next sequence is:
 
-1. assemble a new exact candidate from the updated corrective-alpha release PR revision
-2. rerun the complete 17-scenario qualification matrix through the normal repository-owned OpenCode adapter and obtain explicit user signoff
-3. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
+1. resolve dogfood findings 30, 31, 32, and 34 (see [Alpha Dogfood Findings](todo/05-release-qualification/dogfood/))
+2. assemble a new exact candidate from the updated corrective-alpha release PR revision
+3. rerun the complete 17-scenario qualification matrix through the normal repository-owned OpenCode adapter and obtain explicit user signoff
+4. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
 
-[Finding 25](todo/05-release-qualification/dogfood/25-offer-qualification-failure-todo-tracking.md) is post-v1 and does not block release progression. No pending dogfood finding currently blocks the corrective alpha.
+[Finding 25](todo/05-release-qualification/dogfood/25-offer-qualification-failure-todo-tracking.md) is post-v1 and does not block release progression. Findings 30, 31, 32, and 34 currently block the corrective alpha; findings 33, 35, and 36 block the release-candidate gate.
 
 Do not publish or merge a new release without accepted qualification state. Do not begin release-candidate publication before the user explicitly closes alpha dogfooding.
 

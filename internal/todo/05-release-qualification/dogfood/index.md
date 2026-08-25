@@ -6,6 +6,22 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 ## Current next finding
 
+A two-day operational-reliability investigation (2026-08-24 to 2026-08-25) into the release qualification pipeline itself — `qualification_automation.py`, `qualification_runner.py`, the `qualify-release.sh`/`qualify-synthetic.sh` flow, and the ad hoc operator monitoring pattern used around them — found that the pipeline was largely unworkable in practice over two consecutive days of attempts, independent of any content/fidelity finding. Findings 30-36 record the resulting operational-reliability findings and are all `pending`.
+
+[Detach qualification automation's process tree from the operator session lifecycle](30-detach-qualification-process-tree-from-session.md) is pending. A run died silently mid-scenario when the operator's laptop closed, with no summary and no surviving process, because nothing detaches the process tree from the invoking session.
+
+[Let qualification automation resume a dead run's completed scenarios](31-enable-cross-invocation-qualification-run-resume.md) is pending. The runner already checkpoints completed scenarios per execution root, but the automation layer always creates a fresh execution root per invocation, so that resume capability is unreachable across separate `qualify-release.sh` invocations.
+
+[Add a pollable qualification run status artifact instead of a bounded-timeout monitoring loop](32-add-pollable-qualification-run-status-artifact.md) is pending. The operator-facing monitoring pattern was an ad hoc `while kill -0 <pid>; do sleep 300; done` loop bound by a tool timeout shorter than a full run, and the runner's pass/fail signal does not distinguish crashed, decision-required, and merely-slow states.
+
+[Investigate and document complete-pending-inbox duration inflation](33-investigate-complete-pending-inbox-duration-inflation.md) is pending. The scenario now routinely takes 2+ hours, up from under 20 minutes before findings 27/28 tightened inbox fidelity, which is the primary driver making the monitoring and resume gaps routine rather than rare.
+
+[Add a sanctioned deterministic Office-document reader tool for inbox ingestion](34-add-sanctioned-office-document-reader-tool.md) is pending. Finding 27's ad hoc code ban also removed the only mechanism for reading `.docx`/`.pptx` sources, and the maintained synthetic inbox fixture itself contains 9 such sources, so `complete-pending-inbox` currently cannot complete at all.
+
+[Detect and report sustained model-provider usage-limit stalls](35-classify-sustained-provider-usage-limit-stalls.md) is pending. Concurrent sessions hit repeated `AI_APICallError: The usage limit has been reached` retries with no forward progress for 40+ minutes and no operator-visible signal beyond raw logs.
+
+[Guard against launching a duplicate concurrent qualification run](36-guard-against-duplicate-concurrent-qualification-runs.md) is pending. The `current-state.json` schema already declares a `running` pair status, but nothing writes or checks it, so a second run could be started against a candidate that may already have one in flight.
+
 Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) ended `needs-review`. Findings 27, 28, and 29 record its independent-audit findings. All three are implementation-complete, so no release-blocking dogfood finding remains from that run.
 
 [Decide how qualification should detect inbox semantic-disposition failures](29-decide-runner-inbox-semantic-detection-approach.md) is complete. The approved approach separates deterministic `structural-pass` from evaluator-only semantic judgment and adds bounded non-oracle processed-source, metadata, and footnote checks while leaving semantic fidelity to the independent audit.
@@ -44,9 +60,9 @@ The dogfood umbrella remains active regardless of backlog state. New blockers pr
 
 ## Backlog status
 
-- 1 pending finding
-- 0 pending blockers
-- 0 pending required-v1 findings
+- 8 pending findings
+- 4 pending blockers
+- 3 pending required-v1 findings
 - 1 pending post-v1 finding
 - 28 completed findings
 
@@ -83,6 +99,13 @@ The dogfood umbrella remains active regardless of backlog state. New blockers pr
 | 27 | completed | blocker | next prerelease | [Prohibit ad hoc code execution during inbox ingestion](27-prohibit-ad-hoc-code-during-inbox-ingestion.md) |
 | 28 | completed | blocker | next prerelease | [Require reconciled per-passage disposition evidence before inbox completion](28-require-reconciled-inbox-disposition-evidence.md) |
 | 29 | completed | blocker | next prerelease | [Decide how qualification should detect inbox semantic-disposition failures](29-decide-runner-inbox-semantic-detection-approach.md) |
+| 30 | pending | blocker | next prerelease | [Detach qualification automation's process tree from the operator session lifecycle](30-detach-qualification-process-tree-from-session.md) |
+| 31 | pending | blocker | next prerelease | [Let qualification automation resume a dead run's completed scenarios](31-enable-cross-invocation-qualification-run-resume.md) |
+| 32 | pending | blocker | next prerelease | [Add a pollable qualification run status artifact instead of a bounded-timeout monitoring loop](32-add-pollable-qualification-run-status-artifact.md) |
+| 33 | pending | required-v1 | release candidate | [Investigate and document complete-pending-inbox duration inflation](33-investigate-complete-pending-inbox-duration-inflation.md) |
+| 34 | pending | blocker | next prerelease | [Add a sanctioned deterministic Office-document reader tool for inbox ingestion](34-add-sanctioned-office-document-reader-tool.md) |
+| 35 | pending | required-v1 | release candidate | [Detect and report sustained model-provider usage-limit stalls](35-classify-sustained-provider-usage-limit-stalls.md) |
+| 36 | pending | required-v1 | release candidate | [Guard against launching a duplicate concurrent qualification run](36-guard-against-duplicate-concurrent-qualification-runs.md) |
 
 ## Backlog rules
 

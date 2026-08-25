@@ -41,13 +41,13 @@ Dogfooding intentionally remains open during steps 1 and 2. Explicit user closur
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 1 pending finding
-- 0 pending blockers
-- 0 pending required-v1 findings
+- 8 pending findings
+- 4 pending blockers
+- 3 pending required-v1 findings
 - 1 pending post-v1 finding
 - 28 completed findings
 
-Findings 01 through 29 except post-v1 finding 25 are implementation-complete. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence, with source anchoring, ambiguity handling, boundary fixtures, Change Reviewer fidelity checks, and assembled-payload coverage. Finding 19 composes the complete maintained matrix behind one internal manual shell entry point with pinned-input preflight, isolated runner-owned scenario workspaces, exact managed-damage rules, bounded OpenCode prompts, interrupted reruns, and final summary semantics. Findings 22 and 23 repair the two failed semantic-path reporting scenarios from qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local`. Finding 24 removes the OpenCode 65,536-byte pipe truncation dependency by buffering session-list and export JSON through the repository-owned adapter. Finding 26 removes a hardcoded, edge-agnostic semantic-path-accounting gate that failed qualification run `20260821T100350003229Z-alpha14-to-alpha15-corrective-local` without being a real regression. Findings 27 through 29 resolve the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues from qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`, result `needs-review`).
+Findings 01 through 29 except post-v1 finding 25 are implementation-complete. Findings 30 through 36 are new, pending operational-reliability findings from a 2026-08-24/25 investigation into the qualification pipeline itself; see [Current active work](#current-active-work) below. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence, with source anchoring, ambiguity handling, boundary fixtures, Change Reviewer fidelity checks, and assembled-payload coverage. Finding 19 composes the complete maintained matrix behind one internal manual shell entry point with pinned-input preflight, isolated runner-owned scenario workspaces, exact managed-damage rules, bounded OpenCode prompts, interrupted reruns, and final summary semantics. Findings 22 and 23 repair the two failed semantic-path reporting scenarios from qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local`. Finding 24 removes the OpenCode 65,536-byte pipe truncation dependency by buffering session-list and export JSON through the repository-owned adapter. Finding 26 removes a hardcoded, edge-agnostic semantic-path-accounting gate that failed qualification run `20260821T100350003229Z-alpha14-to-alpha15-corrective-local` without being a real regression. Findings 27 through 29 resolve the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues from qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`, result `needs-review`).
 
 ## Qualification policy
 
@@ -57,7 +57,9 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Step 1 of 6 is active. Assemble a new exact candidate from the updated corrective-alpha release PR revision and rerun the complete qualification matrix.**
+**Step 1 of 6 is blocked. Resolve dogfood findings 30, 31, 32, and 34 (blockers) before assembling a new candidate and rerunning the complete qualification matrix.**
+
+A 2026-08-24/25 operational-reliability investigation into the qualification pipeline itself found it cannot currently complete a run reliably: the process tree is not resilient to the operator session dying, a dead run cannot resume already-passed scenarios, there is no pollable run-status artifact, and the maintained `complete-pending-inbox` fixture contains `.docx`/`.pptx` sources Inbox Ingester has no sanctioned way to read. These are findings 30, 31, 32, and 34 (`blocker`/next-prerelease). Findings 33, 35, and 36 (`required-v1`/release-candidate) record the related duration, provider-stall, and duplicate-run risks. See the [Alpha Dogfood Findings](dogfood/) index.
 
 The user has confirmed the generated corpus and all five image results. The exact visually accepted PNG bytes are pinned under the repository-only fixture, while generated vaults and execution evidence remain external.
 
