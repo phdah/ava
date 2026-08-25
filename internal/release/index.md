@@ -35,6 +35,7 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Release guidance sources](guidance/)
 - [Repository boundary validator](validate-boundaries.sh)
 - [Installer and conformance test runner](test.sh)
+- [Validation fixtures](fixtures/)
 - [Release implementation tests](tests/)
 - [Release implementation log](log.md)
 
