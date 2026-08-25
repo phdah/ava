@@ -8,13 +8,15 @@ Dogfooding remains active until the user explicitly declares it complete.
 
 A two-day operational-reliability investigation (2026-08-24 to 2026-08-25) into the release qualification pipeline itself — `qualification_automation.py`, `qualification_runner.py`, the `qualify-release.sh`/`qualify-synthetic.sh` flow, and the ad hoc operator monitoring pattern used around them — found that the pipeline was largely unworkable in practice over two consecutive days of attempts, independent of any content/fidelity finding. Findings 30-36 record the resulting operational-reliability findings and are all `pending`.
 
+**Finding 33 is next up.** Its keep/shrink/remove decision for `complete-pending-inbox` is upstream of findings 30-32 and 34: the outcome may shrink or eliminate the duration, resume, and monitoring pain those findings address, and may make finding 34's Office-reader tool unnecessary. Resolve it before continuing with 30, 31, 32, or 34.
+
+[Decide whether to keep, shrink, or remove the complete-pending-inbox qualification scenario](33-decide-keep-minimize-or-remove-complete-pending-inbox-scenario.md) is pending. The scenario now routinely takes 2+ hours, up from under 20 minutes before findings 27/28 tightened inbox fidelity. Rather than only documenting or bounding that cost, this finding evaluates whether the 305-source fixture batch should be kept as-is, shrunk to a smaller representative batch, or removed from the maintained matrix entirely.
+
 [Detach qualification automation's process tree from the operator session lifecycle](30-detach-qualification-process-tree-from-session.md) is pending. A run died silently mid-scenario when the operator's laptop closed, with no summary and no surviving process, because nothing detaches the process tree from the invoking session.
 
 [Let qualification automation resume a dead run's completed scenarios](31-enable-cross-invocation-qualification-run-resume.md) is pending. The runner already checkpoints completed scenarios per execution root, but the automation layer always creates a fresh execution root per invocation, so that resume capability is unreachable across separate `qualify-release.sh` invocations.
 
 [Add a pollable qualification run status artifact instead of a bounded-timeout monitoring loop](32-add-pollable-qualification-run-status-artifact.md) is pending. The operator-facing monitoring pattern was an ad hoc `while kill -0 <pid>; do sleep 300; done` loop bound by a tool timeout shorter than a full run, and the runner's pass/fail signal does not distinguish crashed, decision-required, and merely-slow states.
-
-[Investigate and document complete-pending-inbox duration inflation](33-investigate-complete-pending-inbox-duration-inflation.md) is pending. The scenario now routinely takes 2+ hours, up from under 20 minutes before findings 27/28 tightened inbox fidelity, which is the primary driver making the monitoring and resume gaps routine rather than rare.
 
 [Add a sanctioned deterministic Office-document reader tool for inbox ingestion](34-add-sanctioned-office-document-reader-tool.md) is pending. Finding 27's ad hoc code ban also removed the only mechanism for reading `.docx`/`.pptx` sources, and the maintained synthetic inbox fixture itself contains 9 such sources, so `complete-pending-inbox` currently cannot complete at all.
 
@@ -61,8 +63,8 @@ The dogfood umbrella remains active regardless of backlog state. New blockers pr
 ## Backlog status
 
 - 8 pending findings
-- 4 pending blockers
-- 3 pending required-v1 findings
+- 5 pending blockers
+- 2 pending required-v1 findings
 - 1 pending post-v1 finding
 - 28 completed findings
 
@@ -102,7 +104,7 @@ The dogfood umbrella remains active regardless of backlog state. New blockers pr
 | 30 | pending | blocker | next prerelease | [Detach qualification automation's process tree from the operator session lifecycle](30-detach-qualification-process-tree-from-session.md) |
 | 31 | pending | blocker | next prerelease | [Let qualification automation resume a dead run's completed scenarios](31-enable-cross-invocation-qualification-run-resume.md) |
 | 32 | pending | blocker | next prerelease | [Add a pollable qualification run status artifact instead of a bounded-timeout monitoring loop](32-add-pollable-qualification-run-status-artifact.md) |
-| 33 | pending | required-v1 | release candidate | [Investigate and document complete-pending-inbox duration inflation](33-investigate-complete-pending-inbox-duration-inflation.md) |
+| 33 | pending | blocker | next prerelease | [Decide whether to keep, shrink, or remove the complete-pending-inbox qualification scenario](33-decide-keep-minimize-or-remove-complete-pending-inbox-scenario.md) |
 | 34 | pending | blocker | next prerelease | [Add a sanctioned deterministic Office-document reader tool for inbox ingestion](34-add-sanctioned-office-document-reader-tool.md) |
 | 35 | pending | required-v1 | release candidate | [Detect and report sustained model-provider usage-limit stalls](35-classify-sustained-provider-usage-limit-stalls.md) |
 | 36 | pending | required-v1 | release candidate | [Guard against launching a duplicate concurrent qualification run](36-guard-against-duplicate-concurrent-qualification-runs.md) |

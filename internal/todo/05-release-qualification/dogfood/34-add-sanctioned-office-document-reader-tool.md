@@ -29,6 +29,8 @@ Run `20260825T063751637610Z-alpha14-to-alpha15-corrective-local`. The maintained
 
 `blocker` for the next prerelease: the maintained synthetic qualification matrix cannot mechanically pass `complete-pending-inbox` while it contains Office-format sources that Inbox Ingester has no sanctioned way to read. This directly blocks the next qualification run from reaching a clean runner result.
 
+This finding's necessity and exact scope depend on finding 33's keep/shrink/remove decision for `complete-pending-inbox`. If that scenario is removed, or shrunk in a way that drops `.docx`/`.pptx` coverage, this finding may become unnecessary. Resolve finding 33 first.
+
 ## Root cause
 
 Finding 27 correctly banned ad hoc script creation and execution as a bulk-content-transformation mechanism, but the pre-existing (now banned) script was also the only mechanism ever available for extracting text from binary `.docx`/`.pptx` containers. No deterministic, sanctioned Ava tool for that extraction exists. The role constraint and the missing capability were never reconciled: `templates/base/roles/inbox-ingester/capabilities.md` grants no read-office-document capability, and no repository or distributed tool provides one.
