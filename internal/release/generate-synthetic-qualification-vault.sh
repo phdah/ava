@@ -8,6 +8,7 @@ fi
 
 ROOT=$(CDPATH= cd "$(dirname "$0")/../.." && pwd)
 FIXTURE="$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py"
+MINIMIZER="$ROOT/internal/release/fixtures/synthetic-qualification-vault/minimize_inbox.py"
 TEMP_ROOT=${TMPDIR:-/tmp}
 
 if [ ! -d "$TEMP_ROOT" ]; then
@@ -23,5 +24,6 @@ python3 "$FIXTURE" install-pinned-images "$OUTPUT"
 python3 "$FIXTURE" finalize-images "$OUTPUT"
 python3 "$FIXTURE" verify "$OUTPUT"
 python3 "$FIXTURE" materialize-variants "$OUTPUT"
+python3 "$MINIMIZER" "$OUTPUT"
 
 printf 'synthetic qualification vault ready: %s\n' "$OUTPUT"
