@@ -7,8 +7,8 @@ generated:
   by: agent:opencode
   at: 2026-08-07T16:53:38+02:00
 updated:
-  by: agent:opencode
-  at: 2026-08-14T15:39:53+02:00
+  by: agent:openai-chatgpt
+  at: 2026-08-25T17:13:00+02:00
 ---
 
 # Synthetic V1 Qualification Vault Blueprint
@@ -29,7 +29,7 @@ corpus/
 `-- 04-settled/           # 2025-04-01 onward
 ```
 
-The managed `ingest-inbox` workflow processes direct inbox children, so copy the files from one batch directory rather than the `corpus/` tree itself. Dates and oracle metadata retain the six-month organization without relying on links, tags, aliases, or frontmatter. The complete-pending-inbox variant intentionally flattens all four batches into one direct inbox for its full-corpus scenario.
+The managed `ingest-inbox` workflow processes direct inbox children, so copy the files from one batch directory rather than the `corpus/` tree itself. Dates and oracle metadata retain the six-month organization without relying on links, tags, aliases, or frontmatter. The maintained complete-pending-inbox qualification variant uses an exact seven-source representative set selected from the finalized corpus: one source for each maintained text/document format (`md`, `txt`, `csv`, `docx`, `pdf`, `pptx`, `ics`) while jointly preserving `mapped`, `non-durable`, and `pending` section dispositions. Seven is the strict minimum because each source has one format and all seven formats must remain represented.
 
 ## Narrative
 
@@ -39,7 +39,7 @@ The interval is 2025-01-01 through 2025-06-30. Adam moves from the old apartment
 
 ## Fixed Inventory
 
-The deterministic baseline contains exactly 300 raw files. Finalization adds exactly five externally generated and repository-pinned images for a complete 305-file corpus.
+The deterministic baseline contains exactly 300 raw files. Finalization adds exactly five externally generated and repository-pinned images for a complete 305-file corpus. That complete corpus remains the immutable source fixture; only the live complete-pending-inbox qualification variant is minimized.
 
 | Structural class | Count |
 |---|---:|
@@ -72,7 +72,7 @@ The five image slots add five structurally decoded PNG files. They cover Uno, th
 
 The implementation uses the repository's Python 3.11-or-newer runtime contract and no third-party packages. The baseline does not embed the executing interpreter's patch version, and date selection uses SHA-256 ranking rather than runtime-dependent pseudorandom sampling. OOXML archives use stored entries, fixed timestamps, sorted paths, fixed document properties, and no library-generated identifiers. PDF object order, metadata, line wrapping, and timestamps are fixed. Text uses UTF-8, LF endings, and deterministic ordering.
 
-Generate and validate a finalized vault with all variants in one operation. The command retains a unique output under `/tmp` and prints its path:
+Generate and validate a finalized vault with all variants in one operation. The command retains a unique output under `/tmp`, minimizes the complete-pending-inbox variant, and prints its path:
 
 ```sh
 internal/release/generate-synthetic-qualification-vault.sh
@@ -110,6 +110,14 @@ Materialize all eight isolated qualification variant families after image finali
 python3 internal/release/fixtures/synthetic-qualification-vault/fixture.py materialize-variants /absolute/path/outside/ava/qualification-vault
 ```
 
+When using the individual lifecycle commands, finish the maintained complete-pending-inbox variant by applying the deterministic minimizer:
+
+```sh
+python3 internal/release/fixtures/synthetic-qualification-vault/minimize_inbox.py /absolute/path/outside/ava/qualification-vault
+```
+
+The minimizer records its exact selected source inventory in `variants/04-complete-pending-inbox/selection.json` and refreshes the variant inventory in `variants/index.json`.
+
 Validate a populated scenario run manifest before accepting its pass or fail result:
 
 ```sh
@@ -131,7 +139,7 @@ Variant construction never edits `corpus/`. It first verifies the finalized base
 1. an empty project
 2. a mature mixed private-and-work project with project-owned OpenCode configuration
 3. registered private and work roles
-4. the complete pending inbox corpus
+4. a representative pending inbox set with the exact seven-source format lower bound and all three section dispositions
 5. modified, missing, corrupt, and unexpected managed-content scenarios
 6. resume, abort, rollback, and finalize interrupted-upgrade checkpoints
 7. pending project-owned semantic reconciliation
