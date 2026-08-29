@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-25T20:02:00+02:00
+  at: 2026-08-29T11:50:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -24,15 +24,15 @@ updated:
 
 A new blocker preempts the next prerelease. A `required-v1` dogfood finding preempts the release gate named by its `blocks` field.
 
-Current ordering: findings 22 through 30 are implementation-complete, and finding 33 is also complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) ended `needs-review` on independent-audit findings in inbox ingestion. Findings 27 through 29 resolve the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues from that audit. Finding 30 resolves qualification process-tree ownership by making detached launch the standard operator path. Findings 31, 32, and 34 remain next-prerelease blockers, so Step 1 cannot yet rerun full qualification. Finding 25 is post-v1 and does not preempt this path.
+Current ordering: findings 22 through 29 are implementation-complete, finding 30 is complete as a no-op, and finding 33 is also complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) ended `needs-review` on independent-audit findings in inbox ingestion. Findings 27 through 29 resolve the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues from that audit. Finding 30 was closed without implementation after its proposed operator-session root cause was not established. Findings 31, 32, and 34 remain next-prerelease blockers, so Step 1 cannot yet rerun full qualification. Finding 25 is post-v1 and does not preempt this path.
 
 ## Step 1: finish the qualification system
 
 The synthetic fixture, pinned images, maintained 17-scenario runner, recovery checkpoints, session inventory, independent audit, compact evidence, explicit user acceptance, historical acceptance ledger, and release-PR merge gate are the qualification system.
 
-The core qualification-system implementation is complete. Step 1 remains open until findings 31, 32, and 34 are implementation-complete and a fresh complete matrix run against the updated corrective-alpha candidate reaches accepted qualification evidence. The run must use the repository-owned detached operator launcher and must not use the former external OpenCode large-JSON shim; findings 30 and 24 are part of the qualification implementation being exercised. The complete pending-inbox scenario retains one source for each maintained format and reports `structural-pass` with semantic status pending audit when deterministic checks succeed, so the independent audit remains the semantic gate rather than the runner overstating its evidence. Release-specific qualification remains mandatory inside every release flow in Step 2 and later release steps.
+The core qualification-system implementation is complete. Step 1 remains open until findings 31, 32, and 34 are implementation-complete and a fresh complete matrix run against the updated corrective-alpha candidate reaches accepted qualification evidence. The run must not use the former external OpenCode large-JSON shim; finding 24's repository-owned buffering is part of the qualification implementation being exercised. The complete pending-inbox scenario retains one source for each maintained format and reports `structural-pass` with semantic status pending audit when deterministic checks succeed, so the independent audit remains the semantic gate rather than the runner overstating its evidence. Release-specific qualification remains mandatory inside every release flow in Step 2 and later release steps.
 
-The immediate action is to resolve findings 31, 32, and 34. After those blockers are complete, assemble the exact corrective-alpha candidate from the updated clean release PR revision and launch the complete qualification operation through `qualify-release-detached.sh`. A `failed` or `needs-review` result must be corrected and rerun. A clean result must receive explicit user signoff before Step 1 advances.
+The immediate action is to resolve findings 31, 32, and 34. After those blockers are complete, assemble the exact corrective-alpha candidate from the updated clean release PR revision and run the complete qualification operation through the existing `qualify-release.sh` flow. A `failed` or `needs-review` result must be corrected and rerun. A clean result must receive explicit user signoff before Step 1 advances.
 
 ## Step 2: corrective alpha
 
@@ -43,7 +43,7 @@ Follow [Ava Release Publication Procedure](../../release/procedure.md):
 3. run deterministic validation/tests
 4. assemble the local candidate from the clean release PR revision
 5. configure published alpha.14 -> local corrective-alpha as the active qualification pair
-6. launch the mandatory qualification through `qualify-release-detached.sh`
+6. run `qualify-release.sh`
 7. fix and rerun any `failed` or `needs-review` result
 8. obtain explicit user approval when the result is `awaiting-user-signoff`
 9. record acceptance with `accept-release-qualification.sh` and commit the qualification state
