@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-29T12:56:00+02:00
+  at: 2026-08-29T13:20:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -89,7 +89,7 @@ Findings 22 and 23 repair the two failed semantic-path reporting scenarios from 
 
 Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review`: the independent audit found inbox ingestion promoted non-durable passages via an unauthorized ad hoc script, and that the runner's own pass criteria could not detect that class of defect. Findings 27, 28, and 29 record those issues. Findings 28 and 29 remain the desired semantic safeguards around rendered disposition reconciliation and structural-versus-semantic evidence.
 
-The user rejected Finding 27's mechanism-level restriction as inconsistent with Ava's purpose. Replacement Finding 34 is complete: Inbox Ingester may use available host-agent tools, scripts, code execution, document readers, or temporary helpers while remaining bound by authority, trust, provenance, semantic fidelity, source handling, and final-state requirements. Qualification no longer rejects a temporary helper merely because it was used, while Findings 28 and 29 remain intact. The original Office-reader Finding 34 and operational Findings 35 and 36 were removed from the backlog by explicit user decision.
+The user rejected Finding 27's mechanism-level restriction as inconsistent with Ava's purpose. Replacement Finding 34 is complete: it removes that restriction without adding replacement execution guidance, while Findings 28 and 29 remain intact. The original Office-reader Finding 34 and operational Findings 35 and 36 were removed from the backlog by explicit user decision.
 
 Findings 31 and 32 are also removed by explicit user decision after reassessing their motivation. Both were primarily mitigations for the old multi-hour qualification behavior amplified by the 305-source `complete-pending-inbox` scenario. Finding 33 reduced that live scenario to seven representative sources, substantially reducing the expected cost of restarting or monitoring a run. Rather than add resume and run-status machinery preemptively, the next real qualification run should establish whether any concrete reliability problem remains; if one does, record a new finding from observed behavior.
 
