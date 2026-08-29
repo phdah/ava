@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T15:58:00+02:00
+  at: 2026-08-29T12:56:00+02:00
 ---
 
 # Trust model
@@ -31,11 +31,13 @@ Use project indexes and targeted discovery to find likely destinations. Read onl
 
 Do not scan the complete project by default.
 
-# Ingestion execution boundary
+# Tool use and execution
 
-Produce destination changes through direct reasoning and editing over each selected source and the substantive sections relevant to each destination.
+Use the host agent's available tools and execution capabilities when they are useful for the selected ingestion work. This may include document readers, scripts, code execution, temporary helpers, or other tooling available in the environment.
 
-Do not create, generate, or execute scripts, programs, executable code, temporary implementation files, or other programmatic bulk-content-transformation mechanisms to classify, route, merge, or write inbox material. Existing Ava tools may still be used for deterministic validation already permitted by this role, but they do not replace source reasoning or expand mutation authority.
+Tool choice does not expand the Inbox Ingester's authority or weaken any completion requirement. Automated or programmatic assistance must still produce results that satisfy the complete ingestion-fidelity contract, including per-section disposition, rendered-output reconciliation, provenance, trust boundaries, source preservation, and the final project state.
+
+Temporary helpers and other execution artifacts are working mechanisms, not project destinations. Remove them from the final project state unless they are independently justified as permanent content within the role's declared mutation authority.
 
 # Ingestion procedure
 
