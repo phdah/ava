@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-29T12:56:00+02:00
+  at: 2026-08-29T13:20:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -27,7 +27,7 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 **Advance the corrective-alpha release PR, assemble its new exact candidate, and rerun full qualification.**
 
-Findings 22 through 30, 33, and 34 are implementation-complete, with Finding 30 complete as a no-op. Finding 34 restored normal agent tool freedom during Inbox Ingester work by removing Finding 27's mechanism-level ban on scripts, code execution, temporary helpers, and other available tools while preserving the semantic safeguards from Findings 28 and 29.
+Findings 22 through 30, 33, and 34 are implementation-complete, with Finding 30 complete as a no-op. Finding 34 removed Finding 27's mechanism-level ingestion restriction while preserving the semantic safeguards from Findings 28 and 29.
 
 There are no pending next-prerelease blockers and no pending `required-v1` dogfood findings. Finding 25 is post-v1 and does not block release progression. The next sequence is:
 
