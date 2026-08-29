@@ -3,7 +3,7 @@ type: Internal Development Task
 title: Restore Agent Tool Freedom During Inbox Ingestion
 description: Revert Finding 27's mechanism-level ban so Inbox Ingester may use available tools, scripts, temporary helpers, and other execution mechanisms as needed while remaining accountable for trusted boundaries, semantic fidelity, provenance, and the final project state.
 tags: [internal, roadmap, dogfood, inbox, tools, agents, qualification]
-status: pending
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 34
@@ -13,6 +13,9 @@ affected_version: 1.0.0-alpha.15
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-29T11:50:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-29T12:56:00+02:00
 ---
 
 # Restore Agent Tool Freedom During Inbox Ingestion
@@ -42,13 +45,19 @@ Findings 28 and 29 remain the semantic safeguards. They require correct per-pass
 
 ## Completion criteria
 
-- [ ] Inbox Ingester no longer prohibits scripts, code execution, temporary helpers, or other available agent tools merely because of the mechanism used
-- [ ] role instructions continue to constrain authority, trust, fidelity, provenance, source handling, and final project state rather than implementation technique
-- [ ] qualification no longer fails solely because the agent used a helper script or tool during ingestion
-- [ ] Findings 28 and 29 semantic protections remain intact
-- [ ] affected role documentation, qualification coverage, and indexes are aligned
-- [ ] repository test suite passes
+- [x] Inbox Ingester no longer prohibits scripts, code execution, temporary helpers, or other available agent tools merely because of the mechanism used
+- [x] role instructions continue to constrain authority, trust, fidelity, provenance, source handling, and final project state rather than implementation technique
+- [x] qualification no longer fails solely because the agent used a helper script or tool during ingestion
+- [x] Findings 28 and 29 semantic protections remain intact
+- [x] affected role documentation, qualification coverage, and indexes are aligned
+- [x] repository test suite passes
 
 ## Resolution evidence
 
-_Complete in the resolving implementation PR._
+- `templates/base/roles/inbox-ingester/{instructions,capabilities,constraints}.md` now explicitly permits host-agent tools, document readers, scripts, code execution, and temporary helpers while keeping permanent project mutations and final-state cleanup bounded by the existing role authority.
+- `templates/base/roles/inbox-ingester/log.md` records that this reverses only Finding 27's mechanism restriction. The rendered disposition-reconciliation requirement introduced by Finding 28 remains unchanged.
+- `internal/release/qualification_runner.py` removes the transient direct-project-root watcher and the inbox-specific `guard_project_root` path. Complete inbox qualification still requires processed-source preservation, provenance, structural fidelity, installed conformance, and audit-gated `structural-pass` semantics.
+- `internal/release/tests/test_qualification_runner.py` replaces the former transient-helper rejection regression with a regression proving that an OpenCode session may create and remove a temporary project-root helper without failing qualification, and pins the complete-inbox scenario's independent semantic-audit requirement.
+- `internal/release/qualification-runner.md` and the release implementation log now describe outcome-based inbox qualification rather than tool-mechanism policing.
+- The dogfood backlog and V1 release roadmap advance to assembling a new exact corrective-alpha candidate and rerunning the complete qualification flow. Finding 25 remains post-v1 and non-blocking.
+- The repository test suite passes with these changes before the implementation PR is considered complete.
