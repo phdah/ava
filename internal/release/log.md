@@ -4,7 +4,7 @@ This log records major conceptual and structural changes to Ava's internal relea
 
 ## 2026-08-29
 
-- **Outcome-based inbox qualification**: Removed the complete pending-inbox runner's transient project-root helper guard. Qualification continues to require exact processed-source preservation, trusted provenance, structural fidelity, conformance, `structural-pass`, and independent semantic audit, but no longer fails because the host agent used a script, temporary helper, document reader, or other execution mechanism during ingestion.
+- **Outcome-based inbox qualification**: Removed the complete pending-inbox runner's transient project-root guard. Qualification continues to require exact processed-source preservation, trusted provenance, structural fidelity, conformance, `structural-pass`, and independent semantic audit.
 
 ## 2026-08-24
 
