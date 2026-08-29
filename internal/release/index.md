@@ -18,7 +18,6 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Pull-request title validator](validate_pr_title.py)
 - [Alpha qualification policy](alpha-qualification.md)
 - [Hands-off release qualification procedure](qualification-automation.md)
-- [Detached qualification operator launcher](qualify-release-detached.sh)
 - [Hands-off qualification shell entry point](qualify-release.sh)
 - [Explicit qualification acceptance entry point](accept-release-qualification.sh)
 - [Qualification OpenCode session adapter](qualification-opencode.sh)

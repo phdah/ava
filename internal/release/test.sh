@@ -11,7 +11,6 @@ sh -n "$ROOT/internal/release/assemble-candidate.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
 sh -n "$ROOT/internal/release/qualify-synthetic.sh"
 sh -n "$ROOT/internal/release/qualify-release.sh"
-sh -n "$ROOT/internal/release/qualify-release-detached.sh"
 sh -n "$ROOT/internal/release/accept-release-qualification.sh"
 sh -n "$ROOT/internal/release/qualification-opencode.sh"
 python3 -m py_compile \
@@ -63,7 +62,6 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_qualification_checkpoints \
   internal.release.tests.test_qualification_runner \
   internal.release.tests.test_qualification_automation \
-  internal.release.tests.test_qualification_detached \
   internal.release.tests.test_qualification_execution_identity \
   internal.release.tests.test_qualification_opencode_adapter \
   internal.release.tests.test_assemble_candidate \
