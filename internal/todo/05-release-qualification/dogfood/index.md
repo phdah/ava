@@ -79,7 +79,7 @@ The dogfood umbrella remains active regardless of backlog state. New blockers pr
 | 13 | completed | blocker | next prerelease | [Clarify release semantic-impact assessment](13-clarify-release-semantic-impact-assessment.md) |
 | 14 | completed | blocker | next prerelease | [Repair Inbox Ingester project-root links](14-repair-inbox-ingester-project-root-links.md) |
 | 15 | completed | blocker | next prerelease | [Permit agent-driven upgrade finalization](15-permit-agent-driven-upgrade-finalization.md) |
-| 16 | completed | required-v1 | release candidate | [Preserve existing scoped history during ingestion](16-preserve-existing-scoped-history.md) |
+| 16 | completed | required-v1 | release candidate | [Preserve existing scoped history during ingestion](16-preserve-existing-scoped-history-during-ingestion.md) |
 | 17 | completed | required-v1 | release candidate | [Add deterministic resume and abort qualification checkpoints](17-add-resume-abort-qualification-checkpoints.md) |
 | 18 | completed | required-v1 | release candidate | [Verify relative calendar dates before persisting](18-verify-relative-calendar-dates.md) |
 | 19 | completed | required-v1 | release candidate | [Add one-command synthetic qualification runner](19-add-one-command-qualification-runner.md) |
