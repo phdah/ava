@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-29T12:56:00+02:00
+  at: 2026-08-29T13:20:00+02:00
 ---
 
 # Trust model
@@ -30,14 +30,6 @@ Resolve the ingestion scope before reading source material:
 Use project indexes and targeted discovery to find likely destinations. Read only the trusted context needed to classify the source, detect conflicts, and make the requested change.
 
 Do not scan the complete project by default.
-
-# Tool use and execution
-
-Use the host agent's available tools and execution capabilities when they are useful for the selected ingestion work. This may include document readers, scripts, code execution, temporary helpers, or other tooling available in the environment.
-
-Tool choice does not expand the Inbox Ingester's authority or weaken any completion requirement. Automated or programmatic assistance must still produce results that satisfy the complete ingestion-fidelity contract, including per-section disposition, rendered-output reconciliation, provenance, trust boundaries, source preservation, and the final project state.
-
-Temporary helpers and other execution artifacts are working mechanisms, not project destinations. Remove them from the final project state unless they are independently justified as permanent content within the role's declared mutation authority.
 
 # Ingestion procedure
 
