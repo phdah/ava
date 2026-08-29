@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-08-29
+
+- **Outcome-based inbox qualification**: Removed the complete pending-inbox runner's transient project-root helper guard. Qualification continues to require exact processed-source preservation, trusted provenance, structural fidelity, conformance, `structural-pass`, and independent semantic audit, but no longer fails because the host agent used a script, temporary helper, document reader, or other execution mechanism during ingestion.
+
 ## 2026-08-24
 
 - **Audit-gated structural qualification**: Evidence-only scenarios may now finish as `structural-pass` with semantic status pending independent audit instead of claiming a semantic `pass` the deterministic runner cannot prove. Complete pending-inbox qualification adds bounded non-oracle checks for exact processed-source preservation, trusted `sources:` traceability, metadata resource resolution, and claim-footnote consistency while leaving mapped/non-durable/pending meaning to the evaluator-only audit. `structural-pass` remains mechanically successful so the full matrix and audit can complete; the audit still determines `needs-review` versus `awaiting-user-signoff`.
