@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-29T12:35:00+02:00
+  at: 2026-08-29T13:20:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -24,15 +24,15 @@ updated:
 
 A new blocker preempts the next prerelease. A `required-v1` dogfood finding preempts the release gate named by its `blocks` field.
 
-Current ordering: Findings 22 through 29 are implementation-complete, Finding 30 is complete as a no-op, and Finding 33 is also complete. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` ended `needs-review` on independent-audit findings in inbox ingestion. Findings 27 through 29 record the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues from that audit. The user rejected Finding 27's mechanism-level tool/script prohibition, so replacement Finding 34 will reverse that restriction while preserving Findings 28 and 29. The original Findings 34, 35, and 36 are removed. Findings 31 and 32 are also removed after reassessment because they primarily mitigated the old multi-hour ingestion workload that Finding 33 has substantially reduced. Replacement Finding 34 is the sole next-prerelease blocker. Finding 25 is post-v1 and does not preempt this path.
+Current ordering: Findings 22 through 30, 33, and 34 are implementation-complete, with Finding 30 complete as a no-op. Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` ended `needs-review` on independent-audit findings in inbox ingestion. Findings 27 through 29 record the execution-scope, rendered disposition-reconciliation, and runner semantic-claim issues from that audit. Finding 34 supersedes Finding 27's mechanism-level restriction while preserving Findings 28 and 29. The original Findings 34, 35, and 36 are removed, and Findings 31 and 32 are also removed after reassessment because they primarily mitigated the old multi-hour ingestion workload that Finding 33 substantially reduced. There are no pending next-prerelease blockers. Finding 25 is post-v1 and does not preempt this path.
 
 ## Step 1: finish the qualification system
 
 The synthetic fixture, pinned images, maintained 17-scenario runner, recovery checkpoints, session inventory, independent audit, compact evidence, explicit user acceptance, historical acceptance ledger, and release-PR merge gate are the qualification system.
 
-The core qualification-system implementation is complete. Step 1 remains open until Finding 34 is implementation-complete and a fresh complete matrix run against the updated corrective-alpha candidate reaches accepted qualification evidence. Finding 34 restores normal host-agent tool freedom during Inbox Ingester work; the role should remain constrained by authority, trust, provenance, fidelity, and final-state requirements rather than by the execution mechanism it chooses. The run must not use the former external OpenCode large-JSON shim; Finding 24's repository-owned buffering is part of the qualification implementation being exercised. The complete pending-inbox scenario retains one source for each maintained format and reports `structural-pass` with semantic status pending audit when deterministic checks succeed, so the independent audit remains the semantic gate rather than the runner overstating its evidence. Release-specific qualification remains mandatory inside every release flow in Step 2 and later release steps.
+The core qualification-system implementation is complete, including Finding 34's removal of Finding 27's mechanism-level ingestion restriction without replacement execution guidance. The complete pending-inbox scenario still applies bounded structural checks and reports `structural-pass` with semantic status pending audit, so the independent audit remains the semantic gate rather than the runner overstating its evidence.
 
-The immediate action is to resolve Finding 34. After that blocker is complete, assemble the exact corrective-alpha candidate from the updated clean release PR revision and run the complete qualification operation through the existing `qualify-release.sh` flow. If that real run exposes a concrete reliability problem, record a new bounded finding from the observed behavior rather than preemptively restoring removed Findings 31 or 32. A `failed` or `needs-review` result must be corrected and rerun. A clean result must receive explicit user signoff before Step 1 advances.
+Step 1 remains open until a fresh complete matrix run against the updated corrective-alpha candidate reaches accepted qualification evidence. After this implementation reaches `main`, let release-please update the corrective-alpha release PR, assemble the exact candidate from that clean release PR revision, and run the complete qualification operation through the existing `qualify-release.sh` flow. The run must not use the former external OpenCode large-JSON shim; Finding 24's repository-owned buffering is part of the qualification implementation being exercised. If the real run exposes a concrete reliability or semantic problem, record a new bounded finding from observed behavior. A `failed` or `needs-review` result must be corrected and rerun. A clean result must receive explicit user signoff before Step 1 advances.
 
 ## Step 2: corrective alpha
 

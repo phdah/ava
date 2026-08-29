@@ -1,9 +1,9 @@
 ---
 type: Internal Development Task
-title: Restore Agent Tool Freedom During Inbox Ingestion
-description: Revert Finding 27's mechanism-level ban so Inbox Ingester may use available tools, scripts, temporary helpers, and other execution mechanisms as needed while remaining accountable for trusted boundaries, semantic fidelity, provenance, and the final project state.
-tags: [internal, roadmap, dogfood, inbox, tools, agents, qualification]
-status: pending
+title: Remove Inbox Ingestion Execution-Mechanism Restriction
+description: Revert Finding 27's mechanism-level restriction while preserving Inbox Ingester authority, trust boundaries, semantic fidelity, provenance, source handling, and qualification safeguards.
+tags: [internal, roadmap, dogfood, inbox, agents, qualification]
+status: completed
 phase: 5
 parent: 04-dogfood-alpha-and-track-findings
 order: 34
@@ -13,42 +13,52 @@ affected_version: 1.0.0-alpha.15
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-29T11:50:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-29T13:20:00+02:00
 ---
 
-# Restore Agent Tool Freedom During Inbox Ingestion
+# Remove Inbox Ingestion Execution-Mechanism Restriction
 
 ## Decision
 
-Finding 27 introduced an explicit prohibition on creating or executing scripts, programs, temporary implementation files, and other programmatic transformation mechanisms during inbox ingestion. That restriction is not aligned with Ava's intended responsibility.
+Finding 27 introduced an explicit mechanism-level restriction during inbox ingestion. That restriction is not aligned with Ava's intended responsibility.
 
-Ava should define the role's authority, trust boundaries, required outcomes, and semantic correctness. It should not prescribe which tools or execution mechanisms the host agent may use to accomplish the work. An agent may therefore use its available tools, scripts, code execution, document readers, or temporary helpers when they are useful.
+Ava should define the role's authority, trust boundaries, required outcomes, and semantic correctness rather than prescribe execution strategy. Removing Finding 27's restriction returns the role contract to those existing responsibilities without adding replacement execution guidance.
 
-The resulting ingestion must still satisfy all applicable role constraints and output requirements. Tool use does not permit fabricated content, unsafe instruction following, incorrect disposition, missing provenance, unrelated permanent project mutations, or any other behavior prohibited independently of the execution mechanism.
+The resulting ingestion must still satisfy all applicable role constraints and output requirements, including trust, disposition, provenance, source preservation, validation, and bounded mutation authority.
 
 ## Motivation
 
-The mechanism-level ban introduced by Finding 27 created a concrete problem: Inbox Ingester could no longer use available tooling to read formats such as `.docx` and `.pptx`, which then produced Finding 34's proposal for a special sanctioned Office reader. Adding format-specific exceptions or Ava-owned reader tooling is the wrong abstraction. The agent should be free to use the tools available in its host environment.
+Finding 27 addressed a real semantic-fidelity defect by constraining how ingestion could be performed. Findings 28 and 29 subsequently established the appropriate safeguards: correct per-passage disposition, rendered-output reconciliation, bounded structural evidence, and independent semantic audit.
 
-Findings 28 and 29 remain the semantic safeguards. They require correct per-passage disposition, rendered-output reconciliation, bounded structural evidence, and independent semantic audit. Those requirements should judge the result rather than the implementation technique used to produce it.
+Those requirements judge the result directly. The additional mechanism-level restriction is therefore unnecessary and belongs outside the role contract.
 
 ## Scope
 
-- remove the Inbox Ingester instruction and constraint language added by Finding 27 that prohibits scripts, generated code, temporary helper artifacts, code execution, or programmatic transformation as an ingestion mechanism
-- make it explicit, where useful, that Inbox Ingester may use the host agent's available tools and execution capabilities within its existing authority and trust boundaries
-- remove qualification checks and regression coverage whose only purpose is to fail ingestion because a temporary helper, script, or other tool-driven mechanism was used
-- preserve the semantic fidelity, disposition, provenance, source-preservation, trust, and final-state requirements established independently of Finding 27, especially Findings 28 and 29
-- keep permanent project mutations bounded to the role's declared destination and maintenance authority; allowing tools does not make unrelated helper artifacts valid final project content
+- remove the Inbox Ingester instruction and constraint language added by Finding 27 that prescribes ingestion execution strategy
+- add no replacement execution-mechanism guidance to the role
+- remove qualification checks and regression coverage whose only purpose is to enforce Finding 27's execution restriction
+- preserve the semantic fidelity, disposition, provenance, source-preservation, trust, validation, and final-state requirements established independently of Finding 27, especially Findings 28 and 29
+- keep permanent project mutations bounded to the role's declared destination and maintenance authority
 - record that this finding supersedes only Finding 27's execution-mechanism restriction, not the semantic defects that originally motivated Findings 28 and 29
 
 ## Completion criteria
 
-- [ ] Inbox Ingester no longer prohibits scripts, code execution, temporary helpers, or other available agent tools merely because of the mechanism used
-- [ ] role instructions continue to constrain authority, trust, fidelity, provenance, source handling, and final project state rather than implementation technique
-- [ ] qualification no longer fails solely because the agent used a helper script or tool during ingestion
-- [ ] Findings 28 and 29 semantic protections remain intact
-- [ ] affected role documentation, qualification coverage, and indexes are aligned
-- [ ] repository test suite passes
+- [x] Finding 27's execution-mechanism restriction is absent from Inbox Ingester instructions and constraints
+- [x] no replacement execution-mechanism guidance is added to the role contract
+- [x] role instructions continue to constrain authority, trust, fidelity, provenance, source handling, validation, and final project state
+- [x] qualification no longer enforces Finding 27's mechanism-level restriction
+- [x] Findings 28 and 29 semantic protections remain intact
+- [x] affected role documentation, qualification coverage, and indexes are aligned
+- [x] repository test suite passes
 
 ## Resolution evidence
 
-_Complete in the resolving implementation PR._
+- `templates/base/roles/inbox-ingester/instructions.md` and `constraints.md` remove the execution boundary introduced by Finding 27 without adding a replacement policy; `capabilities.md` remains unchanged.
+- `templates/base/roles/inbox-ingester/log.md` records that this reverses only Finding 27's mechanism restriction. The rendered disposition-reconciliation requirement introduced by Finding 28 remains unchanged.
+- `internal/release/qualification_runner.py` removes the transient direct-project-root watcher and the inbox-specific guard path. Complete inbox qualification still requires processed-source preservation, provenance, structural fidelity, installed conformance, and audit-gated `structural-pass` semantics.
+- `internal/release/tests/test_qualification_runner.py` removes the former execution-restriction regression and pins the complete-inbox scenario's independent semantic-audit requirement.
+- `internal/release/qualification-runner.md` and the release implementation log describe only the remaining outcome-based qualification requirements.
+- The dogfood backlog and V1 release roadmap advance to assembling a new exact corrective-alpha candidate and rerunning the complete qualification flow. Finding 25 remains post-v1 and non-blocking.
+- The repository test suite passes with these changes before the implementation PR is considered complete.

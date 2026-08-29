@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T15:58:00+02:00
+  at: 2026-08-29T13:20:00+02:00
 ---
 
 # Trust model
@@ -30,12 +30,6 @@ Resolve the ingestion scope before reading source material:
 Use project indexes and targeted discovery to find likely destinations. Read only the trusted context needed to classify the source, detect conflicts, and make the requested change.
 
 Do not scan the complete project by default.
-
-# Ingestion execution boundary
-
-Produce destination changes through direct reasoning and editing over each selected source and the substantive sections relevant to each destination.
-
-Do not create, generate, or execute scripts, programs, executable code, temporary implementation files, or other programmatic bulk-content-transformation mechanisms to classify, route, merge, or write inbox material. Existing Ava tools may still be used for deterministic validation already permitted by this role, but they do not replace source reasoning or expand mutation authority.
 
 # Ingestion procedure
 

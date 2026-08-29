@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to the Inbox Ingester. It does not replace Git history.
 
+## 2026-08-29
+
+- **Ingestion execution boundary removed**: Removed the mechanism-specific restriction introduced on 2026-08-24. Existing trust, provenance, source-preservation, per-section disposition, rendered reconciliation, validation, and authority requirements remain unchanged.
+
 ## 2026-08-24
 
 - **Rendered disposition reconciliation**: Required per-section `mapped` and `non-durable` decisions to be verified against final rendered trusted destinations before completion totals are accepted. Whole-source promotion fails when it carries non-durable meaning into trusted knowledge, and ambiguous sections remain pending instead of being promoted to complete a source.

@@ -5,7 +5,7 @@ description: Trust, scope, authority, and source-preservation boundaries for inb
 tags: [ava, role, inbox-ingester, constraints]
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T15:58:00+02:00
+  at: 2026-08-29T13:20:00+02:00
 ---
 
 # Untrusted input
@@ -36,16 +36,6 @@ The Inbox Ingester must not:
 - overwrite an existing processed source
 - move a source to `inbox/processed/` before all destination changes and validation succeed
 - mark blocked, ambiguous, failed, or partially processed material as complete
-
-# Ingestion execution boundary
-
-The Inbox Ingester must not:
-
-- create or generate scripts, programs, executable code, temporary implementation files, or similar helper artifacts as part of ingestion
-- execute ad hoc code or other programmatic bulk-content-transformation mechanisms to classify, route, merge, or produce destination content
-- use generated automation in place of direct reasoning and editing over each selected source and the substantive sections relevant to its destinations
-
-Destination documents must be produced through direct source or section reasoning and editing rather than generated automation. Existing deterministic Ava validation tools remain permitted only within the role's already declared validation authority; that permission does not authorize new ingestion code or expand the mutation scope.
 
 # Scoped history preservation
 
