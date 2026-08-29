@@ -41,13 +41,15 @@ Dogfooding intentionally remains open during steps 1 and 2. Explicit user closur
 
 Use the [Alpha Dogfood Findings](dogfood/) index.
 
-- 4 pending findings
-- 3 pending blockers
+- 2 pending findings
+- 1 pending blocker
 - 0 pending required-v1 findings
 - 1 pending post-v1 finding
 - 30 completed findings
 
-Findings 01 through 29 except post-v1 finding 25 are implementation-complete. Finding 30 is complete as a no-op after its proposed operator-session root cause was not established, and Finding 33 is also complete. The original findings 34, 35, and 36 were removed by explicit user decision. Replacement Finding 34 now targets the mechanism-level restriction introduced by Finding 27: Inbox Ingester should be free to use available tools, scripts, code execution, document readers, and temporary helpers while remaining bound by the semantic and authority requirements that govern its result. Findings 31, 32, and replacement 34 remain next-prerelease blockers. Finding 33 retains `complete-pending-inbox` while shrinking its live workload to the exact seven-source format lower bound. Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence, with source anchoring, ambiguity handling, boundary fixtures, Change Reviewer fidelity checks, and assembled-payload coverage. Finding 19 composes the complete maintained matrix behind one internal manual shell entry point with pinned-input preflight, isolated runner-owned scenario workspaces, exact managed-damage rules, bounded OpenCode prompts, interrupted reruns, and final summary semantics. Findings 22 and 23 repair the two failed semantic-path reporting scenarios from qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local`. Finding 24 removes the OpenCode 65,536-byte pipe truncation dependency by buffering session-list and export JSON through the repository-owned adapter. Finding 26 removes a hardcoded, edge-agnostic semantic-path-accounting gate that failed qualification run `20260821T100350003229Z-alpha14-to-alpha15-corrective-local` without being a real regression. Findings 27 through 29 record the execution-scope and semantic issues from qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`, result `needs-review`); replacement Finding 34 intentionally supersedes only Finding 27's mechanism restriction, while Findings 28 and 29 remain the desired semantic safeguards.
+Findings 01 through 29 except post-v1 Finding 25 are implementation-complete. Finding 30 is complete as a no-op after its proposed operator-session root cause was not established, and Finding 33 is also complete. The original Findings 34, 35, and 36 were removed by explicit user decision. Findings 31 and 32 are now also removed after reassessment: their resume and run-status work primarily mitigated the former multi-hour ingestion workload, while Finding 33 has reduced `complete-pending-inbox` from 305 live sources to seven representative sources. Replacement Finding 34 is the sole next-prerelease blocker and targets the mechanism-level restriction introduced by Finding 27: Inbox Ingester should be free to use available tools, scripts, code execution, document readers, and temporary helpers while remaining bound by the semantic and authority requirements governing its result.
+
+Finding 17 provides deterministic qualification-only setup states for authentic assembled-installer resume and abort execution. Finding 18 provides conditional deterministic calendar verification for relative-to-absolute persistence. Finding 19 composes the complete maintained matrix behind one internal manual shell entry point. Findings 22 and 23 repair semantic-path reporting scenarios. Finding 24 removes the OpenCode pipe truncation dependency. Finding 26 removes the hardcoded semantic-path-accounting gate. Findings 27 through 29 record the execution-scope and semantic issues from qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local`; replacement Finding 34 intentionally supersedes only Finding 27's mechanism restriction, while Findings 28 and 29 remain the desired semantic safeguards.
 
 ## Qualification policy
 
@@ -57,17 +59,17 @@ The dogfood umbrella remains pending until the user explicitly declares it compl
 
 ## Current active work
 
-**Step 1 of 6 is blocked. Resolve dogfood findings 31, 32, and 34 before assembling a new candidate and rerunning the complete qualification matrix.**
+**Step 1 of 6 is blocked only on dogfood Finding 34 before assembling a new candidate and rerunning the complete qualification matrix.**
 
-The remaining next-prerelease blockers are cross-invocation resume for a dead run (finding 31), a pollable run-status artifact (finding 32), and restoration of normal agent tool freedom during Inbox Ingester work (replacement finding 34). The original Office-reader finding and provider-stall/duplicate-run findings 34-36 are removed from the backlog by user decision. There are currently no pending `required-v1` dogfood findings. See the [Alpha Dogfood Findings](dogfood/) index.
+Findings 31 and 32 were removed because their operational-reliability scope was driven by the old multi-hour ingestion scenario. Finding 33 substantially reduced that workload, so the next real qualification run should establish whether any reliability issue still exists before additional resume or status machinery is added. The original Office-reader finding and provider-stall/duplicate-run Findings 34-36 are also removed from the backlog by user decision. There are currently no pending `required-v1` dogfood findings.
 
 The user has confirmed the generated corpus and all five image results. The exact visually accepted PNG bytes are pinned under the repository-only fixture, while generated vaults and execution evidence remain external.
 
-Qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local` passed 15 of 17 scenarios; findings 22, 23, and 24 resolved that run's failures. Qualification run `20260821T100350003229Z-alpha14-to-alpha15-corrective-local` then failed 2 of 17 scenarios on a hardcoded, edge-agnostic semantic-path-accounting gate that did not generalize across release edges; finding 26 removed that gate as a qualification-tooling defect rather than a real regression.
+Qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local` passed 15 of 17 scenarios; Findings 22, 23, and 24 resolved that run's failures. Qualification run `20260821T100350003229Z-alpha14-to-alpha15-corrective-local` then failed 2 of 17 scenarios on a hardcoded, edge-agnostic semantic-path-accounting gate that did not generalize across release edges; Finding 26 removed that gate as a qualification-tooling defect rather than a real regression.
 
 Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) then passed all 17 runner scenarios and all 286 repository tests, but the independent audit found two major issues and one minor issue in inbox ingestion, ending the run `needs-review`. Findings 27 through 29 are implementation-complete. Finding 34 will reverse the mechanism-level restriction from Finding 27 while preserving the disposition-fidelity and semantic-evidence protections from Findings 28 and 29. Every qualification run that did not reach accepted evidence remains unaccepted and must not be reused as qualification evidence for a later candidate.
 
-After findings 31, 32, and 34 are complete, assemble a new exact candidate for immutable published `v1.0.0-alpha.14` to caller-supplied local `v1.0.0-alpha.15`, then execute:
+After Finding 34 is complete, assemble a new exact candidate for immutable published `v1.0.0-alpha.14` to caller-supplied local `v1.0.0-alpha.15`, then execute:
 
 ```sh
 internal/release/qualify-release.sh \
