@@ -11,7 +11,7 @@ generated:
   at: 2026-08-03T18:13:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-29T11:50:00+02:00
+  at: 2026-08-29T12:20:00+02:00
 ---
 
 # Dogfood the Alpha and Track Findings
@@ -87,10 +87,10 @@ Finding 12 refined finding 07's unconditional no-bypass guarantee into conversat
 
 Findings 22 and 23 repair the two failed semantic-path reporting scenarios from qualification run `20260820T120651086179Z-alpha14-to-alpha15-corrective-local`. Finding 24 removes the need for that run's external OpenCode large-JSON shim by buffering session inventory and export JSON inside the maintained adapter. Finding 26 removes a hardcoded, edge-agnostic semantic-path-accounting gate that then failed qualification run `20260821T100350003229Z-alpha14-to-alpha15-corrective-local` without being a real regression.
 
-Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review`: the independent audit found inbox ingestion promoted non-durable passages via an unauthorized ad hoc script, and that the runner's own pass criteria could not detect that class of defect. Findings 27, 28, and 29 record those issues and are now implementation-complete. Finding 27 closes the ad hoc execution and transient direct-root gaps. Finding 28 requires rendered per-section disposition reconciliation. Finding 29 separates structural runner evidence from semantic audit evidence and adds bounded non-oracle source/metadata/footnote checks.
+Qualification run `20260824T122451984003Z-alpha14-to-alpha15-corrective-local` (candidate `77977f8`) passed all 17 runner scenarios and all repository tests but ended `needs-review`: the independent audit found inbox ingestion promoted non-durable passages via an unauthorized ad hoc script, and that the runner's own pass criteria could not detect that class of defect. Findings 27, 28, and 29 record those issues and are implementation-complete. Finding 27 introduced a mechanism-level prohibition on ad hoc scripts and tool-driven transformations. Findings 28 and 29 introduced the semantic safeguards around rendered disposition reconciliation and structural-versus-semantic evidence.
 
-A 2026-08-24/25 investigation into the qualification pipeline's own operational reliability recorded findings 30 through 36. Finding 30 is closed as a no-op because the available evidence did not establish operator-session termination as the actual failure cause, and detaching a local process would not address a computer shutdown. Finding 33 is complete: `complete-pending-inbox` remains in the matrix but its live workload is deterministically reduced to the seven-source format lower bound.
+The user has now rejected Finding 27's mechanism-level restriction as inconsistent with Ava's purpose. The replacement Finding 34 will restore the agent's freedom to use available tools, scripts, code execution, document readers, or temporary helpers while retaining the independent semantic requirements from Findings 28 and 29. The original Office-reader Finding 34 and operational Findings 35 and 36 are removed from the backlog by explicit user decision.
 
-The remaining next-prerelease blockers are findings 31, 32, and 34: a dead qualification run cannot yet resume already-passed scenarios across invocations, there is no pollable run-status artifact, and Inbox Ingester has no sanctioned deterministic reader for the retained `.docx` and `.pptx` sources. Findings 35 and 36 record related provider-stall and duplicate-run risks as `required-v1`/release-candidate work.
+The remaining next-prerelease blockers are findings 31, 32, and the replacement 34: a dead qualification run cannot yet resume already-passed scenarios across invocations, there is no pollable run-status artifact, and Inbox Ingester currently prohibits tool/script mechanisms that the agent should be free to use. There are no remaining pending `required-v1` findings from the removed 35/36 work.
 
 The next action is to resolve findings 31, 32, and 34, then let release-please update the corrective-alpha PR, assemble a new exact candidate from that clean release PR revision, rerun the complete matrix through the existing qualification flow, and obtain fresh qualification signoff. Finding 25 is post-v1 and does not block release progression. After the corrective alpha passes, the next gate is the explicit user-owned dogfood closure before RC publication.
