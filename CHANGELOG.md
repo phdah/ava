@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.0.0-alpha.15](https://github.com/phdah/ava/compare/v1.0.0-alpha.14...v1.0.0-alpha.15) (2026-08-29)
+
+
+### Features
+
+* shrink complete-pending-inbox qualification fixture ([#105](https://github.com/phdah/ava/issues/105)) ([39bcf33](https://github.com/phdah/ava/commit/39bcf33322b8768fe6b4ae69721c690ccef49227))
+
+
+### Bug Fixes
+
+* buffer large OpenCode qualification JSON ([#100](https://github.com/phdah/ava/issues/100)) ([a8db2ca](https://github.com/phdah/ava/commit/a8db2ca731931cb3af1eefd636e2778d3aa319af))
+* close qualification audit findings ([#97](https://github.com/phdah/ava/issues/97)) ([ca07c95](https://github.com/phdah/ava/commit/ca07c951f2eea3c31cc22019bebd76cf26af1937))
+* preserve scoped history during inbox ingestion ([#92](https://github.com/phdah/ava/issues/92)) ([b13e32c](https://github.com/phdah/ava/commit/b13e32cfc11335dfa124fc6ef8f42576c5bd1635))
+* prohibit ad hoc code during inbox ingestion ([#102](https://github.com/phdah/ava/issues/102)) ([192e668](https://github.com/phdah/ava/commit/192e668b24ed6b4e1b5f052b676c777bade2d6f4))
+* **qualification:** validate model identifiers by structure, not literal name ([e6edce9](https://github.com/phdah/ava/commit/e6edce954bedc60868907d86ad1e7519a7a74130))
+* **release:** remove hardcoded semantic-inspection-path gate ([0505b7a](https://github.com/phdah/ava/commit/0505b7a5794fdb9c8b77dbe1dc2e4e9ed65ec233))
+* remove inbox ingestion execution restriction ([#109](https://github.com/phdah/ava/issues/109)) ([20ccc4b](https://github.com/phdah/ava/commit/20ccc4b8a7d013c6d3f7226a0f48c39b013720fe))
+* repair Inbox Ingester project-root links ([#88](https://github.com/phdah/ava/issues/88)) ([4ddbbfc](https://github.com/phdah/ava/commit/4ddbbfc30f8bdd1d99818ca19b7e045293f2b652))
+* report semantic inspection paths during terminal cleanup ([#98](https://github.com/phdah/ava/issues/98)) ([87a7e8c](https://github.com/phdah/ava/commit/87a7e8ca092bb84f422bc18978260cd468fbbc34))
+* report semantic inspections during reconciliation ([#99](https://github.com/phdah/ava/issues/99)) ([61d3a83](https://github.com/phdah/ava/commit/61d3a8370c1f0eb29f9bc812d1b274059fa13255))
+* require reconciled inbox disposition evidence ([#103](https://github.com/phdah/ava/issues/103)) ([3f1bdef](https://github.com/phdah/ava/commit/3f1bdef7222a9fd26751f90d7cbce273f78a3204))
+* **upgrades:** permit agent-driven finalization ([#90](https://github.com/phdah/ava/issues/90)) ([8df64b6](https://github.com/phdah/ava/commit/8df64b62d46c120647bb4170aa14a516fddbd24a))
+* **upgrades:** recover interrupted terminal cleanup ([8ab49b8](https://github.com/phdah/ava/commit/8ab49b89f52252c573f145b5bde77d22ed1307e9))
+* **upgrades:** remove complete finalized transaction ([16fd8ee](https://github.com/phdah/ava/commit/16fd8ee47372b49615b0667d81d89f388d546331))
+* **upgrades:** validate terminal cleanup recovery ([c861828](https://github.com/phdah/ava/commit/c86182873e3d322fa8ffffae3fea53d53ba6557c))
+* verify relative calendar dates before persisting ([#94](https://github.com/phdah/ava/issues/94)) ([ee10119](https://github.com/phdah/ava/commit/ee1011931025df4a23babb8f63d683c5ceff6291))
+
 ## [1.0.0-alpha.14](https://github.com/phdah/ava/compare/v1.0.0-alpha.13...v1.0.0-alpha.14) (2026-08-10)
 
 
