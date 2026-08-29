@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T15:15:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-29T12:35:00+02:00
+  at: 2026-08-29T12:56:00+02:00
 ---
 
 # Ava Internal To-Do List
@@ -25,20 +25,19 @@ Use the [ordered roadmap](todo/index.md) for broad phase navigation. Use the [V1
 
 ## Official next action
 
-**Resolve dogfood Finding 34 (blocker), before rerunning full qualification.**
+**Advance the corrective-alpha release PR, assemble its new exact candidate, and rerun full qualification.**
 
-Findings 22 through 29 are implementation-complete. Finding 30 is complete as a no-op because its detached-session root-cause diagnosis was not established. Finding 33 is complete: `complete-pending-inbox` was reduced from 305 live sources to the exact seven-source format lower bound while preserving all maintained formats and disposition classes.
+Findings 22 through 30, 33, and 34 are implementation-complete, with Finding 30 complete as a no-op. Finding 34 restored normal agent tool freedom during Inbox Ingester work by removing Finding 27's mechanism-level ban on scripts, code execution, temporary helpers, and other available tools while preserving the semantic safeguards from Findings 28 and 29.
 
-The 2026-08-24/25 operational-reliability investigation originally recorded Findings 30 through 36. By explicit user decision, the original Findings 34, 35, and 36 were removed, and Findings 31 and 32 are now also removed after reassessment. Their resume and run-status work was motivated primarily by the former multi-hour ingestion workload; after Finding 33's substantial shrink, they no longer justify prerelease blockers. If a future qualification run demonstrates a concrete reliability problem, record a new finding from that observed behavior.
+There are no pending next-prerelease blockers and no pending `required-v1` dogfood findings. Finding 25 is post-v1 and does not block release progression. The next sequence is:
 
-Replacement Finding 34 remains the sole next-prerelease blocker. It restores normal agent tool freedom during Inbox Ingester work by reverting Finding 27's mechanism-level ban on scripts, code execution, temporary helpers, and other available tools while preserving the semantic safeguards from Findings 28 and 29. The next sequence is:
+1. let release-please update the corrective-alpha release PR with the merged Finding 34 implementation
+2. complete any release-PR semantic-impact assessment required by the resulting exact revision
+3. assemble a new exact candidate from that clean corrective-alpha release PR revision
+4. rerun the complete qualification matrix through the normal repository-owned OpenCode adapter and obtain explicit user signoff
+5. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
 
-1. resolve dogfood Finding 34 (see [Alpha Dogfood Findings](todo/05-release-qualification/dogfood/))
-2. assemble a new exact candidate from the updated corrective-alpha release PR revision
-3. rerun the complete qualification matrix through the normal repository-owned OpenCode adapter and obtain explicit user signoff
-4. continue to the [corrective-alpha release task](todo/05-release-qualification/04b-qualify-and-publish-corrective-alpha.md)
-
-[Finding 25](todo/05-release-qualification/dogfood/25-offer-qualification-failure-todo-tracking.md) is post-v1 and does not block release progression. There are no pending `required-v1` dogfood findings.
+The 2026-08-24/25 operational-reliability investigation originally recorded Findings 30 through 36. By explicit user decision, the original Findings 34, 35, and 36 were removed, and Findings 31 and 32 were also removed after reassessment. Their resume and run-status work was motivated primarily by the former multi-hour ingestion workload; after Finding 33's substantial shrink, they no longer justify prerelease blockers. If a future qualification run demonstrates a concrete reliability problem, record a new finding from that observed behavior.
 
 Do not publish or merge a new release without accepted qualification state. Do not begin release-candidate publication before the user explicitly closes alpha dogfooding.
 
