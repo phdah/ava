@@ -4,7 +4,7 @@ This log records major conceptual and structural changes to the Inbox Ingester. 
 
 ## 2026-08-29
 
-- **Agent tool freedom**: Restored freedom to use host-agent tools, scripts, code execution, document readers, temporary helpers, and other execution mechanisms during ingestion. Tool choice does not expand mutation authority or weaken trust, provenance, source-preservation, per-section disposition, rendered reconciliation, or final-state requirements. This reverses only the mechanism-level restriction recorded on 2026-08-24; rendered disposition reconciliation remains required.
+- **Ingestion execution boundary removed**: Removed the mechanism-specific restriction introduced on 2026-08-24. Existing trust, provenance, source-preservation, per-section disposition, rendered reconciliation, validation, and authority requirements remain unchanged.
 
 ## 2026-08-24
 
