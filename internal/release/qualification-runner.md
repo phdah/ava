@@ -8,7 +8,7 @@ generated:
   at: 2026-08-14T12:48:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-29T12:56:00+02:00
+  at: 2026-08-29T13:20:00+02:00
 ---
 
 # Purpose
@@ -115,7 +115,7 @@ Resume and abort use `checkpoint.py` to create authentic transaction states and 
 
 OpenCode is invoked only for the exact scenario prompt in its isolated copied project. The runner never passes a global auto-approval flag. If required semantic work remains partial or blocked, the outcome is `user-decision-required` and the complete run exits nonzero.
 
-For complete pending-inbox ingestion, the runner snapshots every selected direct inbox source before ingestion and then checks deterministic fidelity after the session: every selected source must be preserved exactly once under `inbox/processed/`, preserved sources must remain traceable from trusted `sources:` metadata, metadata resources must resolve to the preserved source, and every used claim footnote must have a matching source id, one renderable definition, and a link resolving to the same preserved source. The runner does not inspect or restrict which host-agent tools, scripts, temporary helpers, document readers, or execution mechanisms are used to produce that result.
+For complete pending-inbox ingestion, the runner snapshots every selected direct inbox source before ingestion and then checks deterministic fidelity after the session: every selected source must be preserved exactly once under `inbox/processed/`, preserved sources must remain traceable from trusted `sources:` metadata, metadata resources must resolve to the preserved source, and every used claim footnote must have a matching source id, one renderable definition, and a link resolving to the same preserved source.
 
 These deterministic checks do not judge whether mapped meaning was preserved or whether `non-durable` or `pending` material was handled semantically correctly. The runner has no access to the evaluator-only oracle. The complete pending-inbox scenario therefore ends as `structural-pass` with `semantic_status: pending-audit` when its deterministic checks succeed. Its semantic result remains owned by the independent audit.
 
