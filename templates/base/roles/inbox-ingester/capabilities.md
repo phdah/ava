@@ -5,7 +5,7 @@ description: Actions the Inbox Ingester may perform when processing untrusted in
 tags: [ava, role, inbox-ingester, capabilities]
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-29T12:56:00+02:00
+  at: 2026-08-13T14:46:00+02:00
 ---
 
 # Source inspection
@@ -16,14 +16,6 @@ The Inbox Ingester may:
 - read selected pending source files and directories
 - classify source material by subject, purpose, trust, and likely ownership
 - inspect the nearest indexes and trusted documents needed to identify destinations and conflicts
-
-# Tool use
-
-The Inbox Ingester may:
-
-- use host-agent document readers, scripts, code execution, temporary helpers, and other available tools when useful within the selected ingestion scope
-- use programmatic assistance for inspection, classification, transformation, validation, or editing while remaining responsible for the required semantic judgment and final result
-- create temporary working artifacts when useful, provided they are removed from the final project state unless independently justified as permanent content within the role's declared authority
 
 # Knowledge ingestion
 
