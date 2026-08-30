@@ -3,13 +3,16 @@ type: Internal Development Task
 title: Isolate Qualification Session Inventory
 description: Ensure each qualification run inventories only OpenCode sessions created for that exact run and cannot absorb historical qualification sessions.
 tags: [internal, roadmap, release, qualification, opencode, sessions, evidence, reliability]
-status: pending
+status: complete
 phase: 5
 parent: 04c-automate-release-qualification-evidence
 order: 4.5
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-30T14:00:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-30T16:00:00+02:00
 ---
 
 # Isolate Qualification Session Inventory
@@ -22,7 +25,7 @@ Historical OpenCode sessions must be allowed to remain on the host. Correct qual
 
 ## Current failure mode
 
-The qualification automation already snapshots OpenCode sessions before and after execution and computes newly created session IDs. However, session IDs recovered from runner command output can currently enter the relevant-session set without being constrained to the current run's newly created session boundary. A historical session referenced in output can therefore be incorrectly included and later bound to a current scenario.
+The qualification automation already snapshots OpenCode sessions before and after execution and computes newly created session IDs. However, session IDs recovered from runner command output could previously enter the relevant-session set without being constrained to the current run's newly created session boundary. A historical session referenced in output could therefore be incorrectly included and later bound to a current scenario.
 
 ## Approved direction
 
@@ -35,21 +38,29 @@ Make the exact qualification operation the authoritative inventory boundary:
 - historical sessions must never become current-run evidence merely because their IDs or content appear in current command output
 - do not require global OpenCode session deletion, pre-run cleanup, or destructive database maintenance
 
-## Implementation considerations
+## Implementation
 
-Review `build_session_inventory()` and `runner_prompt_map()` in `internal/release/qualification_automation.py`. Preserve the useful before/after snapshot model, but make the relationship between `new_ids`, direct runner-discovered sessions, descendants, scenario binding, and execution-root membership explicit and testable.
+The completed implementation makes the before/after session delta authoritative:
 
-Prefer a simple invariant over cleanup logic: the current run owns a closed set of newly created sessions, and all evidence capture is derived from that set.
+- `build_session_inventory()` derives the owned candidate set exclusively from session IDs absent from the before-snapshot and present after the run
+- only newly created top-level sessions can seed the inventory, using current runner output or execution-root membership as binding evidence
+- nested sessions are added only through descendant closure over the same newly created ID set
+- historical IDs parsed from `runner-commands.jsonl` remain useful scenario/prompt hints but cannot enter the inventory unless they are also new for the current operation
+- every inventoried session must resolve its project root inside the exact current execution root before evidence is accepted
+- every inventoried session must bind to a maintained scenario, directly, through a current-run ancestor, or through its execution-root path
+- a child whose current-run parent is absent from the final inventory is rejected rather than silently producing incomplete evidence
+
+No OpenCode session cleanup or deletion is introduced.
 
 ## Regression coverage
 
-Add a regression fixture that deliberately includes historical OpenCode sessions before qualification starts, including sessions that resemble qualification sessions or whose IDs appear in preserved command output. Verify that:
+Regression tests now deliberately preserve historical OpenCode sessions and stale session IDs while executing consecutive synthetic runs. They verify that:
 
-- none of those historical sessions appear in the new run inventory
-- all current top-level scenario sessions are present
-- all current nested child sessions are present
-- every inventory entry binds to the correct current scenario
-- repeated qualification runs can execute on the same host without cleanup and still produce disjoint inventories
+- historical sessions are never exported or included even when their IDs appear in current runner output
+- current top-level sessions and nested child sessions are present
+- current sessions bind to the maintained scenario
+- consecutive runs on the same host produce disjoint inventories without cleanup
+- a newly created session whose project root lies outside the current execution is rejected
 
 ## Completion criteria
 
@@ -59,3 +70,7 @@ Add a regression fixture that deliberately includes historical OpenCode sessions
 - no cleanup step is required before qualification
 - regression tests prove consecutive runs produce independent inventories
 - the independent audit receives only evidence belonging to the run it is evaluating
+
+## Completion
+
+Complete. Qualification session evidence is now derived from a closed set of sessions created by the current operation, with descendant and execution-root checks preventing historical-session contamination.

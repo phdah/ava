@@ -279,6 +279,117 @@ class QualificationAutomationTests(unittest.TestCase):
         self.assertEqual(child["parent_session_id"], "ses_root123")
         self.assertEqual(child["scenario"], "calendar-check")
 
+    def test_session_inventory_excludes_historical_ids_across_consecutive_runs(self) -> None:
+        historical_project = self.root / "historical-project"
+        historical_project.mkdir()
+        all_sessions = [
+            {"id": "ses_historical", "directory": str(historical_project)},
+            {
+                "id": "ses_historicalchild",
+                "parentID": "ses_historical",
+                "directory": str(historical_project),
+            },
+        ]
+        inventories: list[set[str]] = []
+
+        for run_number in (1, 2):
+            execution = self.root / f"execution-{run_number}"
+            scenario = execution / "scenarios/calendar-check"
+            project = scenario / "project"
+            project.mkdir(parents=True)
+            top = f"ses_current{run_number}"
+            child = f"ses_child{run_number}"
+            prompt = f"Qualification prompt {run_number}"
+            (scenario / "runner-commands.jsonl").write_text(
+                json.dumps(
+                    {
+                        "label": "OpenCode prompt",
+                        "command": ["opencode", "run", prompt],
+                        "returncode": 0,
+                        "stdout": f"current={top} stale=ses_historical",
+                        "stderr": "",
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            before = list(all_sessions)
+            current = [
+                {"id": top, "directory": str(project)},
+                {"id": child, "parentID": top, "directory": str(project)},
+            ]
+            after = [*before, *current]
+            exports = {
+                top: {"messages": [{"role": "user", "parts": [{"text": prompt}]}]},
+                child: {
+                    "messages": [
+                        {"role": "user", "parts": [{"text": "Inspect current-run evidence."}]}
+                    ],
+                    "providerID": "openai",
+                    "modelID": "gpt-5.6-sol",
+                },
+            }
+
+            def fake(args, **kwargs):
+                self.assertEqual(args[:2], ["opencode", "export"])
+                self.assertIn(args[2], exports)
+                return automation.CommandResult(0, json.dumps(exports[args[2]]), "")
+
+            inventory = automation.build_session_inventory(
+                before=before,
+                after=after,
+                execution_root=execution,
+                opencode="opencode",
+                configured_model="openai/gpt-5.6-sol",
+                command_runner=fake,
+            )
+            inventory_ids = {item["session_id"] for item in inventory["sessions"]}
+            self.assertEqual(inventory_ids, {top, child})
+            self.assertEqual({item["scenario"] for item in inventory["sessions"]}, {"calendar-check"})
+            inventories.append(inventory_ids)
+            all_sessions = after
+
+        self.assertTrue(inventories[0].isdisjoint(inventories[1]))
+
+    def test_session_inventory_rejects_project_root_outside_current_execution(self) -> None:
+        execution = self.root / "execution-outside"
+        scenario = execution / "scenarios/calendar-check"
+        scenario.mkdir(parents=True)
+        external_project = self.root / "external-project"
+        external_project.mkdir()
+        prompt = "Inspect the current qualification execution."
+        (scenario / "runner-commands.jsonl").write_text(
+            json.dumps(
+                {
+                    "label": "OpenCode prompt",
+                    "command": ["opencode", "run", prompt],
+                    "returncode": 0,
+                    "stdout": '{"sessionID":"ses_outside123"}',
+                    "stderr": "",
+                }
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        after = [{"id": "ses_outside123", "directory": str(external_project)}]
+
+        def fake(args, **kwargs):
+            return automation.CommandResult(
+                0,
+                json.dumps({"messages": [{"role": "user", "parts": [{"text": prompt}]}]}),
+                "",
+            )
+
+        with self.assertRaisesRegex(automation.AutomationError, "outside qualification execution root"):
+            automation.build_session_inventory(
+                before=[],
+                after=after,
+                execution_root=execution,
+                opencode="opencode",
+                configured_model="openai/gpt-5.6-sol",
+                command_runner=fake,
+            )
+
     def test_audit_schema_and_severity_gate_are_deterministic(self) -> None:
         schema = automation.load_json(automation.SCHEMA_ROOT / "audit-output.schema.json")
         clean = {

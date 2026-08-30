@@ -8,7 +8,7 @@ generated:
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T17:23:00+02:00
+  at: 2026-08-30T16:00:00+02:00
 ---
 
 # Purpose
@@ -60,6 +60,8 @@ The run identity binds the release assets, fixture, images, matrix, repository r
 `qualify-release.sh` uses the maintained `qualification-opencode.sh` adapter. For session inventory, the adapter translates `session list --format json` to the required OpenCode database query. The adapter also handles session `export` capture.
 
 OpenCode environments affected by the 65,536-byte stdout-pipe truncation must not require an external wrapper. For both the session-list database query and `opencode export`, the maintained adapter first lets the real OpenCode process write JSON to a temporary regular file and then re-emits those bytes to qualification automation. Python-side parsing remains the JSON validation boundary.
+
+Session inventory is exact-run isolated. Qualification snapshots OpenCode sessions immediately before and after the runner, and only IDs newly created across that boundary can become current-run evidence. Runner stdout/stderr session IDs are binding hints only. A top-level session must belong to the current execution, nested sessions are admitted only through descendants of already-owned current-run sessions, and every inventoried project root must resolve inside the exact current execution root and bind to a maintained scenario. Historical host sessions may remain indefinitely without cleanup and cannot enter a later run merely because their IDs appear in preserved output.
 
 `AVA_QUALIFICATION_OPENCODE` may still select the real OpenCode executable when needed, but normal qualification does not require a large-JSON shim.
 

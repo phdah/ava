@@ -773,24 +773,34 @@ def build_session_inventory(
     after_by_id = {_session_id(item): item for item in after if _session_id(item)}
     new_ids = set(after_by_id) - before_ids
     direct_scenario, direct_prompt = runner_prompt_map(execution_root)
+    execution_root_resolved = execution_root.resolve()
 
-    relevant: set[str] = set(direct_scenario)
+    relevant: set[str] = set()
     for session_id in new_ids:
         item = after_by_id[session_id]
+        if _parent_id(item) is not None:
+            continue
+        belongs_to_execution = session_id in direct_scenario
         directory = _directory(item)
         if directory:
             try:
-                if Path(directory).expanduser().resolve().is_relative_to(execution_root.resolve()):
-                    relevant.add(session_id)
+                belongs_to_execution = belongs_to_execution or Path(directory).expanduser().resolve().is_relative_to(
+                    execution_root_resolved
+                )
             except OSError:
                 pass
+        if belongs_to_execution:
+            relevant.add(session_id)
 
     changed = True
     while changed:
         changed = False
-        for session_id, item in after_by_id.items():
+        for session_id in new_ids:
+            if session_id in relevant:
+                continue
+            item = after_by_id[session_id]
             parent = _parent_id(item)
-            if parent in relevant and session_id not in relevant:
+            if parent in relevant:
                 relevant.add(session_id)
                 changed = True
 
@@ -811,7 +821,7 @@ def build_session_inventory(
 
     records: list[dict[str, Any]] = []
     for session_id in sorted(relevant):
-        item = after_by_id.get(session_id, {})
+        item = after_by_id[session_id]
         parent = _parent_id(item)
         scenario = direct_scenario.get(session_id)
         ancestor = parent
@@ -820,16 +830,6 @@ def build_session_inventory(
             seen.add(ancestor)
             scenario = direct_scenario.get(ancestor)
             ancestor = _parent_id(after_by_id.get(ancestor, {}))
-        if scenario is None:
-            directory = _directory(item)
-            if directory:
-                resolved = Path(directory).expanduser().resolve()
-                for scenario_dir in (execution_root / "scenarios").iterdir():
-                    if scenario_dir.is_dir() and resolved.is_relative_to(scenario_dir.resolve()):
-                        scenario = scenario_dir.name
-                        break
-        if scenario is None:
-            raise AutomationError(f"cannot bind OpenCode session {session_id} to a qualification scenario")
 
         prompt = direct_prompt.get(session_id) or _first_user_prompt(exports[session_id])
         if not prompt:
@@ -838,9 +838,26 @@ def build_session_inventory(
         directory = _directory(item)
         if not directory:
             strings = _collect_strings(exports[session_id])
-            directory = next((value for value in strings if value.startswith("/") and Path(value).is_absolute()), None)
+            directory = next(
+                (value for value in strings if value.startswith("/") and Path(value).is_absolute()),
+                None,
+            )
         if not directory:
             raise AutomationError(f"cannot recover project root for OpenCode session {session_id}")
+        resolved_directory = Path(directory).expanduser().resolve()
+        if not resolved_directory.is_relative_to(execution_root_resolved):
+            raise AutomationError(
+                f"OpenCode session {session_id} project root is outside qualification execution root"
+            )
+
+        if scenario is None:
+            for scenario_dir in (execution_root / "scenarios").iterdir():
+                if scenario_dir.is_dir() and resolved_directory.is_relative_to(scenario_dir.resolve()):
+                    scenario = scenario_dir.name
+                    break
+        if scenario is None:
+            raise AutomationError(f"cannot bind OpenCode session {session_id} to a qualification scenario")
+
         records.append(
             {
                 "session_id": session_id,
@@ -848,7 +865,7 @@ def build_session_inventory(
                 "scenario": scenario,
                 "prompt_sha256": sha256_text(prompt),
                 "model": model,
-                "project_root": str(Path(directory).expanduser().resolve()),
+                "project_root": str(resolved_directory),
                 "transcript_sha256": sha256_text(export_text[session_id]),
                 "terminal_state": "completed",
             }
@@ -857,8 +874,8 @@ def build_session_inventory(
     ids = {item["session_id"] for item in records}
     for record in records:
         parent = record["parent_session_id"]
-        if parent is not None and parent not in ids and parent in relevant:
-            raise AutomationError(f"session inventory is missing parent session {parent}")
+        if parent is not None and parent not in ids:
+            raise AutomationError(f"session inventory is missing current-run parent session {parent}")
 
     return {"schema_version": 1, "sessions": records}
 
