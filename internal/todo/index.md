@@ -24,27 +24,27 @@ The former numbered phase directories and `/internal/todo.md` were removed after
 
 ## Selecting work
 
-Do not maintain or infer a current queue in this index. Query Backlog.md whenever work must be selected.
+Do not maintain or infer a current queue in this index. Ask Backlog.md for the next executable task whenever work must be selected.
 
 If Backlog.md is installed:
 
 ```sh
 backlog instructions overview
-backlog task list --status "To Do" --json
-backlog task <id> --json
+backlog task list --status "To Do" --ready --sort ordinal --limit 1 --json
 ```
 
 Without a global install, use the pinned package:
 
 ```sh
 npx -y backlog.md@1.50.1 instructions overview
-npx -y backlog.md@1.50.1 task list --status "To Do" --json
-npx -y backlog.md@1.50.1 task <id> --json
+npx -y backlog.md@1.50.1 task list --status "To Do" --ready --sort ordinal --limit 1 --json
 ```
 
-Use the task list's native ordering to inspect `To Do` candidates, then read the candidate task and verify that all dependencies are satisfied before selecting it. `Parked`, `Won't Fix`, `Done`, and already `In Progress` tasks are not next-work candidates merely because of historical prose or task numbering.
+The task returned by that query is the next internal roadmap task. `--ready` excludes tasks with unsatisfied dependencies, `--sort ordinal` uses the task's explicit Backlog.md order, and `--limit 1` returns only the next candidate. Task IDs and filenames are not roadmap ordering mechanisms.
 
-For interactive inspection, `backlog board` and `backlog browser` remain available. `backlog browser` serves only on the local machine (`127.0.0.1`, default port `6420`).
+If the query returns no task, there is no currently executable internal roadmap task. Do not substitute a `Parked`, `Won't Fix`, `Done`, or already `In Progress` task based on historical prose or task numbering.
+
+Read the complete returned task before planning or modifying the repository. For interactive inspection, `backlog board` and `backlog browser` remain available. `backlog browser` serves only on the local machine (`127.0.0.1`, default port `6420`).
 
 ## Maintainer workflow
 
@@ -52,7 +52,6 @@ When selecting, planning, executing, or completing an internal roadmap task, use
 
 - One bounded task is the normal unit of implementation and PR scope.
 - Read the complete selected task before planning implementation.
-- Respect native `dependencies` before starting dependent work.
 - Treat `Parked` as intentionally excluded until the user explicitly resumes it.
 - Treat `Won't Fix` as closed by decision and do not execute it unless its status is explicitly changed.
 - Put new scope, acceptance criteria, implementation notes, and completion evidence directly in the native task rather than creating a parallel planning document.
