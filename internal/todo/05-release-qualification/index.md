@@ -21,33 +21,34 @@ Core progress: 3 of 6 complete.
 2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md)
 3. [x] [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md)
 4. [x] [Harden Qualification OpenCode Permissions](04d-harden-qualification-opencode-permissions.md)
-5. [ ] [Isolate Qualification Session Inventory](04e-isolate-qualification-session-inventory.md)
+5. [x] [Isolate Qualification Session Inventory](04e-isolate-qualification-session-inventory.md)
 6. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md)
 
 ## Current active work
 
 Further alpha dogfooding and immediate V1 progression are parked by explicit user decision. The dogfood umbrella remains pending, but it is not the current work queue.
 
-OpenCode permission hardening discovered during the `v1.0.0-alpha.15` release process is complete. The remaining qualification-infrastructure task is:
+Both qualification-infrastructure defects discovered during the `v1.0.0-alpha.15` release process are now resolved:
 
-1. [Isolate Qualification Session Inventory](04e-isolate-qualification-session-inventory.md)
+1. [Harden Qualification OpenCode Permissions](04d-harden-qualification-opencode-permissions.md)
+2. [Isolate Qualification Session Inventory](04e-isolate-qualification-session-inventory.md)
 
-After that task completes, roadmap execution moves to [Backlog.md integration](../06-backlog-md/) and then [Durable interaction evidence](../07-interaction-evidence/) before the roadmap is reassessed with the user.
+Roadmap execution now moves to [Backlog.md integration](../06-backlog-md/) and then [Durable interaction evidence](../07-interaction-evidence/) before the roadmap is reassessed with the user.
 
 ## Qualification-hardening rationale
 
 The alpha.15 release process exposed two root-cause infrastructure defects rather than release-content defects:
 
 - the independent audit could be denied access to qualification evidence under `/tmp` because required OpenCode permission was not fully self-contained in the release process; this is resolved by tracked repository policy plus qualification-owned per-run permission propagation
-- the session inventory can still include historical OpenCode sessions from earlier qualification runs, contaminating the exact-run evidence set
+- the session inventory could include historical OpenCode sessions from earlier qualification runs; this is resolved by making the before/after new-session set authoritative, admitting nested sessions only through current-run descendants, and enforcing current execution-root membership
 
-These are tracked as bounded supporting tasks rather than new dogfood findings. Do not add an exceptional acceptance or failed-state override mechanism as part of this work. The current direction is to make normal qualification reliable enough that such recovery is unnecessary.
+These were tracked as bounded supporting tasks rather than new dogfood findings. They do not add an exceptional acceptance or failed-state override mechanism.
 
 ## Dogfood findings
 
 Use the [Alpha Dogfood Findings](dogfood/) index for historical and still-open dogfood state.
 
-The dogfood umbrella remains pending until the user explicitly declares it complete. It is currently parked rather than closed. Existing completed findings remain durable history and must not be renumbered or reconstructed to represent the new qualification-hardening work.
+The dogfood umbrella remains pending until the user explicitly declares it complete. It is currently parked rather than closed. Existing completed findings remain durable history and must not be renumbered or reconstructed to represent the qualification-hardening work.
 
 ## Parked path to `1.0.0`
 
