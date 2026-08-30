@@ -9,9 +9,12 @@
     },
     "alpha14-to-alpha15-corrective-local": {
       "historical": false,
-      "latest_run_id": null,
-      "status": "not-run",
-      "user_signoff": null
+      "latest_run_id": "20260829T122006971173Z-alpha14-to-alpha15-corrective-local",
+      "status": "accepted",
+      "user_signoff": {
+        "identity": "user:phdah",
+        "time": "2026-08-30T12:45:15Z"
+      }
     }
   },
   "release_acceptance": {
@@ -22,6 +25,60 @@
       "previous_version": "0.0.0",
       "qualified_revision": null,
       "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.10": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.9",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.11": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.10",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.12": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.11",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.13": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.12",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.14": {
+      "accepted_at": "2026-08-17T10:26:00Z",
+      "accepted_by": "historical-backfill",
+      "basis": "historical-backfill",
+      "previous_version": "1.0.0-alpha.13",
+      "qualified_revision": null,
+      "run_id": null,
+      "status": "accepted"
+    },
+    "1.0.0-alpha.15": {
+      "accepted_at": "2026-08-30T12:45:15Z",
+      "accepted_by": "user:phdah",
+      "basis": "qualified-run",
+      "previous_version": "1.0.0-alpha.14",
+      "qualified_revision": "c267aaa15dd695a284f5f23baff7f43f3ca3ab66",
+      "run_id": "20260829T122006971173Z-alpha14-to-alpha15-corrective-local",
       "status": "accepted"
     },
     "1.0.0-alpha.2": {
@@ -92,51 +149,6 @@
       "accepted_by": "historical-backfill",
       "basis": "historical-backfill",
       "previous_version": "1.0.0-alpha.8",
-      "qualified_revision": null,
-      "run_id": null,
-      "status": "accepted"
-    },
-    "1.0.0-alpha.10": {
-      "accepted_at": "2026-08-17T10:26:00Z",
-      "accepted_by": "historical-backfill",
-      "basis": "historical-backfill",
-      "previous_version": "1.0.0-alpha.9",
-      "qualified_revision": null,
-      "run_id": null,
-      "status": "accepted"
-    },
-    "1.0.0-alpha.11": {
-      "accepted_at": "2026-08-17T10:26:00Z",
-      "accepted_by": "historical-backfill",
-      "basis": "historical-backfill",
-      "previous_version": "1.0.0-alpha.10",
-      "qualified_revision": null,
-      "run_id": null,
-      "status": "accepted"
-    },
-    "1.0.0-alpha.12": {
-      "accepted_at": "2026-08-17T10:26:00Z",
-      "accepted_by": "historical-backfill",
-      "basis": "historical-backfill",
-      "previous_version": "1.0.0-alpha.11",
-      "qualified_revision": null,
-      "run_id": null,
-      "status": "accepted"
-    },
-    "1.0.0-alpha.13": {
-      "accepted_at": "2026-08-17T10:26:00Z",
-      "accepted_by": "historical-backfill",
-      "basis": "historical-backfill",
-      "previous_version": "1.0.0-alpha.12",
-      "qualified_revision": null,
-      "run_id": null,
-      "status": "accepted"
-    },
-    "1.0.0-alpha.14": {
-      "accepted_at": "2026-08-17T10:26:00Z",
-      "accepted_by": "historical-backfill",
-      "basis": "historical-backfill",
-      "previous_version": "1.0.0-alpha.13",
       "qualified_revision": null,
       "run_id": null,
       "status": "accepted"
