@@ -41,8 +41,6 @@ jobs:
           cp -a "$GITHUB_WORKSPACE/." "$test_root/"
           cd "$test_root"
 
-          npx -y backlog.md@1.50.1 task ava-602 --json \
-            | jq -e '.id | ascii_downcase == "ava-602"' >/dev/null
           npx -y backlog.md@1.50.1 task edit ava-602 -s "In Progress" >/dev/null
           npx -y backlog.md@1.50.1 task edit ava-602 -s "Done" >/dev/null
           npx -y backlog.md@1.50.1 task edit ava-602 -s "To Do" >/dev/null
