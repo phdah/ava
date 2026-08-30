@@ -32,6 +32,20 @@ def fail(message: str) -> None:
     raise ValidationError(message)
 
 
+def unquote(value: str) -> str:
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        return value[1:-1]
+    return value
+
+
+def parse_inline_list(value: str) -> list[str]:
+    inner = value[1:-1].strip()
+    if not inner:
+        return []
+    return [unquote(item) for item in inner.split(",") if item.strip()]
+
+
 def parse_frontmatter(path: Path) -> dict[str, object]:
     text = path.read_text(encoding="utf-8")
     if not text.startswith("---\n"):
@@ -41,22 +55,43 @@ def parse_frontmatter(path: Path) -> dict[str, object]:
     except ValueError as exc:
         raise ValidationError(f"{path}: unterminated YAML frontmatter") from exc
 
+    lines = frontmatter.splitlines()
     data: dict[str, object] = {}
-    for raw_line in frontmatter.splitlines():
+    index = 0
+    while index < len(lines):
+        raw_line = lines[index]
         line = raw_line.strip()
-        if not line or line.startswith("#") or ":" not in line:
+        if not line or line.startswith("#") or raw_line[:1].isspace() or ":" not in line:
+            index += 1
             continue
-        key, value = line.split(":", 1)
-        value = value.strip()
+
+        key, raw_value = line.split(":", 1)
+        value = raw_value.strip()
         if value.startswith("[") and value.endswith("]"):
-            items = []
-            for item in value[1:-1].split(","):
-                item = item.strip().strip("\"'")
-                if item:
-                    items.append(item)
-            data[key] = items
-        else:
-            data[key] = value.strip("\"'")
+            data[key] = parse_inline_list(value)
+            index += 1
+            continue
+        if value:
+            data[key] = unquote(value)
+            index += 1
+            continue
+
+        items: list[str] = []
+        lookahead = index + 1
+        while lookahead < len(lines):
+            candidate = lines[lookahead]
+            stripped = candidate.strip()
+            if not stripped:
+                lookahead += 1
+                continue
+            if not candidate[:1].isspace():
+                break
+            if stripped.startswith("- "):
+                items.append(unquote(stripped[2:]))
+            lookahead += 1
+        data[key] = items
+        index = lookahead
+
     return data
 
 
