@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -eux
 
 ROOT=$(CDPATH= cd "$(dirname "$0")/../.." && pwd)
 TMP=${RUNNER_TEMP:-${TMPDIR:-/tmp}}
@@ -43,12 +43,16 @@ blocker_id=$(npx -y backlog.md@1.50.1 task list --json | jq -r '.tasks[] | selec
 test -n "$blocker_id"
 npx -y backlog.md@1.50.1 task create "Blocked lower ordinal" --ordinal 1 --depends-on "$blocker_id" >/dev/null
 npx -y backlog.md@1.50.1 task create "Ready next ordinal" --ordinal 2 >/dev/null
-next_title=$(npx -y backlog.md@1.50.1 task list --status "To Do" --ready --sort ordinal --limit 1 --json | jq -r '.tasks[0].title')
+next_json=$(npx -y backlog.md@1.50.1 task list --status "To Do" --ready --sort ordinal --limit 1 --json)
+printf '%s\n' "$next_json"
+next_title=$(printf '%s\n' "$next_json" | jq -r '.tasks[0].title')
 test "$next_title" = "Ready next ordinal"
 
 # Verify Done dependencies become ready without moving task files.
 npx -y backlog.md@1.50.1 task edit "$blocker_id" -s "Done" >/dev/null
-unblocked_title=$(npx -y backlog.md@1.50.1 task list --status "To Do" --ready --sort ordinal --limit 1 --json | jq -r '.tasks[0].title')
+unblocked_json=$(npx -y backlog.md@1.50.1 task list --status "To Do" --ready --sort ordinal --limit 1 --json)
+printf '%s\n' "$unblocked_json"
+unblocked_title=$(printf '%s\n' "$unblocked_json" | jq -r '.tasks[0].title')
 test "$unblocked_title" = "Blocked lower ordinal"
 test ! -d backlog/completed
 
