@@ -43,21 +43,20 @@ GitHub Release
 2. [Core roles for initialized projects](02-core-roles/) - complete
 3. [Workflow system](03-workflows/) - complete
 4. [Versioned distribution and upgrades](04-distribution-and-upgrades/) - complete
-5. [V1 release qualification](05-release-qualification/) - open but release progression is currently parked; two qualification-hardening tasks are active
-6. [Backlog.md integration](06-backlog-md/) - next feature phase after qualification hardening
+5. [V1 release qualification](05-release-qualification/) - open but release progression is currently parked; qualification hardening is complete
+6. [Backlog.md integration](06-backlog-md/) - current implementation phase
 7. [Durable interaction evidence](07-interaction-evidence/) - queued after Backlog.md integration
 
 ## Current implementation queue
 
 The user has explicitly reprioritized away from continued alpha dogfooding and immediate `1.0.0` progression. The current ordered queue is:
 
-1. [Harden Qualification OpenCode Permissions](05-release-qualification/04d-harden-qualification-opencode-permissions.md)
-2. [Isolate Qualification Session Inventory](05-release-qualification/04e-isolate-qualification-session-inventory.md)
-3. complete [Backlog.md integration](06-backlog-md/)
-4. complete the [Durable interaction evidence](07-interaction-evidence/) investigation
-5. reassess the roadmap with the user before resuming V1 release work
+1. [Evaluate and implement Backlog.md for internal todos](06-backlog-md/01-evaluate-and-implement-backlog-md-for-internal-todos.md)
+2. [Evaluate and add a default Backlog.md project task role](06-backlog-md/02-evaluate-and-add-default-project-task-role.md)
+3. complete the [Durable interaction evidence](07-interaction-evidence/) investigation
+4. reassess the roadmap with the user before resuming V1 release work
 
-The two qualification-hardening tasks are ordinary implementation work derived from concrete alpha.15 release-process failures. They are intentionally not additional dogfood findings and do not create a new exceptional qualification-override architecture.
+The two qualification-hardening tasks derived from concrete alpha.15 release-process failures are complete. They remain ordinary implementation history rather than additional dogfood findings and did not create a new exceptional qualification-override architecture.
 
 ## Parked V1 release path
 
