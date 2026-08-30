@@ -22,10 +22,9 @@ The former numbered phase directories and `/internal/todo.md` were removed after
 
 ## Current queue
 
-1. `AVA-602` - Evaluate and add a default Backlog.md project task role.
-2. `AVA-701` - Investigate and design durable interaction evidence for manual semantic changes.
+1. `AVA-701` - Investigate and design durable interaction evidence for manual semantic changes.
 
-`AVA-601` is complete and archived in `completed/`.
+`AVA-601` and `AVA-602` are complete and cleaned into `completed/`.
 
 Phase 5 release progression, alpha dogfooding, the synthetic qualification completion gate, corrective-alpha work, RC work, stable-release work, and post-v1 Finding 25 remain `Parked` until the user explicitly resumes them.
 
