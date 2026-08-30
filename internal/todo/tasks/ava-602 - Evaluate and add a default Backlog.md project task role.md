@@ -53,8 +53,6 @@ If an existing role/workflow is the correct owner, record the rationale and impl
 - board-driven edits preserve all Ava-required task semantics
 - affected indexes, fixtures, contracts, scaffolding, and upgrade guidance are aligned
 
-This is the next active Ava internal task after AVA-601.
-
 ## Implementation Plan
 
 <!-- SECTION:PLAN:BEGIN -->
@@ -70,17 +68,19 @@ This is the next active Ava internal task after AVA-601.
 <!-- SECTION:NOTES:BEGIN -->
 A distinct Project Task Manager role was selected because task records, prioritization, dependencies, and lifecycle state are durable cross-cutting responsibilities, while implementation and domain decisions remain with the roles that own those deliverables.
 
-Backlog.md's current CLI workflow remains the preferred mutation surface. Direct native Markdown editing is retained as a compatibility/fallback path and must preserve native fields and validate with Backlog.md when available.
+Backlog.md's current CLI workflow is the preferred task-management surface. Selecting the next executable task is delegated directly to Backlog.md with `task list --status "To Do" --ready --sort ordinal --limit 1 --json`; ordinal is the explicit ordering mechanism and dependency readiness is evaluated by the CLI rather than reconstructed from prose or task IDs.
+
+Ava keeps all task lifecycle states in the normal `tasks/` directory and does not use Backlog.md's optional `completed/` cleanup directory for either the internal roadmap or the default installed project board. `Won't Fix` is supported explicitly. Because Backlog.md 1.50.1 treats the final configured status as dependency-completing, `Done` remains the final status.
+
+Direct native Markdown editing is retained as a compatibility/fallback path and must preserve native fields and validate with Backlog.md when available.
 
 Published alpha.15 release guidance was intentionally left unchanged because it is immutable release evidence and this PR does not create a new release edge. Upgrade behavior for the project-owned task scaffold is defined in the distribution contract: deterministic upgrades preserve project-owned state, while future release authoring can add semantic guidance only if the next release edge actually requires project-owned reconciliation.
-
-Validation passed on PR #115: internal Backlog validation, native Backlog parsing and lifecycle checks, local browser smoke test, clean-project install with task lifecycle and direct-edit compatibility, and the full release qualification suite.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
-Implemented a first-class Project Task Manager in Ava's managed base and a project-owned Backlog.md task board for fresh installs. Added deterministic routing and authority boundaries, a shared native task-board contract, create-if-absent `backlog.config.yml` and `backlog/` scaffolding, installer ownership support, distribution and upgrade guidance, and end-to-end validation.
+Implemented a first-class Project Task Manager in Ava's managed base and a project-owned Backlog.md task board for fresh installs. Added deterministic routing and authority boundaries, a shared native task-board contract, create-if-absent `backlog.config.yml` and `backlog/` index scaffolding, installer ownership support, distribution and upgrade guidance, and end-to-end validation.
 
-Execution ownership remains with the relevant domain role. Project Task Manager owns only task records and cross-task lifecycle. The implementation was verified by all PR checks, including a clean installation, Backlog.md lifecycle operations, compatible direct Markdown edits, browser parsing, and the full release qualification suite.
+Task ordering is native Backlog.md ordinal ordering, and agents ask the CLI directly for the next dependency-ready `To Do` task. `Done`, `Won't Fix`, and other task states remain in the same `tasks/` directory; no completed-task directory or hand-maintained queue is used. Execution ownership remains with the relevant domain role while Project Task Manager owns task records and cross-task lifecycle only.
 <!-- SECTION:FINAL_SUMMARY:END -->
