@@ -26,11 +26,15 @@ Fresh installation may create the following project-owned files when absent:
 
 ```text
 ./backlog.config.yml
-./backlog/tasks/.gitkeep
-./backlog/completed/.gitkeep
+./backlog/index.md
+./backlog/tasks/index.md
 ```
 
-The default configuration uses `./backlog/`, `TASK-*` IDs, `To Do`, `In Progress`, and `Done` states, local-only browser defaults, no Backlog remote operations, and no automatic Git commits.
+The default configuration uses `./backlog/`, `TASK-*` IDs, and the lifecycle states `To Do`, `In Progress`, `Done`, and `Won't Fix`. It uses local-only browser defaults, no Backlog remote operations, and no automatic Git commits.
+
+All native task records remain under `./backlog/tasks/`, including terminal `Done` and `Won't Fix` tasks. Ava does not use Backlog.md's optional `completed/` cleanup directory by default and does not scaffold one.
+
+The `index.md` files keep the empty project-owned board discoverable in Git and explain its structure. They do not collide with Backlog.md task discovery because native task files are identified by the configured task prefix, for example `task-*.md`.
 
 `project_name` is intentionally generic in the create-if-absent scaffold and may be renamed by the project owner. The entire configuration is project-owned and may be changed after installation.
 
@@ -44,9 +48,11 @@ When the CLI is available, task-management agents begin by loading its current w
 backlog instructions overview
 ```
 
-They should use the detailed workflow guidance and command help provided by the installed/current Backlog.md version rather than an Ava-maintained copy of the upstream CLI manual.
+They should use the detailed workflow guidance and command help provided by the installed or current Backlog.md version rather than an Ava-maintained copy of the upstream CLI manual.
 
 Humans may use the same state through `backlog task`, `backlog board`, or the local `backlog browser`. Direct valid Markdown edits are also authoritative project edits. The Project Task Manager preserves native Backlog.md structure and validates direct edits with the CLI when available.
+
+Task ordering and lifecycle state must be queried from Backlog.md or the native task records. Ava does not require a hand-maintained queue in an index document.
 
 # Ownership
 
@@ -68,4 +74,4 @@ This preserves the core upgrade boundary: `./.ava/` is managed by Ava release to
 
 # Approval boundary
 
-The Project Task Manager may perform routine task lifecycle operations that directly follow the user's request or an approved plan. Explicit user approval is required for destructive cleanup or deletion, materially ambiguous reprioritization, scope changes that alter the requested outcome, and new architectural/product/security decisions that are not already authorized.
+The Project Task Manager may perform routine task lifecycle operations that directly follow the user's request or an approved plan. Explicit user approval is required for destructive cleanup or deletion, materially ambiguous reprioritization, scope changes that alter the requested outcome, and new architectural, product, or security decisions that are not already authorized.
