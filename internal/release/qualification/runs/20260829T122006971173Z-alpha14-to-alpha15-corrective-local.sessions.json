@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "sessions": [
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/ava-qualification-20260829T122006971173Z-alpha14-to-alpha15-corrective-local/execution/2307cb9cec78a55451ecaaee1c33cba76639112f2fde4d7265d70dd192923803/scenarios/uninstall-reinstall/project",
+      "prompt_sha256": "bf46df60e7e8cc5ba46fda3b5494ebf76b6427d351a255e1241a3c90c5a6ac5a",
+      "scenario": "uninstall-reinstall",
+      "session_id": "ses_fb26a88c5ffets1tGORBiZS84p",
+      "terminal_state": "completed",
+      "transcript_sha256": "d4d65f1df9689e7aaa3470ab294f2861190536216251d752b0d7ef885e8cc03c"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": "ses_fb270b6f9ffe9OFxG2W6UDxctS",
+      "project_root": "/tmp/ava-qualification-20260829T122006971173Z-alpha14-to-alpha15-corrective-local/execution/2307cb9cec78a55451ecaaee1c33cba76639112f2fde4d7265d70dd192923803/scenarios/pending-semantic-reconciliation/project",
+      "prompt_sha256": "1ebbaa21741d9b69cf88c8559b9820d5b5c5931834d8afebe8789eb3c9dcbe8f",
+      "scenario": "pending-semantic-reconciliation",
+      "session_id": "ses_fb26e6bedffem7C7kjOulEAbCo",
+      "terminal_state": "completed",
+      "transcript_sha256": "320adad115c64b2218fe1f9a182fb0cd7092faafb0abaa250070f2ca7305f0ce"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/ava-qualification-20260829T122006971173Z-alpha14-to-alpha15-corrective-local/execution/2307cb9cec78a55451ecaaee1c33cba76639112f2fde4d7265d70dd192923803/scenarios/pending-semantic-reconciliation/project",
+      "prompt_sha256": "1ebbaa21741d9b69cf88c8559b9820d5b5c5931834d8afebe8789eb3c9dcbe8f",
+      "scenario": "pending-semantic-reconciliation",
+      "session_id": "ses_fb270b6f9ffe9OFxG2W6UDxctS",
+      "terminal_state": "completed",
+      "transcript_sha256": "4155de61d10431d80c611ef6254258de265f64a7c39c1d14a9d9cc73c0ae04c5"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/ava-qualification-20260829T122006971173Z-alpha14-to-alpha15-corrective-local/execution/2307cb9cec78a55451ecaaee1c33cba76639112f2fde4d7265d70dd192923803/scenarios/interrupted-finalize/project",
+      "prompt_sha256": "ad09df72e139ce87ddab0f63ef32409f50f7c4e37d503422da95890364a261b2",
+      "scenario": "interrupted-finalize",
+      "session_id": "ses_fb27362d2ffe8sAJwapuNmbx0t",
+      "terminal_state": "completed",
+      "transcript_sha256": "f5433078039afa4a60a80d9253870cc5442f03b678104cb1df4fa2fe7dc4e93c"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/ava-qualification-20260829T122006971173Z-alpha14-to-alpha15-corrective-local/execution/2307cb9cec78a55451ecaaee1c33cba76639112f2fde4d7265d70dd192923803/scenarios/interrupted-finalize/project",
+      "prompt_sha256": "1ebbaa21741d9b69cf88c8559b9820d5b5c5931834d8afebe8789eb3c9dcbe8f",
+      "scenario": "interrupted-finalize",
+      "session_id": "ses_fb27753f0ffe3xYT8762hZJHr8",
+      "terminal_state": "completed",
+      "transcript_sha256": "f97bd8101e3a66d12a4e4d23fdccaecec1d7023110795fcd03770475ee9ec93b"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/ava-qualification-20260829T122006971173Z-alpha14-to-alpha15-corrective-local/execution/2307cb9cec78a55451ecaaee1c33cba76639112f2fde4d7265d70dd192923803/scenarios/complete-pending-inbox/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_fb281ea0cffepkVjnjeHp3vAXG",
+      "terminal_state": "completed",
+      "transcript_sha256": "b3501647f18093cf3c626044f6ed3ebd54c8f313d4517057e24d3bed4d44565f"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/ava-qualification-20260829T122006971173Z-alpha14-to-alpha15-corrective-local/execution/2307cb9cec78a55451ecaaee1c33cba76639112f2fde4d7265d70dd192923803/scenarios/registered-ambiguous-routing/project",
+      "prompt_sha256": "1e5e167549caf7557c089e3c3b3ea498461de3ef1ba22b9c99d531e8d2b2e45e",
+      "scenario": "registered-ambiguous-routing",
+      "session_id": "ses_fb282823effeGfHdOgxiK3ZNqW",
+      "terminal_state": "completed",
+      "transcript_sha256": "f51e7a5c1face8be9bd5f28c69cd9f55fd1d289ed7da5e1f2ff832b9769c6463"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/ava-qualification-20260829T122006971173Z-alpha14-to-alpha15-corrective-local/execution/2307cb9cec78a55451ecaaee1c33cba76639112f2fde4d7265d70dd192923803/scenarios/registered-calendar-regression/project",
+      "prompt_sha256": "548ed58eea8e934b9a620388bc01a89f92ab9c11c230fa213e88ccae71fbf67a",
+      "scenario": "registered-calendar-regression",
+      "session_id": "ses_fb2847f44ffeBszb8v768gbsV2",
+      "terminal_state": "completed",
+      "transcript_sha256": "6d6dccb8ab08e1588fd16f8ed12e8a8aeb8dfee794bc2e9aa95ce70b795d7e2b"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/ava-qualification-20260829T122006971173Z-alpha14-to-alpha15-corrective-local/execution/2307cb9cec78a55451ecaaee1c33cba76639112f2fde4d7265d70dd192923803/scenarios/registered-work-routing/project",
+      "prompt_sha256": "845bce20f54830ec08646cb5ffaaa5af149f34cb355d35843028083db3c9641a",
+      "scenario": "registered-work-routing",
+      "session_id": "ses_fb286587cffeTrkTxwpKJ51ZSZ",
+      "terminal_state": "completed",
+      "transcript_sha256": "8208081652e07721318309d904ad6938337b7dcb273a15c4c7fa12ec622ea45d"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/ava-qualification-20260829T122006971173Z-alpha14-to-alpha15-corrective-local/execution/2307cb9cec78a55451ecaaee1c33cba76639112f2fde4d7265d70dd192923803/scenarios/registered-private-routing/project",
+      "prompt_sha256": "ca61310cffd2c31abfd86c39cb796b97a2911b52a14f116569e51ff3078f2905",
+      "scenario": "registered-private-routing",
+      "session_id": "ses_fb288168fffeoP0XA9OMytRHJO",
+      "terminal_state": "completed",
+      "transcript_sha256": "292d0c22c0a11448a6f639811e7efb38fae2488f3c7d18e8a2efe26b3e7d9edc"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/uninstall-reinstall/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffe98f723ffe5j1JMrNx0fpT8X",
+      "terminal_state": "completed",
+      "transcript_sha256": "8465cdbc7ff33c3be48e60da7a8b9b1f2961157a8891515620ac53ab4f70082a"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": "ses_ffe9bfbc9ffe27vSPrxVnPsZbx",
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/pending-semantic-reconciliation/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffe9aa1c6ffetKOw7fmUnfN7q2",
+      "terminal_state": "completed",
+      "transcript_sha256": "576a2c4b09d2ae186163fefc37dc0c57b0de55e3324f00dd788d3d85f96ca688"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/pending-semantic-reconciliation/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffe9bfbc9ffe27vSPrxVnPsZbx",
+      "terminal_state": "completed",
+      "transcript_sha256": "26de528e0240cfefc9d7d1edede51cee92981429e9907031a783cc7a353a425b"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/interrupted-finalize/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffea0beb7ffe6m1unMxMd8zfxk",
+      "terminal_state": "completed",
+      "transcript_sha256": "999a5a664e4b0a7178f6213d0309f36ba87f693b4fe1db970a9cedc5a6d8dfd7"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": "ses_ffea3ba8bffeViFmbpIUdgd6RB",
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/interrupted-finalize/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffea2953bffegyzqnRHc3TaKYo",
+      "terminal_state": "completed",
+      "transcript_sha256": "908d188f4833e65604f5beca5c3142870642971f6f7fd60705216d2c3caffa51"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/interrupted-finalize/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffea3ba8bffeViFmbpIUdgd6RB",
+      "terminal_state": "completed",
+      "transcript_sha256": "ea0fd64c0c993074f9fe1e1ce9532ed855275a023e2f156104adf25cefde2edf"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": "ses_ffebbc5a1ffe93cUVEwH7HBWjy",
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/complete-pending-inbox/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffeb72ee9ffemokI88guxHHq1T",
+      "terminal_state": "completed",
+      "transcript_sha256": "db8d4bd24fd9d96612d2ca387ed52c35c609b8f3e6a3776c8f96a13470bad203"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": "ses_ffebbc5a1ffe93cUVEwH7HBWjy",
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/complete-pending-inbox/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffeb73011ffefRg31wxJFRWMfl",
+      "terminal_state": "completed",
+      "transcript_sha256": "08e9a8ca50f71e04ad75ffb6a12f905b962eae3b33a9621431964664437af5b2"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": "ses_ffebbc5a1ffe93cUVEwH7HBWjy",
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/complete-pending-inbox/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffeb73143ffej9Nt6RrR6H3Gpv",
+      "terminal_state": "completed",
+      "transcript_sha256": "4b5bcd3744373c65f2d12566ba4604a541086293b3464cac9fb867ced267a82e"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": "ses_ffebbc5a1ffe93cUVEwH7HBWjy",
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/complete-pending-inbox/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffeb73223ffe9XeGILa2xBCkGe",
+      "terminal_state": "completed",
+      "transcript_sha256": "712453ca9970119bea7664ab8117e84e89f993a63e7d71849ddd357cf8d11eca"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": "ses_ffebbc5a1ffe93cUVEwH7HBWjy",
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/complete-pending-inbox/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffeb7337affeQNcmKuPDOjYRr6",
+      "terminal_state": "completed",
+      "transcript_sha256": "5406ce23fcb989b7804b8444c35fd0d50ddc283e1995369addc597e1f0fb3459"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": "ses_ffebbc5a1ffe93cUVEwH7HBWjy",
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/complete-pending-inbox/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffeb734e1ffem1oml6hBS0VB5l",
+      "terminal_state": "completed",
+      "transcript_sha256": "e2dfb6b93cb187eeae8e740aa12ddcaa3a407dcab902a647142a097438bcc9a2"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/complete-pending-inbox/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffebbc5a1ffe93cUVEwH7HBWjy",
+      "terminal_state": "completed",
+      "transcript_sha256": "d069f7b53d77c600fa058f82e24dacac71bb731016de0abab2f7f861990ca098"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/registered-ambiguous-routing/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffec0fec5ffeUE0iQmBNTMFPWQ",
+      "terminal_state": "completed",
+      "transcript_sha256": "77b4410e0c07df24701533dfd8f54ab79e56ec201b9a600742d580e0f8a655a2"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/registered-calendar-regression/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffec8726effeAdds2RTNn3FXOi",
+      "terminal_state": "completed",
+      "transcript_sha256": "771afa3f6c6109a4a97127ce703ccbdeb81f7296b0a37a1f0438ce110e987eef"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/registered-work-routing/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffecc9f2dffe4C7acmI5IAFy3B",
+      "terminal_state": "completed",
+      "transcript_sha256": "a19173da6ac219326be668ce419864e247c9a2e9aa6b6d3daa49e3e765b9a457"
+    },
+    {
+      "model": "openai/gpt-5.6-sol",
+      "parent_session_id": null,
+      "project_root": "/tmp/opencode/ava-qualification-20260814T160502241262Z-alpha13-to-alpha14/execution/run/scenarios/registered-private-routing/project",
+      "prompt_sha256": "a2405c6285f981ff592baa543a16a5b4650cc55c9ff477bff7b971799f958c78",
+      "scenario": "complete-pending-inbox",
+      "session_id": "ses_ffed1f205ffeCD6jFy1c5AtKN2",
+      "terminal_state": "completed",
+      "transcript_sha256": "0ab3ee7f30b0960b85c4779047d5411cbfb3e972930bb8bdf474852b168adc13"
+    }
+  ]
+}
