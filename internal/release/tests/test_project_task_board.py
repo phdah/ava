@@ -37,7 +37,7 @@ class ProjectTaskBoardTests(unittest.TestCase):
     def test_default_config_is_local_non_committing_and_has_terminal_statuses(self) -> None:
         config = (SOURCE_ROOT / "templates/project-scaffolds/backlog.config.yml").read_text()
         self.assertIn("backlog_directory: backlog", config)
-        self.assertIn('statuses: ["To Do", "In Progress", "Done", "Won\'t Fix"]', config)
+        self.assertIn('statuses: ["To Do", "In Progress", "Won\'t Fix", "Done"]', config)
         self.assertIn("remote_operations: false", config)
         self.assertIn("auto_commit: false", config)
         self.assertIn('task_prefix: "task"', config)
