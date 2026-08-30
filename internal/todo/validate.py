@@ -189,7 +189,7 @@ def main() -> int:
 
     required_queue = {
         "ava-601": ("Done", []),
-        "ava-602": ("To Do", ["ava-601"]),
+        "ava-602": ("In Progress", ["ava-601"]),
         "ava-701": ("To Do", ["ava-602"]),
     }
     for task_id, (status, dependencies) in required_queue.items():
