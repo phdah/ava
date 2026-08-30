@@ -20,7 +20,7 @@ Core progress: 3 of 6 complete.
 1. [ ] [Build the synthetic v1 qualification vault](04a-build-synthetic-qualification-vault.md)
 2. [ ] [Qualify and publish the corrective alpha](04b-qualify-and-publish-corrective-alpha.md)
 3. [x] [Automate release qualification and evidence state](04c-automate-release-qualification-evidence.md)
-4. [ ] [Harden Qualification OpenCode Permissions](04d-harden-qualification-opencode-permissions.md)
+4. [x] [Harden Qualification OpenCode Permissions](04d-harden-qualification-opencode-permissions.md)
 5. [ ] [Isolate Qualification Session Inventory](04e-isolate-qualification-session-inventory.md)
 6. [ ] [Stabilize the published release candidate](05a-stabilize-release-candidate.md)
 
@@ -28,19 +28,18 @@ Core progress: 3 of 6 complete.
 
 Further alpha dogfooding and immediate V1 progression are parked by explicit user decision. The dogfood umbrella remains pending, but it is not the current work queue.
 
-The next work is ordinary implementation hardening discovered during the `v1.0.0-alpha.15` release process:
+OpenCode permission hardening discovered during the `v1.0.0-alpha.15` release process is complete. The remaining qualification-infrastructure task is:
 
-1. [Harden Qualification OpenCode Permissions](04d-harden-qualification-opencode-permissions.md)
-2. [Isolate Qualification Session Inventory](04e-isolate-qualification-session-inventory.md)
+1. [Isolate Qualification Session Inventory](04e-isolate-qualification-session-inventory.md)
 
-After both tasks complete, roadmap execution moves to [Backlog.md integration](../06-backlog-md/) and then [Durable interaction evidence](../07-interaction-evidence/) before the roadmap is reassessed with the user.
+After that task completes, roadmap execution moves to [Backlog.md integration](../06-backlog-md/) and then [Durable interaction evidence](../07-interaction-evidence/) before the roadmap is reassessed with the user.
 
 ## Qualification-hardening rationale
 
 The alpha.15 release process exposed two root-cause infrastructure defects rather than release-content defects:
 
-- the independent audit could be denied access to qualification evidence under `/tmp` because required OpenCode permission was not fully self-contained in the release process
-- the session inventory could include historical OpenCode sessions from earlier qualification runs, contaminating the exact-run evidence set
+- the independent audit could be denied access to qualification evidence under `/tmp` because required OpenCode permission was not fully self-contained in the release process; this is resolved by tracked repository policy plus qualification-owned per-run permission propagation
+- the session inventory can still include historical OpenCode sessions from earlier qualification runs, contaminating the exact-run evidence set
 
 These are tracked as bounded supporting tasks rather than new dogfood findings. Do not add an exceptional acceptance or failed-state override mechanism as part of this work. The current direction is to make normal qualification reliable enough that such recovery is unnecessary.
 
