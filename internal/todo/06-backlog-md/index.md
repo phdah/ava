@@ -19,4 +19,4 @@ This is not a generic task-board compatibility phase. Backlog.md is the selected
 
 First prove and implement the native Backlog.md model against Ava's internal roadmap. Then use that proven model to add default project support through a distinct role or the correct existing role and workflow.
 
-This phase is queued after the active v1 release-qualification work unless the user explicitly reprioritizes it.
+This phase is now queued immediately after the two active Phase 5 qualification-hardening tasks. It no longer waits for alpha dogfood closure or completion of the full `1.0.0` release path. After Backlog.md integration, continue to [Durable Interaction Evidence](../07-interaction-evidence/) before reassessing whether to resume V1 release progression.

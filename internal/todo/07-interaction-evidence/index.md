@@ -16,4 +16,4 @@ The phase is proposal-only until the user approves a public format and authority
 
 ## Ordering
 
-Complete the Backlog.md integration first unless the user explicitly reprioritizes this work. This investigation does not block the current v1 release-qualification path.
+Complete the Backlog.md integration first. This investigation now sits in the active normal implementation sequence after Backlog.md and before the next roadmap reassessment. It does not itself resume or block the parked V1 release path.
