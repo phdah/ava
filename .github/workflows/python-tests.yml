@@ -21,5 +21,41 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Validate internal Backlog.md task state
+        run: python3 internal/todo/validate.py
+
+      - name: Validate Backlog.md native parsing
+        run: npx -y backlog.md@1.50.1 task list --json >/dev/null
+
+      - name: Exercise Backlog.md lifecycle
+        run: |
+          test_root="$RUNNER_TEMP/ava-backlog-lifecycle"
+          git clone --quiet "$GITHUB_WORKSPACE" "$test_root"
+          cd "$test_root"
+          npx -y backlog.md@1.50.1 task edit 601 -s "To Do" >/dev/null
+          npx -y backlog.md@1.50.1 task edit 601 -s "Done" >/dev/null
+          grep -q "Retained specification" "internal/todo/tasks/task-601 - Evaluate and implement Backlog.md for internal todos.md"
+          python3 internal/todo/validate.py
+
+      - name: Smoke test Backlog.md browser
+        run: |
+          browser_log="$RUNNER_TEMP/backlog-browser.log"
+          npx -y backlog.md@1.50.1 browser --no-open >"$browser_log" 2>&1 &
+          browser_pid=$!
+          trap 'kill "$browser_pid" 2>/dev/null || true' EXIT
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:6420/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$browser_log"
+          exit 1
+
       - name: Run release qualification
         run: internal/release/test.sh
