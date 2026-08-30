@@ -8,6 +8,7 @@ These files define release, installation, upgrade, and compatibility behavior. T
 
 - [Project-root path conventions](paths.md)
 - [Distribution and ownership](ownership.md)
+- [Project task board](project-task-board.md)
 - [Versioning and compatibility](versioning.md)
 - [GitHub release assets](releases.md)
 - [Upgrade and migration protocol](upgrades.md)
