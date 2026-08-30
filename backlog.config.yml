@@ -1,7 +1,7 @@
 project_name: "Ava Internal Roadmap"
 backlog_directory: internal/todo
 default_status: "To Do"
-statuses: ["To Do", "In Progress", "Parked", "Done"]
+statuses: ["To Do", "In Progress", "Parked", "Won't Fix", "Done"]
 labels: []
 date_format: yyyy-mm-dd
 auto_open_browser: false
