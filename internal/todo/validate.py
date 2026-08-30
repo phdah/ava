@@ -9,7 +9,7 @@ TODO_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = TODO_ROOT.parents[1]
 CONFIG = REPO_ROOT / "backlog.config.yml"
 TASK_DIRS = (TODO_ROOT / "tasks", TODO_ROOT / "completed")
-ALLOWED_STATUSES = {"To Do", "In Progress", "Parked", "Done"}
+ALLOWED_STATUSES = {"To Do", "In Progress", "Parked", "Won't Fix", "Done"}
 EXPECTED_TASK_COUNT = 72
 PARKED_RELEASE_IDS = {
     "ava-504",
@@ -100,7 +100,7 @@ def main() -> int:
     required_config = (
         "backlog_directory: internal/todo",
         'task_prefix: "ava"',
-        'statuses: ["To Do", "In Progress", "Parked", "Done"]',
+        'statuses: ["To Do", "In Progress", "Parked", "Won\'t Fix", "Done"]',
         "remote_operations: false",
         "auto_commit: false",
     )
