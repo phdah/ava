@@ -1,7 +1,7 @@
 project_name: "Project"
 backlog_directory: backlog
 default_status: "To Do"
-statuses: ["To Do", "In Progress", "Done"]
+statuses: ["To Do", "In Progress", "Done", "Won't Fix"]
 labels: []
 date_format: yyyy-mm-dd
 auto_open_browser: false
