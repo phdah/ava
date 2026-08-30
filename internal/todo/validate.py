@@ -19,7 +19,7 @@ PARKED_RELEASE_IDS = {
     "ava-551",
     "ava-5625",
 }
-SPEC_EXCLUSIONS = {"index.md", "v1-release-operator-path.md"}
+SPEC_EXCLUSIONS = {"index.md", "v1-release-operator-path.md", "finding-template.md"}
 
 
 class ValidationError(Exception):
