@@ -1,8 +1,18 @@
 ---
 id: ava-542
-title: "Qualify and publish the corrective alpha"
-status: "Parked"
-labels: ["internal", "roadmap", "phase-05", "release", "qualification", "dogfood"]
+title: Qualify and publish the corrective alpha
+status: Won't Fix
+assignee: []
+created_date: ''
+updated_date: '2026-08-30 18:18'
+labels:
+  - internal
+  - roadmap
+  - phase-05
+  - release
+  - qualification
+  - dogfood
+dependencies: []
 ordinal: 542
 ---
 

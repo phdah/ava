@@ -1,14 +1,25 @@
 ---
 id: ava-5625
-title: "Offer optional todo tracking for qualification failures"
-status: "Parked"
-labels: ["internal", "roadmap", "phase-05", "release", "post-v1", "process"]
-ordinal: 5625
+title: Offer optional todo tracking for qualification failures
+status: To Do
+assignee: []
+created_date: ''
+updated_date: '2026-08-30 18:26'
+labels:
+  - internal
+  - roadmap
+  - phase-05
+  - release
+  - post-v1
+  - process
+milestone: m-0
+dependencies: []
+ordinal: 350.5
 ---
 
 ## Description
 
-When release qualification reports `failed` or `needs-review`, optionally offer to record the individual findings as bounded Backlog.md tasks on `main`. This is accepted post-v1 process convenience only and is intentionally parked with release progression.
+When release qualification reports `failed` or `needs-review`, optionally offer to record the individual findings as bounded Backlog.md tasks on `main`. This is accepted process convenience and is tracked toward the `v1.0.0` milestone as next-up roadmap work.
 
 ## Origin
 

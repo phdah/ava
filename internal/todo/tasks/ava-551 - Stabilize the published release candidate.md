@@ -1,8 +1,17 @@
 ---
 id: ava-551
-title: "Stabilize the published release candidate"
-status: "Parked"
-labels: ["internal", "roadmap", "phase-05", "release", "qualification"]
+title: Stabilize the published release candidate
+status: Won't Fix
+assignee: []
+created_date: ''
+updated_date: '2026-08-30 18:19'
+labels:
+  - internal
+  - roadmap
+  - phase-05
+  - release
+  - qualification
+dependencies: []
 ordinal: 551
 ---
 

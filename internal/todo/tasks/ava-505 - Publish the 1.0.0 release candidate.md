@@ -1,14 +1,23 @@
 ---
 id: ava-505
-title: "Publish the 1.0.0 release candidate"
-status: "Parked"
-labels: ["internal", "roadmap", "phase-05", "release", "rc"]
+title: Publish the 1.0.0 release candidate
+status: Won't Fix
+assignee: []
+created_date: ''
+updated_date: '2026-08-30 18:27'
+labels:
+  - internal
+  - roadmap
+  - phase-05
+  - release
+  - rc
+dependencies: []
 ordinal: 505
 ---
 
 ## Description
 
-Freeze the intended v1 public behavior and publish an immutable release candidate after alpha findings and required fixes are resolved. This release-progression task is intentionally parked. The migrated material below is historical planning state only and does not authorize release activity.
+Freeze the intended v1 public behavior and publish an immutable release candidate after alpha findings and required fixes are resolved. This release-progression task is closed as Won't Fix after being converted into the `v1.0.0` milestone. Next-up roadmap tasks are tracked toward that milestone. The migrated material below is historical planning state only and does not authorize release activity.
 
 ## Migrated task record
 
@@ -34,4 +43,14 @@ After RC publication, only release-blocking fixes, documentation corrections, or
 
 Completion required an immutable approved RC, successful fresh installation and all declared prerelease upgrades using published assets, complete OpenCode supported-host evidence, no known planned incompatible public change, stable-safe disposition for remaining known issues, and readiness for AVA-551 release-candidate stabilization.
 
-The V1 release operator sequence formerly stored in a separate todo file is preserved in AVA-506. This task remains parked until the user explicitly resumes release progression.
+The V1 release operator sequence formerly stored in a separate todo file is preserved in AVA-506. This task is closed as Won't Fix; the `v1.0.0` milestone carries release progression.
+
+## Comments
+
+<!-- COMMENTS:BEGIN -->
+author: Philip
+created: 2026-08-30 18:17
+---
+Convert this to a milestone, and place all next up tasks towards this milestone. Then move this task to won't fix.
+---
+<!-- COMMENTS:END -->

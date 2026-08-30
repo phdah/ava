@@ -1,8 +1,17 @@
 ---
 id: ava-504
-title: "Dogfood the alpha and track findings"
-status: "Parked"
-labels: ["internal", "roadmap", "phase-05", "release", "dogfood"]
+title: Dogfood the alpha and track findings
+status: Won't Fix
+assignee: []
+created_date: ''
+updated_date: '2026-08-30 18:15'
+labels:
+  - internal
+  - roadmap
+  - phase-05
+  - release
+  - dogfood
+dependencies: []
 ordinal: 504
 ---
 

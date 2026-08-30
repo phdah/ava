@@ -9,19 +9,14 @@ TODO_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = TODO_ROOT.parents[1]
 CONFIG = REPO_ROOT / "backlog.config.yml"
 TASK_DIR = TODO_ROOT / "tasks"
+MILESTONE_DIR = TODO_ROOT / "milestones"
 ALLOWED_STATUSES = {"To Do", "In Progress", "Parked", "Won't Fix", "Done"}
 EXPECTED_TASK_COUNT = 72
-PARKED_RELEASE_IDS = {
-    "ava-504",
-    "ava-505",
-    "ava-506",
-    "ava-541",
-    "ava-542",
-    "ava-551",
-    "ava-5625",
-}
+V1_MILESTONE_ID = "m-0"
+V1_MILESTONE_TITLE = "v1.0.0"
 LEGACY_PHASE_PATTERN = re.compile(r"[0-9][0-9]-.*")
 TASK_FILENAME_PATTERN = re.compile(r"ava-(\d+(?:\.\d+)?) - .+\.md")
+MILESTONE_FILENAME_PATTERN = re.compile(r"(m-\d+) - .+\.md")
 
 
 class ValidationError(Exception):
@@ -147,6 +142,7 @@ def main() -> int:
 
         labels = data.get("labels", [])
         dependencies = data.get("dependencies", [])
+        milestone = str(data.get("milestone", ""))
         if not isinstance(labels, list):
             fail(f"{path}: labels must be a list")
         if not isinstance(dependencies, list):
@@ -158,6 +154,7 @@ def main() -> int:
             "path": path,
             "status": status,
             "dependencies": dependencies,
+            "milestone": milestone,
         }
 
     if len(tasks) != EXPECTED_TASK_COUNT:
@@ -187,12 +184,35 @@ def main() -> int:
     for task_id in tasks:
         visit(task_id)
 
-    for task_id in PARKED_RELEASE_IDS:
-        task = tasks.get(task_id)
-        if task is None:
-            fail(f"missing parked release task {task_id}")
-        if task["status"] != "Parked":
-            fail(f"{task_id}: release work must remain Parked until explicitly resumed")
+    milestones: dict[str, dict[str, object]] = {}
+    for path in sorted(MILESTONE_DIR.glob("*.md")):
+        match = MILESTONE_FILENAME_PATTERN.fullmatch(path.name)
+        if not match:
+            fail(f"{path}: filename is not native Backlog milestone form")
+        if not path.is_file():
+            fail(f"{path}: milestone path is not a regular file")
+
+        data = parse_frontmatter(path)
+        milestone_id = str(data.get("id", ""))
+        expected_id = match.group(1)
+        if milestone_id != expected_id:
+            fail(f"{path}: id {milestone_id!r} does not match filename ({expected_id})")
+        title = str(data.get("title", ""))
+        if not title:
+            fail(f"{path}: missing milestone title")
+        milestones[milestone_id] = {"path": path, "title": title}
+
+    if V1_MILESTONE_ID not in milestones:
+        fail(f"missing v1.0.0 milestone {V1_MILESTONE_ID}")
+    if milestones[V1_MILESTONE_ID]["title"] != V1_MILESTONE_TITLE:
+        fail(
+            f"v1.0.0 milestone {V1_MILESTONE_ID} must be titled {V1_MILESTONE_TITLE!r}"
+        )
+
+    for task_id, task in sorted(tasks.items()):
+        milestone = task["milestone"]
+        if milestone and milestone not in milestones:
+            fail(f"{task_id}: references unknown milestone {milestone!r}")
 
     print(f"Backlog.md validation passed: {len(tasks)} tasks")
     return 0

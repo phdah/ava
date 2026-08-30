@@ -8,7 +8,8 @@ The integration is pinned and validated against Backlog.md `1.50.1`. The reposit
 
 - `tasks/` contains every task record, regardless of lifecycle state.
 - `tasks/index.md` explains the directory but is not a task record.
-- `validate.py` enforces Ava-specific inventory, dependency, status, and release-parking invariants.
+- `milestones/` contains native Backlog.md milestone records. Update next-up roadmap tasks toward the active milestone by assigning the milestone through Backlog.md commands.
+- `validate.py` enforces Ava-specific inventory, dependency, status, milestone, and release-tracking invariants.
 
 Ava intentionally does not use Backlog.md's optional `completed/` cleanup directory. `Done` tasks remain in `tasks/` with their history and completion evidence intact.
 

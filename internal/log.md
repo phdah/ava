@@ -13,6 +13,8 @@ This log records major conceptual and structural changes to Ava's internal devel
 * **Maintainer integration**: Updated Ava Internal Maintainer bootstrap and instructions to load Backlog.md workflow guidance for roadmap work, select only executable native tasks with satisfied dependencies, preserve parked work, and record scope/completion evidence directly in task cards.
 * **Backlog validation**: Added repository validation for the exact 72-task inventory, native `ava-` filename/ID correspondence, statuses, dependency integrity/cycles, current queue, parked release guards, absence of legacy hierarchy/wrappers, Backlog JSON parsing, lifecycle edits, and the loopback web interface.
 * **Git boundary**: Disabled Backlog.md remote operations and automatic commits so board operations remain explicit repository changes under the active host's Git workflow.
+* **V1 milestone model**: Converted release-progression task AVA-505 into native milestone `v1.0.0` and closed the task as Won't Fix. Next-up roadmap tasks (AVA-701, AVA-5625) are now tracked toward that milestone instead of the former parked release-task path.
+* **Milestone validation**: Replaced the forced parked-release guard in `internal/todo/validate.py` with milestone validation that requires the `v1.0.0` milestone record, and verifies task milestone references resolve to real milestone files.
 
 ## 2026-08-03
 

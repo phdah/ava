@@ -1,10 +1,23 @@
 ---
 id: ava-701
-title: "Investigate and design durable interaction evidence for manual semantic changes"
-status: "To Do"
-labels: ["internal", "roadmap", "phase-07", "provenance", "interaction-evidence", "metadata"]
+title: >-
+  Investigate and design durable interaction evidence for manual semantic
+  changes
+status: To Do
+assignee: []
+created_date: ''
+updated_date: '2026-08-30 18:26'
+labels:
+  - internal
+  - roadmap
+  - phase-07
+  - provenance
+  - interaction-evidence
+  - metadata
+milestone: m-0
+dependencies:
+  - ava-602
 ordinal: 701
-dependencies: ["ava-602"]
 ---
 
 ## Description
@@ -86,4 +99,4 @@ Cover at least: direct new fact, correction of sourced context, approval of a pr
 - affected public contracts/roles/fixtures/upgrade impacts are identified
 - design is presented for explicit user approval before architecture is recorded or implemented
 
-This follows AVA-602 and does not resume the parked V1 release path.
+This follows AVA-602 and is tracked toward the `v1.0.0` milestone rather than resuming the former parked V1 release-task path.

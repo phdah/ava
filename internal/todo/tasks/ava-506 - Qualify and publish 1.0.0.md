@@ -1,8 +1,18 @@
 ---
 id: ava-506
-title: "Qualify and publish 1.0.0"
-status: "Parked"
-labels: ["internal", "roadmap", "phase-05", "release", "stable", "v1"]
+title: Qualify and publish 1.0.0
+status: Won't Fix
+assignee: []
+created_date: ''
+updated_date: '2026-08-30 18:18'
+labels:
+  - internal
+  - roadmap
+  - phase-05
+  - release
+  - stable
+  - v1
+dependencies: []
 ordinal: 506
 ---
 
