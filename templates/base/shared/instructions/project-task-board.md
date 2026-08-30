@@ -20,9 +20,12 @@ When `./backlog.config.yml` exists, read its `backlog_directory` setting and tre
 
 ```text
 ./backlog.config.yml
+./backlog/index.md
+./backlog/tasks/index.md
 ./backlog/tasks/
-./backlog/completed/
 ```
+
+Every native task remains under `./backlog/tasks/`, regardless of lifecycle state. `Done` and `Won't Fix` are task statuses, not storage locations. Ava does not use or scaffold Backlog.md's optional `completed/` cleanup directory by default.
 
 The configuration and task tree are project-owned content. They must not be added to the Ava managed-file manifest or moved below `./.ava/`.
 
@@ -32,9 +35,11 @@ Existing task-board files always win over create-if-absent installation scaffold
 
 Use Backlog.md's native task representation. Preserve native frontmatter and sections that are outside the active change, including task identity, status, dependencies, labels, priority, assignee, acceptance criteria, implementation plan, notes, and final summary when present.
 
-Task identity and relationships are explicit data. Do not infer dependencies or ordering from filenames alone, and do not renumber an existing task merely to change its priority.
+Task identity and relationships are explicit data. Do not infer dependencies or ordering from filenames or hand-maintained queue prose, and do not renumber an existing task merely to change its priority.
 
 Direct valid Markdown edits are authoritative project changes. They must remain readable by a compatible Backlog.md CLI and browser. Do not translate tasks into an Ava-specific compatibility format.
+
+The scaffold `index.md` files are discovery documents, not task records. Backlog.md task discovery uses the configured task prefix, so an `index.md` inside the task directory does not become a task.
 
 # Current CLI instructions
 
@@ -52,7 +57,9 @@ Ava intentionally does not embed a frozen copy of the Backlog.md CLI manual. If 
 
 Task state tracks the work record; it does not grant authority to perform the work described by the task.
 
-A task may be completed only when its requested outcome and applicable completion conditions are satisfied. Reopening preserves task identity and relevant history. Splitting a task must preserve the intended outcome and make new dependency relationships explicit.
+The default lifecycle supports `To Do`, `In Progress`, `Done`, and `Won't Fix`. A task may be completed only when its requested outcome and applicable completion conditions are satisfied. `Won't Fix` records an intentional decision not to implement the task. Reopening preserves task identity and relevant history. Splitting a task must preserve the intended outcome and make new dependency relationships explicit.
+
+Leave terminal tasks in the task directory. Do not run `backlog cleanup` as part of the default Ava task lifecycle.
 
 Deletion, purging history, destructive archival, materially ambiguous reprioritization, material scope changes, and new architectural, security, product, or compatibility decisions require the approval defined by the active role and project instructions.
 
@@ -64,5 +71,6 @@ After task-board mutation, when a compatible Backlog.md CLI is available:
 - verify changed task identity and intended status
 - verify changed dependencies or relationships when applicable
 - preserve unrelated native fields and sections
+- confirm terminal tasks remain queryable from the same task corpus
 
 A CLI validation failure is evidence that the native task edit is incomplete or incompatible and must not be hidden by creating a second representation.
