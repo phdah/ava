@@ -30,7 +30,7 @@ test ! -d "$TARGET/backlog/completed"
 test ! -e "$TARGET/backlog/tasks/.gitkeep"
 
 grep -q '^backlog_directory: backlog$' "$TARGET/backlog.config.yml"
-grep -Fq 'statuses: ["To Do", "In Progress", "Done", "Won'"'"'t Fix"]' "$TARGET/backlog.config.yml"
+grep -Fq 'statuses: ["To Do", "In Progress", "Won'"'"'t Fix", "Done"]' "$TARGET/backlog.config.yml"
 grep -q '^remote_operations: false$' "$TARGET/backlog.config.yml"
 grep -q '^auto_commit: false$' "$TARGET/backlog.config.yml"
 
@@ -45,6 +45,12 @@ npx -y backlog.md@1.50.1 task create "Blocked lower ordinal" --ordinal 1 --depen
 npx -y backlog.md@1.50.1 task create "Ready next ordinal" --ordinal 2 >/dev/null
 next_title=$(npx -y backlog.md@1.50.1 task list --status "To Do" --ready --sort ordinal --limit 1 --json | jq -r '.tasks[0].title')
 test "$next_title" = "Ready next ordinal"
+
+# Verify Done dependencies become ready without moving task files.
+npx -y backlog.md@1.50.1 task edit "$blocker_id" -s "Done" >/dev/null
+unblocked_title=$(npx -y backlog.md@1.50.1 task list --status "To Do" --ready --sort ordinal --limit 1 --json | jq -r '.tasks[0].title')
+test "$unblocked_title" = "Blocked lower ordinal"
+test ! -d backlog/completed
 
 # Verify direct native Markdown edits remain compatible and terminal tasks remain in tasks/.
 npx -y backlog.md@1.50.1 task create "Installed lifecycle probe" -d "Verify Ava project task scaffold" >/dev/null
