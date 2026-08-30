@@ -5,10 +5,13 @@ This log records major conceptual and structural changes to Ava's internal devel
 ## 2026-08-30
 
 * **Backlog.md internal roadmap**: Adopted Backlog.md `1.50.1` as the Markdown-native lifecycle system for Ava's internal todos, using `internal/todo/` as the configured project root.
-* **Lifecycle source of truth**: Migrated every retained roadmap task and dogfood finding to native Backlog.md task state. Existing phase/task documents remain frozen specifications and completion evidence rather than a second mutable status system.
-* **Parked release state**: Added a dedicated `Parked` status and preserved the explicit decision not to resume Phase 5 release progression or alpha dogfooding while Backlog.md integration and durable interaction evidence remain ahead in the normal queue.
-* **Task ordering**: Encoded the active sequence as native dependencies `AVA-601 -> AVA-602 -> AVA-701` and advanced the official next action to `AVA-602` after completing internal Backlog.md adoption.
-* **Backlog validation**: Added repository validation for native task IDs, statuses, retained-spec coverage, dependency integrity, parked release guards, Backlog.md parsing, lifecycle edits, and the local web interface.
+* **Full native migration**: Migrated all 72 retained roadmap tasks and dogfood findings into self-contained native `ava-*` task records, including their specifications, decisions, historical phase/release context, and completion evidence where applicable.
+* **Legacy hierarchy removal**: Removed `/internal/todo.md`, numbered phase directories, the separate dogfood finding hierarchy, phase indexes, finding template, and V1 operator todo file after their durable content was absorbed into native task records. No parallel mutable roadmap/status source remains.
+* **Lifecycle source of truth**: `internal/todo/tasks/` and `internal/todo/completed/` now hold the only task lifecycle state. Native Backlog frontmatter is authoritative; historical pre-Backlog metadata retained inside task bodies is documentary evidence only.
+* **Parked release state**: Added a dedicated `Parked` status and preserved the explicit decision not to resume Phase 5 release progression or alpha dogfooding while Backlog.md project integration and durable interaction evidence remain ahead in the normal queue.
+* **Task ordering**: Encoded the active sequence as native dependencies `AVA-601 -> AVA-602 -> AVA-701`, completed and archived AVA-601, and advanced the official next action to AVA-602.
+* **Maintainer integration**: Updated Ava Internal Maintainer bootstrap and instructions to load Backlog.md workflow guidance for roadmap work, select only executable native tasks with satisfied dependencies, preserve parked work, and record scope/completion evidence directly in task cards.
+* **Backlog validation**: Added repository validation for the exact 72-task inventory, native `ava-` filename/ID correspondence, statuses, dependency integrity/cycles, current queue, parked release guards, absence of legacy hierarchy/wrappers, Backlog JSON parsing, lifecycle edits, and the loopback web interface.
 * **Git boundary**: Disabled Backlog.md remote operations and automatic commits so board operations remain explicit repository changes under the active host's Git workflow.
 
 ## 2026-08-03

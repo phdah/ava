@@ -10,6 +10,7 @@ REPO_ROOT = TODO_ROOT.parents[1]
 CONFIG = REPO_ROOT / "backlog.config.yml"
 TASK_DIRS = (TODO_ROOT / "tasks", TODO_ROOT / "completed")
 ALLOWED_STATUSES = {"To Do", "In Progress", "Parked", "Done"}
+EXPECTED_TASK_COUNT = 72
 PARKED_RELEASE_IDS = {
     "ava-504",
     "ava-505",
@@ -19,19 +20,24 @@ PARKED_RELEASE_IDS = {
     "ava-551",
     "ava-5625",
 }
-SPEC_EXCLUSIONS = {"index.md", "v1-release-operator-path.md", "finding-template.md"}
+LEGACY_PHASE_PATTERN = re.compile(r"[0-9][0-9]-.*")
+TASK_FILENAME_PATTERN = re.compile(r"ava-(\d+(?:\.\d+)?) - .+\.md")
 
 
 class ValidationError(Exception):
     pass
 
 
-def parse_frontmatter(path: Path) -> tuple[dict[str, object], str]:
+def fail(message: str) -> None:
+    raise ValidationError(message)
+
+
+def parse_frontmatter(path: Path) -> dict[str, object]:
     text = path.read_text(encoding="utf-8")
     if not text.startswith("---\n"):
-        raise ValidationError(f"{path}: missing YAML frontmatter")
+        fail(f"{path}: missing YAML frontmatter")
     try:
-        frontmatter, body = text[4:].split("\n---\n", 1)
+        frontmatter, _body = text[4:].split("\n---\n", 1)
     except ValueError as exc:
         raise ValidationError(f"{path}: unterminated YAML frontmatter") from exc
 
@@ -51,21 +57,7 @@ def parse_frontmatter(path: Path) -> tuple[dict[str, object], str]:
             data[key] = items
         else:
             data[key] = value.strip("\"'")
-    return data, body
-
-
-def fail(message: str) -> None:
-    raise ValidationError(message)
-
-
-def expected_legacy_specs() -> set[Path]:
-    specs: set[Path] = set()
-    for phase_dir in sorted(TODO_ROOT.glob("[0-9][0-9]-*")):
-        for path in phase_dir.rglob("*.md"):
-            if path.name in SPEC_EXCLUSIONS:
-                continue
-            specs.add(path.resolve())
-    return specs
+    return data
 
 
 def main() -> int:
@@ -81,18 +73,27 @@ def main() -> int:
         if entry not in config:
             fail(f"backlog.config.yml missing required setting: {entry}")
 
-    tasks: dict[str, dict[str, object]] = {}
-    referenced_specs: set[Path] = set()
+    legacy_dirs = [
+        path.name
+        for path in TODO_ROOT.iterdir()
+        if path.is_dir() and LEGACY_PHASE_PATTERN.fullmatch(path.name)
+    ]
+    if legacy_dirs:
+        fail(f"legacy phase directories remain after Backlog migration: {legacy_dirs}")
+    if (REPO_ROOT / "internal" / "todo.md").exists():
+        fail("legacy internal/todo.md remains after Backlog migration")
 
+    tasks: dict[str, dict[str, object]] = {}
     for task_dir in TASK_DIRS:
         if not task_dir.is_dir():
             fail(f"missing Backlog.md directory: {task_dir.relative_to(REPO_ROOT)}")
-        for path in sorted(task_dir.glob("task-*.md")):
-            match = re.fullmatch(r"task-(\d+(?:\.\d+)?) - .+\.md", path.name)
-            if not match:
-                fail(f"{path}: filename is not Backlog.md native task form")
 
-            data, body = parse_frontmatter(path)
+        for path in sorted(task_dir.glob("*.md")):
+            match = TASK_FILENAME_PATTERN.fullmatch(path.name)
+            if not match:
+                fail(f"{path}: filename is not native Backlog task form for prefix ava")
+
+            data = parse_frontmatter(path)
             task_id = str(data.get("id", ""))
             expected_id = f"ava-{match.group(1)}"
             if task_id != expected_id:
@@ -110,27 +111,13 @@ def main() -> int:
                 fail(f"{path}: completed/ may contain only Done tasks")
 
             labels = data.get("labels", [])
+            dependencies = data.get("dependencies", [])
             if not isinstance(labels, list):
                 fail(f"{path}: labels must be a list")
-            dependencies = data.get("dependencies", [])
             if not isinstance(dependencies, list):
                 fail(f"{path}: dependencies must be a list")
-
             if "legacy-spec" in labels:
-                links = re.findall(
-                    r"\[Retained specification\]\((\.\./[^)]+\.md)\)",
-                    body,
-                )
-                if len(links) != 1:
-                    fail(f"{path}: migrated task must link one retained specification")
-                spec = (task_dir / links[0]).resolve()
-                try:
-                    spec.relative_to(TODO_ROOT.resolve())
-                except ValueError:
-                    fail(f"{path}: retained specification escapes internal/todo")
-                if not spec.is_file():
-                    fail(f"{path}: retained specification does not exist: {links[0]}")
-                referenced_specs.add(spec)
+                fail(f"{path}: legacy-spec indirection is not allowed after full migration")
 
             tasks[task_id] = {
                 "path": path,
@@ -138,21 +125,8 @@ def main() -> int:
                 "dependencies": dependencies,
             }
 
-    if not tasks:
-        fail("no Backlog.md tasks found")
-
-    missing_specs = expected_legacy_specs() - referenced_specs
-    extra_specs = referenced_specs - expected_legacy_specs()
-    if missing_specs:
-        formatted = ", ".join(
-            str(path.relative_to(TODO_ROOT)) for path in sorted(missing_specs)
-        )
-        fail(f"legacy task specifications missing Backlog cards: {formatted}")
-    if extra_specs:
-        formatted = ", ".join(
-            str(path.relative_to(TODO_ROOT)) for path in sorted(extra_specs)
-        )
-        fail(f"Backlog cards reference non-task legacy specs: {formatted}")
+    if len(tasks) != EXPECTED_TASK_COUNT:
+        fail(f"expected {EXPECTED_TASK_COUNT} migrated tasks, found {len(tasks)}")
 
     for task_id, task in tasks.items():
         for dependency in task["dependencies"]:

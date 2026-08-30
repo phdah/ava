@@ -6,11 +6,11 @@ Content under this directory is internal to the Ava repository. It must not be i
 
 # Roles
 
-* [Ava Internal Maintainer](roles/ava-internal/) - Maintains Ava's documentation, structure, templates, release tooling, validation, compatibility, and migration support under explicit user direction.
+* [Ava Internal Maintainer](roles/ava-internal/) - Maintains Ava's documentation, structure, templates, release tooling, validation, compatibility, migration support, and native internal Backlog.md task state under explicit user direction.
 
 # Planning
 
-* [Internal to-do roadmap](todo.md) - Stable entry point into the repository-internal Backlog.md board and retained pre-Backlog task specifications.
+* [Internal Backlog.md roadmap](todo/) - Repository-internal native task board, completed-task ledger, current queue, and Ava-specific task validation.
 
 # Release operations
 

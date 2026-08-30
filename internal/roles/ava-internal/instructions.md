@@ -8,7 +8,7 @@ generated:
   at: 2026-07-30T15:26:00Z
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T13:34:00+02:00
+  at: 2026-08-30T16:30:00+02:00
 ---
 
 # Working model
@@ -31,6 +31,26 @@ When working in this pattern:
 - while working the release branch directly, no new implementation commits should merge to main; a new commit on main causes release-please to rewrite the branch and will overwrite any changes pushed to it
 - the release PR review is a semantic and policy check; CI qualification and automated assembly run after the merge against the resulting tag and are not a substitute for the review
 
+# Internal roadmap and Backlog.md
+
+Ava's internal roadmap is the Backlog.md project rooted at `/internal/todo/`. Native task files under `/internal/todo/tasks/` and `/internal/todo/completed/` are the only task lifecycle source. Do not recreate `/internal/todo.md`, numbered phase status directories, or another mutable roadmap/status hierarchy.
+
+Whenever the user asks to select, inspect, implement, continue, reprioritize, reopen, or complete an internal todo:
+
+1. read `/internal/todo/index.md`
+2. load Backlog.md's current agent workflow guidance with `backlog instructions overview`, or `npx -y backlog.md@1.50.1 instructions overview` when the pinned package must be used directly
+3. inspect native task state with Backlog.md (`task list --json`, `task <id> --json`, or the corresponding native file)
+4. select work only from executable task state and satisfied dependencies; `Parked` tasks are excluded until the user explicitly resumes them
+5. read the complete selected task before planning or modifying the repository
+6. use the native task as the durable place for task scope, acceptance criteria, implementation notes, lifecycle state, and completion evidence
+7. prefer Backlog.md commands for lifecycle/task metadata changes; direct Markdown edits are allowed only when they preserve the native task representation
+8. run `python3 internal/todo/validate.py` after roadmap changes
+9. when implementation is complete, update the native task to `Done`, preserve useful completion evidence, and use Backlog cleanup/archive behavior when appropriate
+
+One bounded Backlog task is the normal unit of implementation and PR scope. Do not silently combine another `To Do` task into the current PR merely because it is adjacent in the queue.
+
+Backlog.md remote operations and automatic commits are disabled for this repository. Backlog changes are normal local/repository Git changes and remain subject to the same PR review as code and documentation.
+
 # Ambiguity and conflict
 
 Challenge unclear requirements before implementation.
@@ -50,7 +70,7 @@ It may implement decisions already made through the current prompt, existing rep
 
 It must request approval before applying a large architectural decision as defined in [role.md](role.md).
 
-A draft pull request may express an architectural proposal before approval only when every affected authoritative document, roadmap entry, and log entry clearly marks it as proposed. Do not record the proposal as accepted, established, active, or superseding existing architecture until the user approves it.
+A draft pull request may express an architectural proposal before approval only when every affected authoritative document, roadmap task, and log entry clearly marks it as proposed. Do not record the proposal as accepted, established, active, or superseding existing architecture until the user approves it.
 
 It does not need to produce ADR files or explain trade-offs unless requested.
 
@@ -76,7 +96,7 @@ When a bounded part of the task matches a role registered under `/templates/base
 6. use the delegated role's workflow and domain instructions only for that bounded subtask
 7. apply only actions permitted by both the Ava Internal Maintainer and delegated role
 8. preserve every constraint from both roles
-9. return control to the Ava Internal Maintainer for repository-wide integration, internal planning state, indexes, logs, and completion reporting
+9. return control to the Ava Internal Maintainer for repository-wide integration, internal Backlog state, indexes, logs, and completion reporting
 
 Announce every newly delegated specialist before loading its instructions into the effective working context.
 
@@ -91,11 +111,11 @@ Do not duplicate a delegated role's detailed workflow inside the Ava Internal Ma
 For internal repository documents and other scopes not governed by a delegated role or more specific shared instruction:
 
 - use Markdown for knowledge and instruction documents
-- add YAML frontmatter to every non-reserved Markdown document except the repository root `README.md`
+- add YAML frontmatter to every non-reserved Markdown document except the repository root `README.md`; native Backlog.md tasks use Backlog.md's own required frontmatter instead of Ava document-type frontmatter
 - treat the root `README.md` as human-facing GitHub documentation for stable approved project purpose, architecture, goals, and boundaries
-- keep proposals, open design questions, current roadmap state, and the next task under `/internal/todo.md` and `/internal/todo/`
+- keep proposals, open design questions, current roadmap state, and implementation-task evidence in native Backlog.md tasks under `/internal/todo/`
 - when a proposal must be visible in the README for review, mark its approval state explicitly and remove that marker only after approval
-- include a non-empty `type` field in frontmatter
+- include a non-empty `type` field in ordinary non-reserved internal Markdown frontmatter
 - use descriptive Ava-specific type values rather than Google's data-oriented taxonomy
 - use `index.md` for directory discovery
 - use `log.md` only for major conceptual or structural changes
@@ -103,7 +123,7 @@ For internal repository documents and other scopes not governed by a delegated r
 - use Markdown links to connect related documents
 - keep documents focused and avoid combining unrelated responsibilities
 
-Reserved `index.md` and `log.md` files do not require normal concept frontmatter.
+Reserved `index.md` and `log.md` files do not require normal concept frontmatter. Native Backlog.md task files are also exempt from Ava's ordinary `type` requirement because their frontmatter must remain compatible with Backlog.md.
 
 Update the relevant `index.md` whenever files or directories are added, removed, renamed, or conceptually reorganized.
 
@@ -119,7 +139,7 @@ Default to POSIX shell for thin release, installation, and upgrade automation. U
 
 Do not implement an MCP server, feature-rich CLI, workspace-provider layer, or persistent application service unless the user has explicitly approved an architecture requiring it.
 
-Define tests as part of the implementation task they protect. At minimum, validate documentation structure, links, managed-file boundaries, version state, migration state, release-asset integrity, and declared trust behavior where relevant.
+Define tests as part of the implementation task they protect. At minimum, validate documentation structure, links, managed-file boundaries, version state, migration state, release-asset integrity, declared trust behavior where relevant, and native Backlog task invariants when roadmap state changes.
 
 # Completion
 
@@ -129,5 +149,7 @@ When the requested work is complete:
 2. verify that internal and distributed-project concerns remain separated
 3. verify that proposed and approved architecture states are represented accurately
 4. verify that affected indexes reflect the current structure without flattening descendants
-5. update conceptual logs when required
-6. report what changed and identify any unresolved decision
+5. update the selected Backlog task with final lifecycle state and useful completion evidence
+6. run the internal Backlog validator when task state or task content changed
+7. update conceptual logs when required
+8. report what changed and identify any unresolved decision

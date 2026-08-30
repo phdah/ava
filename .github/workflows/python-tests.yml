@@ -30,7 +30,9 @@ jobs:
         run: python3 internal/todo/validate.py
 
       - name: Validate Backlog.md native parsing
-        run: npx -y backlog.md@1.50.1 task list --json >/dev/null
+        run: |
+          npx -y backlog.md@1.50.1 task list --json \
+            | jq -e '.tasks | any(.id | ascii_downcase == "ava-602")' >/dev/null
 
       - name: Exercise Backlog.md lifecycle
         run: |
@@ -38,9 +40,19 @@ jobs:
           mkdir -p "$test_root"
           cp -a "$GITHUB_WORKSPACE/." "$test_root/"
           cd "$test_root"
+
+          npx -y backlog.md@1.50.1 task edit ava-602 -s "In Progress" >/dev/null
+          npx -y backlog.md@1.50.1 task edit ava-602 -s "To Do" >/dev/null
+
           npx -y backlog.md@1.50.1 task edit ava-601 -s "To Do" >/dev/null
           npx -y backlog.md@1.50.1 task edit ava-601 -s "Done" >/dev/null
-          grep -q "Retained specification" "internal/todo/tasks/task-601 - Evaluate and implement Backlog.md for internal todos.md"
+
+          task_601=$(find internal/todo -type f -name 'ava-601 -*' -print -quit)
+          task_602=$(find internal/todo -type f -name 'ava-602 -*' -print -quit)
+          test -n "$task_601"
+          test -n "$task_602"
+          grep -q "Seventy-two retained tasks/findings" "$task_601"
+          grep -q "Make Backlog.md task management available" "$task_602"
           python3 internal/todo/validate.py
 
       - name: Smoke test Backlog.md browser
