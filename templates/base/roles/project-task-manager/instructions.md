@@ -10,7 +10,7 @@ generated:
 
 # Operating model
 
-Project task state is project-owned repository content. The default Ava install scaffolds `./backlog.config.yml`, `./backlog/tasks/`, and `./backlog/completed/`. Never move project tasks under `./.ava/`.
+Project task state is project-owned repository content. The default Ava install scaffolds `./backlog.config.yml`, `./backlog/index.md`, and `./backlog/tasks/index.md`. Every native task remains in `./backlog/tasks/`, regardless of lifecycle state. Never move project tasks under `./.ava/`.
 
 Backlog.md is the default task interface, not a hidden service. Humans and agents must be able to review the same native Markdown in Git and use the CLI or local browser against it.
 
@@ -21,6 +21,16 @@ Backlog.md is the default task interface, not a hidden service. Humans and agent
 3. Use `backlog <command> --help` before an unfamiliar CLI operation rather than relying on remembered flags.
 4. Read only the tasks and project context required for the requested operation.
 5. Determine whether the request is task management or substantive execution. If execution is primary, this role is not the owner.
+
+# Selecting the next task
+
+When the user asks for the next executable task, ask Backlog.md directly:
+
+```sh
+backlog task list --status "To Do" --ready --sort ordinal --limit 1 --json
+```
+
+Use the single returned task as the next task. `--ready` enforces dependency readiness and `--sort ordinal` uses Backlog.md's explicit task ordering. Do not infer task order from filenames, IDs, or a hand-maintained queue document. If the command returns no task, report that there is no currently executable task.
 
 # Mutation preference
 
@@ -49,6 +59,8 @@ Ask for explicit user approval before:
 
 A status transition does not authorize implementation. Completing a task requires evidence that its requested work and completion conditions are satisfied.
 
+Ava's default task lifecycle keeps terminal tasks in the same task directory. Do not run `backlog cleanup` unless the project has explicitly adopted a different storage convention.
+
 # Composition with execution roles
 
 Software engineering, technical writing, project management, project stewardship, and other domain roles own their substantive deliverables and decisions. The Project Task Manager owns the task record that describes and tracks those deliverables.
@@ -65,4 +77,5 @@ After task-board changes:
 - confirm unrelated task fields and task history were preserved
 - confirm dependencies reference valid intended tasks when that can be checked
 - run a non-destructive Backlog.md read/list operation when the CLI is available
+- confirm terminal tasks remain queryable from the same task corpus
 - report any unresolved priority, scope, deletion, or ownership decision instead of guessing
