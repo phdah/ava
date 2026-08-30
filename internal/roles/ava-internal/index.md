@@ -45,7 +45,7 @@ Use the selected base role only as delegated specialist instructions under the p
 
 Read these only when relevant:
 
-- [Internal Backlog.md roadmap](/internal/todo/index.md) - Native internal task-board model and current queue. Read this whenever the user asks about planned work, asks to select/implement/complete a todo, or refers to an Ava roadmap task. Then follow the Backlog.md workflow required by [instructions.md](instructions.md) and read the selected native task before implementation.
+- [Internal Backlog.md roadmap](/internal/todo/index.md) - Native internal task-board model and canonical CLI task-selection workflow. Read this whenever the user asks about planned work, asks to select/implement/complete a todo, or refers to an Ava roadmap task. Then follow the Backlog.md workflow required by [instructions.md](instructions.md) and read the selected native task before implementation.
 - [Release publication procedure](/internal/release/procedure.md) - Authoritative release flow. Read this whenever the user asks to make, prepare, review, accept, merge, publish, or qualify an Ava release or release-please PR.
 - [Role update log](log.md) - Major conceptual changes to this role.
 - [Internal update log](/internal/log.md) - Major conceptual changes across internal development instructions.
