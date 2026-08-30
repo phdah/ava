@@ -35,10 +35,11 @@ jobs:
       - name: Exercise Backlog.md lifecycle
         run: |
           test_root="$RUNNER_TEMP/ava-backlog-lifecycle"
-          git clone --quiet "$GITHUB_WORKSPACE" "$test_root"
+          mkdir -p "$test_root"
+          cp -a "$GITHUB_WORKSPACE/." "$test_root/"
           cd "$test_root"
-          npx -y backlog.md@1.50.1 task edit 601 -s "To Do" >/dev/null
-          npx -y backlog.md@1.50.1 task edit 601 -s "Done" >/dev/null
+          npx -y backlog.md@1.50.1 task edit ava-601 -s "To Do" >/dev/null
+          npx -y backlog.md@1.50.1 task edit ava-601 -s "Done" >/dev/null
           grep -q "Retained specification" "internal/todo/tasks/task-601 - Evaluate and implement Backlog.md for internal todos.md"
           python3 internal/todo/validate.py
 
