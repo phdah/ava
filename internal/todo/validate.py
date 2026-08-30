@@ -8,7 +8,7 @@ from pathlib import Path
 TODO_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = TODO_ROOT.parents[1]
 CONFIG = REPO_ROOT / "backlog.config.yml"
-TASK_DIRS = (TODO_ROOT / "tasks", TODO_ROOT / "completed")
+TASK_DIR = TODO_ROOT / "tasks"
 ALLOWED_STATUSES = {"To Do", "In Progress", "Parked", "Won't Fix", "Done"}
 EXPECTED_TASK_COUNT = 72
 PARKED_RELEASE_IDS = {
@@ -117,48 +117,48 @@ def main() -> int:
         fail(f"legacy phase directories remain after Backlog migration: {legacy_dirs}")
     if (REPO_ROOT / "internal" / "todo.md").exists():
         fail("legacy internal/todo.md remains after Backlog migration")
+    if (TODO_ROOT / "completed").exists():
+        fail("internal roadmap must keep all lifecycle states in internal/todo/tasks")
+    if not TASK_DIR.is_dir():
+        fail(f"missing Backlog.md task directory: {TASK_DIR.relative_to(REPO_ROOT)}")
+    if not (TASK_DIR / "index.md").is_file():
+        fail("internal/todo/tasks/index.md is required for repository discovery")
 
     tasks: dict[str, dict[str, object]] = {}
-    for task_dir in TASK_DIRS:
-        if not task_dir.is_dir():
-            fail(f"missing Backlog.md directory: {task_dir.relative_to(REPO_ROOT)}")
+    for path in sorted(TASK_DIR.glob("ava-*.md")):
+        match = TASK_FILENAME_PATTERN.fullmatch(path.name)
+        if not match:
+            fail(f"{path}: filename is not native Backlog task form for prefix ava")
 
-        for path in sorted(task_dir.glob("*.md")):
-            match = TASK_FILENAME_PATTERN.fullmatch(path.name)
-            if not match:
-                fail(f"{path}: filename is not native Backlog task form for prefix ava")
+        data = parse_frontmatter(path)
+        task_id = str(data.get("id", ""))
+        expected_id = f"ava-{match.group(1)}"
+        if task_id != expected_id:
+            fail(f"{path}: id {task_id!r} does not match filename ({expected_id})")
+        if task_id in tasks:
+            fail(f"duplicate task id: {task_id}")
 
-            data = parse_frontmatter(path)
-            task_id = str(data.get("id", ""))
-            expected_id = f"ava-{match.group(1)}"
-            if task_id != expected_id:
-                fail(f"{path}: id {task_id!r} does not match filename ({expected_id})")
-            if task_id in tasks:
-                fail(f"duplicate task id: {task_id}")
+        title = str(data.get("title", ""))
+        status = str(data.get("status", ""))
+        if not title:
+            fail(f"{path}: missing title")
+        if status not in ALLOWED_STATUSES:
+            fail(f"{path}: unsupported status {status!r}")
 
-            title = str(data.get("title", ""))
-            status = str(data.get("status", ""))
-            if not title:
-                fail(f"{path}: missing title")
-            if status not in ALLOWED_STATUSES:
-                fail(f"{path}: unsupported status {status!r}")
-            if task_dir.name == "completed" and status != "Done":
-                fail(f"{path}: completed/ may contain only Done tasks")
+        labels = data.get("labels", [])
+        dependencies = data.get("dependencies", [])
+        if not isinstance(labels, list):
+            fail(f"{path}: labels must be a list")
+        if not isinstance(dependencies, list):
+            fail(f"{path}: dependencies must be a list")
+        if "legacy-spec" in labels:
+            fail(f"{path}: legacy-spec indirection is not allowed after full migration")
 
-            labels = data.get("labels", [])
-            dependencies = data.get("dependencies", [])
-            if not isinstance(labels, list):
-                fail(f"{path}: labels must be a list")
-            if not isinstance(dependencies, list):
-                fail(f"{path}: dependencies must be a list")
-            if "legacy-spec" in labels:
-                fail(f"{path}: legacy-spec indirection is not allowed after full migration")
-
-            tasks[task_id] = {
-                "path": path,
-                "status": status,
-                "dependencies": dependencies,
-            }
+        tasks[task_id] = {
+            "path": path,
+            "status": status,
+            "dependencies": dependencies,
+        }
 
     if len(tasks) != EXPECTED_TASK_COUNT:
         fail(f"expected {EXPECTED_TASK_COUNT} migrated tasks, found {len(tasks)}")
@@ -186,23 +186,6 @@ def main() -> int:
 
     for task_id in tasks:
         visit(task_id)
-
-    required_queue = {
-        "ava-601": ("Done", []),
-        "ava-602": ("To Do", ["ava-601"]),
-        "ava-701": ("To Do", ["ava-602"]),
-    }
-    for task_id, (status, dependencies) in required_queue.items():
-        task = tasks.get(task_id)
-        if task is None:
-            fail(f"missing roadmap task {task_id}")
-        if task["status"] != status:
-            fail(f"{task_id}: expected status {status}, got {task['status']}")
-        if task["dependencies"] != dependencies:
-            fail(
-                f"{task_id}: expected dependencies {dependencies}, "
-                f"got {task['dependencies']}"
-            )
 
     for task_id in PARKED_RELEASE_IDS:
         task = tasks.get(task_id)

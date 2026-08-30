@@ -32,7 +32,7 @@ jobs:
       - name: Validate Backlog.md native parsing
         run: |
           npx -y backlog.md@1.50.1 task list --json \
-            | jq -e '.tasks | any(.id | ascii_downcase == "ava-602")' >/dev/null
+            | jq -e '.tasks | any(.id | ascii_downcase == "ava-701")' >/dev/null
 
       - name: Exercise Backlog.md lifecycle
         run: |
@@ -41,13 +41,9 @@ jobs:
           cp -a "$GITHUB_WORKSPACE/." "$test_root/"
           cd "$test_root"
 
-          npx -y backlog.md@1.50.1 task edit ava-602 -s "In Progress" >/dev/null
-          npx -y backlog.md@1.50.1 task edit ava-602 -s "Done" >/dev/null
-          npx -y backlog.md@1.50.1 task edit ava-602 -s "To Do" >/dev/null
-
-          task_602=$(find internal/todo/tasks -type f -name 'ava-602 -*' -print -quit)
-          test -n "$task_602"
-          grep -q "Make Backlog.md task management available" "$task_602"
+          npx -y backlog.md@1.50.1 task edit ava-701 -s "In Progress" >/dev/null
+          npx -y backlog.md@1.50.1 task edit ava-701 -s "Done" >/dev/null
+          npx -y backlog.md@1.50.1 task edit ava-701 -s "To Do" >/dev/null
           python3 internal/todo/validate.py
 
       - name: Smoke test Backlog.md browser
@@ -64,6 +60,9 @@ jobs:
           done
           cat "$browser_log"
           exit 1
+
+      - name: Exercise installed project task board
+        run: internal/release/test-project-backlog.sh
 
       - name: Run release qualification
         run: internal/release/test.sh

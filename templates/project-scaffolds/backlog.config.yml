@@ -1,0 +1,14 @@
+project_name: "Project"
+backlog_directory: backlog
+default_status: "To Do"
+statuses: ["To Do", "In Progress", "Won't Fix", "Done"]
+labels: []
+date_format: yyyy-mm-dd
+auto_open_browser: false
+default_port: 6420
+remote_operations: false
+auto_commit: false
+filesystem_only: false
+bypass_git_hooks: false
+check_active_branches: false
+task_prefix: "task"

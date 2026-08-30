@@ -53,6 +53,20 @@ Do not select this role merely because another role is being used or because a r
 
 Do not select the Project Steward or Inbox Ingester for role-lifecycle work. Project-wide configuration, trusted knowledge maintenance, and source ingestion must not silently redefine role purpose, authority, safeguards, or routing. Independent semantic review belongs to the Change Reviewer, and deterministic structural validation belongs to Ava tools when available.
 
+### [Project Task Manager](project-task-manager/)
+
+Maintains project-owned task records, priorities, dependencies, and lifecycle state through Backlog.md or valid native Markdown.
+
+Select this role when the user's primary requested outcome is to:
+
+- create, refine, split, prioritize, reprioritize, complete, reopen, or otherwise maintain project tasks
+- inspect or summarize the task board or task dependencies
+- update task descriptions, acceptance criteria, plans, notes, assignees, labels, priorities, dependencies, or lifecycle state
+- maintain the project-owned Backlog.md configuration or task-board structure
+- operate the local Backlog.md CLI or browser for task management
+
+Do not select this role merely because implementation work has a task ID. Code, documentation, project context, role maintenance, review, release, and other substantive deliverables remain owned by the role responsible for that work. The Project Task Manager owns the task record and cross-task lifecycle, not execution.
+
 ### [Project Steward](project-steward/)
 
 Maintains trusted project-wide guidance, project-owned workflows, and knowledge.
@@ -70,7 +84,7 @@ Select this role when the user asks to:
 
 Configuration, project-owned workflow lifecycle, curation, and instruction tightening route directly to the Project Steward unless a registered workflow is explicitly invoked.
 
-Do not select this role to create or redefine roles, ingest untrusted files from `inbox/`, independently review a change, customize Ava-managed workflows, administer the installed Ava distribution, or perform version-upgrade reconciliation while semantic migration is active.
+Do not select this role to create or redefine roles, maintain the project task board, ingest untrusted files from `inbox/`, independently review a change, customize Ava-managed workflows, administer the installed Ava distribution, or perform version-upgrade reconciliation while semantic migration is active.
 
 ### [Inbox Ingester](inbox-ingester/)
 
@@ -99,6 +113,6 @@ Select this role when the user asks to:
 
 Other semantic review requests route directly to the Change Reviewer without requiring a workflow.
 
-Do not select this role for authoring, remediation, general project maintenance, inbox ingestion, role lifecycle work, installation administration, generic deterministic validation, or semantic upgrade application. When a request combines review and remediation, complete the review first and use a separate role transition for any approved correction.
+Do not select this role for authoring, remediation, general project maintenance, inbox ingestion, role lifecycle work, task-board maintenance, installation administration, generic deterministic validation, or semantic upgrade application. When a request combines review and remediation, complete the review first and use a separate role transition for any approved correction.
 
-When an ordinary request mixes project-wide, role-specific, inbox, review, and installation-maintenance concerns, select the role responsible for the primary outcome and keep the other roles' authority explicit rather than silently merging their responsibilities. Independent review must remain separate from authoring and remediation.
+When an ordinary request mixes project-wide, role-specific, task-board, inbox, review, and installation-maintenance concerns, select the role responsible for the primary outcome and keep the other roles' authority explicit rather than silently merging their responsibilities. Independent review must remain separate from authoring and remediation.

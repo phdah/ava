@@ -13,6 +13,7 @@ sh -n "$ROOT/internal/release/qualify-synthetic.sh"
 sh -n "$ROOT/internal/release/qualify-release.sh"
 sh -n "$ROOT/internal/release/accept-release-qualification.sh"
 sh -n "$ROOT/internal/release/qualification-opencode.sh"
+sh -n "$ROOT/internal/release/test-project-backlog.sh"
 python3 -m py_compile \
   "$ROOT/internal/release/adjacent_edges.py" \
   "$ROOT/internal/release/release_catalog.py" \
@@ -51,6 +52,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_installer_conformance \
   internal.release.tests.test_host_config \
   internal.release.tests.test_root_routing \
+  internal.release.tests.test_project_task_board \
   internal.release.tests.test_review_sufficiency \
   internal.release.tests.test_calendar_verification \
   internal.release.tests.test_document_update_metadata_fixtures \

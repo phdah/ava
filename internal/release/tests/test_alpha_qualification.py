@@ -129,9 +129,9 @@ class AlphaQualificationTests(unittest.TestCase):
                 self.assertIn(case_id, matrix_cases, f"{gate['id']}: {case_id}")
 
     def test_phase_one_through_four_tasks_are_complete(self) -> None:
-        completed_root = SOURCE_ROOT / "internal/todo/completed"
+        tasks_root = SOURCE_ROOT / "internal/todo/tasks"
         task_files: list[tuple[int, Path]] = []
-        for path in sorted(completed_root.glob("ava-* - *.md")):
+        for path in sorted(tasks_root.glob("ava-* - *.md")):
             task_id_text = path.name.split(" ", 1)[0].removeprefix("ava-")
             if not task_id_text.isdigit():
                 continue

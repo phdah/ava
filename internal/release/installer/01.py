@@ -57,8 +57,9 @@ def validate_release_manifest(manifest: Any, expected_version: str) -> None:
         elif item["ownership"] == "project-owned":
             if item["operation"] != "create-if-absent" or item["role"] != "scaffold":
                 raise AvaError("INVALID_MANIFEST", f"invalid scaffold mapping: {item['destination']}")
-            allowed_roots = ("/index.md", "/log.md", "/roles/", "/workflows/", "/shared/", "/knowledge/", "/inbox/")
-            if item["destination"] not in {"/index.md", "/log.md"} and not item["destination"].startswith(allowed_roots[2:]):
+            allowed_files = {"/index.md", "/log.md", "/backlog.config.yml"}
+            allowed_directories = ("/roles/", "/workflows/", "/shared/", "/knowledge/", "/inbox/", "/backlog/")
+            if item["destination"] not in allowed_files and not item["destination"].startswith(allowed_directories):
                 raise AvaError("INVALID_MANIFEST", f"scaffold is outside project-owned extension paths: {item['destination']}")
         else:
             raise AvaError("INVALID_MANIFEST", f"invalid ownership: {item['destination']}")
