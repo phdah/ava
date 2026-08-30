@@ -8,7 +8,7 @@ generated:
   at: 2026-07-30T15:26:00Z
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-30T16:30:00+02:00
+  at: 2026-08-30T19:35:00+02:00
 ---
 
 # Working model
@@ -33,21 +33,22 @@ When working in this pattern:
 
 # Internal roadmap and Backlog.md
 
-Ava's internal roadmap is the Backlog.md project rooted at `/internal/todo/`. Native task files under `/internal/todo/tasks/` and `/internal/todo/completed/` are the only task lifecycle source. Do not recreate `/internal/todo.md`, numbered phase status directories, or another mutable roadmap/status hierarchy.
+Ava's internal roadmap is the Backlog.md project rooted at `/internal/todo/`. Native task files under `/internal/todo/tasks/` are the only task lifecycle source. Do not recreate `/internal/todo.md`, a `completed/` task archive, numbered phase status directories, or another mutable roadmap/status hierarchy.
 
 Whenever the user asks to select, inspect, implement, continue, reprioritize, reopen, or complete an internal todo:
 
 1. read `/internal/todo/index.md`
 2. load Backlog.md's current agent workflow guidance with `backlog instructions overview`, or `npx -y backlog.md@1.50.1 instructions overview` when the pinned package must be used directly
-3. inspect native task state with Backlog.md (`task list --json`, `task <id> --json`, or the corresponding native file)
-4. select work only from executable task state and satisfied dependencies; `Parked` tasks are excluded until the user explicitly resumes them
-5. read the complete selected task before planning or modifying the repository
-6. use the native task as the durable place for task scope, acceptance criteria, implementation notes, lifecycle state, and completion evidence
-7. prefer Backlog.md commands for lifecycle/task metadata changes; direct Markdown edits are allowed only when they preserve the native task representation
-8. run `python3 internal/todo/validate.py` after roadmap changes
-9. when implementation is complete, update the native task to `Done`, preserve useful completion evidence, and use Backlog cleanup/archive behavior when appropriate
+3. when selecting the next task, ask Backlog.md directly with `backlog task list --status "To Do" --ready --sort ordinal --limit 1 --json`, or the equivalent pinned `npx` command
+4. treat the single task returned by that query as the next executable task; task IDs, filenames, and prose queues do not define roadmap order
+5. if no task is returned, report that there is no currently executable roadmap task rather than substituting a parked, terminal, or already in-progress task
+6. read the complete selected task before planning or modifying the repository
+7. use the native task as the durable place for task scope, acceptance criteria, implementation notes, lifecycle state, and completion evidence
+8. prefer Backlog.md commands for lifecycle/task metadata changes; direct Markdown edits are allowed only when they preserve the native task representation
+9. run `python3 internal/todo/validate.py` after roadmap changes
+10. when implementation is complete, update the native task to `Done`, preserve useful completion evidence, and leave the task in `/internal/todo/tasks/`
 
-One bounded Backlog task is the normal unit of implementation and PR scope. Do not silently combine another `To Do` task into the current PR merely because it is adjacent in the queue.
+One bounded Backlog task is the normal unit of implementation and PR scope. Do not silently combine another `To Do` task into the current PR merely because it is adjacent in ordering.
 
 Backlog.md remote operations and automatic commits are disabled for this repository. Backlog changes are normal local/repository Git changes and remain subject to the same PR review as code and documentation.
 
