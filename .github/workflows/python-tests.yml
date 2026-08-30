@@ -21,5 +21,49 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Validate internal Backlog.md task state
+        run: python3 internal/todo/validate.py
+
+      - name: Validate Backlog.md native parsing
+        run: |
+          npx -y backlog.md@1.50.1 task list --json \
+            | jq -e '.tasks | any(.id | ascii_downcase == "ava-602")' >/dev/null
+
+      - name: Exercise Backlog.md lifecycle
+        run: |
+          test_root="$RUNNER_TEMP/ava-backlog-lifecycle"
+          mkdir -p "$test_root"
+          cp -a "$GITHUB_WORKSPACE/." "$test_root/"
+          cd "$test_root"
+
+          npx -y backlog.md@1.50.1 task edit ava-602 -s "In Progress" >/dev/null
+          npx -y backlog.md@1.50.1 task edit ava-602 -s "Done" >/dev/null
+          npx -y backlog.md@1.50.1 task edit ava-602 -s "To Do" >/dev/null
+
+          task_602=$(find internal/todo/tasks -type f -name 'ava-602 -*' -print -quit)
+          test -n "$task_602"
+          grep -q "Make Backlog.md task management available" "$task_602"
+          python3 internal/todo/validate.py
+
+      - name: Smoke test Backlog.md browser
+        run: |
+          browser_log="$RUNNER_TEMP/backlog-browser.log"
+          npx -y backlog.md@1.50.1 browser --no-open >"$browser_log" 2>&1 &
+          browser_pid=$!
+          trap 'kill "$browser_pid" 2>/dev/null || true' EXIT
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:6420/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$browser_log"
+          exit 1
+
       - name: Run release qualification
         run: internal/release/test.sh

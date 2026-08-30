@@ -2,6 +2,13 @@
 
 This log records major conceptual changes to the Ava Internal Maintainer role. It does not record routine edits or replace Git history.
 
+## 2026-08-30
+
+* **Native Backlog.md task operation**: Made `/internal/todo/` the role's only internal roadmap source and require Backlog.md workflow guidance plus native task state before selecting or implementing roadmap work.
+* **Task execution boundary**: Defined one bounded native task as the normal PR unit, made dependencies and `Parked` state authoritative, and require task completion evidence plus Ava-specific Backlog validation at completion.
+* **Document contract exception**: Exempted native Backlog.md task frontmatter from the role's ordinary Ava `type` metadata rule so tasks remain valid Backlog.md records rather than a hybrid schema.
+* **Legacy roadmap removal**: Removed the role's dependency on `/internal/todo.md` and the numbered phase hierarchy after their durable specifications and history were migrated into native task bodies.
+
 ## 2026-07-26
 
 * **Scoped specialist delegation**: Allowed the Ava Internal Maintainer to load one matching role from the generated base catalog as specialist instructions for a bounded subtask while remaining the single active primary role.
