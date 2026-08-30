@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -eux
 
 ROOT=$(CDPATH= cd "$(dirname "$0")/../.." && pwd)
 TMP=${RUNNER_TEMP:-${TMPDIR:-/tmp}}
@@ -32,16 +32,14 @@ grep -q '^remote_operations: false$' "$TARGET/backlog.config.yml"
 grep -q '^auto_commit: false$' "$TARGET/backlog.config.yml"
 
 cd "$TARGET"
-npx -y backlog.md@1.50.1 instructions overview >/dev/null
-npx -y backlog.md@1.50.1 task create "Installed lifecycle probe" -d "Verify Ava project task scaffold" >/dev/null
+npx -y backlog.md@1.50.1 instructions overview
+npx -y backlog.md@1.50.1 task create "Installed lifecycle probe" -d "Verify Ava project task scaffold"
 probe_id=$(npx -y backlog.md@1.50.1 task list --json | jq -r '.tasks[] | select(.title == "Installed lifecycle probe") | .id' | head -n 1)
 test -n "$probe_id"
 
-npx -y backlog.md@1.50.1 task edit "$probe_id" -s "In Progress" >/dev/null
-npx -y backlog.md@1.50.1 task edit "$probe_id" -s "Done" >/dev/null
+npx -y backlog.md@1.50.1 task edit "$probe_id" -s "In Progress"
 
-probe_lower=$(printf '%s' "$probe_id" | tr '[:upper:]' '[:lower:]')
-probe_file=$(find backlog/tasks backlog/completed -type f -name "$probe_lower -*" -print -quit)
+probe_file=$(find backlog/tasks -type f ! -name .gitkeep -print -quit)
 test -n "$probe_file"
 python3 - "$probe_file" <<'PY'
 from pathlib import Path
@@ -57,4 +55,4 @@ path.write_text(updated)
 PY
 
 npx -y backlog.md@1.50.1 task "$probe_id" --json | jq -e '.status == "To Do"' >/dev/null
-npx -y backlog.md@1.50.1 task edit "$probe_id" -s "Done" >/dev/null
+npx -y backlog.md@1.50.1 task edit "$probe_id" -s "Done"
