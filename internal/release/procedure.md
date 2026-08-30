@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-21T09:03:00+02:00
+  at: 2026-08-30T15:32:00+02:00
 ---
 
 # Ava Release Publication Procedure
@@ -101,6 +101,10 @@ internal/release/qualify-release.sh \
 ```
 
 The operation must run the maintained 17-scenario matrix, capture all top-level and nested OpenCode sessions, execute the independent audit, and write compact evidence.
+
+`qualify-release.sh` owns the OpenCode access required for its repository-external temporary evidence. It creates a unique external operation root and passes the exact required roots through the maintained OpenCode adapter, which merges them into inline `permission.external_directory` rules for every spawned `opencode run`. This runtime permission must not depend on user-global OpenCode configuration. The tracked root `opencode.json` provides the same `/tmp/**` policy for ordinary repository development, but it is not the qualification guarantee.
+
+Qualification evidence, workspaces, transcripts, and generated roots remain outside Git. The permission hardening must not be implemented by moving this material into the repository or by using a global auto-approval mode.
 
 Terminal states are:
 
