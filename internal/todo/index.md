@@ -6,7 +6,7 @@ The integration is pinned and validated against Backlog.md `1.50.1`. The reposit
 
 ## Native layout
 
-- `tasks/` contains current, parked, and reopenable task records.
+- `tasks/` contains current, parked, won't-fix, and reopenable task records.
 - `completed/` contains completed historical task records after cleanup/archive.
 - `validate.py` enforces Ava-specific migration, dependency, queue, and release-parking invariants.
 
@@ -17,6 +17,7 @@ The former numbered phase directories and `/internal/todo.md` were removed after
 - `To Do`: executable work in the active ordered queue.
 - `In Progress`: currently being implemented.
 - `Parked`: valid work intentionally excluded from the active queue.
+- `Won't Fix`: intentionally closed work that should not be implemented.
 - `Done`: implementation is complete.
 
 ## Current queue
@@ -68,6 +69,7 @@ Use `backlog cleanup` when completed tasks should move from `tasks/` to `complet
 - Read the selected native task itself before planning implementation.
 - Respect native `dependencies` before starting dependent work.
 - Treat `Parked` as intentionally excluded from the active queue, not merely lower priority.
+- Treat `Won't Fix` as closed by decision and do not execute it unless its status is explicitly changed.
 - Put new scope, acceptance criteria, implementation notes, and completion evidence directly in the native task rather than creating a parallel planning document.
 - Complete/reopen/reprioritize through Backlog.md state, then commit the resulting Markdown changes normally.
 - Historical completion evidence belongs in completed task records and must remain durable.
