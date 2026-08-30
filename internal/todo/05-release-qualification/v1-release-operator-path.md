@@ -8,7 +8,7 @@ generated:
   at: 2026-08-10T15:58:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-30T14:00:00+02:00
+  at: 2026-08-30T15:32:00+02:00
 ---
 
 # V1 Release Operator Path
@@ -17,7 +17,7 @@ updated:
 
 This release path is currently parked by explicit user decision. Further alpha dogfooding and immediate progression toward `1.0.0` are not the active roadmap queue.
 
-The current implementation queue is defined by `/internal/todo.md`: first harden qualification OpenCode permissions, then isolate qualification session inventory, then continue with the reprioritized post-qualification roadmap work. Resume this operator path only when the user explicitly asks to continue V1 release progression.
+The current implementation queue is defined by `/internal/todo.md`: qualification OpenCode permission hardening is complete, and the remaining infrastructure task is to isolate qualification session inventory before continuing with the reprioritized post-qualification roadmap work. Resume this operator path only when the user explicitly asks to continue V1 release progression.
 
 The `v1.0.0-alpha.15` release exposed qualification-infrastructure defects that are tracked separately as supporting tasks. Their implementation does not itself close alpha dogfooding or authorize release-candidate work.
 
@@ -36,12 +36,12 @@ A new blocker preempts the next prerelease. A `required-v1` dogfood finding pree
 
 ## Qualification infrastructure before resumption
 
-Two concrete hardening tasks are active outside the dogfood finding stream:
+The alpha.15 release exposed two concrete hardening tasks outside the dogfood finding stream:
 
-1. [Harden Qualification OpenCode Permissions](04d-harden-qualification-opencode-permissions.md)
-2. [Isolate Qualification Session Inventory](04e-isolate-qualification-session-inventory.md)
+1. [Harden Qualification OpenCode Permissions](04d-harden-qualification-opencode-permissions.md) - complete
+2. [Isolate Qualification Session Inventory](04e-isolate-qualification-session-inventory.md) - pending
 
-These tasks address permission denial against Ava-created temporary evidence and cross-run session inventory contamination. They intentionally do not add a failed-state override or exceptional acceptance mechanism.
+The completed permission task removes the hidden dependency on user-global temporary-root permission state. The remaining task addresses cross-run session inventory contamination. Neither task adds a failed-state override or exceptional acceptance mechanism.
 
 ## Release procedure when resumed
 
@@ -63,7 +63,7 @@ Qualification infrastructure must be reliable enough that the normal procedure c
 
 ## Dogfood closure
 
-Do not infer alpha dogfood closure from published releases, passing tests, an empty blocker list, or completion of the two hardening tasks. Closure remains an explicit user decision.
+Do not infer alpha dogfood closure from published releases, passing tests, an empty blocker list, or completion of the hardening tasks. Closure remains an explicit user decision.
 
 ## Release candidate and stable release
 
