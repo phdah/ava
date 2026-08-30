@@ -13,11 +13,13 @@ class ProjectTaskBoardTests(unittest.TestCase):
         payloads = {item.destination: item for item in read_payloads(SOURCE_ROOT)}
         expected = {
             "/backlog.config.yml",
-            "/backlog/tasks/.gitkeep",
-            "/backlog/completed/.gitkeep",
+            "/backlog/index.md",
+            "/backlog/tasks/index.md",
         }
 
         self.assertTrue(expected.issubset(payloads))
+        self.assertNotIn("/backlog/completed/index.md", payloads)
+        self.assertNotIn("/backlog/tasks/.gitkeep", payloads)
         for destination in expected:
             payload = payloads[destination]
             self.assertEqual(payload.ownership, "project-owned")
@@ -32,20 +34,29 @@ class ProjectTaskBoardTests(unittest.TestCase):
             self.assertEqual(payloads[destination].ownership, "ava-managed")
             self.assertEqual(payloads[destination].operation, "replace-managed")
 
-    def test_default_config_is_local_and_non_committing(self) -> None:
+    def test_default_config_is_local_non_committing_and_has_terminal_statuses(self) -> None:
         config = (SOURCE_ROOT / "templates/project-scaffolds/backlog.config.yml").read_text()
         self.assertIn("backlog_directory: backlog", config)
-        self.assertIn('statuses: ["To Do", "In Progress", "Done"]', config)
+        self.assertIn('statuses: ["To Do", "In Progress", "Done", "Won\'t Fix"]', config)
         self.assertIn("remote_operations: false", config)
         self.assertIn("auto_commit: false", config)
         self.assertIn('task_prefix: "task"', config)
 
-    def test_role_loads_current_backlog_guidance_and_preserves_direct_edits(self) -> None:
+    def test_role_uses_backlog_for_next_task_and_preserves_direct_edits(self) -> None:
         instructions = (SOURCE_ROOT / "templates/base/roles/project-task-manager/instructions.md").read_text()
         registry = (SOURCE_ROOT / "templates/base/roles/index.md").read_text()
         self.assertIn("backlog instructions overview", instructions)
+        self.assertIn('task list --status "To Do" --ready --sort ordinal --limit 1 --json', instructions)
         self.assertIn("Direct Markdown editing remains valid and authoritative", instructions)
         self.assertIn("Project Task Manager", registry)
+
+    def test_internal_maintainer_uses_same_canonical_next_task_query(self) -> None:
+        instructions = (SOURCE_ROOT / "internal/roles/ava-internal/instructions.md").read_text()
+        roadmap = (SOURCE_ROOT / "internal/todo/index.md").read_text()
+        query = 'backlog task list --status "To Do" --ready --sort ordinal --limit 1 --json'
+        self.assertIn(query, instructions)
+        self.assertIn(query, roadmap)
+        self.assertNotIn("/internal/todo/completed/", instructions)
 
 
 if __name__ == "__main__":
