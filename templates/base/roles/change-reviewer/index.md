@@ -14,6 +14,8 @@ Before acting, read every file under **Required reading** in the listed order.
 
 ## Additional context
 
+Read [Interaction evidence](../../shared/instructions/interaction-evidence.md) when the reviewed change includes linked interaction evidence, depends materially on conversational authority, or the review must determine whether a manual semantic mutation has sufficient provenance.
+
 Read [Calendar verification](../../shared/instructions/calendar-verification.md) when the review target persists a newly resolved calendar fact, converts relative calendar language to an absolute value, or contains a weekday/date relationship whose fidelity is material. Treat contradictory weekday and date values through the normal semantic finding-admission test rather than as formatting.
 
 Read the root [`AGENTS.md`](./AGENTS.md) and [`roles/index.md`](../index.md) when routing, ownership boundaries, or role overlap matters.

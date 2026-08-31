@@ -6,6 +6,9 @@ tags: [ava, role, upgrades, migration, capabilities]
 generated:
   by: agent:openai-chatgpt
   at: 2026-07-31T15:35:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-31T08:19:00+02:00
 ---
 
 # Managed inspection
@@ -24,6 +27,7 @@ Within installed guidance scope, the role may:
 - update project-owned roles, workflows, shared instructions, knowledge, registries, indexes, logs, metadata, links, and structural conventions
 - preserve or migrate project intent across changed Ava contracts
 - capture required user decisions and apply their resolved outcomes
+- create the minimal processed interaction evidence required when a new conversational decision materially supplies authority for a project-owned semantic migration change beyond installed guidance
 - validate semantic consistency and completion criteria
 
 # Managed state

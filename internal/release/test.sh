@@ -25,6 +25,7 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_common.py" \
   "$ROOT/internal/release/conformance_repository.py" \
   "$ROOT/internal/release/conformance_installed.py" \
+  "$ROOT/internal/release/interaction_evidence.py" \
   "$ROOT/internal/release/qualification_runner.py" \
   "$ROOT/internal/release/qualification_automation.py" \
   "$ROOT/internal/release/qualification_acceptance.py" \
@@ -59,6 +60,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_knowledge_hierarchy_promotion \
   internal.release.tests.test_inbox_ingestion_fidelity \
   internal.release.tests.test_inbox_scoped_history \
+  internal.release.tests.test_interaction_evidence \
   internal.release.tests.test_ava_maintenance \
   internal.release.tests.test_synthetic_qualification_vault \
   internal.release.tests.test_qualification_checkpoints \

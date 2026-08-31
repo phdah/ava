@@ -6,6 +6,9 @@ tags: [ava, role, project-task-manager, capabilities]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-30T18:42:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-31T08:19:00+02:00
 ---
 
 # Capabilities
@@ -22,5 +25,6 @@ The Project Task Manager may:
 - validate CLI parsing and task relationships after direct edits
 - maintain task-facing final summaries and implementation notes when the underlying work is already complete
 - inspect relevant project files, roles, workflows, and guidance when needed to make task records accurate
+- create the minimal processed interaction evidence required for an exceptional task-state mutation whose material authority comes from the current conversation, without creating a parallel task schema or lifecycle
 
 These capabilities do not grant authority to perform the substantive implementation represented by a task unless a separately selected role owns that work.

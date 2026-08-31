@@ -30,6 +30,7 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Deterministic inbox qualification checks](qualification_inbox.py)
 - [Conformance validation contract](conformance.md)
 - [Unified conformance validator](conformance.py)
+- [Interaction evidence validator](interaction_evidence.py)
 - [Release publication procedure](procedure.md)
 - [Release guidance sources](guidance/)
 - [Repository boundary validator](validate-boundaries.sh)
