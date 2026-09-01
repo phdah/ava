@@ -10,7 +10,7 @@ generated:
 
 # Operating model
 
-Project task state is project-owned repository content. The default Ava install scaffolds `./backlog.config.yml`, `./backlog/index.md`, and `./backlog/tasks/index.md`. Every native task remains in `./backlog/tasks/`, regardless of lifecycle state. Never move project tasks under `./.ava/`.
+Project task state is project-owned repository content. The default Ava install scaffolds `./backlog.config.yml`, `./backlog/index.md`, and `./backlog/tasks/index.md`. Under that default, every native task remains in `./backlog/tasks/`, regardless of lifecycle state. Follow an explicitly changed project configuration and never move project tasks under `./.ava/`.
 
 Backlog.md is the default task interface, not a hidden service. Humans and agents must be able to review the same native Markdown in Git and use the CLI or local browser against it.
 
@@ -24,13 +24,13 @@ Backlog.md is the default task interface, not a hidden service. Humans and agent
 
 # Selecting the next task
 
-When the user asks for the next executable task, ask Backlog.md directly:
+When the user asks for the next executable task, determine the project's actionable status from its configuration and active project instructions. If the project uses the default lifecycle, ask Backlog.md directly:
 
 ```sh
 backlog task list --status "To Do" --ready --sort ordinal --limit 1 --json
 ```
 
-Use the single returned task as the next task. `--ready` enforces dependency readiness and `--sort ordinal` uses Backlog.md's explicit task ordering. Do not infer task order from filenames, IDs, or a hand-maintained queue document. If the command returns no task, report that there is no currently executable task.
+For a configured lifecycle, substitute the project-defined actionable status. If more than one status could mean executable work and project context does not resolve the choice, ask the user. Use the single returned task as the next task. `--ready` enforces dependency readiness and `--sort ordinal` uses Backlog.md's explicit task ordering. Do not infer task order from filenames, IDs, or a hand-maintained queue document. If the command returns no task, report that there is no currently executable task.
 
 # Mutation preference
 

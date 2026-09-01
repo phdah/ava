@@ -30,13 +30,15 @@ Fresh installation may create the following project-owned files when absent:
 ./backlog/tasks/index.md
 ```
 
-The default configuration uses `./backlog/`, `TASK-*` IDs, and the lifecycle states `To Do`, `In Progress`, `Done`, and `Won't Fix`. It uses local-only browser defaults, no Backlog remote operations, and no automatic Git commits.
+The default configuration uses `./backlog/`, `task-*` IDs, and the lifecycle states `To Do`, `In Progress`, `Done`, and `Won't Fix`. It uses local-only browser defaults, no Backlog remote operations, and no automatic Git commits.
 
-All native task records remain under `./backlog/tasks/`, including terminal `Done` and `Won't Fix` tasks. Ava does not use Backlog.md's optional `completed/` cleanup directory by default and does not scaffold one.
+Under the default configuration, all native task records remain under `./backlog/tasks/`, including terminal `Done` and `Won't Fix` tasks. Ava does not use Backlog.md's optional `completed/` cleanup directory by default and does not scaffold one.
 
 The `index.md` files keep the empty project-owned board discoverable in Git and explain its structure. They do not collide with Backlog.md task discovery because native task files are identified by the configured task prefix, for example `task-*.md`.
 
 `project_name` is intentionally generic in the create-if-absent scaffold and may be renamed by the project owner. The entire configuration is project-owned and may be changed after installation.
+
+Managed task instructions must follow the configured backlog directory and project lifecycle instead of treating the default paths or statuses as mandatory. When project context does not identify which configured status represents executable work, the agent asks rather than guessing.
 
 # Operating model
 

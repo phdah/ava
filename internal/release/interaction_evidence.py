@@ -116,7 +116,12 @@ def _timestamp(value: Any) -> bool:
 
 
 def _is_interaction_metadata(metadata: dict[str, Any] | None, path: Path) -> bool:
-    return bool(metadata and metadata.get("type") == "Interaction Evidence") or path.name.startswith("interaction-")
+    if metadata and metadata.get("type") == "Interaction Evidence":
+        return True
+    name = path.name
+    if not name.startswith("interaction-") or not name.endswith(".md"):
+        return False
+    return bool(INTERACTION_ID_RE.fullmatch(name[len("interaction-") : -len(".md")]))
 
 
 def validate_interaction_evidence(root: Path, findings: list[Finding]) -> None:
