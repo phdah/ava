@@ -101,14 +101,48 @@ def _metadata_resource_path(project: Path, document: Path, resource: str) -> Pat
     return (document.parent / resource_path).resolve()
 
 
-def _markdown_link_path(document: Path, target: str) -> Path:
-    link_path = _local_target(target, document=document)
-    return (document.parent / link_path).resolve()
+def _validate_footnote_label(label: str, *, document: Path) -> None:
+    if not re.fullmatch(r"[1-9][0-9]*", label):
+        raise InboxStructuralError(
+            f"{document}: claim-provenance footnote label {label!r} must be a positive decimal integer"
+        )
 
 
-def _markdown_link_target(value: str) -> str | None:
-    match = re.search(r"\[[^\]]*\]\(([^)]+)\)", value)
-    return match.group(1).strip() if match else None
+def _group_source_ids(value: str, *, document: Path, label: str) -> list[str]:
+    prefix = "Sources:"
+    if not value.startswith(prefix):
+        raise InboxStructuralError(
+            f"{document}: footnote definition {label!r} must begin with {prefix!r}"
+        )
+
+    payload = value[len(prefix) :].strip()
+    if payload.endswith("."):
+        payload = payload[:-1].rstrip()
+    if not payload:
+        raise InboxStructuralError(
+            f"{document}: footnote definition {label!r} must reference at least one sources id"
+        )
+    if re.search(r"\[[^\]]*\]\([^)]+\)", payload):
+        raise InboxStructuralError(
+            f"{document}: footnote definition {label!r} must not repeat source links from metadata"
+        )
+
+    source_ids: list[str] = []
+    for member in payload.split(";"):
+        member = member.strip()
+        match = re.fullmatch(r"`source:([^`\s]+)`\s+-\s+(.+)", member)
+        if not match:
+            raise InboxStructuralError(
+                f"{document}: footnote definition {label!r} has malformed grouped source attribution"
+            )
+        source_id = match.group(1)
+        if source_id in source_ids:
+            raise InboxStructuralError(
+                f"{document}: footnote definition {label!r} repeats sources id {source_id!r}"
+            )
+        source_ids.append(source_id)
+
+    return source_ids
 
 
 def validate_inbox_structural_fidelity(
@@ -169,34 +203,24 @@ def validate_inbox_structural_fidelity(
             used_markers.update(re.findall(r"\[\^([^\]\s]+)\]", line))
 
         for label, values in definitions.items():
-            if label not in sources_by_id:
-                raise InboxStructuralError(
-                    f"{document}: footnote definition {label!r} has no matching sources id"
-                )
+            _validate_footnote_label(label, document=document)
             if len(values) != 1:
                 raise InboxStructuralError(
                     f"{document}: footnote definition {label!r} must appear exactly once"
                 )
+            source_ids = _group_source_ids(values[0], document=document, label=label)
+            for source_id in source_ids:
+                if source_id not in sources_by_id:
+                    raise InboxStructuralError(
+                        f"{document}: footnote definition {label!r} references unknown sources id {source_id!r}"
+                    )
 
         for label in sorted(used_markers):
-            if label not in sources_by_id:
-                raise InboxStructuralError(
-                    f"{document}: used footnote marker {label!r} has no matching sources id"
-                )
+            _validate_footnote_label(label, document=document)
             values = definitions.get(label, [])
             if len(values) != 1:
                 raise InboxStructuralError(
                     f"{document}: used footnote marker {label!r} requires exactly one definition"
-                )
-            target = _markdown_link_target(values[0])
-            if target is None:
-                raise InboxStructuralError(
-                    f"{document}: footnote definition {label!r} has no renderable Markdown link"
-                )
-            linked = _markdown_link_path(document, target)
-            if linked != sources_by_id[label]:
-                raise InboxStructuralError(
-                    f"{document}: footnote {label!r} does not resolve to the same source as metadata"
                 )
 
     for selected in selected_sources:
