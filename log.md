@@ -2,6 +2,12 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-09-01
+
+* **Grouped claim provenance**: Replaced one-footnote-per-source marker chains with one document-local numbered footnote per claim whose definition groups every supporting source through explicit `source:<sources[].id>` references and source-local support detail.
+* **Metadata-owned source navigation**: Kept preserved-source `resource` paths and `title` values canonical in OKF `sources` metadata instead of duplicating them in each claim-level footnote definition.
+* **Deterministic grouped validation**: Required every used provenance marker to resolve to exactly one grouped definition, every grouped reference to resolve through destination metadata to a preserved source, and malformed, unknown, duplicated, or link-repeating groups to fail structural qualification while semantic support remains independently reviewed.
+
 ## 2026-08-31
 
 * **Conversational interaction evidence**: Required a minimal exact user statement to be preserved when a meaningful semantic mutation materially depends on conversational fact or authority that is not already supported by a durable project source.
