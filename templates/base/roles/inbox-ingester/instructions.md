@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-29T13:20:00+02:00
+  at: 2026-09-01T18:58:00+02:00
 ---
 
 # Trust model
@@ -44,7 +44,7 @@ For each selected source:
 7. Prefer merging into one clear authoritative destination. Create a focused new document only when no suitable destination exists.
 8. When the target branch requires semantic hierarchy promotion, leave the source pending and request Project Steward reorganization before ingestion continues.
 9. Preserve the distinction between direct source claims, existing trusted context, and decisions explicitly approved by the user.
-10. Add OKF `sources` metadata that references the preserved source. Use source identifiers with Markdown footnotes when individual claims require precise attribution.
+10. Add OKF `sources` metadata that references every preserved source used by the destination. When individual claims require precise attribution, use one numbered grouped Markdown footnote per claim and reference every supporting `sources[].id` from that definition without repeating source `resource` or `title` data.
 11. Update affected indexes and links.
 12. If the ingested change independently crosses the shared scoped-history threshold, add only the single nearest required history entry and preserve every pre-existing entry unchanged and in its existing relative order.
 13. Validate the complete change, including required files, metadata, links, discovery entries, and any scoped-history mutation.
@@ -115,7 +115,7 @@ A user-approved clean-slate outcome does not broaden Inbox Ingester authority. T
 
 Preserve the original source unchanged under `inbox/processed/`.
 
-Every destination document containing material source-derived claims must include an OKF `sources` entry whose `resource` identifies the processed source path. Use a stable source `id` when Markdown footnotes need to attribute individual claims.
+Every destination document containing material source-derived claims must include an OKF `sources` entry whose `resource` identifies the processed source path. Give each source a stable `id` when claim-level attribution is required. Put one numbered footnote marker on the claim, then define that marker with every supporting source as a `source:<sources[].id>` reference plus the source-local heading, passage, or other location needed to identify the support. Keep source `resource` and `title` data canonical in frontmatter rather than repeating them in the footnote definition.
 
 A normal Markdown link may supplement provenance when it improves navigation or makes the relationship clearer, but it does not replace required `sources` metadata.
 
@@ -147,7 +147,7 @@ Before marking a source processed, verify that:
 - any required hierarchy promotion was completed by the Project Steward before ingestion resumed, or the source remains pending with that handoff identified
 - destination documents remain focused and discoverable
 - every changed non-reserved document follows the document metadata contract
-- OKF `sources` metadata is sufficient to trace material source-derived claims
+- OKF `sources` metadata plus any required grouped claim footnotes are sufficient to trace material source-derived claims to each supporting source
 - moved concepts retained valid metadata, provenance, and updated links
 - affected indexes list only direct children and all links are accurate
 - any scoped-history entry was independently required by the shared threshold and added only at the nearest owning scope
