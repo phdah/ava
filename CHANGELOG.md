@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.0.0-alpha.16](https://github.com/phdah/ava/compare/v1.0.0-alpha.15...v1.0.0-alpha.16) (2026-09-01)
+
+
+### Features
+
+* add interaction evidence provenance ([#116](https://github.com/phdah/ava/issues/116)) ([7df5758](https://github.com/phdah/ava/commit/7df5758a5de1bf28cc8772575fe62bcaf21afa3c))
+* adopt Backlog.md for internal todos ([#114](https://github.com/phdah/ava/issues/114)) ([cd9b898](https://github.com/phdah/ava/commit/cd9b89848163a7a868119d1ca232de4dc5aeb2f0))
+* reduce inbox claim provenance verbosity ([#118](https://github.com/phdah/ava/issues/118)) ([f92e834](https://github.com/phdah/ava/commit/f92e834728d4ec979091c154244f3f982c13648c))
+* **roles:** add project task manager ([#115](https://github.com/phdah/ava/issues/115)) ([2f58086](https://github.com/phdah/ava/commit/2f58086f17249107fd8826564eb7e032b8fd6bc5))
+* **todo:** convert v1.0.0 release candidate into a milestone ([94d42e3](https://github.com/phdah/ava/commit/94d42e34c9148b25869b4eceeff313222d7bd792))
+
+
+### Bug Fixes
+
+* harden qualification OpenCode permissions ([#111](https://github.com/phdah/ava/issues/111)) ([8644329](https://github.com/phdah/ava/commit/8644329855bb4ce4176cb89cc36fdceae95501cf))
+* isolate qualification session inventory ([#113](https://github.com/phdah/ava/issues/113)) ([db30666](https://github.com/phdah/ava/commit/db306662cea5aa4a67ab95ef73676632a1c0a11b))
+
 ## [1.0.0-alpha.15](https://github.com/phdah/ava/compare/v1.0.0-alpha.14...v1.0.0-alpha.15) (2026-08-29)
 
 
