@@ -8,7 +8,7 @@ generated:
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-30T16:00:00+02:00
+  at: 2026-09-01T18:29:00+02:00
 ---
 
 # Purpose
@@ -82,6 +82,21 @@ The operation produces one of:
 - `awaiting-user-signoff`: complete mechanical and semantic pass
 
 The automation never accepts a release itself and never commits evidence.
+
+# Operator handling of non-passing results
+
+When the automated result is `failed` or `needs-review`, the release operator must present the exact terminal result and the individual findings to the user before taking any corrective action.
+
+After reporting them, ask whether the user wants those findings recorded as bounded native Backlog.md tasks on `main`. This is opt-in for each failed qualification:
+
+- an explicit yes is required before creating tasks
+- an absent or negative answer creates nothing
+- tasks are created on `main`, never on the release branch being qualified
+- recording tasks is tracking only and does not accept qualification, satisfy the release merge gate, or advance release state
+- recording tasks does not authorize the operator to modify repository or release content to make the current run pass
+- any user-directed correction is ordinary repository work and requires a new candidate, a fresh complete qualification run, and fresh user acceptance
+
+This ask-then-record step belongs to the conversational release operator. `qualify-release.sh` remains hands-off and must not mutate `main`, create Backlog.md tasks, or infer user consent.
 
 # User acceptance
 
