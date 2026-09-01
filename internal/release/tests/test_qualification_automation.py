@@ -101,18 +101,18 @@ class QualificationAutomationTests(unittest.TestCase):
         config, catalog, current = automation.load_configuration()
         automation.validate_model_identifier(config["qualification_model"], field="qualification_model")
         automation.validate_model_identifier(config["audit_model"], field="audit_model")
-        self.assertEqual(config["active_pair"], "alpha14-to-alpha15-corrective-local")
+        self.assertEqual(config["active_pair"], "alpha15-to-alpha16-local")
         pairs = {item["id"]: item for item in catalog["pairs"]}
-        historical = pairs["alpha13-to-alpha14"]
+        historical = pairs["alpha14-to-alpha15-corrective-local"]
         self.assertTrue(historical["historical"])
-        self.assertEqual(historical["source"]["tag"], "v1.0.0-alpha.13")
-        self.assertEqual(historical["target"]["tag"], "v1.0.0-alpha.14")
+        self.assertEqual(historical["source"]["tag"], "v1.0.0-alpha.14")
+        self.assertEqual(historical["target"]["tag"], "v1.0.0-alpha.15")
         active = pairs[config["active_pair"]]
         self.assertFalse(active["historical"])
-        self.assertEqual(active["source"]["tag"], "v1.0.0-alpha.14")
+        self.assertEqual(active["source"]["tag"], "v1.0.0-alpha.15")
         self.assertEqual(
             active["target"],
-            {"kind": "local", "tag": "v1.0.0-alpha.15", "version": "1.0.0-alpha.15"},
+            {"kind": "local", "tag": "v1.0.0-alpha.16", "version": "1.0.0-alpha.16"},
         )
         self.assertEqual(current["pairs"]["alpha13-to-alpha14"]["status"], "not-run")
 

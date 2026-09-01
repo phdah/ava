@@ -1,5 +1,5 @@
 {
-  "active_pair": "alpha14-to-alpha15-corrective-local",
+  "active_pair": "alpha15-to-alpha16-local",
   "pairs": {
     "alpha13-to-alpha14": {
       "historical": true,
@@ -8,13 +8,19 @@
       "user_signoff": null
     },
     "alpha14-to-alpha15-corrective-local": {
-      "historical": false,
+      "historical": true,
       "latest_run_id": "20260829T122006971173Z-alpha14-to-alpha15-corrective-local",
       "status": "accepted",
       "user_signoff": {
         "identity": "user:phdah",
         "time": "2026-08-30T12:45:15Z"
       }
+    },
+    "alpha15-to-alpha16-local": {
+      "historical": false,
+      "latest_run_id": null,
+      "status": "not-run",
+      "user_signoff": null
     }
   },
   "release_acceptance": {
