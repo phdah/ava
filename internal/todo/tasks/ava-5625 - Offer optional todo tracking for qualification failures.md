@@ -1,10 +1,10 @@
 ---
 id: ava-5625
 title: Offer optional todo tracking for qualification failures
-status: To Do
+status: Parked
 assignee: []
 created_date: ''
-updated_date: '2026-08-30 18:26'
+updated_date: '2026-09-01 18:47'
 labels:
   - internal
   - roadmap
@@ -49,3 +49,11 @@ After a future qualification failure:
 - the behavior is exercised in an actual future qualification failure
 
 This remains non-blocking post-v1 work.
+
+## Implementation notes
+
+The release procedure now requires a `failed` or `needs-review` result to be reported with its individual findings before the operator asks whether those findings should be recorded as bounded Backlog.md tasks on `main`. No tasks may be created without explicit user agreement, and task creation is explicitly non-progressing release bookkeeping.
+
+The hands-off qualification procedure now separates automated qualification from conversational operator behavior. `qualify-release.sh` remains non-mutating and does not create Backlog.md tasks or infer consent. Any user-directed correction remains ordinary repository work followed by a new candidate, a fresh complete qualification run, and fresh user acceptance.
+
+The implementation criteria are complete. The task is parked until a real future qualification produces `failed` or `needs-review`, at which point the documented ask-then-record behavior can be exercised and this task can be moved directly to `Done` with that run as completion evidence.

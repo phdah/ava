@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-30T15:32:00+02:00
+  at: 2026-09-01T18:29:00+02:00
 ---
 
 # Ava Release Publication Procedure
@@ -27,7 +27,7 @@ Every Ava release uses the same flow. Full `qualify-release.sh` qualification an
 6. Assemble the exact target release assets from a clean release PR revision with `assemble-candidate.sh`.
 7. Configure the qualification active pair as exact published previous release -> exact local target.
 8. Run `qualify-release.sh` against those local target assets.
-9. Any `failed` or `needs-review` result leaves the release PR blocked; report it to the user without modifying repository or release content to make it pass.
+9. Any `failed` or `needs-review` result leaves the release PR blocked. Report the result and individual findings, then ask whether the user wants those findings recorded as bounded Backlog.md tasks on `main`. Create nothing unless the user explicitly agrees.
 10. When the run reaches `awaiting-user-signoff`, present the evidence to the user.
 11. Only after explicit user approval, record acceptance with `accept-release-qualification.sh` and commit the qualification-state changes to the release PR.
 12. Require the Release PR policy check to pass.
@@ -168,7 +168,16 @@ Post-publication verification checks immutable tag, asset inventory, checksums, 
 
 Any failure leaves publication blocked. Existing tags and assets are never moved, overwritten, or reused.
 
-A `failed` or `needs-review` qualification result leaves the release PR unmerged. Report the exact result to the user. Do not modify repository or release content to resolve it.
+A `failed` or `needs-review` qualification result leaves the release PR unmerged. Report the exact result and each actionable finding to the user. Do not modify repository or release content to resolve it.
+
+After reporting the findings, ask whether the user wants those findings recorded as bounded native Backlog.md tasks on `main`. This is an optional tracking action only:
+
+- create no tasks unless the user explicitly agrees for that qualification failure
+- create the tasks on `main`, never on the release branch under qualification
+- keep each finding bounded rather than combining unrelated findings into one task
+- task creation does not accept qualification, satisfy a merge gate, or advance the release in any way
+- task creation does not authorize automatic fixes or any repository/release-content change
+- a corrected candidate still requires a completely fresh full qualification run and fresh user acceptance
 
 If the user directs a repository change in response, treat it as ordinary repository work outside the qualification loop: it requires its own review, and any resulting release-content change requires a new candidate, a new full qualification run, and fresh user acceptance.
 
