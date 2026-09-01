@@ -5,6 +5,7 @@
 - [Ownership and mutation authority](ownership-and-mutation.md) - Installed ownership classes, role mutation authority, managed-file boundaries, update provenance, and upgrade-specific exceptions.
 - [Scoped history](scoped-history.md) - Rules for creating and updating the nearest scoped log without duplicating routine Git history.
 - [Document metadata](document-metadata.md) - Required metadata, document types, creation and latest-update provenance, lifecycle, validation, and compatibility rules.
+- [Interaction evidence](interaction-evidence.md) - Minimal privacy-aware conversational source provenance for semantic mutations, including capture thresholds, processed-source storage, atomicity, and review behavior.
 - [Calendar verification](calendar-verification.md) - Conditional deterministic verification for relative calendar language before an absolute project fact is persisted.
 - [Inbox ingestion fidelity](inbox-ingestion-fidelity.md) - Semantic section inventory, epistemic preservation, renderable claim provenance, rendered disposition reconciliation, final-state reconciliation, and independent review requirements.
 - [Project task board](project-task-board.md) - Project-owned Backlog.md task storage, lifecycle, ordering, direct-edit compatibility, and validation rules.

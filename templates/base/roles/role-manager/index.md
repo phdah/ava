@@ -11,6 +11,7 @@ Before acting, read every file under **Required reading** in the listed order.
 3. [Capabilities](capabilities.md) - Actions this role may perform.
 4. [Constraints](constraints.md) - Boundaries and safeguards this role must preserve.
 5. [Document metadata](../../shared/instructions/document-metadata.md) - Required metadata, document types, provenance, lifecycle, and compatibility rules.
+6. [Interaction evidence](../../shared/instructions/interaction-evidence.md) - Required capture, privacy, processed-source, atomicity, and provenance rules when a role mutation depends on conversational authority.
 
 ## Additional context
 

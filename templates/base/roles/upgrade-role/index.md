@@ -14,6 +14,7 @@ Before acting, read every file under **Required reading** in the listed order.
 6. [Ownership and mutation authority](../../shared/instructions/ownership-and-mutation.md) - Managed versus project-owned paths and mutation boundaries.
 7. [Scoped history](../../shared/instructions/scoped-history.md) - Required history maintenance for conceptual project changes.
 8. [Document metadata](../../shared/instructions/document-metadata.md) - Metadata, lifecycle, ownership, and compatibility rules.
+9. [Interaction evidence](../../shared/instructions/interaction-evidence.md) - Required capture only when a new conversational decision supplies material authority for a project-owned semantic migration change beyond installed guidance.
 
 ## Additional context
 

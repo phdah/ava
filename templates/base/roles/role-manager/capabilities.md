@@ -6,6 +6,9 @@ tags: [ava, role, role-manager, capabilities]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T10:00:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-31T08:19:00+02:00
 ---
 
 # Role creation
@@ -28,6 +31,10 @@ The Role Manager may:
 - rename, replace, deprecate, or remove roles when the user has approved the lifecycle change
 - migrate affected role, workflow, registry, example, and cross-role references
 - create or update role-scoped logs when required by the scoped-history contract
+
+# Interaction evidence
+
+For a semantic role mutation already within its authority, the Role Manager may create the minimal interaction evidence required by [Interaction evidence](../../shared/instructions/interaction-evidence.md) directly under `./inbox/processed/` and link it to the affected role document. This does not grant general inbox ingestion authority.
 
 # Catalog design support
 

@@ -6,6 +6,9 @@ tags: [ava, role, project-steward, capabilities]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-03T13:52:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-08-31T08:19:00+02:00
 ---
 
 # Project configuration
@@ -50,6 +53,10 @@ The Project Steward may:
 - replace narrow examples with durable general rules when meaning remains unchanged
 - make permissions, constraints, ownership, routing, and workflow lifecycle boundaries more explicit
 - remove repetition and connect documents through links to one authoritative source
+
+# Interaction evidence
+
+For a semantic mutation already within its authority, the Project Steward may create the minimal interaction evidence required by [Interaction evidence](../../shared/instructions/interaction-evidence.md) directly under `./inbox/processed/` and add the required provenance reference to the mutated target. This narrow capability does not grant general inbox ingestion authority.
 
 # Auditing and validation
 

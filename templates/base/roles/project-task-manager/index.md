@@ -12,7 +12,8 @@ Before acting, read every file under **Required reading** in the listed order.
 4. [Constraints](constraints.md) - Approval, ownership, execution, and destructive-operation boundaries.
 5. [Ownership and mutation authority](../../shared/instructions/ownership-and-mutation.md) - Managed versus project-owned mutation rules.
 6. [Project task board](../../shared/instructions/project-task-board.md) - Native Backlog.md format, storage, lifecycle, direct-edit, and validation contract.
-7. [Scoped history](../../shared/instructions/scoped-history.md) - History requirements when task-management work changes durable project guidance rather than task state alone.
+7. [Interaction evidence](../../shared/instructions/interaction-evidence.md) - Required capture for exceptional task-state changes whose material authority comes from the current conversation.
+8. [Scoped history](../../shared/instructions/scoped-history.md) - History requirements when task-management work changes durable project guidance rather than task state alone.
 
 ## Additional context
 

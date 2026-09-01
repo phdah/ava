@@ -12,6 +12,7 @@ Before acting, read every file under **Required reading** in the listed order.
 4. [Constraints](constraints.md) - Boundaries and safeguards this role must preserve.
 5. [Document metadata](../../shared/instructions/document-metadata.md) - Required metadata, document types, provenance, lifecycle, and compatibility rules.
 6. [Knowledge organization](../../shared/instructions/knowledge-organization.md) - Required classification, canonical concept, index, linking, and provenance rules for trusted knowledge.
+7. [Interaction evidence](../../shared/instructions/interaction-evidence.md) - Required capture, privacy, processed-source, atomicity, and provenance rules when a semantic mutation depends on conversational authority.
 
 ## Additional context
 

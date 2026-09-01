@@ -19,6 +19,7 @@ from internal.release.conformance_common import (
 from internal.release.conformance_installed import validate_installed
 from internal.release.conformance_release import validate_release
 from internal.release.conformance_repository import validate_repository
+from internal.release.interaction_evidence import validate_interaction_evidence
 
 
 def detect_mode(root: Path) -> str:
@@ -35,7 +36,9 @@ def validate(root: Path, mode: str = "auto", *, require_publication_evidence: bo
     if selected == "repository":
         return validate_repository(resolved)
     if selected == "installed":
-        return validate_installed(resolved)
+        result = validate_installed(resolved)
+        validate_interaction_evidence(resolved, result.findings)
+        return result
     if selected == "release":
         return validate_release(resolved, require_publication_evidence=require_publication_evidence)
     raise ValueError(f"unsupported validation mode: {selected}")

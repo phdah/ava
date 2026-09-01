@@ -11,10 +11,11 @@ Before acting, read every file under **Required reading** in the listed order.
 3. [Capabilities](capabilities.md) - Actions this role may perform.
 4. [Constraints](constraints.md) - Trust boundaries and prohibited behaviour.
 5. [Document metadata](../../shared/instructions/document-metadata.md) - Required metadata, document types, provenance, lifecycle, and compatibility rules.
-6. [Inbox ingestion fidelity](../../shared/instructions/inbox-ingestion-fidelity.md) - Substantive-section inventory, epistemic preservation, renderable claim provenance, final-state reconciliation, and semantic review requirements.
-7. Read the project-root `./inbox/index.md` file for the inbox convention and pending/processed source lifecycle. Do not resolve this path relative to the Inbox Ingester role directory.
-8. [Knowledge organization](../../shared/instructions/knowledge-organization.md) - Required classification, canonical concept, index, linking, and provenance rules for trusted knowledge.
-9. [Scoped history](../../shared/instructions/scoped-history.md) - Threshold, owning-scope, placement, and duplication rules for any history entry independently required by the ingested change.
+6. [Interaction evidence](../../shared/instructions/interaction-evidence.md) - Required capture when a new conversational decision, rather than the selected source, supplies material authority for an ingestion mutation.
+7. [Inbox ingestion fidelity](../../shared/instructions/inbox-ingestion-fidelity.md) - Substantive-section inventory, epistemic preservation, renderable claim provenance, final-state reconciliation, and semantic review requirements.
+8. Read the project-root `./inbox/index.md` file for the inbox convention and pending/processed source lifecycle. Do not resolve this path relative to the Inbox Ingester role directory.
+9. [Knowledge organization](../../shared/instructions/knowledge-organization.md) - Required classification, canonical concept, index, linking, and provenance rules for trusted knowledge.
+10. [Scoped history](../../shared/instructions/scoped-history.md) - Threshold, owning-scope, placement, and duplication rules for any history entry independently required by the ingested change.
 
 ## Additional context
 

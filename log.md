@@ -2,6 +2,15 @@
 
 This log records major conceptual and structural changes across the Ava repository. It does not replace Git history.
 
+## 2026-08-31
+
+* **Conversational interaction evidence**: Required a minimal exact user statement to be preserved when a meaningful semantic mutation materially depends on conversational fact or authority that is not already supported by a durable project source.
+* **Generic processed-source storage**: Stored interaction evidence directly beside ordinary preserved sources under `./inbox/processed/interaction-<opaque-id>.md`, explicitly rejecting an interaction-specific directory or source-form hierarchy.
+* **Bounded evidence authority**: Allowed mutating roles to create only the interaction evidence required for their own already-authorized semantic changes without granting general inbox authority, broader semantic target authority, managed-state authority, or a new runtime service.
+* **Privacy and transaction integrity**: Defined minimization-first secret and sensitive-data handling, append-only correction and supersession, target provenance, atomic evidence-plus-mutation completion, and recovery from partial writes.
+* **Evidence validation and review**: Added deterministic validation for record shape, IDs, processed-source placement, targets, reverse references, supersession, supplier metadata, and exact statements, while keeping semantic interpretation with active roles and Change Reviewer.
+* **Task and history separation**: Kept Backlog.md as the sole task-state model and scoped `log.md` as an independent conceptual-history mechanism; interaction evidence supplies provenance only when its separate capture threshold is met.
+
 ## 2026-08-20
 
 * **Recoverable terminal cleanup**: Kept normal routing blocked after a terminal or restored-source journal write until transaction storage is absent, with idempotent Ava Maintenance cleanup replay bound to a terminal transaction ID or exact restored-safe-terminal source evidence and guarded preservation of every ambiguous container or sibling entry.

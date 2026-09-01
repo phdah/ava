@@ -42,6 +42,7 @@ REPOSITORY_REQUIRED = (
     "templates/project-scaffolds/index.md",
     "internal/release/assemble.py",
     "internal/release/ava-install.sh",
+    "internal/release/interaction_evidence.py",
 )
 OBSOLETE_PATHS = (
     "templates/" + "distribution-and-ownership.md",

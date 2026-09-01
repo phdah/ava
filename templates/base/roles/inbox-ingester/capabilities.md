@@ -5,7 +5,7 @@ description: Actions the Inbox Ingester may perform when processing untrusted in
 tags: [ava, role, inbox-ingester, capabilities]
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-13T14:46:00+02:00
+  at: 2026-08-31T08:19:00+02:00
 ---
 
 # Source inspection
@@ -36,6 +36,7 @@ The Inbox Ingester may:
 - move successfully ingested sources to `inbox/processed/`
 - preserve source directory structure where practical
 - choose a non-destructive distinct destination when a processed path already exists
+- create a minimal processed interaction evidence record when a new conversational decision materially supplies authority for the current ingestion mutation, following the shared interaction-evidence contract
 
 # Validation and reporting
 
