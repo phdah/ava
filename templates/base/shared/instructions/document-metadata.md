@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-03T21:29:00+02:00
+  at: 2026-09-01T18:58:00+02:00
 ---
 
 # Purpose
@@ -326,7 +326,7 @@ sources:
     author: human:project-owner
 ```
 
-Use the source `id` with Markdown footnotes when individual claims require precise attribution.
+When individual claims require precise attribution, put one numbered Markdown footnote marker on the claim. Define that marker with one or more backticked `source:<sources[].id>` references plus source-local support detail. Keep source `resource` paths and `title` values canonical in `sources` metadata rather than repeating them in the footnote definition.
 
 Preserve original source files through the inbox lifecycle. A processed source remains evidence and does not become authoritative merely because it has been processed.
 
