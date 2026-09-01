@@ -1,7 +1,7 @@
 ---
-id: AVA-5635
+id: ava-5635
 title: Reduce footnote verbosity in inbox-ingestion claim provenance
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-09-01 16:54'
 labels:
@@ -52,12 +52,24 @@ There is no existing auto-linking/rendering component anywhere in the repository
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 inbox-ingestion-fidelity.md's "Renderable claim provenance" rules define the new grouped-footnote format with at least one worked example, and no longer require a footnote label to equal a single sources[].id
-- [ ] #2 The new rules keep a deterministic way to trace every footnote marker's group back to real sources[].id values, with no bare or unresolved markers permitted
-- [ ] #3 Footnote definitions in the updated spec/examples omit resource and title text already present in the corresponding sources[] frontmatter entries, keeping only source-local attribution detail
-- [ ] #4 A single claim needing multiple supporting sources is represented with one grouped footnote marker instead of one marker per source in all updated spec examples and role/workflow instructions
-- [ ] #5 document-metadata.md, knowledge-organization.md, ingest-inbox.md, and inbox-ingester/instructions.md are updated so their footnote guidance is consistent with the new format with no stale references to the old label-equals-id rule
-- [ ] #6 internal/release/qualification_inbox.py's structural-fidelity validator enforces the new grouped format instead of the label-equals-id check, and still rejects unresolved or unsupported markers
-- [ ] #7 internal/release/fixtures/inbox-ingestion-fidelity.json and test_inbox_ingestion_fidelity cover both valid grouped-footnote documents and the previously-covered failure shapes translated to the new format, and the full test suite passes
-- [ ] #8 Completion evidence records how this public format-contract change was handled under the repository's existing release/semantic-impact procedure
+- [x] #1 inbox-ingestion-fidelity.md's "Renderable claim provenance" rules define the new grouped-footnote format with at least one worked example, and no longer require a footnote label to equal a single sources[].id
+- [x] #2 The new rules keep a deterministic way to trace every footnote marker's group back to real sources[].id values, with no bare or unresolved markers permitted
+- [x] #3 Footnote definitions in the updated spec/examples omit resource and title text already present in the corresponding sources[] frontmatter entries, keeping only source-local attribution detail
+- [x] #4 A single claim needing multiple supporting sources is represented with one grouped footnote marker instead of one marker per source in all updated spec examples and role/workflow instructions
+- [x] #5 document-metadata.md, knowledge-organization.md, ingest-inbox.md, and inbox-ingester/instructions.md are updated so their footnote guidance is consistent with the new format with no stale references to the old label-equals-id rule
+- [x] #6 internal/release/qualification_inbox.py's structural-fidelity validator enforces the new grouped format instead of the label-equals-id check, and still rejects unresolved or unsupported markers
+- [x] #7 internal/release/fixtures/inbox-ingestion-fidelity.json and test_inbox_ingestion_fidelity cover both valid grouped-footnote documents and the previously-covered failure shapes translated to the new format, and the full test suite passes
+- [x] #8 Completion evidence records how this public format-contract change was handled under the repository's existing release/semantic-impact procedure
 <!-- AC:END -->
+
+## Resolution evidence
+
+Claim-level provenance now uses one positive-decimal Markdown footnote marker per claim. Each definition begins with `Sources:` and groups one or more backticked `source:<sources[].id>` references, each paired with source-local support detail. The corresponding `sources[]` frontmatter remains the canonical mapping for preserved-source `resource` paths and `title` values, so definitions no longer duplicate that navigation data.
+
+`internal/release/qualification_inbox.py` resolves every grouped source reference through destination metadata, requires exactly one definition for each used marker, and rejects non-numbered markers, malformed groups, unknown or repeated source IDs, and source links repeated inside definitions. The validator deliberately continues to leave semantic support and certainty checks to independent review. Fixtures and release tests cover a valid two-source group plus unresolved markers, unknown references, old source-ID marker labels, missing source-local detail, repeated links, repeated source IDs, and the existing preservation failures.
+
+The managed shared instructions, Inbox Ingester instructions, ingestion workflow, and root repository history are aligned with the new public format contract. This implementation does not migrate already-generated project documents, as explicitly scoped by the task.
+
+Release handling remains release-edge specific. This PR records the managed contract delta but does not author or pre-decide an adjacent release record. Under `internal/release/procedure.md`, the eventual release-please PR must assess the exact previous-to-target managed delta and independently decide `semantic_review_required`, including whether any bounded project-owned reconciliation is required for that release edge.
+
+Validation is provided by PR #118's required `Python tests` workflow, which runs `python3 internal/todo/validate.py` and the complete `internal/release/test.sh` suite for the pull-request revision.

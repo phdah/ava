@@ -8,7 +8,7 @@ generated:
   at: 2026-07-26T14:41:00Z
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-06T19:00:00+02:00
+  at: 2026-09-01T18:58:00+02:00
 ---
 
 # Purpose
@@ -169,7 +169,7 @@ Preserve raw source material through the inbox lifecycle. When useful informatio
 
 - write or update the relevant canonical concept
 - add OKF `sources` metadata that references the preserved source
-- use source identifiers with Markdown footnotes when individual claims need precise attribution
+- when individual claims need precise attribution, use one numbered grouped Markdown footnote per claim whose definition references every supporting `sources[].id` and adds source-local support detail without repeating source `resource` or `title` data
 - retain contextual Markdown links when they improve navigation or make the relationship clearer
 - describe relevant information from binary sources, such as images, in a retrievable Markdown concept rather than relying on the binary alone
 

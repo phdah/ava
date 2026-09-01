@@ -10,7 +10,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-15T00:19:00+02:00
+  at: 2026-09-01T18:58:00+02:00
 ---
 
 # Ingest inbox
@@ -32,7 +32,7 @@ None.
 3. Before destination mutations, inventory every substantive section and assign an explicit `mapped`, `non-durable`, or `pending` disposition.
 4. If the host splits a large batch across child sessions, assign explicit disjoint source subsets and require each child to return its complete per-source section ledger, destination paths, provenance evidence, blockers, validation result, and final source state. Child success remains provisional until the coordinating Inbox Ingester reconciles it.
 5. Apply only unblocked source changes to focused canonical destinations, preserving uncertainty, causality, attribution, chronology, and source-versus-decision distinctions.
-6. Add OKF source metadata and renderable claim-level Markdown footnotes wherever source-specific claims could otherwise be confused across authors, dates, chronology, certainty, status, proposals, decisions, or outcomes.
+6. Add OKF source metadata and one renderable grouped Markdown footnote per claim wherever source-specific claims could otherwise be confused across authors, dates, chronology, certainty, status, proposals, decisions, or outcomes. Each grouped definition must reference every supporting source by `sources[].id` and keep source `resource` and `title` data in frontmatter rather than repeating it in the footnote.
 7. Leave blocked, ambiguous, failed, unchanged, or semantically incomplete sources pending and continue with unrelated sources when possible.
 8. Validate each completed ingestion, move the original source unchanged to `./inbox/processed/` as its final content mutation, and perform a read-only final-state reconciliation.
 9. Before claiming batch completion, reconcile every originally selected source exactly once against the child evidence when present, the final pending and processed inventories, the destination changes, and the required claim provenance. Do not infer completion from child success or source movement alone.

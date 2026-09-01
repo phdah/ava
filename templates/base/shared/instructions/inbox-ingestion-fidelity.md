@@ -8,7 +8,7 @@ generated:
   at: 2026-08-07T08:24:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T16:30:00+02:00
+  at: 2026-09-01T18:58:00+02:00
 ---
 
 # Purpose
@@ -109,39 +109,44 @@ Use OKF `sources` metadata for every destination containing source-derived mater
 
 Precise claim-level attribution is required when a mapped claim could otherwise be confused with another source or with canonical project state, including when sources differ in author, date, chronology, certainty, status, proposal or decision state, or reported outcome. A section inventory that marks precise attribution as required is incomplete until that attribution is present and verified in the destination.
 
-When individual claims need precise attribution, use this exact relationship:
+When individual claims need precise attribution, keep source identity and navigation in frontmatter:
 
 ```yaml
 sources:
   - id: incident-2026-06-10
     resource: ./inbox/processed/2026-06-10.md
     title: Daily note 2026-06-10
+  - id: remediation-2026-06-11
+    resource: ./inbox/processed/2026-06-11.md
+    title: Daily note 2026-06-11
 ```
 
-Reference the same source identifier from the claim:
+Represent one claim with one document-local numbered footnote marker, even when several sources support it:
 
 ```markdown
-Reduced worker capacity was a plausible, unconfirmed contributor.[^incident-2026-06-10]
+Reduced worker capacity was a plausible, unconfirmed contributor, and the following remediation restored the previous worker request.[^1]
 ```
 
-Define a standard Markdown footnote in the same document:
+Define that marker once in the same document. The definition groups every supporting source by its metadata identifier and adds only source-local detail needed to locate the support:
 
 ```markdown
-[^incident-2026-06-10]: [Daily note 2026-06-10](../../../inbox/processed/2026-06-10.md), "Incident review".
+[^1]: Sources: `source:incident-2026-06-10` - "Incident review"; `source:remediation-2026-06-11` - "Remediation".
 ```
 
 Rules:
 
-- the footnote label must exactly equal one `sources[].id` value in the same document
-- every used claim marker must have one renderable Markdown footnote definition
-- the footnote's Markdown link is relative to the destination document and must resolve to the same preserved source identified by `sources[].resource`
-- the definition must identify the supporting heading, passage, or other source-local location when the file contains several topics
-- the actual source passage must support the attributed claim and its level of certainty
-- reuse one identifier only when the same source passage supports the claims with the same relevant qualifiers
-- use distinct identifiers when different passages, authors, or certainty states require separate attribution, even when they share one source file
+- footnote labels for precise claim provenance are positive decimal integers such as `[^1]`, assigned document-locally
+- one claim uses one grouped marker; do not append one marker per supporting source
+- every used claim marker must have exactly one renderable Markdown footnote definition in the same document
+- each definition must begin with `Sources:` and contain one or more backticked `source:<sources[].id>` references
+- every referenced identifier must exactly equal one `sources[].id` value in the same document, whose `resource` resolves to the preserved source
+- every supporting source in the group must have source-local heading, passage, or other location detail sufficient to identify why that source supports the claim
+- the definition must not repeat source `resource` paths or source `title` text; those remain canonical in `sources` metadata
+- the actual source passages must support the attributed claim and preserve its relevant certainty, chronology, authorship, and other qualifiers
+- reuse a grouped footnote only when the same source set, source-local support, and relevant qualifiers support the later claim; otherwise use a new numbered marker
 - file-level `sources` metadata alone is insufficient when claims from different sources could otherwise be confused
 
-A bare marker such as `[^incident-2026-06-10]` without a definition is not valid completion evidence.
+A bare marker such as `[^1]` without a definition, a group with no valid `source:<sources[].id>` reference, or a reference to an unknown metadata identifier is not valid completion evidence.
 
 # Rendered disposition reconciliation
 
@@ -168,7 +173,7 @@ Before moving a source, verify that:
 3. every `non-durable` section has a defensible rationale and its substantive passage or meaning is absent from trusted destinations created or updated for that source
 4. no section remains `pending`
 5. destination wording preserves material certainty, attribution, chronology, and source-versus-decision distinctions
-6. every precise claim reference renders and matches both metadata and the actual supporting source passage
+6. every precise claim reference renders, resolves each grouped source reference through metadata, and matches the actual supporting source passages
 7. all destination metadata, indexes, links, and role boundaries are valid
 8. the planned processed path is distinct and non-destructive
 
@@ -211,7 +216,7 @@ For an independent or isolated review of inbox ingestion, the Change Reviewer mu
 - claimed disposition totals are derived from section ledgers reconciled against rendered destinations, not asserted from counts alone
 - no material initiative, risk, decision, dependency, or follow-up was omitted
 - uncertainty, causality, authorship, and source-versus-decision distinctions were preserved
-- each precise claim marker renders, matches `sources` metadata, and points to the source that actually supports the claim
+- each precise claim marker renders, each grouped source reference matches `sources` metadata, and every cited source passage actually supports the claim
 - delegated or parallel work still provides complete per-source evidence and a reconciled selected-source ledger
 - completion counts match the final pending, processed, destination, and index inventories
 - deterministic validation is reported separately from semantic fidelity
@@ -228,9 +233,9 @@ Before claiming faithful ingestion completion, verify that:
 - no `non-durable` meaning was promoted into trusted destinations
 - every accepted section disposition has been reconciled against final rendered destination content
 - all material epistemic and attribution qualifiers are preserved
-- every claim requiring precise source distinction has a matching metadata identifier, renderable marker and definition, and supporting source passage
+- every claim requiring precise source distinction has one renderable grouped marker and definition whose source references resolve through matching metadata identifiers to supporting source passages
 - delegated work reconciles exactly once to the original selected-source inventory before batch totals are accepted
-- the cited source actually supports the claim
+- every cited source actually supports the claim
 - reserved inbox entries are excluded from pending counts
 - all reported counts are recomputed from the final state after rendered disposition reconciliation
 - blocked, unchanged, and failed sources remain distinct from successfully processed sources

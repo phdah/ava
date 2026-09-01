@@ -44,23 +44,30 @@
         "inbox/2026-06-10.md",
         "inbox/2026-06-11.md"
       ],
-      "claims": [
+      "claim": "Reduced worker capacity was a plausible contributor, and the remediation restored the previous worker request.",
+      "supporting_sources": [
         {
-          "claim": "The eviction occurred during the capacity reduction.",
           "supporting_source": "inbox/2026-06-10.md",
-          "source_id": "incident-2026-06-10"
+          "source_id": "incident-2026-06-10",
+          "source_local_detail": "Incident review"
         },
         {
-          "claim": "The remediation restored the previous worker request.",
           "supporting_source": "inbox/2026-06-11.md",
-          "source_id": "remediation-2026-06-11"
+          "source_id": "remediation-2026-06-11",
+          "source_local_detail": "Remediation"
         }
       ],
-      "expected_action": "use-distinct-renderable-footnotes",
+      "grouped_marker": "[^1]",
+      "expected_definition_source_refs": [
+        "source:incident-2026-06-10",
+        "source:remediation-2026-06-11"
+      ],
+      "expected_action": "use-one-grouped-renderable-footnote",
       "source_may_move": true,
       "review_checks": [
-        "Each footnote label matches a sources metadata id.",
-        "Each footnote link resolves to the source that actually supports its claim.",
+        "One numbered marker represents the multi-source claim instead of one marker per source.",
+        "The definition references every supporting sources metadata id without repeating its resource path or title.",
+        "Each grouped source reference retains source-local detail that identifies the supporting passage.",
         "Attribution is not collapsed to one convenient file-level source."
       ]
     },
@@ -96,14 +103,14 @@
     {
       "id": "unresolved-footnote-marker-blocks-completion",
       "source": "inbox/incident-summary.md",
-      "destination_marker": "[^incident-2026-06-10]",
+      "destination_marker": "[^1]",
       "footnote_definition_present": false,
       "expected_action": "leave-source-pending",
       "source_may_move": false,
       "review_checks": [
-        "Every used marker has a standard Markdown footnote definition.",
-        "The definition links to the same source as the matching metadata id.",
-        "A bare source-id marker is not accepted as renderable provenance."
+        "Every used numbered marker has exactly one standard Markdown footnote definition.",
+        "The definition references at least one existing sources metadata id.",
+        "A bare grouped marker is not accepted as renderable provenance."
       ]
     },
     {
@@ -114,9 +121,9 @@
       "expected_action": "correct-attribution-before-processing",
       "source_may_move": false,
       "review_checks": [
-        "The cited source contains the attributed claim.",
+        "The grouped source reference identifies a source containing the attributed claim.",
         "The actual supporting source is present in destination metadata.",
-        "A valid link to the wrong source is still a semantic fidelity failure."
+        "A structurally valid reference to the wrong source is still a semantic fidelity failure."
       ]
     },
     {

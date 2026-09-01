@@ -7,7 +7,10 @@ from pathlib import Path
 SOURCE_ROOT = Path(__file__).resolve().parents[3]
 FIXTURE = SOURCE_ROOT / "internal/release/fixtures/inbox-ingestion-fidelity.json"
 FIDELITY = SOURCE_ROOT / "templates/base/shared/instructions/inbox-ingestion-fidelity.md"
+DOCUMENT_METADATA = SOURCE_ROOT / "templates/base/shared/instructions/document-metadata.md"
+KNOWLEDGE_ORGANIZATION = SOURCE_ROOT / "templates/base/shared/instructions/knowledge-organization.md"
 INBOX_INDEX = SOURCE_ROOT / "templates/base/roles/inbox-ingester/index.md"
+INBOX_INSTRUCTIONS = SOURCE_ROOT / "templates/base/roles/inbox-ingester/instructions.md"
 REVIEWER_INDEX = SOURCE_ROOT / "templates/base/roles/change-reviewer/index.md"
 WORKFLOW = SOURCE_ROOT / "templates/base/workflows/ingest-inbox.md"
 
@@ -18,7 +21,10 @@ class InboxIngestionFidelityTests(unittest.TestCase):
         cls.fixture = json.loads(FIXTURE.read_text())
         cls.cases = {case["id"]: case for case in cls.fixture["cases"]}
         cls.fidelity = FIDELITY.read_text()
+        cls.document_metadata = DOCUMENT_METADATA.read_text()
+        cls.knowledge_organization = KNOWLEDGE_ORGANIZATION.read_text()
         cls.inbox_index = INBOX_INDEX.read_text()
+        cls.inbox_instructions = INBOX_INSTRUCTIONS.read_text()
         cls.reviewer_index = REVIEWER_INDEX.read_text()
         cls.workflow = WORKFLOW.read_text()
 
@@ -70,20 +76,48 @@ class InboxIngestionFidelityTests(unittest.TestCase):
         self.assertIn("who made, observed, proposed, approved, rejected, or questioned", self.fidelity)
         self.assertIn("source content, trusted project knowledge, and a user-approved decision", self.fidelity)
 
-    def test_contract_defines_renderable_claim_provenance(self) -> None:
+    def test_contract_defines_grouped_renderable_claim_provenance(self) -> None:
         self.assertIn("# Renderable claim provenance", self.fidelity)
         self.assertIn("id: incident-2026-06-10", self.fidelity)
-        self.assertIn("[^incident-2026-06-10]", self.fidelity)
+        self.assertIn("id: remediation-2026-06-11", self.fidelity)
+        self.assertIn("[^1]", self.fidelity)
         self.assertIn(
-            "[^incident-2026-06-10]: [Daily note 2026-06-10]",
+            "[^1]: Sources: `source:incident-2026-06-10` - \"Incident review\"; `source:remediation-2026-06-11` - \"Remediation\".",
             self.fidelity,
         )
-        self.assertIn("footnote label must exactly equal one `sources[].id`", self.fidelity)
-        self.assertIn("same preserved source identified by `sources[].resource`", self.fidelity)
-        self.assertIn("actual source passage must support the attributed claim", self.fidelity)
+        self.assertIn("one claim uses one grouped marker", self.fidelity)
+        self.assertIn("`source:<sources[].id>`", self.fidelity)
+        self.assertIn("must not repeat source `resource` paths or source `title` text", self.fidelity)
+        self.assertNotIn("footnote label must exactly equal one `sources[].id`", self.fidelity)
+        self.assertIn("actual source passages must support the attributed claim", self.fidelity)
         self.assertIn("source-specific claims", self.fidelity)
         self.assertIn("differ in author, date, chronology, certainty, status", self.fidelity)
         self.assertIn("A bare marker", self.fidelity)
+
+        case = self.cases["claims-from-different-sources-keep-distinct-attribution"]
+        self.assertEqual(case["grouped_marker"], "[^1]")
+        self.assertEqual(len(case["supporting_sources"]), 2)
+        self.assertEqual(
+            case["expected_definition_source_refs"],
+            ["source:incident-2026-06-10", "source:remediation-2026-06-11"],
+        )
+        self.assertEqual(case["expected_action"], "use-one-grouped-renderable-footnote")
+
+    def test_grouped_provenance_guidance_is_consistent(self) -> None:
+        for document in (
+            self.document_metadata,
+            self.knowledge_organization,
+            self.inbox_instructions,
+            self.workflow,
+        ):
+            with self.subTest(document=document[:80]):
+                self.assertIn("sources[].id", document)
+                self.assertIn("resource", document)
+                self.assertIn("title", document)
+        self.assertIn("one numbered Markdown footnote marker", self.document_metadata)
+        self.assertIn("one numbered grouped Markdown footnote per claim", self.knowledge_organization)
+        self.assertIn("one numbered grouped Markdown footnote per claim", self.inbox_instructions)
+        self.assertIn("one renderable grouped Markdown footnote per claim", self.workflow)
 
     def test_delegated_batches_require_one_coordinator_ledger(self) -> None:
         case = self.cases["delegated-batch-requires-coordinator-reconciliation"]
@@ -103,7 +137,7 @@ class InboxIngestionFidelityTests(unittest.TestCase):
     def test_workflow_requires_inventory_and_final_reconciliation(self) -> None:
         self.assertIn("inventory every substantive section", self.workflow)
         self.assertIn("preserving uncertainty, causality, attribution", self.workflow)
-        self.assertIn("renderable claim-level Markdown footnotes", self.workflow)
+        self.assertIn("one renderable grouped Markdown footnote per claim", self.workflow)
         self.assertIn("read-only final-state reconciliation", self.workflow)
         self.assertIn("reconciled final pending, processed, destination, and index inventories", self.workflow)
 
