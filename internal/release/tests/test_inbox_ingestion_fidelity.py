@@ -111,10 +111,13 @@ class InboxIngestionFidelityTests(unittest.TestCase):
             self.workflow,
         ):
             with self.subTest(document=document[:80]):
-                self.assertIn("grouped", document)
                 self.assertIn("sources[].id", document)
                 self.assertIn("resource", document)
                 self.assertIn("title", document)
+        self.assertIn("one numbered Markdown footnote marker", self.document_metadata)
+        self.assertIn("one numbered grouped Markdown footnote per claim", self.knowledge_organization)
+        self.assertIn("one numbered grouped Markdown footnote per claim", self.inbox_instructions)
+        self.assertIn("one renderable grouped Markdown footnote per claim", self.workflow)
 
     def test_delegated_batches_require_one_coordinator_ledger(self) -> None:
         case = self.cases["delegated-batch-requires-coordinator-reconciliation"]
