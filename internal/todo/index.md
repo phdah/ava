@@ -20,8 +20,9 @@ The former numbered phase directories and `/internal/todo.md` were removed after
 - `To Do`: executable work when its dependencies are satisfied.
 - `In Progress`: currently being implemented.
 - `Parked`: valid work intentionally excluded from execution until explicitly resumed.
-- `Won't Fix`: intentionally closed work that should not be implemented.
-- `Done`: implementation is complete.
+- `Done`: work is closed and Backlog.md should treat it as completed.
+
+Tasks intentionally closed without implementation use `Done` plus the `Won't Fix` label. This preserves the disposition while ensuring Backlog.md counts the task as complete.
 
 ## Selecting work
 
@@ -43,7 +44,7 @@ npx -y backlog.md@1.50.1 task list --status "To Do" --ready --sort ordinal --lim
 
 The task returned by that query is the next internal roadmap task. `--ready` excludes tasks with unsatisfied dependencies, `--sort ordinal` uses the task's explicit Backlog.md order, and `--limit 1` returns only the next candidate. Task IDs and filenames are not roadmap ordering mechanisms.
 
-If the query returns no task, there is no currently executable internal roadmap task. Do not substitute a `Parked`, `Won't Fix`, `Done`, or already `In Progress` task based on historical prose or task numbering.
+If the query returns no task, there is no currently executable internal roadmap task. Do not substitute a `Parked`, `Done`, or already `In Progress` task based on historical prose or task numbering.
 
 Read the complete returned task before planning or modifying the repository. For interactive inspection, `backlog board` and `backlog browser` remain available. `backlog browser` serves only on the local machine (`127.0.0.1`, default port `6420`).
 
@@ -54,7 +55,7 @@ When selecting, planning, executing, or completing an internal roadmap task, use
 - One bounded task is the normal unit of implementation and PR scope.
 - Read the complete selected task before planning implementation.
 - Treat `Parked` as intentionally excluded until the user explicitly resumes it.
-- Treat `Won't Fix` as closed by decision and do not execute it unless its status is explicitly changed.
+- Treat a `Done` task labeled `Won't Fix` as intentionally closed without implementation. Do not execute it unless the user explicitly reopens it and changes that disposition.
 - Put new scope, acceptance criteria, implementation notes, and completion evidence directly in the native task rather than creating a parallel planning document.
 - Prefer Backlog.md commands for lifecycle and task metadata changes. Direct Markdown edits are allowed when required by repository work but must preserve Backlog.md's native task shape.
 - Complete, reopen, or reprioritize through native task state and commit the resulting Markdown normally.

@@ -10,8 +10,8 @@ REPO_ROOT = TODO_ROOT.parents[1]
 CONFIG = REPO_ROOT / "backlog.config.yml"
 TASK_DIR = TODO_ROOT / "tasks"
 MILESTONE_DIR = TODO_ROOT / "milestones"
-ALLOWED_STATUSES = {"To Do", "In Progress", "Parked", "Won't Fix", "Done"}
-EXPECTED_TASK_COUNT = 73
+ALLOWED_STATUSES = {"To Do", "In Progress", "Parked", "Done"}
+EXPECTED_TASK_COUNT = 76
 V1_MILESTONE_ID = "m-0"
 V1_MILESTONE_TITLE = "v1.0.0"
 LEGACY_PHASE_PATTERN = re.compile(r"[0-9][0-9]-.*")
@@ -95,7 +95,7 @@ def main() -> int:
     required_config = (
         "backlog_directory: internal/todo",
         'task_prefix: "ava"',
-        'statuses: ["To Do", "In Progress", "Parked", "Won\'t Fix", "Done"]',
+        'statuses: ["To Do", "In Progress", "Parked", "Done"]',
         "remote_operations: false",
         "auto_commit: false",
     )

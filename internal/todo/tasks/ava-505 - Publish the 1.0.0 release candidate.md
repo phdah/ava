@@ -1,16 +1,17 @@
 ---
 id: ava-505
 title: Publish the 1.0.0 release candidate
-status: Won't Fix
+status: Done
 assignee: []
 created_date: ''
-updated_date: '2026-08-30 18:27'
+updated_date: '2026-09-01 19:54'
 labels:
   - internal
   - roadmap
   - phase-05
   - release
   - rc
+  - "Won't Fix"
 dependencies: []
 ordinal: 505
 ---
