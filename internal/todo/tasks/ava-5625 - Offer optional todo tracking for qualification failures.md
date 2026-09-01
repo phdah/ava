@@ -1,10 +1,10 @@
 ---
 id: ava-5625
 title: Offer optional todo tracking for qualification failures
-status: In Progress
+status: Parked
 assignee: []
 created_date: ''
-updated_date: '2026-09-01 18:29'
+updated_date: '2026-09-01 18:47'
 labels:
   - internal
   - roadmap
@@ -56,4 +56,4 @@ The release procedure now requires a `failed` or `needs-review` result to be rep
 
 The hands-off qualification procedure now separates automated qualification from conversational operator behavior. `qualify-release.sh` remains non-mutating and does not create Backlog.md tasks or infer consent. Any user-directed correction remains ordinary repository work followed by a new candidate, a fresh complete qualification run, and fresh user acceptance.
 
-The implementation criteria are complete. The final operational criterion intentionally remains pending until a real future qualification produces `failed` or `needs-review`, at which point the documented ask-then-record behavior can be exercised and this task can be moved to `Done` with that run as completion evidence.
+The implementation criteria are complete. The task is parked until a real future qualification produces `failed` or `needs-review`, at which point the documented ask-then-record behavior can be exercised and this task can be moved directly to `Done` with that run as completion evidence.
