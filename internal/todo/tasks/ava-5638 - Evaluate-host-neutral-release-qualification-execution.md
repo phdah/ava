@@ -17,7 +17,7 @@ references:
   - ava-5636
   - ava-5637
 type: enhancement
-ordinal: 6637
+ordinal: 6636
 ---
 
 ## Description
@@ -71,7 +71,9 @@ If full host-neutral execution is not feasible:
 
 ## Relationship to AVA-5637
 
-AVA-5637 disables MCPs for qualification-owned OpenCode sessions. If this task removes OpenCode entirely from qualification, AVA-5637 becomes unnecessary for the primary path. If OpenCode remains as a fallback or is still required for bounded scenarios, AVA-5637 continues to apply to those executions. Do not preserve OpenCode solely to justify AVA-5637.
+This task must be completed before AVA-5637 is considered. AVA-5637 disables MCPs for qualification-owned OpenCode sessions, but that hardening should only be implemented for whatever OpenCode execution remains after this evaluation and implementation.
+
+If this task removes OpenCode entirely from qualification, close AVA-5637 as `Done` with the `Won't Fix` label rather than implementing it. If OpenCode remains as a fallback or is still required for bounded scenarios, AVA-5637 continues to apply only to those executions. Do not preserve OpenCode solely to justify AVA-5637.
 
 ## Completion criteria
 
