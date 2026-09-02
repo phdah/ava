@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: release-qualification-${{ github.event.pull_request.number }}
@@ -33,15 +33,72 @@ jobs:
           python-version: "3.11"
 
       - name: Run session-neutral release qualification
+        id: qualify
         env:
           AVA_QUALIFICATION_EXECUTOR: github-actions
           GH_TOKEN: ${{ github.token }}
-          PR_HEAD_BRANCH: ${{ github.head_ref }}
         run: |
           set -eu
+          echo "artifact_ready=false" >> "$GITHUB_OUTPUT"
 
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
+          package_changes() {
+            kind=$1
+            artifact_root="$RUNNER_TEMP/release-qualification-artifact"
+            rm -rf "$artifact_root"
+            mkdir -p "$artifact_root"
+            python3 - "$artifact_root" "$kind" <<'PY'
+          import json
+          import shutil
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          artifact_root = Path(sys.argv[1])
+          kind = sys.argv[2]
+          result = subprocess.run(
+              [
+                  "git",
+                  "status",
+                  "--porcelain",
+                  "--untracked-files=all",
+                  "--",
+                  "internal/release/qualification",
+              ],
+              check=True,
+              text=True,
+              capture_output=True,
+          )
+          files = []
+          deleted = []
+          for line in result.stdout.splitlines():
+              if len(line) < 4:
+                  continue
+              path_text = line[3:]
+              path = Path(path_text)
+              if path.is_file():
+                  destination = artifact_root / path
+                  destination.parent.mkdir(parents=True, exist_ok=True)
+                  shutil.copy2(path, destination)
+                  files.append(path.as_posix())
+              elif not path.exists():
+                  deleted.append(path.as_posix())
+          if not files and not deleted:
+              raise SystemExit("qualification produced no repository changes to package")
+          manifest = {
+              "schema_version": 1,
+              "kind": kind,
+              "files": sorted(files),
+              "delete": sorted(deleted),
+          }
+          (artifact_root / "artifact-manifest.json").write_text(
+              json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+            echo "artifact_ready=true" >> "$GITHUB_OUTPUT"
+            echo "artifact_name=release-qualification-${kind}-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+            echo "artifact_path=$artifact_root" >> "$GITHUB_OUTPUT"
+          }
 
           request=internal/release/qualification/acceptance-request.json
           if [ -f "$request" ]; then
@@ -58,9 +115,7 @@ jobs:
               --identity "$identity" \
               --run-id "$run_id"
             rm "$request"
-            git add internal/release/qualification
-            git commit -m "chore(release): record qualification acceptance"
-            git push origin "HEAD:$PR_HEAD_BRANCH"
+            package_changes acceptance
             exit 0
           fi
 
@@ -116,11 +171,14 @@ jobs:
           internal/release/run-release-qualification.sh "$stage"
 
           if [ "$stage" = final ]; then
-            git add internal/release/qualification
-            if git diff --cached --quiet; then
-              echo "final qualification produced no evidence changes" >&2
-              exit 1
-            fi
-            git commit -m "chore(release): record deterministic qualification"
-            git push origin "HEAD:$PR_HEAD_BRANCH"
+            package_changes evidence
           fi
+
+      - name: Upload qualification state transition
+        if: steps.qualify.outputs.artifact_ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.qualify.outputs.artifact_name }}
+          path: ${{ steps.qualify.outputs.artifact_path }}
+          if-no-files-found: error
+          retention-days: 7
