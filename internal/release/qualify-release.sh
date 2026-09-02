@@ -87,7 +87,7 @@ PY
   export AVA_QUALIFICATION_OPENCODE_EXTERNAL_ROOTS
 fi
 
-exec python3 "$ROOT/internal/release/qualification_automation.py" \
+exec python3 "$ROOT/internal/release/qualification_phase_automation.py" \
   "$@" \
   --repository-root "$ROOT" \
   --opencode "$ROOT/internal/release/qualification-opencode.sh"
