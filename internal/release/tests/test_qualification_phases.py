@@ -23,8 +23,9 @@ class QualificationStageTests(unittest.TestCase):
         for text in (procedure, automation):
             self.assertIn("pre-edge", text)
             self.assertIn("final", text)
-            self.assertIn("writes no", text.lower())
             self.assertIn("authoritative", text.lower())
+        self.assertIn("writes no", procedure.lower())
+        self.assertIn("not committed", automation.lower())
         self.assertIn("There is no committed early-run ancestry chain", procedure)
         self.assertIn("only run used for user acceptance", automation)
 
