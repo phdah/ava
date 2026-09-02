@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import unittest
-from pathlib import Path
 
 from internal.release import qualification_work as work
 
@@ -27,7 +26,7 @@ class QualificationStageTests(unittest.TestCase):
             self.assertIn("writes no", text.lower())
             self.assertIn("authoritative", text.lower())
         self.assertIn("There is no committed early-run ancestry chain", procedure)
-        self.assertIn("single authoritative release qualification", automation)
+        self.assertIn("only run used for user acceptance", automation)
 
     def test_acceptance_no_longer_depends_on_two_phase_gate(self) -> None:
         release_root = work.REPOSITORY_ROOT / "internal/release"
