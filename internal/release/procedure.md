@@ -83,7 +83,7 @@ For the exact previous-to-target managed delta, answer:
 
 Set `semantic_review_required: true` only when project-owned semantic reconciliation may be required. When true, transition-local guidance must define affected concepts, bounded discovery conditions, and completion criteria.
 
-A managed behavior change alone does not decide semantic impact, and the presence or absence of a deterministic project-file migration does not decide it either. Tooling must not guess semantic migration need from changed paths or categories.
+A managed behavior change alone does not decide semantic impact, and the presence or absence of a deterministic project-file migration does not decide it either. Tooling must not guess semantic migration need from changed paths or categories. The release PR must preserve the reviewed rationale for the semantic-impact decision.
 
 # Early-result invalidation
 
@@ -169,7 +169,7 @@ The Release PR policy check must fail until qualification is accepted. It verifi
 - the early edge was absent when early qualification ran
 - no invalidating change occurred between the early and final qualified revisions
 - final target assets were assembled from the final qualified revision
-- the final qualified revision belongs to the release PR
+- the final qualified revision belongs to the release pr
 - only `internal/release/qualification/` changes occurred after final qualification
 
 A release-content change after final qualification requires new applicable qualification evidence and fresh user acceptance. Acceptance is never carried forward blindly across changed release content.
