@@ -79,6 +79,7 @@ if [ -e "$output" ]; then
 fi
 
 if [ "$phase" = edge-independent ]; then
+  unset AVA_UPGRADE_CATALOG
   "$ROOT/internal/release/assemble.sh" \
     --output "$output" \
     --version "$version" \
