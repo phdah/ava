@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import inspect
 import unittest
-from pathlib import Path
 
 from internal.release import qualification_host as host
 from internal.release import qualification_host_automation as host_automation
@@ -55,8 +54,12 @@ class QualificationHostTests(unittest.TestCase):
                 },
             ],
         }
+        transcript_paths = {
+            "ses_root123": "/tmp/evidence/int_root.json",
+            "ses_child456": "/tmp/evidence/int_child.json",
+        }
 
-        inventory = host.normalize_opencode_inventory(raw)
+        inventory = host.normalize_opencode_inventory(raw, transcript_paths)
         host.validate_interaction_inventory(inventory)
         serialized = host.canonical_json(inventory)
 
@@ -77,6 +80,8 @@ class QualificationHostTests(unittest.TestCase):
         )
         self.assertIsNone(root["parent_interaction_id"])
         self.assertEqual(child["parent_interaction_id"], root["interaction_id"])
+        self.assertEqual(root["transcript_path"], transcript_paths["ses_root123"])
+        self.assertEqual(child["transcript_path"], transcript_paths["ses_child456"])
 
     def test_host_neutral_runner_injects_interaction_command(self) -> None:
         source = inspect.getsource(host_runner.HostNeutralRunner.opencode_prompt)
