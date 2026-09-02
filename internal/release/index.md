@@ -18,16 +18,14 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Pull-request title validator](validate_pr_title.py)
 - [Alpha qualification policy](alpha-qualification.md)
 - [Hands-off release qualification procedure](qualification-automation.md)
-- [Release qualification entry point](qualify-release.sh)
+- [ChatGPT Work Cloud qualification execution](qualification-work.md)
+- [Release qualification protocol entry point](qualify-release.sh)
+- [ChatGPT Work qualification protocol driver](qualification_work.py)
 - [Explicit qualification acceptance entry point](accept-release-qualification.sh)
-- [Host-neutral qualification contract and adapters](qualification_host.py)
-- [Host-neutral qualification runner](qualification_host_runner.py)
-- [Host-neutral two-phase qualification orchestration](qualification_host_automation.py)
-- [Qualification OpenCode adapter transport](qualification-opencode.sh)
 - [Shared qualification automation compatibility helpers](qualification_automation.py)
 - [Shared qualification scenario engine](qualification_runner.py)
 - [Phase contract and matrix classification](qualification_phase_runner.py)
-- [Legacy phase orchestration compatibility module](qualification_phase_automation.py)
+- [Historical phase orchestration compatibility module](qualification_phase_automation.py)
 - [Two-phase acceptance and release-PR gate](qualification_phase_gate.py)
 - [Qualification acceptance and release-PR state implementation](qualification_acceptance.py)
 - [Qualification configuration and compact evidence state](qualification/)
@@ -43,6 +41,8 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Release implementation tests](tests/)
 - [Release implementation log](log.md)
 
-`qualify-release.sh` is the qualification execution entry point. It runs through the host-neutral qualification contract; OpenCode is the currently configured local adapter rather than part of the release-gate evidence definition.
+`qualify-release.sh` is the qualification execution entry point. It is a deterministic protocol for ChatGPT Work Cloud: deterministic checks run in the Work cloud shell, semantic interactions are delegated to fresh Work subagents, and a separate fresh Work subagent performs the independent audit. The supported release path has no local agent runtime and no OpenCode dependency.
+
+`qualification_phase_automation.py` and historical qualification evidence remain available to validate and interpret previously recorded runs. They are not the canonical execution path for new release qualification.
 
 `validate_upgrade_impact.py` and historical target-specific guidance remain available only for compatibility investigation of already published releases. They are not active release-authoring inputs.
