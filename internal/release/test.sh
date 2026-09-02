@@ -29,6 +29,9 @@ python3 -m py_compile \
   "$ROOT/internal/release/qualification_runner.py" \
   "$ROOT/internal/release/qualification_automation.py" \
   "$ROOT/internal/release/qualification_acceptance.py" \
+  "$ROOT/internal/release/qualification_phase_runner.py" \
+  "$ROOT/internal/release/qualification_phase_automation.py" \
+  "$ROOT/internal/release/qualification_phase_gate.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/checkpoint.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \
@@ -68,6 +71,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_qualification_automation \
   internal.release.tests.test_qualification_execution_identity \
   internal.release.tests.test_qualification_opencode_adapter \
+  internal.release.tests.test_qualification_phases \
   internal.release.tests.test_assemble_candidate \
   internal.release.tests.test_qualification_acceptance \
   internal.release.tests.test_adjacent_edges \
