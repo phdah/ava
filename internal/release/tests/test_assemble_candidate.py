@@ -28,7 +28,7 @@ class AssembleCandidateTests(unittest.TestCase):
         assembler.write_text(
             "#!/bin/sh\n"
             "set -eu\n"
-            "printf '%s\\n' \"$AVA_UPGRADE_CATALOG\" > \"$AVA_TEST_CAPTURE\"\n"
+            "printf '%s\\n' \"${AVA_UPGRADE_CATALOG-}\" > \"$AVA_TEST_CAPTURE\"\n"
             "printf '%s\\n' \"$@\" >> \"$AVA_TEST_CAPTURE\"\n"
             "while [ \"$#\" -gt 0 ]; do\n"
             "  if [ \"$1\" = --output ]; then\n"
@@ -73,9 +73,13 @@ class AssembleCandidateTests(unittest.TestCase):
             check=True,
         ).stdout.strip()
 
-    def run_script(self, *, check: bool = True) -> subprocess.CompletedProcess[str]:
+    def run_script(
+        self,
+        *args: str,
+        check: bool = True,
+    ) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
-            [str(self.script)],
+            [str(self.script), *args],
             cwd=self.repo,
             env=self.env,
             text=True,
@@ -119,6 +123,35 @@ class AssembleCandidateTests(unittest.TestCase):
             str((self.repo / "CHANGELOG.md").resolve()),
         ):
             self.assertIn(expected, arguments)
+
+    def test_edge_independent_candidate_does_not_require_or_pass_catalog(self) -> None:
+        catalog = self.repo / "internal/release/catalogs/1.0.0-alpha.15.json"
+        catalog.unlink()
+        self.git("add", "-u")
+        self.git("commit", "-qm", "remove target edge")
+        revision = self.git("rev-parse", "HEAD")
+
+        result = self.run_script("--phase", "edge-independent")
+        expected_output = (
+            self.candidate_root
+            / f"ava-1.0.0-alpha.15-{revision[:7]}-edge-independent"
+        )
+        self.assertEqual(result.stdout.strip(), str(expected_output.resolve()))
+        self.assertTrue(expected_output.is_dir())
+        captured = self.capture.read_text(encoding="utf-8").splitlines()
+        self.assertEqual(captured[0], "")
+        self.assertIn("--source-revision", captured[1:])
+        self.assertIn(revision, captured[1:])
+
+    def test_edge_dependent_candidate_requires_catalog(self) -> None:
+        catalog = self.repo / "internal/release/catalogs/1.0.0-alpha.15.json"
+        catalog.unlink()
+        self.git("add", "-u")
+        self.git("commit", "-qm", "remove target edge")
+        result = self.run_script("--phase", "edge-dependent", check=False)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("missing adjacent release catalog", result.stderr)
+        self.assertFalse(self.capture.exists())
 
     def test_refuses_dirty_checkout(self) -> None:
         (self.repo / "dirty.txt").write_text("dirty\n", encoding="utf-8")
