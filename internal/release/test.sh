@@ -25,6 +25,8 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_repository.py" \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/interaction_evidence.py" \
+  "$ROOT/internal/release/_qualification_runner_core.py" \
+  "$ROOT/internal/release/_qualification_automation_core.py" \
   "$ROOT/internal/release/qualification_runner.py" \
   "$ROOT/internal/release/qualification_automation.py" \
   "$ROOT/internal/release/qualification_acceptance.py" \

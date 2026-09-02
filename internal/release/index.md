@@ -21,13 +21,13 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Single release qualification entry point](qualify-release.sh)
 - [Explicit qualification acceptance entry point](accept-release-qualification.sh)
 - [Qualification OpenCode session adapter](qualification-opencode.sh)
-- [Shared qualification automation support](qualification_automation.py)
 - [Phase-specific release qualification orchestration](qualification_phase_automation.py)
 - [Phase-specific synthetic qualification runner](qualification_phase_runner.py)
 - [Two-phase acceptance and release-PR gate](qualification_phase_gate.py)
+- [Private shared automation core](_qualification_automation_core.py)
+- [Private shared scenario engine](_qualification_runner_core.py)
 - [Qualification acceptance and release-PR state implementation](qualification_acceptance.py)
 - [Qualification configuration and compact evidence state](qualification/)
-- [Shared synthetic qualification scenario engine](qualification_runner.py)
 - [Deterministic inbox qualification checks](qualification_inbox.py)
 - [Conformance validation contract](conformance.md)
 - [Unified conformance validator](conformance.py)
@@ -40,6 +40,6 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Release implementation tests](tests/)
 - [Release implementation log](log.md)
 
-`qualify-release.sh` is the only supported qualification execution entry point. The Python qualification modules are internal implementation boundaries used by that command and by unit tests; there is no supported standalone full-matrix qualification command.
+`qualify-release.sh` is the only supported qualification execution entry point. `qualification_runner.py` and `qualification_automation.py` are non-executable import facades over private shared cores for phase orchestration and unit tests. They deliberately do not expose the former complete-matrix `main` entrypoints.
 
 `validate_upgrade_impact.py` and historical target-specific guidance remain available only for compatibility investigation of already published releases. They are not active release-authoring inputs.
