@@ -86,7 +86,6 @@ for path in \
   internal/release/fixtures/synthetic-qualification-vault/requirements.lock \
   internal/release/fixtures/synthetic-qualification-vault/oracle.schema.json \
   internal/release/fixtures/synthetic-qualification-vault/run-manifest.schema.json \
-  internal/release/qualification/schemas/work-edge-independent-run.schema.json \
   internal/release/qualification/schemas/work-run-record.schema.json \
   internal/release/tests/test_installed_paths.py \
   internal/release/tests/test_installer.py \
@@ -108,6 +107,7 @@ qualification_entrypoints=$(find "$ROOT/internal/release" -maxdepth 1 -type f -n
 
 [ ! -e "$ROOT/internal/release/qualification-opencode.sh" ] || fail "obsolete OpenCode qualification runtime remains"
 [ ! -e "$ROOT/internal/release/tests/test_qualification_opencode_adapter.py" ] || fail "obsolete OpenCode qualification adapter coverage remains"
+[ ! -e "$ROOT/internal/release/qualification/schemas/work-edge-independent-run.schema.json" ] || fail "obsolete committed pre-edge evidence schema remains"
 
 for path in templates/base templates/project-scaffolds internal/release/installer internal/release/fixtures
 do
