@@ -118,9 +118,9 @@ There is no mandatory independent LLM audit and no mandatory scenario interactio
 
 # GitHub Actions boundary
 
-The normal pull-request checks remain GitHub Actions work. `.github/workflows/python-tests.yml` runs Backlog validation, installed-project task-board checks, `internal/release/test.sh`, and the repository Python/unit tests.
+The normal pull-request checks remain GitHub Actions work. In particular, `.github/workflows/python-tests.yml` executes the internal Backlog validation, installed-project task-board checks, and `internal/release/test.sh`, which runs the repository Python/unit test suite.
 
-The Work release task requires those checks to pass but **does not duplicate** the full repository test suite in Work. A Work-side rerun is diagnostic only when investigating a CI failure.
+The Work release task must require those checks to pass but **does not duplicate** them in its own cloud shell. It may inspect their results through GitHub. Rerunning the repository test suite inside Work is optional diagnostic work only when investigating a failure, not part of the qualification evidence contract.
 
 # Optional behavioral QA
 
