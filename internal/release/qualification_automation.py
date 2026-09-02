@@ -1,19 +1,13 @@
-"""Shared release-qualification automation API.
+"""Shared helpers for release qualification automation.
 
-Release qualification execution must enter through internal/release/qualify-release.sh.
-The implementation lives in the private core module; this import surface intentionally
-exposes helpers but not the former standalone full-qualification command.
+Release qualification is executed through internal/release/qualify-release.sh.
 """
 
 from internal.release._qualification_automation_core import *  # noqa: F401,F403
 
-# Do not expose the former standalone complete-matrix automation command API.
-for _legacy_name in ("parse_args", "main"):
-    globals().pop(_legacy_name, None)
+for _entrypoint in ("parse_args", "main"):
+    globals().pop(_entrypoint, None)
 
 
 if __name__ == "__main__":
-    raise SystemExit(
-        "qualification_automation.py is shared implementation support; "
-        "use internal/release/qualify-release.sh"
-    )
+    raise SystemExit("use internal/release/qualify-release.sh")
