@@ -101,18 +101,23 @@ class QualificationAutomationTests(unittest.TestCase):
         config, catalog, current = automation.load_configuration()
         automation.validate_model_identifier(config["qualification_model"], field="qualification_model")
         automation.validate_model_identifier(config["audit_model"], field="audit_model")
-        self.assertEqual(config["active_pair"], "alpha15-to-alpha16-local")
         pairs = {item["id"]: item for item in catalog["pairs"]}
         historical = pairs["alpha14-to-alpha15-corrective-local"]
         self.assertTrue(historical["historical"])
         self.assertEqual(historical["source"]["tag"], "v1.0.0-alpha.14")
         self.assertEqual(historical["target"]["tag"], "v1.0.0-alpha.15")
-        active = pairs[config["active_pair"]]
+        active_pair = config["active_pair"]
+        self.assertIn(active_pair, pairs)
+        self.assertIn(active_pair, current["pairs"])
+        active = pairs[active_pair]
         self.assertFalse(active["historical"])
-        self.assertEqual(active["source"]["tag"], "v1.0.0-alpha.15")
+        self.assertFalse(current["pairs"][active_pair]["historical"])
+        self.assertEqual(active["source"]["kind"], "published")
+        self.assertEqual(active["source"]["tag"], f"v{active['source']['version']}")
+        target_version = (automation.REPOSITORY_ROOT / "version.txt").read_text(encoding="utf-8").strip()
         self.assertEqual(
             active["target"],
-            {"kind": "local", "tag": "v1.0.0-alpha.16", "version": "1.0.0-alpha.16"},
+            {"kind": "local", "tag": f"v{target_version}", "version": target_version},
         )
         self.assertEqual(current["pairs"]["alpha13-to-alpha14"]["status"], "not-run")
 

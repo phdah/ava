@@ -156,7 +156,7 @@ class QualificationExecutionTests(unittest.TestCase):
         self.assertIn("internal/release/test.sh", python_workflow)
         self.assertIn("session-neutral", procedure.lower())
         self.assertIn("GitHub Actions", procedure)
-        self.assertIn("python3 internal/release/qualification_ci.py", qualification_workflow)
+        self.assertIn("python3 -m internal.release.qualification_ci", qualification_workflow)
         self.assertNotIn("python3 - <<", qualification_workflow)
         self.assertNotIn("package_changes()", qualification_workflow)
         self.assertNotIn("acceptance-request.json", qualification_workflow)
