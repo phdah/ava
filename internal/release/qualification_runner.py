@@ -693,10 +693,23 @@ class Runner:
             assert_no_transactions(project, scenario_id)
             self.conformance(scenario_id, project)
         elif kind == "rollback":
-            before = self.upgrade_to_target(scenario_id, project)
+            before = self.upgrade_source_checkpoint(scenario_id, project)
+            self.run_command(
+                scenario_id,
+                [
+                    sys.executable,
+                    str(CHECKPOINT),
+                    "resume",
+                    "--target",
+                    str(project),
+                    "--asset-dir",
+                    str(self.target.directory),
+                ],
+                label="rollback checkpoint",
+            )
             journal = read_journal(project)
             if "rollback" not in journal.get("allowed_operations", []):
-                raise QualificationError(f"{scenario_id}: target state does not authentically allow rollback")
+                raise QualificationError(f"{scenario_id}: interrupted target state does not authentically allow rollback")
             self.install(scenario_id, project, self.target, "--rollback")
             assert_project_owned_digest(project, before, scenario_id)
             if read_manifest(project)["ava_version"] != self.source.version:
