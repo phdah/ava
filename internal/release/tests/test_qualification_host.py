@@ -96,7 +96,7 @@ class QualificationHostTests(unittest.TestCase):
         self.assertNotIn("session_inventory_path", source)
 
     def test_active_shell_entrypoint_routes_through_host_automation(self) -> None:
-        release_root = host.REPOSITORY_ROOT / "internal/release"
+        release_root = qualification_runner.REPOSITORY_ROOT / "internal/release"
         source = (release_root / "qualify-release.sh").read_text(encoding="utf-8")
         self.assertIn("qualification_host_automation.py", source)
         self.assertIn("--host-kind opencode", source)
@@ -104,7 +104,7 @@ class QualificationHostTests(unittest.TestCase):
         self.assertNotIn("qualification_phase_automation.py", source)
 
     def test_host_evidence_schemas_do_not_require_opencode_state(self) -> None:
-        schema_root = host.REPOSITORY_ROOT / "internal/release/qualification/schemas"
+        schema_root = qualification_runner.REPOSITORY_ROOT / "internal/release/qualification/schemas"
         for name in (
             "interaction-inventory.schema.json",
             "host-run-record.schema.json",
