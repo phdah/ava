@@ -99,8 +99,8 @@ do
   require_file "$path"
 done
 
-[ ! -e "$ROOT/internal/release/qualify-synthetic.sh" ] || fail "unexpected secondary qualification entry point: internal/release/qualify-synthetic.sh"
-[ ! -e "$ROOT/internal/release/qualification-runner.md" ] || fail "unexpected standalone qualification procedure: internal/release/qualification-runner.md"
+qualification_entrypoints=$(find "$ROOT/internal/release" -maxdepth 1 -type f -name 'qualify-*.sh' -printf '%f\n' | sort)
+[ "$qualification_entrypoints" = "qualify-release.sh" ] || fail "qualification shell entrypoint inventory is invalid: $qualification_entrypoints"
 
 for path in templates/base templates/project-scaffolds internal/release/installer internal/release/fixtures
 do
