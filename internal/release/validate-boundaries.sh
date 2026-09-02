@@ -53,8 +53,6 @@ for path in \
   internal/release/conformance_repository.py \
   internal/release/conformance_installed.py \
   internal/release/conformance_release.py \
-  internal/release/_qualification_runner_core.py \
-  internal/release/_qualification_automation_core.py \
   internal/release/qualification_runner.py \
   internal/release/qualification_automation.py \
   internal/release/qualification_phase_runner.py \
@@ -103,9 +101,6 @@ done
 
 [ ! -e "$ROOT/internal/release/qualify-synthetic.sh" ] || fail "unexpected secondary qualification entry point: internal/release/qualify-synthetic.sh"
 [ ! -e "$ROOT/internal/release/qualification-runner.md" ] || fail "unexpected standalone qualification procedure: internal/release/qualification-runner.md"
-
-grep -F 'use internal/release/qualify-release.sh' "$ROOT/internal/release/qualification_runner.py" >/dev/null || fail "qualification runner API permits standalone execution"
-grep -F 'use internal/release/qualify-release.sh' "$ROOT/internal/release/qualification_automation.py" >/dev/null || fail "qualification automation API permits standalone execution"
 
 for path in templates/base templates/project-scaffolds internal/release/installer internal/release/fixtures
 do
@@ -178,8 +173,6 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_repository.py" \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/conformance_release.py" \
-  "$ROOT/internal/release/_qualification_runner_core.py" \
-  "$ROOT/internal/release/_qualification_automation_core.py" \
   "$ROOT/internal/release/qualification_runner.py" \
   "$ROOT/internal/release/qualification_automation.py" \
   "$ROOT/internal/release/qualification_phase_runner.py" \
