@@ -1,14 +1,14 @@
 ---
 type: Internal Release Qualification Procedure
 title: Hands-Off Release Qualification and Evidence State
-description: Mandatory two-phase pre-merge release qualification, independent audit, explicit user acceptance, and release-quality state.
-tags: [internal, release, qualification, automation, evidence, opencode]
+description: Mandatory two-phase pre-merge release qualification with host-neutral interaction evidence, independent audit, explicit user acceptance, and release-quality state.
+tags: [internal, release, qualification, automation, evidence]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T12:45:00+02:00
+  at: 2026-09-02T16:26:00+02:00
 ---
 
 # Purpose
@@ -17,7 +17,39 @@ Every Ava release must complete both explicit phases of `qualify-release.sh` bef
 
 The first phase qualifies target behavior that does not depend on an adjacent release edge. It runs immediately after release-please has identified the target version and before semantic-impact review, catalog authoring, guidance, or migrations. The second phase runs only after the adjacent edge exists and exercises the source-to-target upgrade contract.
 
-Each phase inventories its own OpenCode sessions and receives its own independent audit. A clean edge-independent run is reusable evidence, not release acceptance. A clean edge-dependent run stops at `awaiting-user-signoff`, and publication remains blocked until the user explicitly accepts the linked two-phase chain.
+Each phase records host-neutral interaction evidence and receives its own independent audit. A clean edge-independent run is reusable evidence, not release acceptance. A clean edge-dependent run stops at `awaiting-user-signoff`, and publication remains blocked until the user explicitly accepts the linked two-phase chain.
+
+# Host-neutral execution contract
+
+Ava owns the qualification matrix, fixture, deterministic commands, expected outcomes, interaction-evidence schema, audit contract, phase ordering, evidence validation, and acceptance gate. An agent runtime is an adapter, not part of the qualification definition.
+
+The active boundary is implemented by:
+
+- `qualification_host.py`: host capabilities, adapter protocol, interaction-evidence normalization, and independent-audit execution contract
+- `qualification_host_runner.py`: the shared deterministic scenario engine with agent interactions injected through the host protocol
+- `qualification_host_automation.py`: two-phase orchestration and compact host-neutral evidence
+- `qualification-opencode.sh`: the currently configured local host adapter transport
+
+A qualifying host must provide the capabilities required by the selected phase. Across the complete maintained matrix these are:
+
+- local process execution for installers, conformance, fixture verification, git checks, checkpoints, and deterministic validators
+- mutable repository-external workspaces for isolated project variants and interruption state
+- exact local release assets for source and target behavior
+- agent interaction execution for scenarios that exercise installed roles
+- read access to the complete raw external evidence tree
+- an independent read-only audit interaction
+
+The core does not require OpenCode session IDs, OpenCode database rows, nested-session APIs, OpenCode export syntax, token counters, MCP metadata, or a provider-specific transcript shape.
+
+# ChatGPT app feasibility
+
+The checked-in capability assessment models ChatGPT with the GitHub connector as able to perform agent reasoning and repository reads/writes, but not as a local qualification execution host.
+
+All 17 maintained scenarios require local process execution, mutable repository-external workspaces, and exact local release assets. The phase audit also requires read access to the raw external evidence tree. Those capabilities are not exposed by the GitHub connector used from the ChatGPT app, so the complete release qualification cannot currently run directly in that host.
+
+This is a host-capability limitation rather than an OpenCode contract limitation. If ChatGPT later exposes the missing local process, external sandbox, release-asset, and raw-evidence capabilities, a ChatGPT adapter may satisfy the same host-neutral protocol without changing scenario semantics or the release gate.
+
+Individual reasoning steps can already be performed from ChatGPT, but they are not independently releasable qualification results because the surrounding deterministic scenario and evidence boundaries cannot be reproduced there.
 
 # Control state
 
@@ -26,11 +58,11 @@ Each phase inventories its own OpenCode sessions and receives its own independen
 - `config.json`: the active qualification pair and models
 - `pair-catalog.json`: exact source/target selectors used to execute qualification
 - `phase-state.json`: latest edge-independent result per release pair
-- `phase-runs/`: compact edge-independent run, session, issue, and audit evidence
+- `phase-runs/`: compact edge-independent run, interaction, issue, and audit evidence
 - `current-state.json`: edge-dependent execution state plus the durable release-acceptance ledger
-- `runs/`: compact edge-dependent run, session, issue, and audit evidence
-- `schemas/`: state and evidence schemas
-- `audit-prompt.md`: the prompt/contract used by each independent audit session
+- `runs/`: compact edge-dependent run, interaction, issue, and audit evidence
+- `schemas/`: state and evidence schemas, including host-neutral interaction and run-record schemas
+- `audit-prompt.md`: the host-neutral prompt/contract used by each independent audit
 
 Historical releases through `v1.0.0-alpha.14` are explicitly accepted with `basis: historical-backfill`. This does not claim they were run through the current qualification system. New releases must use `basis: qualified-run`.
 
@@ -61,7 +93,7 @@ Edge-dependent scenarios are:
 4. semantic reconciliation plus finalization
 5. pending semantic reconciliation
 
-The independent audit is phase-scoped. It audits every session and terminal claim present in the current phase and does not treat scenarios assigned to the other phase as missing evidence.
+The independent audit is phase-scoped. It audits every interaction and terminal claim present in the current phase and does not treat scenarios assigned to the other phase as missing evidence.
 
 # Edge-independent phase
 
@@ -74,7 +106,7 @@ internal/release/qualify-release.sh \
   --target-assets "$early_assets"
 ```
 
-The provisional candidate intentionally contains no source-to-target adjacent edge. `qualification_phase_runner.py` therefore validates only distinct pinned source and target identities before running the edge-independent scenario set.
+The provisional candidate intentionally contains no source-to-target adjacent edge. The host-neutral runner therefore validates only distinct pinned source and target identities before running the edge-independent scenario set.
 
 The edge-independent operation produces one of:
 
@@ -113,9 +145,9 @@ internal/release/qualify-release.sh \
   --target-assets "$final_assets"
 ```
 
-Before executing any scenario, `qualification_phase_automation.py` requires a committed clean early result for the same active pair, validates the allowed intervening change set, validates that both phases use the same immutable source and target version, and requires the final target to declare the authentic reviewed upgrade edge.
+Before executing any scenario, `qualification_host_automation.py` requires a committed clean early result for the same active pair, validates the allowed intervening change set, validates that both phases use the same immutable source and target version, and requires the final target to declare the authentic reviewed upgrade edge.
 
-The final execution identity records both the prerequisite edge-independent run id and its repository revision. The edge-dependent result remains one of the existing release states:
+The final execution identity records both the prerequisite edge-independent run id and its repository revision. It also binds the host-contract code, host runner, scenario engine, host adapter descriptors, models, matrix, fixture, release identities, and repository revision. The edge-dependent result remains one of:
 
 - `failed`
 - `needs-review`
@@ -123,19 +155,32 @@ The final execution identity records both the prerequisite edge-independent run 
 
 Only `awaiting-user-signoff` may proceed to explicit user acceptance.
 
-# OpenCode JSON capture
+# Interaction evidence
 
-`qualify-release.sh` uses the maintained `qualification-opencode.sh` adapter. For session inventory, the adapter translates `session list --format json` to the required OpenCode database query. The adapter also handles session `export` capture.
+Compact evidence uses `interaction-inventory.schema.json`. Each record contains:
 
-OpenCode environments affected by the 65,536-byte stdout-pipe truncation must not require an external wrapper. For both the session-list database query and `opencode export`, the maintained adapter first lets the real OpenCode process write JSON to a temporary regular file and then re-emits those bytes to qualification automation. Python-side parsing remains the JSON validation boundary.
+- an opaque `interaction_id`
+- optional `parent_interaction_id`
+- maintained scenario binding
+- prompt digest
+- model identifier
+- workspace root
+- materialized transcript path and digest
+- terminal state
 
-Session inventory is exact-run isolated. Qualification snapshots OpenCode sessions immediately before and after the runner, and only IDs newly created across that boundary can become current-run evidence. Runner stdout/stderr session IDs are binding hints only. A top-level session must belong to the current execution, nested sessions are admitted only through descendants of already-owned current-run sessions, and every inventoried project root must resolve inside the exact current execution root and bind to a maintained scenario. Historical host sessions may remain indefinitely without cleanup and cannot enter a later run merely because their IDs appear in preserved output.
+Evidence validation operates only on these fields. It does not parse or require an adapter-native session identifier.
+
+The configured OpenCode adapter still needs its native session enumeration and export APIs to discover current-run top-level and nested work. That adapter snapshots sessions immediately before and after the runner and admits only current-run descendants bound to the exact execution root. Before compact evidence is produced, it materializes every complete session export under the external execution root and verifies the exported bytes against the captured digest. It then normalizes the result to the host-neutral interaction inventory. Raw OpenCode session IDs and database representation remain adapter-private evidence and are not part of the compact release-gate contract.
+
+OpenCode environments affected by the 65,536-byte stdout-pipe truncation remain handled by `qualification-opencode.sh`. Session-list database output and export output are buffered through temporary regular files before being re-emitted. This behavior is specific to the OpenCode adapter and does not leak into the host protocol.
 
 # Runner and audit boundary
 
 The synthetic runner owns deterministic and structural evidence. A scenario whose complete terminal claim can be proven mechanically returns `pass`. A scenario that deliberately requires evaluator-only semantic judgment may return `structural-pass` with `semantic_status: pending-audit` after every deterministic check succeeds.
 
 `structural-pass` is a mechanically successful runner outcome and does not stop the remaining scenarios in that phase. It is not semantic acceptance. The independent audit remains the authority for meaning preservation, including inbox section dispositions that require the evaluator-only oracle.
+
+The audit consumes the same host-neutral interaction inventory regardless of which adapter produced it. Every complete materialized transcript is addressed by path and digest. Adapter-native evidence may be inspected as supplemental raw evidence but is not required by the audit contract.
 
 # Operator handling of non-passing results
 
@@ -178,6 +223,6 @@ This preserves the original final revision/signoff binding while allowing expens
 
 # Evidence boundary
 
-Raw workspaces, release assets, transcripts, and command evidence remain outside the repository. Compact early evidence lives under `phase-runs/`; compact final evidence and release-quality state live under `runs/` and `current-state.json`.
+Raw workspaces, release assets, adapter-native evidence, transcripts, and command evidence remain outside the repository. Compact early evidence lives under `phase-runs/`; compact final evidence and release-quality state live under `runs/` and `current-state.json`.
 
 The fixture oracle is evaluator-only. Qualification agents and deterministic runner checks must not rely on it; each independent audit uses it only for applicable phase claims.
