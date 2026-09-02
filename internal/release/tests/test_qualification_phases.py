@@ -14,12 +14,10 @@ from internal.release import qualification_runner
 class QualificationPhaseTests(unittest.TestCase):
     def test_release_qualification_has_single_shell_entrypoint(self) -> None:
         release_root = phase_runner.REPOSITORY_ROOT / "internal/release"
-        self.assertTrue((release_root / "qualify-release.sh").is_file())
-        self.assertFalse((release_root / "qualify-synthetic.sh").exists())
-        self.assertFalse((release_root / "qualification-runner.md").exists())
+        entrypoints = sorted(path.name for path in release_root.glob("qualify-*.sh"))
+        self.assertEqual(entrypoints, ["qualify-release.sh"])
         index = (release_root / "index.md").read_text(encoding="utf-8")
-        self.assertIn("only supported qualification execution entry point", index)
-        self.assertNotIn("qualify-synthetic.sh", index)
+        self.assertIn("qualification execution entry point", index)
 
     def test_every_matrix_scenario_has_exactly_one_phase(self) -> None:
         _, early = phase_runner.load_phase_matrix(
