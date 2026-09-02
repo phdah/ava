@@ -37,7 +37,7 @@ jobs:
         env:
           AVA_QUALIFICATION_EXECUTOR: github-actions
           GH_TOKEN: ${{ github.token }}
-        run: python3 internal/release/qualification_ci.py
+        run: python3 -m internal.release.qualification_ci
 
       - name: Upload qualification state transition
         if: steps.qualify.outputs.artifact_ready == 'true'
