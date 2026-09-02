@@ -4,6 +4,7 @@ This log records major conceptual and structural changes to Ava's internal relea
 
 ## 2026-09-02
 
+- **Host-neutral qualification evidence**: Moved the active qualification entry point onto an explicit agent-host protocol. Ava now owns generic interaction IDs, materialized transcript paths and digests, phase-scoped audit inputs, host capability assessment, and host-bound execution identity independently of OpenCode session/database representation. OpenCode remains the configured local adapter because the complete matrix still requires local process execution, mutable external workspaces, exact local release assets, and raw external evidence access that the ChatGPT GitHub connector does not currently expose.
 - **Fail-fast two-phase release qualification**: Split the maintained qualification matrix into explicit edge-independent and edge-dependent phases. Target behavior now qualifies against a provisional no-edge candidate before semantic-impact review or adjacent-edge authoring. Final upgrade qualification reuses that early evidence only when revision ancestry and an allowlisted edge-authoring diff prove the validated target inputs did not change; explicit acceptance and the release PR policy require the linked two-phase chain.
 
 ## 2026-08-29
