@@ -36,13 +36,14 @@ PR [#122](https://github.com/phdah/ava/pull/122) now implements the approved min
 - The final run repeats the pre-edge checks and adds authentic deterministic previous-to-target upgrade, resume, abort, and rollback checks.
 - Only the final deterministic run is committed as qualification evidence and may enter `awaiting-user-signoff`.
 - Mandatory deterministic qualification executes in GitHub Actions, so the active maintainer session does not need shell access or a particular ChatGPT execution mode.
+- GitHub Actions returns generated evidence/acceptance state as exact artifacts; the active repository-connected session applies those artifact bytes to the release PR, ensuring the resulting commits trigger the normal PR workflow cycle.
 - The normal repository Python/unit suite remains in GitHub Actions and is not duplicated by the maintainer session.
 - No synthetic routing, calendar, clarification, inbox-ingestion, semantic-reconciliation/finalization, role-led uninstall, or independent LLM-audit turn is required by the normal release gate.
 - Those scenarios remain optional behavioral QA for targeted changes, milestone testing, or future host evaluation.
 
 This redesign followed the first real Work validation attempt for alpha.17. Fresh same-workspace agent execution worked, but the run consumed substantial Work credits and then produced a false negative when a correct clarification question did not contain one of the validator's expected lexical tokens. That demonstrated that general consumer-agent simulation was too expensive and brittle to be mandatory release evidence.
 
-A subsequent simplification removed the remaining Work requirement entirely: because the mandatory gate is deterministic, GitHub Actions is now the canonical executor and the active chat only orchestrates repository changes and approval.
+A subsequent simplification removed the remaining Work requirement entirely: because the mandatory gate is deterministic, GitHub Actions is now the canonical executor and the active chat only orchestrates repository changes, exact artifact handoff, and approval.
 
 ## Deterministic release-safety checks
 
@@ -77,12 +78,14 @@ From whichever repository-capable maintainer session is active:
 2. configure the exact qualification pair
 3. let the release-qualification GitHub Actions workflow run the deterministic pre-edge checks automatically
 4. perform the maintainer semantic-impact assessment and author the adjacent edge after pre-edge is green
-5. let GitHub Actions run the authoritative deterministic final qualification and commit compact evidence back to the release PR
-6. inspect the final evidence and required checks
-7. stop for explicit user approval
-8. after approval, either run the acceptance helper directly when shell access exists or create the transient `internal/release/qualification/acceptance-request.json` through the connected GitHub capability
-9. let GitHub Actions validate and apply that acceptance request
-10. merge only after Release PR policy and all required checks pass
+5. let GitHub Actions run the authoritative deterministic final qualification and upload the exact evidence state transition as an artifact
+6. download and apply that evidence artifact exactly to the release PR through the connected GitHub capability
+7. inspect the committed final evidence and required checks
+8. stop for explicit user approval
+9. after approval, either run the acceptance helper directly when shell access exists or create the transient `internal/release/qualification/acceptance-request.json` through the connected GitHub capability
+10. let GitHub Actions validate the request and upload the accepted-state transition as an artifact
+11. download and apply that acceptance artifact exactly, including removal of the transient request
+12. merge only after Release PR policy and all required checks pass
 
 A normal ChatGPT chat with repository read/write access should therefore be sufficient. ChatGPT Work remains usable but is not privileged or required.
 
@@ -92,7 +95,7 @@ The implementation remains **Parked**, not `Done`, until the simplified session-
 
 A successful proof should show that an ordinary repository-connected ChatGPT session can drive the release workflow without switching to Work and without using OpenCode or user-hosted compute for mandatory qualification.
 
-The proof should reach at least `awaiting-user-signoff` with deterministic qualification evidence created by GitHub Actions. If the user chooses to complete the real release, the same session should also be able to record the explicit acceptance request, wait for the validated accepted state, merge, and verify publication.
+The proof should reach at least `awaiting-user-signoff` with deterministic qualification evidence created by GitHub Actions and applied from its exact artifact. If the user chooses to complete the real release, the same session should also be able to record the explicit acceptance request, apply the validated acceptance artifact, merge, and verify publication.
 
 After one complete session-neutral alpha.17 proof succeeds under those conditions, move AVA-5638 to `Done` and record the release/run as completion evidence.
 
@@ -114,6 +117,7 @@ Do not restore OpenCode merely for normal release qualification. If an OpenCode 
 - only one authoritative final qualification run is required for acceptance
 - final evidence remains bound to the exact source, target, repository revision, and deterministic executor provenance
 - GitHub Actions and explicit user acceptance remain mandatory
+- qualification/acceptance artifacts can be applied exactly from an ordinary repository-connected ChatGPT session
 - an ordinary repository-connected ChatGPT session can drive the simplified flow end-to-end in the alpha.17 proof
 - optional behavioral QA is clearly separated from release acceptance
 - future generic host-adapter work has an explicit recovery reference to PR #122
