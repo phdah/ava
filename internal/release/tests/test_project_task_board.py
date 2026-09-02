@@ -44,9 +44,12 @@ class ProjectTaskBoardTests(unittest.TestCase):
 
     def test_role_uses_backlog_for_next_task_and_preserves_direct_edits(self) -> None:
         instructions = (SOURCE_ROOT / "templates/base/roles/project-task-manager/instructions.md").read_text()
+        contract = (SOURCE_ROOT / "templates/base/shared/instructions/project-task-board.md").read_text()
         registry = (SOURCE_ROOT / "templates/base/roles/index.md").read_text()
         self.assertIn("backlog instructions overview", instructions)
         self.assertIn('task list --status "To Do" --ready --sort ordinal --limit 1 --json', instructions)
+        self.assertIn("project-defined actionable status", instructions)
+        self.assertIn("follow that configuration rather than imposing the defaults", contract)
         self.assertIn("Direct Markdown editing remains valid and authoritative", instructions)
         self.assertIn("Project Task Manager", registry)
 

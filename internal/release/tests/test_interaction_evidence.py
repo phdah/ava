@@ -65,6 +65,26 @@ class InteractionEvidenceTests(unittest.TestCase):
         self.record("7f3c1c2a4b5d6e7f")
         self.assertEqual(self.rule_ids(), set())
 
+    def test_unrelated_processed_source_with_interaction_prefix_is_ignored(self) -> None:
+        self.write(
+            "inbox/processed/interaction-not-evidence.md",
+            "---\ntype: Source Material\ntitle: Interaction notes\n---\n\n# Notes\n",
+        )
+        self.assertEqual(self.rule_ids(), set())
+
+    def test_malformed_exact_name_and_declared_type_are_candidates(self) -> None:
+        self.write(
+            "inbox/processed/interaction-df3c1c2a4b5d6e7f.md",
+            "missing frontmatter\n",
+        )
+        self.write(
+            "inbox/processed/legacy-evidence.md",
+            "---\ntype: Interaction Evidence\ntitle: Legacy project type\n---\n",
+        )
+        ids = self.rule_ids()
+        self.assertIn("AVA-INTERACTION-SHAPE", ids)
+        self.assertIn("AVA-INTERACTION-ID", ids)
+
     def test_interaction_specific_subdirectory_is_rejected(self) -> None:
         self.record("8f3c1c2a4b5d6e7f", directory="inbox/processed/interactions")
         self.assertIn("AVA-INTERACTION-PATH", self.rule_ids())

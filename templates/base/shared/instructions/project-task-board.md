@@ -25,7 +25,7 @@ When `./backlog.config.yml` exists, read its `backlog_directory` setting and tre
 ./backlog/tasks/
 ```
 
-Every native task remains under `./backlog/tasks/`, regardless of lifecycle state. `Done` and `Won't Fix` are task statuses, not storage locations. Ava does not use or scaffold Backlog.md's optional `completed/` cleanup directory by default.
+Under the default scaffold, every native task remains under `./backlog/tasks/`, regardless of lifecycle state. A project may change its project-owned backlog directory or lifecycle configuration; roles must follow that configuration rather than imposing the defaults. Ava does not use or scaffold Backlog.md's optional `completed/` cleanup directory by default.
 
 The configuration and task tree are project-owned content. They must not be added to the Ava managed-file manifest or moved below `./.ava/`.
 
@@ -57,9 +57,9 @@ Ava intentionally does not embed a frozen copy of the Backlog.md CLI manual. If 
 
 Task state tracks the work record; it does not grant authority to perform the work described by the task.
 
-The default lifecycle supports `To Do`, `In Progress`, `Done`, and `Won't Fix`. A task may be completed only when its requested outcome and applicable completion conditions are satisfied. `Won't Fix` records an intentional decision not to implement the task. Reopening preserves task identity and relevant history. Splitting a task must preserve the intended outcome and make new dependency relationships explicit.
+The default lifecycle supports `To Do`, `In Progress`, `Done`, and `Won't Fix`. When the project configures another lifecycle, use its statuses and project instructions without silently mapping them to the defaults. A task may be completed only when its requested outcome and applicable completion conditions are satisfied. Under the default lifecycle, `Won't Fix` records an intentional decision not to implement the task. Reopening preserves task identity and relevant history. Splitting a task must preserve the intended outcome and make new dependency relationships explicit.
 
-Leave terminal tasks in the task directory. Do not run `backlog cleanup` as part of the default Ava task lifecycle.
+Under the default Ava lifecycle, leave terminal tasks in the task directory and do not run `backlog cleanup`. Follow an explicitly adopted project-owned storage convention when it differs.
 
 Deletion, purging history, destructive archival, materially ambiguous reprioritization, material scope changes, and new architectural, security, product, or compatibility decisions require the approval defined by the active role and project instructions.
 

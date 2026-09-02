@@ -1,5 +1,5 @@
 {
-  "active_pair": "alpha14-to-alpha15-corrective-local",
+  "active_pair": "alpha15-to-alpha16-local",
   "audit_model": "openai/gpt-5.6-sol",
   "qualification_model": "openai/gpt-5.6-sol",
   "repository": "phdah/ava",

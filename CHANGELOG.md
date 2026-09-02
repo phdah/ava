@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.0-alpha.16](https://github.com/phdah/ava/compare/v1.0.0-alpha.15...v1.0.0-alpha.16) (2026-09-01)
+
+
+### Features
+
+* add interaction evidence provenance ([#116](https://github.com/phdah/ava/issues/116)) ([7df5758](https://github.com/phdah/ava/commit/7df5758a5de1bf28cc8772575fe62bcaf21afa3c))
+* reduce inbox claim provenance verbosity ([#118](https://github.com/phdah/ava/issues/118)) ([f92e834](https://github.com/phdah/ava/commit/f92e834728d4ec979091c154244f3f982c13648c))
+* **roles:** add project task manager ([#115](https://github.com/phdah/ava/issues/115)) ([2f58086](https://github.com/phdah/ava/commit/2f58086f17249107fd8826564eb7e032b8fd6bc5))
+
 ## [1.0.0-alpha.15](https://github.com/phdah/ava/compare/v1.0.0-alpha.14...v1.0.0-alpha.15) (2026-08-29)
 
 
