@@ -18,9 +18,11 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Pull-request title validator](validate_pr_title.py)
 - [Alpha qualification policy](alpha-qualification.md)
 - [Deterministic release qualification procedure](qualification-automation.md)
-- [ChatGPT Work Cloud deterministic qualification execution](qualification-work.md)
+- [Session-neutral deterministic qualification execution](qualification-execution.md)
 - [Release qualification execution entry point](qualify-release.sh)
-- [ChatGPT Work deterministic qualification driver](qualification_work.py)
+- [Canonical session-neutral qualification driver](qualification.py)
+- [Host-neutral qualification setup runner](run-release-qualification.sh)
+- [Deterministic qualification implementation compatibility module](qualification_work.py)
 - [Explicit qualification acceptance entry point](accept-release-qualification.sh)
 - [Shared qualification automation helpers](qualification_automation.py)
 - [Shared qualification scenario engine](qualification_runner.py)
@@ -41,9 +43,13 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Release implementation tests](tests/)
 - [Release implementation log](log.md)
 
-`qualify-release.sh` is the qualification execution entry point. For the current release procedure it runs in ChatGPT Work Cloud, but the gate itself is deterministic: no OpenCode process, delegated subagent, semantic consumer simulation, or independent LLM audit is required.
+`qualify-release.sh` is the qualification execution entry point. It routes through the session-neutral deterministic driver and does not select a ChatGPT mode or agent runtime.
+
+The canonical release flow is orchestrated from whichever repository-capable maintainer session is active. GitHub Actions executes the mandatory deterministic pre-edge/final checks, so normal ChatGPT chat does not need Work or shell access.
 
 The normal flow has an ephemeral `pre-edge` fail-fast stage and one authoritative `final` deterministic run. Optional agent-behavior scenarios remain in the synthetic fixture for targeted QA and future host-protocol work, but they are not publication gates.
+
+`qualification_work.py` is retained as the current deterministic implementation module while `qualification.py` provides the canonical host-neutral interface. Its historical name does not imply a Work requirement.
 
 `qualification_phase_runner.py`, `qualification_phase_automation.py`, `qualification_phase_gate.py`, and historical qualification evidence remain available to interpret earlier runs. They are not the canonical execution or acceptance path for new releases.
 
