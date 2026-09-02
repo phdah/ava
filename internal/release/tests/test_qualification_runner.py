@@ -234,7 +234,7 @@ class QualificationRunnerTests(unittest.TestCase):
                 1,
             )
 
-    def test_runner_facade_has_no_standalone_complete_matrix_cli(self) -> None:
+    def test_shared_runner_has_no_standalone_cli(self) -> None:
         for name in ("parse_args", "preflight", "planned_summary", "main"):
             self.assertFalse(hasattr(runner, name), name)
         source = Path(runner.__file__).read_text(encoding="utf-8")
@@ -246,7 +246,7 @@ class QualificationRunnerTests(unittest.TestCase):
         source = inspect.getsource(runner.Runner.run_scenario)
         self.assertEqual(source.count('"--rollback"'), 1)
 
-    def test_release_test_gate_has_no_legacy_qualification_entrypoint(self) -> None:
+    def test_release_test_gate_uses_the_qualification_entrypoint(self) -> None:
         release_root = runner.REPOSITORY_ROOT / "internal/release"
         test_script = (release_root / "test.sh").read_text(encoding="utf-8")
         self.assertNotIn("qualify-synthetic.sh", test_script)
