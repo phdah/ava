@@ -101,11 +101,11 @@ do
   require_file "$path"
 done
 
-[ ! -e "$ROOT/internal/release/qualify-synthetic.sh" ] || fail "legacy qualification shell entry point remains: internal/release/qualify-synthetic.sh"
-[ ! -e "$ROOT/internal/release/qualification-runner.md" ] || fail "legacy full-matrix qualification procedure remains: internal/release/qualification-runner.md"
+[ ! -e "$ROOT/internal/release/qualify-synthetic.sh" ] || fail "unexpected secondary qualification entry point: internal/release/qualify-synthetic.sh"
+[ ! -e "$ROOT/internal/release/qualification-runner.md" ] || fail "unexpected standalone qualification procedure: internal/release/qualification-runner.md"
 
-grep -F 'use internal/release/qualify-release.sh' "$ROOT/internal/release/qualification_runner.py" >/dev/null || fail "qualification runner facade does not reject standalone execution"
-grep -F 'use internal/release/qualify-release.sh' "$ROOT/internal/release/qualification_automation.py" >/dev/null || fail "qualification automation facade does not reject standalone execution"
+grep -F 'use internal/release/qualify-release.sh' "$ROOT/internal/release/qualification_runner.py" >/dev/null || fail "qualification runner API permits standalone execution"
+grep -F 'use internal/release/qualify-release.sh' "$ROOT/internal/release/qualification_automation.py" >/dev/null || fail "qualification automation API permits standalone execution"
 
 for path in templates/base templates/project-scaffolds internal/release/installer internal/release/fixtures
 do
