@@ -9,6 +9,6 @@ if [ "${1:-}" = "--validate-config-only" ]; then
   set -- validate-config "$@"
 fi
 
-exec python3 "$ROOT/internal/release/qualification_work.py" \
+exec python3 "$ROOT/internal/release/qualification.py" \
   --repository-root "$ROOT" \
   "$@"
