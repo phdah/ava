@@ -8,7 +8,7 @@ generated:
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T20:45:00+02:00
+  at: 2026-09-02T20:55:00+02:00
 ---
 
 # Purpose
@@ -65,9 +65,9 @@ The final stage reruns all pre-edge checks and additionally validates:
 5. rollback to the previous release
 6. the mechanically correct semantic state after upgrade, whether complete or authentically pending project-owned reconciliation
 
-A clean final result writes one run record and one deterministic summary under `internal/release/qualification/runs/`, updates `current-state.json`, and enters `awaiting-user-signoff`.
+A clean final result writes one run record and one deterministic summary under `internal/release/qualification/runs/`, updates `current-state.json`, and enters `awaiting-user-signoff` in the CI checkout.
 
-The release-qualification workflow commits only those compact qualification changes back to the release PR. The next workflow run reuses the exact run when every post-qualification change is confined to `internal/release/qualification/`.
+The release-qualification workflow uploads those exact repository changes as an evidence artifact. The active repository-connected maintainer session applies the artifact exactly and commits it to the release PR. The next workflow run reuses the exact run when every post-qualification change is confined to `internal/release/qualification/`.
 
 # Executor model
 
@@ -113,7 +113,7 @@ A clean final run does not accept itself.
 
 After the user explicitly approves the final evidence, a shell-capable environment may run `accept-release-qualification.sh` directly. A repository-connected session without shell access may create the transient `internal/release/qualification/acceptance-request.json` described in `procedure.md` and `qualification-execution.md`.
 
-The release-qualification workflow validates that request, invokes the maintained acceptance implementation, removes the request, and commits the accepted state.
+The release-qualification workflow validates that request and invokes the maintained acceptance implementation in CI. It uploads the exact accepted-state changes plus deletion of the transient request as an acceptance artifact. The active maintainer session applies that artifact exactly to the release PR.
 
 # Release PR blocker
 
