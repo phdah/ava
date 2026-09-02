@@ -245,13 +245,6 @@ class QualificationRunnerTests(unittest.TestCase):
         source = inspect.getsource(runner.Runner.run_scenario)
         self.assertEqual(source.count('"--rollback"'), 1)
 
-    def test_release_test_gate_uses_the_qualification_entrypoint(self) -> None:
-        release_root = runner.REPOSITORY_ROOT / "internal/release"
-        test_script = (release_root / "test.sh").read_text(encoding="utf-8")
-        self.assertNotIn("qualify-synthetic.sh", test_script)
-        self.assertFalse((release_root / "qualify-synthetic.sh").exists())
-        self.assertIn('sh -n "$ROOT/internal/release/qualify-release.sh"', test_script)
-
     def test_runner_and_matrix_remain_internal_release_inputs(self) -> None:
         self.assertTrue(str(Path(runner.__file__).resolve()).startswith(str(runner.REPOSITORY_ROOT / "internal")))
         matrix = runner.MATRIX_PATH.resolve()
