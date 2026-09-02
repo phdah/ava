@@ -8,12 +8,12 @@ generated:
   at: 2026-09-02T20:45:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T20:55:00+02:00
+  at: 2026-09-02T21:25:00+02:00
 ---
 
 # Purpose
 
-Ava's normal release qualification is deterministic and does not require an LLM runtime, a delegated agent, or a particular ChatGPT mode.
+Ava's normal release qualification is deterministic and uses **zero delegated qualification agents**. It does not require an LLM runtime or a particular ChatGPT mode.
 
 The active maintainer may work from an ordinary ChatGPT chat, ChatGPT Work, or another repository-capable session. Mandatory release qualification is executed by GitHub Actions against the release PR, so the maintainer session does not need a shell, mutable cloud workspace, OpenCode, Work Local, Codex Local, or a user-hosted process.
 
