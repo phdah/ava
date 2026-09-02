@@ -1,33 +1,27 @@
 ---
 type: Internal Release Qualification Audit
-title: Independent Qualification Session Audit
-description: Read-only audit contract for OpenCode sessions created by one exact hands-off release qualification phase.
-tags: [internal, release, qualification, audit, opencode]
+title: Independent Qualification Interaction Audit
+description: Read-only audit contract for host-neutral interaction evidence created by one exact release qualification phase.
+tags: [internal, release, qualification, audit]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T12:45:00+02:00
+  at: 2026-09-02T16:26:00+02:00
 ---
 
 # Scope
 
 Audit only the exact qualification run named in the appended run inputs. This is an independent, read-only review. Do not edit the Ava repository, generated fixture, isolated projects, runner evidence, transcripts, release assets, or qualification state.
 
-The appended inputs identify the `qualification_phase`. Use the supplied runner summary and session inventory as the complete boundary for that phase. Inspect every listed top-level and nested session. Scenarios explicitly assigned to the other qualification phase are intentionally absent and are not missing evidence. Apply each required review item only when the current phase contains a scenario to which it is relevant.
+The appended inputs identify the `qualification_phase`. Use the supplied runner summary and interaction inventory as the complete interaction boundary for that phase. Inspect every listed top-level and nested interaction. Scenarios explicitly assigned to the other qualification phase are intentionally absent and are not missing evidence. Apply each required review item only when the current phase contains a scenario to which it is relevant.
 
-Use the supplied session inventory as the complete session boundary. Inspect every listed top-level and nested session and reconcile it against the runner evidence, applicable release contracts, and fixture oracle. Do not inspect or infer from unrelated OpenCode sessions.
+The interaction inventory is host-neutral. Each interaction has an opaque `interaction_id`, optional `parent_interaction_id`, scenario binding, prompt digest, model identity, workspace root, materialized `transcript_path`, transcript digest, and terminal state. Do not require a particular agent runtime, session identifier shape, database representation, export command, token counter, or provider-specific transcript structure.
 
-The fixture oracle is evaluator-only expected-outcome evidence. Qualification sessions under test must derive their work from the installed Ava contract and the selected source material, not from the oracle. Do not fault a qualification session for not reading, citing, or knowing the oracle. Use the oracle independently to test whether the session result preserved the expected source meaning, dispositions, provenance, chronology, and other declared outcomes. Treat evidence that a qualification session read or relied on the hidden oracle as test contamination rather than stronger proof.
+For every interaction, read the complete materialized transcript at `transcript_path` and verify its bytes against `transcript_sha256`. The host adapter may retain additional adapter-specific raw evidence under the external execution root, but that evidence is supplemental. If a required transcript is missing, unreadable, or fails its digest, admit that as an evidence limitation and do not treat the affected terminal claim as proven.
 
-For each exact `session_id` in the inventory, read its complete session export with:
-
-```sh
-internal/release/qualification-opencode.sh export <session_id>
-```
-
-The qualification OpenCode adapter forwards export unchanged to the same underlying OpenCode installation used by the run. The inventory transcript digest is the integrity oracle for the export. If an export is missing, unreadable, or does not match the recorded transcript digest, admit that as an evidence limitation and do not treat the affected terminal claim as proven.
+The fixture oracle is evaluator-only expected-outcome evidence. Qualification interactions under test must derive their work from the installed Ava contract and the selected source material, not from the oracle. Do not fault a qualification interaction for not reading, citing, or knowing the oracle. Use the oracle independently to test whether the interaction result preserved the expected source meaning, dispositions, provenance, chronology, and other declared outcomes. Treat evidence that a qualification interaction read or relied on the hidden oracle as test contamination rather than stronger proof.
 
 Treat command errors, retries, nested work, superseded attempts, missing evidence, and runner acceptance gaps as evidence that may weaken a terminal claim.
 
@@ -46,7 +40,7 @@ For the scenarios present in the current phase, determine whether:
 9. removal and reinstall preserved project-owned bytes
 10. each runner outcome is supported by the evidence level it claims, including that `structural-pass` proves only deterministic structure and leaves `semantic_status: pending-audit` for this independent review
 
-For `complete-pending-inbox`, review section dispositions against the final rendered trusted destinations, not only the session's ledger or reported totals. Use the evaluator-only oracle to identify expected `mapped`, `non-durable`, and `pending` sections. Verify that mapped meaning is present with required qualifiers, that non-durable source passages or meaning are absent from trusted destinations, and that ambiguous or pending material was not promoted merely to complete the source. A whole-source copy or summary that carries a non-durable passage into trusted knowledge is a fidelity failure even when source movement, provenance, links, and disposition totals are otherwise consistent. A completion claim whose totals were not reconciled against the rendered destinations is unsupported and must be reported as a finding.
+For `complete-pending-inbox`, review section dispositions against the final rendered trusted destinations, not only the interaction's ledger or reported totals. Use the evaluator-only oracle to identify expected `mapped`, `non-durable`, and `pending` sections. Verify that mapped meaning is present with required qualifiers, that non-durable source passages or meaning are absent from trusted destinations, and that ambiguous or pending material was not promoted merely to complete the source. A whole-source copy or summary that carries a non-durable passage into trusted knowledge is a fidelity failure even when source movement, provenance, links, and disposition totals are otherwise consistent. A completion claim whose totals were not reconciled against the rendered destinations is unsupported and must be reported as a finding.
 
 A runner `structural-pass` for this scenario is not evidence that the semantic checks above passed. It means the runner's bounded non-oracle checks succeeded and deliberately hands the remaining semantic claim to this audit. Do not fault the runner merely for leaving that semantic status pending; fault it only if its structural claim is unsupported or if qualification automation treats the pending semantic status as final semantic acceptance without this audit.
 
