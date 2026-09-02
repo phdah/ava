@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import hashlib
 import json
-import tempfile
 import unittest
 from pathlib import Path
 
@@ -11,12 +9,53 @@ from internal.release import qualification_work as work
 
 
 class QualificationWorkTests(unittest.TestCase):
-    def test_matrix_modes_preserve_all_scenarios(self) -> None:
+    def test_release_gate_selects_only_deterministic_scenarios(self) -> None:
         matrix = qualification_runner.load_matrix()
-        modes = {scenario["id"]: work.scenario_mode(scenario) for scenario in matrix["scenarios"]}
-        self.assertEqual(len(modes), 17)
+        pre = work.deterministic_scenarios(matrix, "pre-edge")
+        final = work.deterministic_scenarios(matrix, "final")
+
         self.assertEqual(
-            {scenario_id for scenario_id, mode in modes.items() if mode == "subagent"},
+            [scenario["id"] for scenario in pre],
+            [
+                "fresh-empty-install",
+                "mature-project-install",
+                "managed-modified",
+                "managed-missing",
+                "managed-corrupt",
+                "managed-unexpected",
+            ],
+        )
+        self.assertEqual(
+            [scenario["id"] for scenario in final],
+            [
+                "fresh-empty-install",
+                "mature-project-install",
+                "managed-modified",
+                "managed-missing",
+                "managed-corrupt",
+                "managed-unexpected",
+                "interrupted-resume",
+                "interrupted-abort",
+                "interrupted-rollback",
+            ],
+        )
+        self.assertTrue(
+            all(scenario["kind"] not in work.AGENT_KINDS for scenario in pre + final)
+        )
+
+    def test_behavioral_scenarios_remain_outside_release_gate(self) -> None:
+        matrix = qualification_runner.load_matrix()
+        behavioral = {
+            scenario["id"]
+            for scenario in matrix["scenarios"]
+            if scenario["kind"] in work.AGENT_KINDS
+        }
+        selected = {
+            scenario["id"]
+            for stage in work.STAGES
+            for scenario in work.deterministic_scenarios(matrix, stage)
+        }
+        self.assertTrue(
             {
                 "registered-private-routing",
                 "registered-work-routing",
@@ -26,104 +65,68 @@ class QualificationWorkTests(unittest.TestCase):
                 "interrupted-finalize",
                 "pending-semantic-reconciliation",
                 "uninstall-reinstall",
-            },
+            }.issubset(behavioral)
         )
-        self.assertEqual(
-            {scenario_id for scenario_id, mode in modes.items() if mode == "deterministic"},
-            set(modes) - {scenario_id for scenario_id, mode in modes.items() if mode == "subagent"},
-        )
+        self.assertTrue(behavioral.isdisjoint(selected))
 
-    def test_subagent_response_is_bound_to_baseline_and_forbids_external_tools(self) -> None:
-        prompt = "Persist qualification context."
-        baseline = {
-            "AGENTS.md": hashlib.sha256(b"router\n").hexdigest(),
-            ".ava/base/roles/example/index.md": hashlib.sha256(b"role\n").hexdigest(),
-        }
-        request = {
-            "interaction_id": "work-001-scenario-route",
-            "scenario": "scenario",
-            "stage": "route",
-            "prompt_sha256": work.automation.sha256_text(prompt),
-            "model": "openai/gpt-5.6-sol",
-            "workspace_root": "/tmp/work/project",
-            "baseline_files": baseline,
-        }
-        response = {
-            "schema_version": 1,
-            "interaction_id": request["interaction_id"],
-            "scenario": request["scenario"],
-            "stage": request["stage"],
-            "prompt_sha256": request["prompt_sha256"],
-            "model": request["model"],
-            "workspace_root": request["workspace_root"],
-            "final_response": "Active role: Example\nDone.",
-            "required_reading": [
-                {"order": 1, "path": "AGENTS.md", "sha256": baseline["AGENTS.md"]},
+    def test_final_edge_accepts_semantic_or_mechanical_targets(self) -> None:
+        source = qualification_runner.ReleaseIdentity(
+            Path("/source"),
+            "1.0.0-alpha.16",
+            "v1.0.0-alpha.16",
+            "1" * 40,
+            False,
+            {"upgrade_paths": {"edges": []}},
+        )
+        for semantic_review_required in (False, True):
+            target = qualification_runner.ReleaseIdentity(
+                Path("/target"),
+                "1.0.0-alpha.17",
+                "v1.0.0-alpha.17",
+                "2" * 40,
+                semantic_review_required,
                 {
-                    "order": 2,
-                    "path": ".ava/base/roles/example/index.md",
-                    "sha256": baseline[".ava/base/roles/example/index.md"],
+                    "upgrade_paths": {
+                        "edges": [
+                            {
+                                "from": source.version,
+                                "to": "1.0.0-alpha.17",
+                            }
+                        ]
+                    }
                 },
-            ],
-            "external_tools_used": [],
-        }
-        work.validate_response(request, response)
-
-        contaminated = dict(response)
-        contaminated["external_tools_used"] = ["github"]
-        with self.assertRaisesRegex(work.WorkQualificationError, "external tools"):
-            work.validate_response(request, contaminated)
-
-        wrong_digest = json.loads(json.dumps(response))
-        wrong_digest["required_reading"][0]["sha256"] = "0" * 64
-        with self.assertRaisesRegex(work.WorkQualificationError, "pre-interaction workspace"):
-            work.validate_response(request, wrong_digest)
-
-    def test_required_reading_starts_with_root_router(self) -> None:
-        digest = "1" * 64
-        request = {
-            "interaction_id": "work-001-scenario-route",
-            "scenario": "scenario",
-            "stage": "route",
-            "prompt_sha256": "2" * 64,
-            "model": "openai/gpt-5.6-sol",
-            "workspace_root": "/tmp/work/project",
-            "baseline_files": {"AGENTS.md": digest, "index.md": digest},
-        }
-        response = {
-            "schema_version": 1,
-            "interaction_id": request["interaction_id"],
-            "scenario": request["scenario"],
-            "stage": request["stage"],
-            "prompt_sha256": request["prompt_sha256"],
-            "model": request["model"],
-            "workspace_root": request["workspace_root"],
-            "final_response": "Need clarification.",
-            "required_reading": [{"order": 1, "path": "index.md", "sha256": digest}],
-            "external_tools_used": [],
-        }
-        with self.assertRaisesRegex(work.WorkQualificationError, "AGENTS.md first"):
-            work.validate_response(request, response)
+            )
+            work.validate_final_edge(source, target)
 
     def test_canonical_entrypoint_has_no_agent_runtime(self) -> None:
         release_root = work.REPOSITORY_ROOT / "internal/release"
         shell = (release_root / "qualify-release.sh").read_text(encoding="utf-8")
         self.assertIn("qualification_work.py", shell)
         self.assertNotIn("opencode", shell.lower())
-        self.assertNotIn("qualification_phase_automation.py", shell)
-        self.assertNotIn("qualification_host_automation.py", shell)
+        self.assertNotIn("subagent", shell.lower())
 
-    def test_work_procedure_forbids_local_fallback_and_requires_blank_slate(self) -> None:
-        text = (work.REPOSITORY_ROOT / "internal/release/qualification-work.md").read_text(
-            encoding="utf-8"
+    def test_final_evidence_schema_has_no_agent_or_audit_contract(self) -> None:
+        schema_path = (
+            work.REPOSITORY_ROOT
+            / "internal/release/qualification/schemas/work-run-record.schema.json"
         )
-        self.assertIn("ChatGPT Work Cloud", text)
-        self.assertIn("fresh blank-slate Work agent context", text)
-        self.assertIn("no inherited parent conversation", text)
-        self.assertIn("read/write access to the exact", text)
-        self.assertIn("same isolated scenario workspace", text)
-        self.assertIn("No local fallback", text)
-        self.assertIn("Do not fall back to OpenCode", text)
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        fields = set(schema["properties"])
+        self.assertIn("qualification_mode", fields)
+        self.assertNotIn("qualification_model", fields)
+        self.assertNotIn("audit_model", fields)
+        self.assertNotIn("audit_report_file", fields)
+        self.assertNotIn("interaction_evidence_file", fields)
+        self.assertNotIn("work_protocol_version", fields)
+
+    def test_work_procedure_requires_zero_delegated_qualification_agents(self) -> None:
+        text = (
+            work.REPOSITORY_ROOT / "internal/release/qualification-work.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("zero delegated qualification agents", text.lower())
+        self.assertIn("optional behavioral QA", text)
+        self.assertIn("pre-edge", text)
+        self.assertIn("final", text)
 
     def test_github_actions_owns_repository_test_suite(self) -> None:
         root = work.REPOSITORY_ROOT
@@ -136,44 +139,7 @@ class QualificationWorkTests(unittest.TestCase):
         self.assertIn("GitHub Actions boundary", procedure)
         self.assertIn("does not need to rerun", procedure)
         self.assertIn("GitHub Actions boundary", work_procedure)
-        self.assertIn("does not need to duplicate", work_procedure)
-
-    def test_work_run_schemas_have_no_opencode_or_session_contract(self) -> None:
-        schema_root = work.REPOSITORY_ROOT / "internal/release/qualification/schemas"
-        for name in ("work-run-record.schema.json", "work-edge-independent-run.schema.json"):
-            text = (schema_root / name).read_text(encoding="utf-8")
-            self.assertIn("chatgpt-work-cloud", text)
-            self.assertNotIn("opencode", text.lower())
-            self.assertNotIn("session_inventory", text)
-
-    def test_rejected_local_host_modules_are_absent(self) -> None:
-        release_root = work.REPOSITORY_ROOT / "internal/release"
-        for name in (
-            "qualification_host.py",
-            "qualification_host_runner.py",
-            "qualification_host_automation.py",
-        ):
-            self.assertFalse((release_root / name).exists(), name)
-
-    def test_summary_is_durable_work_evidence(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            state = {
-                "phase": "edge-independent",
-                "run_id": "run",
-                "source": {"version": "1", "tag": "v1", "source_revision": "1" * 40},
-                "target": {"version": "2", "tag": "v2", "source_revision": "2" * 40},
-                "execution_root": str(root),
-                "scenario_order": ["one"],
-                "scenarios": {
-                    "one": {"outcome": "pass", "detail": None},
-                },
-                "integrity_outcomes": [],
-            }
-            summary = work.write_summary(state)
-            self.assertEqual(summary["qualification_host"], work.WORK_HOST)
-            self.assertEqual(summary["exit_status"], 0)
-            self.assertTrue((root / work.SUMMARY_NAME).is_file())
+        self.assertIn("does not duplicate", work_procedure)
 
 
 if __name__ == "__main__":
