@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-09-02
+
+- **Fail-fast two-phase release qualification**: Split the maintained qualification matrix into explicit edge-independent and edge-dependent phases. Target behavior now qualifies against a provisional no-edge candidate before semantic-impact review or adjacent-edge authoring. Final upgrade qualification reuses that early evidence only when revision ancestry and an allowlisted edge-authoring diff prove the validated target inputs did not change; explicit acceptance and the release PR policy require the linked two-phase chain.
+
 ## 2026-08-29
 
 - **Outcome-based inbox qualification**: Removed the complete pending-inbox runner's transient project-root guard. Qualification continues to require exact processed-source preservation, trusted provenance, structural fidelity, conformance, `structural-pass`, and independent semantic audit.
