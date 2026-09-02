@@ -45,7 +45,7 @@ for path in \
   internal/release/release-please.md \
   internal/release/installer.md \
   internal/release/conformance.md \
-  internal/release/qualification-runner.md \
+  internal/release/qualification-automation.md \
   internal/release/assemble.sh \
   internal/release/assemble.py \
   internal/release/conformance.py \
@@ -54,7 +54,13 @@ for path in \
   internal/release/conformance_installed.py \
   internal/release/conformance_release.py \
   internal/release/qualification_runner.py \
-  internal/release/qualify-synthetic.sh \
+  internal/release/qualification_automation.py \
+  internal/release/qualification_phase_runner.py \
+  internal/release/qualification_phase_automation.py \
+  internal/release/qualification_phase_gate.py \
+  internal/release/qualify-release.sh \
+  internal/release/accept-release-qualification.sh \
+  internal/release/qualification-opencode.sh \
   internal/release/validate-installed-paths.py \
   internal/release/validate_pr_title.py \
   internal/release/ava-install.sh \
@@ -87,10 +93,14 @@ for path in \
   internal/release/tests/test_release_please.py \
   internal/release/tests/test_synthetic_qualification_vault.py \
   internal/release/tests/test_qualification_checkpoints.py \
-  internal/release/tests/test_qualification_runner.py
+  internal/release/tests/test_qualification_runner.py \
+  internal/release/tests/test_qualification_phases.py
 do
   require_file "$path"
 done
+
+[ ! -e "$ROOT/internal/release/qualify-synthetic.sh" ] || fail "legacy qualification shell entry point remains: internal/release/qualify-synthetic.sh"
+[ ! -e "$ROOT/internal/release/qualification-runner.md" ] || fail "legacy full-matrix qualification procedure remains: internal/release/qualification-runner.md"
 
 for path in templates/base templates/project-scaffolds internal/release/installer internal/release/fixtures
 do
@@ -152,7 +162,9 @@ done
 
 sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
-sh -n "$ROOT/internal/release/qualify-synthetic.sh"
+sh -n "$ROOT/internal/release/qualify-release.sh"
+sh -n "$ROOT/internal/release/accept-release-qualification.sh"
+sh -n "$ROOT/internal/release/qualification-opencode.sh"
 sh -n "$ROOT/internal/release/test.sh"
 python3 -m py_compile \
   "$ROOT/internal/release/assemble.py" \
@@ -162,6 +174,10 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/conformance_release.py" \
   "$ROOT/internal/release/qualification_runner.py" \
+  "$ROOT/internal/release/qualification_automation.py" \
+  "$ROOT/internal/release/qualification_phase_runner.py" \
+  "$ROOT/internal/release/qualification_phase_automation.py" \
+  "$ROOT/internal/release/qualification_phase_gate.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/checkpoint.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \

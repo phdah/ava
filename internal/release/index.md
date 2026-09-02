@@ -18,18 +18,16 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Pull-request title validator](validate_pr_title.py)
 - [Alpha qualification policy](alpha-qualification.md)
 - [Hands-off release qualification procedure](qualification-automation.md)
-- [Hands-off qualification shell entry point](qualify-release.sh)
+- [Single release qualification entry point](qualify-release.sh)
 - [Explicit qualification acceptance entry point](accept-release-qualification.sh)
 - [Qualification OpenCode session adapter](qualification-opencode.sh)
-- [Legacy complete qualification automation](qualification_automation.py)
-- [Phased release qualification automation](qualification_phase_automation.py)
-- [Phased synthetic qualification runner](qualification_phase_runner.py)
+- [Shared qualification automation support](qualification_automation.py)
+- [Phase-specific release qualification orchestration](qualification_phase_automation.py)
+- [Phase-specific synthetic qualification runner](qualification_phase_runner.py)
 - [Two-phase acceptance and release-PR gate](qualification_phase_gate.py)
 - [Qualification acceptance and release-PR state implementation](qualification_acceptance.py)
 - [Qualification configuration and compact evidence state](qualification/)
-- [One-command synthetic qualification component](qualification-runner.md)
-- [Synthetic qualification shell entry point](qualify-synthetic.sh)
-- [Synthetic qualification runner implementation](qualification_runner.py)
+- [Shared synthetic qualification scenario engine](qualification_runner.py)
 - [Deterministic inbox qualification checks](qualification_inbox.py)
 - [Conformance validation contract](conformance.md)
 - [Unified conformance validator](conformance.py)
@@ -41,5 +39,7 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Validation fixtures](fixtures/)
 - [Release implementation tests](tests/)
 - [Release implementation log](log.md)
+
+`qualify-release.sh` is the only supported qualification execution entry point. The Python qualification modules are internal implementation boundaries used by that command and by unit tests; there is no supported standalone full-matrix qualification command.
 
 `validate_upgrade_impact.py` and historical target-specific guidance remain available only for compatibility investigation of already published releases. They are not active release-authoring inputs.
