@@ -1,10 +1,10 @@
 ---
 id: ava-506
 title: Qualify and publish 1.0.0
-status: Won't Fix
+status: Done
 assignee: []
 created_date: ''
-updated_date: '2026-08-30 18:18'
+updated_date: '2026-09-01 19:54'
 labels:
   - internal
   - roadmap
@@ -12,6 +12,7 @@ labels:
   - release
   - stable
   - v1
+  - "Won't Fix"
 dependencies: []
 ordinal: 506
 ---

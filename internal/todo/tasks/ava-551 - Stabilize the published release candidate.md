@@ -1,16 +1,17 @@
 ---
 id: ava-551
 title: Stabilize the published release candidate
-status: Won't Fix
+status: Done
 assignee: []
 created_date: ''
-updated_date: '2026-08-30 18:19'
+updated_date: '2026-09-01 19:54'
 labels:
   - internal
   - roadmap
   - phase-05
   - release
   - qualification
+  - "Won't Fix"
 dependencies: []
 ordinal: 551
 ---

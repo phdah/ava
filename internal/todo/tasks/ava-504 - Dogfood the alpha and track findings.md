@@ -1,16 +1,17 @@
 ---
 id: ava-504
 title: Dogfood the alpha and track findings
-status: Won't Fix
+status: Done
 assignee: []
 created_date: ''
-updated_date: '2026-08-30 18:15'
+updated_date: '2026-09-01 19:54'
 labels:
   - internal
   - roadmap
   - phase-05
   - release
   - dogfood
+  - "Won't Fix"
 dependencies: []
 ordinal: 504
 ---

@@ -1,10 +1,10 @@
 ---
 id: ava-542
 title: Qualify and publish the corrective alpha
-status: Won't Fix
+status: Done
 assignee: []
 created_date: ''
-updated_date: '2026-08-30 18:18'
+updated_date: '2026-09-01 19:54'
 labels:
   - internal
   - roadmap
@@ -12,6 +12,7 @@ labels:
   - release
   - qualification
   - dogfood
+  - "Won't Fix"
 dependencies: []
 ordinal: 542
 ---
