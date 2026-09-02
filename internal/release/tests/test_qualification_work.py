@@ -5,14 +5,14 @@ import unittest
 from pathlib import Path
 
 from internal.release import qualification_runner
-from internal.release import qualification_work as work
+from internal.release import qualification_work as implementation
 
 
-class QualificationWorkTests(unittest.TestCase):
+class QualificationExecutionTests(unittest.TestCase):
     def test_release_gate_selects_only_deterministic_scenarios(self) -> None:
         matrix = qualification_runner.load_matrix()
-        pre = work.deterministic_scenarios(matrix, "pre-edge")
-        final = work.deterministic_scenarios(matrix, "final")
+        pre = implementation.deterministic_scenarios(matrix, "pre-edge")
+        final = implementation.deterministic_scenarios(matrix, "final")
 
         self.assertEqual(
             [scenario["id"] for scenario in pre],
@@ -40,7 +40,10 @@ class QualificationWorkTests(unittest.TestCase):
             ],
         )
         self.assertTrue(
-            all(scenario["kind"] not in work.AGENT_KINDS for scenario in pre + final)
+            all(
+                scenario["kind"] not in implementation.AGENT_KINDS
+                for scenario in pre + final
+            )
         )
 
     def test_behavioral_scenarios_remain_outside_release_gate(self) -> None:
@@ -48,12 +51,12 @@ class QualificationWorkTests(unittest.TestCase):
         behavioral = {
             scenario["id"]
             for scenario in matrix["scenarios"]
-            if scenario["kind"] in work.AGENT_KINDS
+            if scenario["kind"] in implementation.AGENT_KINDS
         }
         selected = {
             scenario["id"]
-            for stage in work.STAGES
-            for scenario in work.deterministic_scenarios(matrix, stage)
+            for stage in implementation.STAGES
+            for scenario in implementation.deterministic_scenarios(matrix, stage)
         }
         self.assertTrue(
             {
@@ -96,50 +99,61 @@ class QualificationWorkTests(unittest.TestCase):
                     }
                 },
             )
-            work.validate_final_edge(source, target)
+            implementation.validate_final_edge(source, target)
 
-    def test_canonical_entrypoint_has_no_agent_runtime(self) -> None:
-        release_root = work.REPOSITORY_ROOT / "internal/release"
+    def test_canonical_entrypoint_selects_no_chatgpt_mode(self) -> None:
+        release_root = implementation.REPOSITORY_ROOT / "internal/release"
         shell = (release_root / "qualify-release.sh").read_text(encoding="utf-8")
-        self.assertIn("qualification_work.py", shell)
+        driver = (release_root / "qualification.py").read_text(encoding="utf-8")
+        self.assertIn("qualification.py", shell)
+        self.assertNotIn("qualification_work.py", shell)
         self.assertNotIn("opencode", shell.lower())
         self.assertNotIn("subagent", shell.lower())
+        self.assertIn("AVA_QUALIFICATION_EXECUTOR", driver)
+        self.assertIn("ordinary ChatGPT chat", driver)
 
-    def test_final_evidence_schema_has_no_agent_or_audit_contract(self) -> None:
+    def test_final_evidence_schema_is_executor_neutral(self) -> None:
         schema_path = (
-            work.REPOSITORY_ROOT
+            implementation.REPOSITORY_ROOT
             / "internal/release/qualification/schemas/work-run-record.schema.json"
         )
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
         fields = set(schema["properties"])
         self.assertIn("qualification_mode", fields)
+        self.assertIn("qualification_host", fields)
+        self.assertNotIn("const", schema["properties"]["qualification_host"])
         self.assertNotIn("qualification_model", fields)
         self.assertNotIn("audit_model", fields)
         self.assertNotIn("audit_report_file", fields)
         self.assertNotIn("interaction_evidence_file", fields)
         self.assertNotIn("work_protocol_version", fields)
 
-    def test_work_procedure_requires_zero_delegated_qualification_agents(self) -> None:
-        text = (
-            work.REPOSITORY_ROOT / "internal/release/qualification-work.md"
-        ).read_text(encoding="utf-8")
-        self.assertIn("zero delegated qualification agents", text.lower())
-        self.assertIn("optional behavioral QA", text)
-        self.assertIn("pre-edge", text)
-        self.assertIn("final", text)
-
-    def test_github_actions_owns_repository_test_suite(self) -> None:
-        root = work.REPOSITORY_ROOT
-        procedure = (root / "internal/release/procedure.md").read_text(encoding="utf-8")
-        work_procedure = (root / "internal/release/qualification-work.md").read_text(
+    def test_execution_procedure_is_session_neutral(self) -> None:
+        root = implementation.REPOSITORY_ROOT
+        text = (root / "internal/release/qualification-execution.md").read_text(
             encoding="utf-8"
         )
-        workflow = (root / ".github/workflows/python-tests.yml").read_text(encoding="utf-8")
-        self.assertIn("internal/release/test.sh", workflow)
-        self.assertIn("GitHub Actions boundary", procedure)
-        self.assertIn("does not need to rerun", procedure)
-        self.assertIn("GitHub Actions boundary", work_procedure)
-        self.assertIn("does not duplicate", work_procedure)
+        self.assertIn("session-neutral", text.lower())
+        self.assertIn("zero delegated qualification agents", text.lower())
+        self.assertIn("ordinary ChatGPT chat", text)
+        self.assertIn("There is no requirement to switch from normal Chat to Work", text)
+        self.assertIn("GitHub Actions", text)
+
+    def test_github_actions_owns_mandatory_execution(self) -> None:
+        root = implementation.REPOSITORY_ROOT
+        procedure = (root / "internal/release/procedure.md").read_text(encoding="utf-8")
+        qualification_workflow = (
+            root / ".github/workflows/release-qualification.yml"
+        ).read_text(encoding="utf-8")
+        python_workflow = (root / ".github/workflows/python-tests.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("internal/release/test.sh", python_workflow)
+        self.assertIn("session-neutral", procedure.lower())
+        self.assertIn("GitHub Actions", procedure)
+        self.assertIn("run-release-qualification.sh", qualification_workflow)
+        self.assertIn("acceptance-request.json", qualification_workflow)
+        self.assertIn("AVA_QUALIFICATION_EXECUTOR", qualification_workflow)
 
 
 if __name__ == "__main__":
