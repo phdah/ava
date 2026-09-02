@@ -1,246 +1,152 @@
 ---
 type: Internal Release Qualification Host Procedure
-title: ChatGPT Work Cloud Qualification Execution
-description: Required ChatGPT-hosted execution procedure for Ava release qualification without OpenCode or user-local compute.
-tags: [internal, release, qualification, chatgpt, work, cloud, subagents]
+title: ChatGPT Work Cloud Deterministic Qualification
+description: Minimal deterministic Ava release qualification procedure for ChatGPT Work Cloud.
+tags: [internal, release, qualification, chatgpt, work, cloud, deterministic]
 generated:
   by: agent:openai-chatgpt
   at: 2026-09-02T17:30:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T17:55:00+02:00
+  at: 2026-09-02T20:30:00+02:00
 ---
 
 # Purpose
 
-Ava release qualification runs completely on ChatGPT-hosted compute.
+The normal Ava release gate is deterministic. It deliberately uses **zero delegated qualification agents**.
 
-The supported execution surface is **ChatGPT Work Cloud**. Qualification must not depend on a developer workstation, Work Local, Codex Local, OpenCode, a local shell, a locally mounted repository, or another user-hosted process.
+The ChatGPT Work session is the release orchestrator: it resolves the release PR, reviews the managed delta, makes the maintainer semantic-impact judgment, authors the adjacent edge and any required guidance, runs deterministic qualification commands, inspects GitHub Actions, presents the final evidence, and waits for explicit user acceptance.
 
-GitHub Actions continues to own the repository checks that already run in CI. This procedure owns the release qualification work that requires isolated mutable projects and agent behavior. The GitHub Actions Python/repository suite is not duplicated inside the Work qualification task merely to satisfy this procedure.
+Consumer-behavior simulations such as routing, calendar interpretation, ambiguous clarification, inbox ingestion, semantic reconciliation, role-led finalization, and role-led uninstall are **optional behavioral QA**. They are not required to publish a normal release.
 
-# Required Work capabilities
+# Why the release gate is deterministic
 
-The Work task must have:
+The mandatory release gate answers questions that can be checked without stochastic agent behavior:
 
-- Work Cloud execution, not Work Local
-- code and shell execution in the Work cloud environment
-- network access for the GitHub endpoints needed to fetch the repository and immutable release assets
-- the GitHub connection with permission to update the release PR branch when compact qualification evidence must be committed
-- the ability to create a **fresh blank-slate Work agent context** for each semantic qualification interaction
-- read/write access from that fresh context to the exact isolated scenario workspace prepared by the parent qualification driver
-- a cloud-only evidence handoff back to the parent Work task
+- are source and target assets exact and intact?
+- does the candidate assemble from the exact repository revision?
+- can Ava install into an empty project?
+- can Ava install into a mature project without altering existing project-owned bytes?
+- are modified, missing, corrupt, and unexpected managed states rejected correctly?
+- does the reviewed final candidate contain exactly one source-to-target edge?
+- can the previous release upgrade deterministically to the target while preserving project-owned bytes?
+- do interrupted upgrade resume, abort, and rollback mechanics behave safely?
+- do the normal repository and release tests pass in GitHub Actions?
 
-The product may expose the fresh context as a delegated subagent, an additional Work agent, or another equivalent isolated Work execution primitive. The protocol does not depend on a product-internal session identifier or UI label. It does require the semantic agent to start without inherited parent conversation, saved memory, prior scenario context, or unrelated connected tools, while still operating against the exact prepared scenario workspace.
-
-A separate fresh Work chat is acceptable only if ChatGPT can give that chat read/write access to the exact same isolated cloud scenario workspace and return its response without leaving ChatGPT-hosted compute. Returning only a text/JSON answer from a disconnected chat is not sufficient because semantic qualification scenarios mutate and are then deterministically validated against that workspace.
-
-If one of these capabilities is unavailable, stop and report the missing Work capability. Do not fall back to OpenCode or to the user's computer.
-
-# Agent isolation contract
-
-Every qualification interaction emitted by `qualification_work.py` is executed by one fresh blank-slate Work agent context.
-
-The generated request is the only conversational instruction supplied to that context. Do not pass the parent Work conversation, prior qualification conversations, saved memory, unrelated project context, or previous scenario responses.
-
-The fresh agent receives the generated request plus access to the exact `workspace_root`. It must:
-
-1. operate only inside the request's `workspace_root`, except for reading the request and writing or returning the declared structured response
-2. use only the Work cloud filesystem and shell needed for the isolated project
-3. not use web search, cloud browser, plugins, apps, MCPs, other repositories, memory, or user-local files
-4. read `AGENTS.md` first and follow all required Ava routing, role, workflow, and managed-state instructions
-5. perform the exact scenario prompt as the isolated project's user request
-6. write or return the structured response requested by the protocol, including ordered pre-mutation required-reading evidence
-
-The parent task must not perform the semantic action in place of the fresh agent. The parent owns orchestration and deterministic validation.
-
-Most semantic scenarios start from an isolated project in which the target Ava candidate was freshly installed by the deterministic runner. Scenarios intentionally testing upgrade, semantic reconciliation, interruption, finalization, or another lifecycle state instead receive that exact prepared lifecycle workspace. A fresh agent context does not mean erasing the scenario state being tested.
-
-# Independent audit isolation
-
-After all scenarios in a phase pass mechanically, the parent creates a **new fresh blank-slate Work agent context** that did not execute any qualification scenario.
-
-The audit agent receives only the generated audit request and read access to:
-
-- the Ava repository
-- source and target release assets
-- the finalized synthetic qualification vault
-- scenario workspaces and deterministic command logs
-- Work interaction request/response evidence
-- the evaluator-only oracle
-
-Its only permitted write is the declared audit response JSON. The parent validates that repository, scenario, asset, and fixture digests remained unchanged while the audit ran.
+These checks are stable release-safety evidence. General LLM behavior remains useful QA, but it must not make every alpha release expensive or brittle.
 
 # Work Cloud setup
 
-Start the release qualification from a Work chat on web or mobile, or from a cloud Work chat on desktop. Do not open a local folder for this operation.
+Run the release process in ChatGPT Work Cloud. Do not use the user's computer for non-CI release qualification.
 
-Use the connected GitHub repository as the authoritative source, then create one repository-external Work cloud run root. A typical setup is:
+Create repository-external Work Cloud paths for downloaded assets, the finalized fixture, a read-only test boundary, and execution workspaces. The exact target assets must be assembled from the clean release PR revision being qualified.
 
-```sh
-set -eu
-repo="$PWD"
-run_parent="${TMPDIR:-/tmp}/ava-work-qualification"
-mkdir -p "$run_parent"
-run_root=$(mktemp -d "$run_parent/run.XXXXXX")
-mkdir -p "$run_root/assets/source" "$run_root/fixture" "$run_root/test-project" "$run_root/execution"
-```
+The normal GitHub Actions suite remains CI-owned; see **GitHub Actions boundary** below.
 
-The Work task must be checked out at the exact release PR revision that is being qualified. `qualification_work.py init` binds the target release assets to that repository revision and refuses a mismatch.
+# Pre-edge deterministic preflight
 
-# Resolve the exact source release
-
-Read the active pair from `internal/release/qualification/config.json` and `pair-catalog.json`. Download the exact published source tag into `$run_root/assets/source` and verify its immutable release/asset attestations before qualification.
-
-The existing checked-in pair catalog contains the expected source revision, manifest digest, and every release-asset digest. `qualification_work.py init` revalidates the downloaded bytes against that catalog, so a mutable or mismatched source cannot enter the run.
-
-This step may use `gh release download`, `gh release verify`, and `gh release verify-asset` inside Work Cloud, or equivalent connected GitHub operations. It must not use a release bundle from the user's machine.
-
-# Generate the fixture and test boundary
-
-Generate the qualification vault inside Work Cloud:
-
-```sh
-TMPDIR="$run_root/fixture" internal/release/generate-synthetic-qualification-vault.sh
-```
-
-Use the path printed by the generator as `qualification_root`.
-
-Create the repository-external read-only test boundary:
-
-```sh
-cat > "$run_root/test-project/index.md" <<'EOF'
-# Qualification test boundary
-
-Repository-external byte-integrity sentinel.
-EOF
-cat > "$run_root/test-project/sentinel.json" <<'EOF'
-{"purpose":"qualification-test-boundary","schema_version":1}
-EOF
-```
-
-# Edge-independent phase
-
-From the exact clean release PR revision, before the target adjacent catalog or guidance is authored:
+Before semantic-impact review or adjacent-edge authoring, assemble the provisional candidate:
 
 ```sh
 target_assets="$(internal/release/assemble-candidate.sh --phase edge-independent)"
-internal/release/qualify-release.sh init \
-  --phase edge-independent \
+```
+
+Then run:
+
+```sh
+internal/release/qualify-release.sh pre-edge \
   --qualification-root "$qualification_root" \
-  --execution-root "$run_root/execution" \
+  --execution-root "$run_root/pre-edge" \
   --source-assets "$run_root/assets/source" \
   --target-assets "$target_assets" \
   --test-project "$run_root/test-project"
 ```
 
-Then run the Work orchestration loop.
+The pre-edge preflight runs only:
 
-# Work orchestration loop
+- fresh empty install
+- mature-project install and project-owned preservation
+- modified managed-content rejection
+- missing managed-content rejection
+- corrupt managed-state rejection
+- unexpected managed-content rejection
+- finalized corpus and external test-boundary integrity checks
 
-Call:
+It writes no repository qualification evidence. Its purpose is only to fail fast before spending maintainer effort on the release edge.
 
-```sh
-internal/release/qualify-release.sh advance \
-  --execution-root "$run_root/execution"
-```
+If it fails, stop and fix the release candidate before edge authoring.
 
-Exit meanings are:
+# Maintainer semantic review and edge authoring
 
-- `0`: every scenario in the phase has passed mechanically
-- `1`: a scenario failed or requires a user decision; stop and report the exact summary
-- `2`: the qualification protocol or inputs are invalid; stop
-- `3`: a fresh blank-slate Work agent context is required
+After the pre-edge preflight passes, the same Work session performs the maintained semantic-impact assessment over the exact previous-to-target managed delta and records the decision and rationale.
 
-When exit `3` prints `SUBAGENT_REQUIRED <request-path>`, treat `SUBAGENT_REQUIRED` as the protocol name for the required fresh Work agent context, not as a dependency on a particular product UI label.
+Then author exactly one adjacent release record for the source-to-target transition, plus only required transition-local guidance, deterministic migrations, and retirement decisions.
 
-1. read the complete generated request JSON
-2. create one fresh blank-slate Work agent context with no inherited parent conversation, saved memory, prior scenario context, or unrelated tools
-3. give it only the generated request plus read/write access to the exact `workspace_root`
-4. require it to satisfy the request's execution contract and produce the declared structured response without using external tools
-5. when the Work execution primitive shares the filesystem, let it write `response_path` directly; otherwise transfer the response back inside ChatGPT and write those exact bytes to `response_path` without rewriting or normalizing them
-6. do not accept a disconnected fresh chat unless it also had read/write access to the exact scenario workspace and its mutations are present there when control returns
-7. call `advance` again
+No delegated agent is required for this step. This is maintainer judgment over the release itself, not a synthetic consumer scenario.
 
-Repeat until `advance` exits `0` or a non-passing result stops the phase.
+# Final deterministic qualification
 
-The loop executes deterministic-only scenarios directly in the Work cloud shell. Agent scenarios are prepared by the deterministic runner, executed by fresh blank-slate Work agent contexts, and then validated deterministically before the next scenario starts.
-
-# Independent audit
-
-After `advance` exits `0`:
-
-```sh
-internal/release/qualify-release.sh audit-request \
-  --execution-root "$run_root/execution"
-```
-
-The command exits `3` and prints `AUDIT_SUBAGENT_REQUIRED <request-path>`.
-
-Create one new fresh blank-slate Work agent context that executed no qualification scenario. Give it only the generated audit request and the declared read-only evidence inputs. It must produce only the requested audit JSON response. Then finalize:
-
-```sh
-internal/release/qualify-release.sh finalize \
-  --execution-root "$run_root/execution"
-```
-
-Finalization verifies audit immutability, validates the maintained audit schema, writes compact Work evidence under `internal/release/qualification/`, and updates the phase state.
-
-For the edge-independent phase, a clean audit produces `passed`. Commit the exact generated `phase-runs/` evidence and `phase-state.json` to the release PR using the connected GitHub action before edge authoring.
-
-# Edge-dependent phase
-
-After semantic-impact review and adjacent edge authoring are complete, create a new Work cloud run root from the new exact release PR revision. Do not reuse the early scenario workspaces.
-
-Assemble the reviewed candidate:
+After edge authoring, assemble the reviewed candidate from the new exact release PR revision:
 
 ```sh
 target_assets="$(internal/release/assemble-candidate.sh --phase edge-dependent)"
 ```
 
-Initialize the final phase with the same steps as above, changing only the phase and new external run paths:
+Use a new repository-external execution root and run:
 
 ```sh
-internal/release/qualify-release.sh init \
-  --phase edge-dependent \
+internal/release/qualify-release.sh final \
   --qualification-root "$qualification_root" \
-  --execution-root "$run_root/execution" \
+  --execution-root "$run_root/final" \
   --source-assets "$run_root/assets/source" \
   --target-assets "$target_assets" \
   --test-project "$run_root/test-project"
 ```
 
-Initialization validates the committed early Work evidence with `qualification_phase_gate.py`, including revision ancestry, source identity, target version, early absence of the adjacent edge, and the allowed intervening change set.
+The final qualification reruns every pre-edge deterministic check and additionally verifies:
 
-Run the same `advance`, fresh-agent, `audit-request`, fresh-audit-agent, and `finalize` loop.
+- exactly one authentic previous-to-target edge in the final release assets
+- one complete deterministic previous-to-target upgrade preserving project-owned bytes
+- interrupted upgrade resume
+- interrupted upgrade abort
+- rollback to the previous release
+- the resulting deterministic semantic state, whether mechanically complete or authentically pending maintainer/user reconciliation
 
-A clean final audit produces `awaiting-user-signoff`. No agent may accept its own qualification.
+A passing final run writes the compact final run record and summary under `internal/release/qualification/runs/`, updates `current-state.json`, and enters `awaiting-user-signoff`.
+
+There is no mandatory independent LLM audit and no mandatory scenario interaction transcript.
 
 # GitHub Actions boundary
 
-The normal pull-request checks remain GitHub Actions work. In particular, `.github/workflows/python-tests.yml` executes the internal Backlog validation, installed-project task-board checks, and `internal/release/test.sh`, which runs the repository Python/unit test suite.
+The normal pull-request checks remain GitHub Actions work. `.github/workflows/python-tests.yml` runs Backlog validation, installed-project task-board checks, `internal/release/test.sh`, and the repository Python/unit tests.
 
-The Work release task must require those checks to pass but does not need to duplicate them in its own cloud shell. It may inspect their results through GitHub. Rerunning the repository test suite inside Work is optional diagnostic work only when investigating a failure, not part of the qualification evidence contract.
+The Work release task requires those checks to pass but **does not duplicate** the full repository test suite in Work. A Work-side rerun is diagnostic only when investigating a CI failure.
 
-# Evidence
+# Optional behavioral QA
 
-Work qualification does not depend on ChatGPT thread IDs, hidden product session identifiers, OpenCode session IDs, provider databases, or local transcript files.
+The synthetic vault still contains behavioral scenarios for routing, calendar interpretation, clarification, inbox ingestion, semantic reconciliation/finalization, and lifecycle behavior.
 
-Each agent interaction is bound to:
+Those scenarios are optional behavioral QA. Run them deliberately when a release materially changes those contracts, before a larger milestone, or while evaluating an agent host. They are not release acceptance evidence and a failure in an optional behavioral run does not by itself block publication.
 
-- one scenario and stage
-- the exact scenario prompt digest
-- the configured model identifier
-- the exact isolated workspace path
-- an ordered required-reading manifest bound to the pre-interaction workspace bytes
-- a structured final response
-- an assertion that no external tools were used
-- the deterministic postconditions run after the fresh agent returns
+A later task may expose these behavioral scenarios through a generic host protocol with adapters for ChatGPT Work, OpenCode, or another capable agent runtime. PR #122 retains the implementation history needed to recover earlier OpenCode-oriented execution if that work is pursued.
 
-The compact committed interaction evidence includes the structured response and its digest. The final run record binds the Work protocol, phase, exact repository revision, release identities, matrix digest, fixture digest, and qualification driver digest.
+# Evidence and acceptance
 
-# No local fallback
+Only the authoritative final deterministic run is committed as release qualification evidence. It binds:
 
-OpenCode is not a supported release-qualification runtime. Neither is a developer terminal, Work Local, Codex Local, or a remotely controlled developer workstation.
+- exact repository revision
+- exact source and target release identities and asset hashes
+- qualification matrix digest
+- deterministic qualification driver digest
+- deterministic scenario summary
+- `awaiting-user-signoff` state
 
-If Work Cloud cannot create the isolated run root, run shell commands, access the exact GitHub inputs, create a fresh blank-slate agent context with read/write access to the exact prepared scenario workspace, return the evidence to the parent Work task, or write the compact evidence back to the release PR, qualification cannot proceed on that Work configuration. Report that exact missing capability instead of moving execution to a local machine.
+The pre-edge preflight is intentionally ephemeral and does not form a revision-ancestry evidence chain.
+
+After the final deterministic run passes and required GitHub Actions checks are green, present the evidence to the user. Only explicit user approval may run `accept-release-qualification.sh` and permit the release PR to merge.
+
+# No local fallback for the Work release procedure
+
+The release procedure currently validates ChatGPT Work Cloud as its non-CI execution environment. Do not silently move qualification to the user's computer if Work execution fails. Report the missing capability.
+
+The deterministic qualification entry point itself contains no OpenCode or LLM runtime dependency, which leaves room for a later generic execution-host design without changing the release-safety checks.
