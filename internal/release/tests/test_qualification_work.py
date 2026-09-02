@@ -113,14 +113,30 @@ class QualificationWorkTests(unittest.TestCase):
         self.assertNotIn("qualification_phase_automation.py", shell)
         self.assertNotIn("qualification_host_automation.py", shell)
 
-    def test_work_procedure_forbids_local_fallback(self) -> None:
+    def test_work_procedure_forbids_local_fallback_and_requires_blank_slate(self) -> None:
         text = (work.REPOSITORY_ROOT / "internal/release/qualification-work.md").read_text(
             encoding="utf-8"
         )
         self.assertIn("ChatGPT Work Cloud", text)
-        self.assertIn("fresh Work subagent", text)
+        self.assertIn("fresh blank-slate Work agent context", text)
+        self.assertIn("no inherited parent conversation", text)
+        self.assertIn("read/write access to the exact", text)
+        self.assertIn("same isolated scenario workspace", text)
         self.assertIn("No local fallback", text)
         self.assertIn("Do not fall back to OpenCode", text)
+
+    def test_github_actions_owns_repository_test_suite(self) -> None:
+        root = work.REPOSITORY_ROOT
+        procedure = (root / "internal/release/procedure.md").read_text(encoding="utf-8")
+        work_procedure = (root / "internal/release/qualification-work.md").read_text(
+            encoding="utf-8"
+        )
+        workflow = (root / ".github/workflows/python-tests.yml").read_text(encoding="utf-8")
+        self.assertIn("internal/release/test.sh", workflow)
+        self.assertIn("GitHub Actions boundary", procedure)
+        self.assertIn("does not need to rerun", procedure)
+        self.assertIn("GitHub Actions boundary", work_procedure)
+        self.assertIn("does not need to duplicate", work_procedure)
 
     def test_work_run_schemas_have_no_opencode_or_session_contract(self) -> None:
         schema_root = work.REPOSITORY_ROOT / "internal/release/qualification/schemas"
