@@ -1,72 +1,55 @@
 ---
 type: Internal Release Qualification Audit
-title: Independent Qualification Session Audit
-description: Read-only audit contract for OpenCode sessions created by one exact hands-off release qualification phase.
-tags: [internal, release, qualification, audit, opencode]
+title: Optional Behavioral Qualification Audit
+description: Optional semantic audit contract for targeted synthetic agent-behavior QA; not part of normal release acceptance.
+tags: [internal, release, qualification, audit, behavioral, optional]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T12:45:00+02:00
+  at: 2026-09-02T20:30:00+02:00
 ---
+
+# Status
+
+This audit contract is **optional behavioral QA**.
+
+The normal Ava release gate no longer requires synthetic consumer-agent interactions or an independent LLM audit. Release acceptance is based on the deterministic final qualification plus explicit user signoff and required GitHub Actions checks.
+
+Retain this document for deliberate behavioral investigations, larger milestone qualification, or future generic host-adapter work.
 
 # Scope
 
-Audit only the exact qualification run named in the appended run inputs. This is an independent, read-only review. Do not edit the Ava repository, generated fixture, isolated projects, runner evidence, transcripts, release assets, or qualification state.
+When an optional behavioral run is explicitly requested, audit only the exact scenarios and evidence supplied for that run. The auditor must not infer that a behavioral result is release acceptance evidence.
 
-The appended inputs identify the `qualification_phase`. Use the supplied runner summary and session inventory as the complete boundary for that phase. Inspect every listed top-level and nested session. Scenarios explicitly assigned to the other qualification phase are intentionally absent and are not missing evidence. Apply each required review item only when the current phase contains a scenario to which it is relevant.
+Use the runner summary, scenario workspaces, interaction evidence, deterministic command logs, release contracts, and fixture oracle as the bounded evidence set.
 
-Use the supplied session inventory as the complete session boundary. Inspect every listed top-level and nested session and reconcile it against the runner evidence, applicable release contracts, and fixture oracle. Do not inspect or infer from unrelated OpenCode sessions.
+# Oracle boundary
 
-The fixture oracle is evaluator-only expected-outcome evidence. Qualification sessions under test must derive their work from the installed Ava contract and the selected source material, not from the oracle. Do not fault a qualification session for not reading, citing, or knowing the oracle. Use the oracle independently to test whether the session result preserved the expected source meaning, dispositions, provenance, chronology, and other declared outcomes. Treat evidence that a qualification session read or relied on the hidden oracle as test contamination rather than stronger proof.
+The fixture oracle is evaluator-only expected-outcome evidence. Scenario agents must derive their work from the installed Ava contract and selected source material, not from the oracle.
 
-For each exact `session_id` in the inventory, read its complete session export with:
+Use the oracle independently to test whether final results preserved expected meaning, dispositions, provenance, chronology, and other declared outcomes. Evidence that a scenario agent relied on the oracle is test contamination.
 
-```sh
-internal/release/qualification-opencode.sh export <session_id>
-```
+# Suggested review
 
-The qualification OpenCode adapter forwards export unchanged to the same underlying OpenCode installation used by the run. The inventory transcript digest is the integrity oracle for the export. If an export is missing, unreadable, or does not match the recorded transcript digest, admit that as an evidence limitation and do not treat the affected terminal claim as proven.
+For the optional scenarios that were actually run, determine whether:
 
-Treat command errors, retries, nested work, superseded attempts, missing evidence, and runner acceptance gaps as evidence that may weaken a terminal claim.
-
-# Required review
-
-For the scenarios present in the current phase, determine whether:
-
-1. every required role was announced only after its complete required-reading set was loaded
-2. missing or invalid required paths were handled by the active contract rather than guessed around
-3. every mutation remained inside the active role and scenario boundary
-4. ambiguous requests remained unmodified and visibly requested clarification
-5. calendar persistence used deterministic verification and preserved the correct reference context
-6. inbox completion was independently reconciled against every selected source and the evaluator-only fixture oracle rather than inferred from movement or link validity
-7. semantic reconciliation recorded every inspected and changed project-owned path before completion
-8. finalization followed the target release contract without an unqualified fallback to installer-backed behavior
-9. removal and reinstall preserved project-owned bytes
-10. each runner outcome is supported by the evidence level it claims, including that `structural-pass` proves only deterministic structure and leaves `semantic_status: pending-audit` for this independent review
-
-For `complete-pending-inbox`, review section dispositions against the final rendered trusted destinations, not only the session's ledger or reported totals. Use the evaluator-only oracle to identify expected `mapped`, `non-durable`, and `pending` sections. Verify that mapped meaning is present with required qualifiers, that non-durable source passages or meaning are absent from trusted destinations, and that ambiguous or pending material was not promoted merely to complete the source. A whole-source copy or summary that carries a non-durable passage into trusted knowledge is a fidelity failure even when source movement, provenance, links, and disposition totals are otherwise consistent. A completion claim whose totals were not reconciled against the rendered destinations is unsupported and must be reported as a finding.
-
-A runner `structural-pass` for this scenario is not evidence that the semantic checks above passed. It means the runner's bounded non-oracle checks succeeded and deliberately hands the remaining semantic claim to this audit. Do not fault the runner merely for leaving that semantic status pending; fault it only if its structural claim is unsupported or if qualification automation treats the pending semantic status as final semantic acceptance without this audit.
+1. required routing and role instructions were loaded before role-scoped work
+2. mutations remained inside the intended project-owned boundary
+3. ambiguous requests requested clarification rather than guessing
+4. calendar behavior preserved verified dates and reference context
+5. inbox ingestion preserved source fidelity and did not promote ambiguous material
+6. semantic reconciliation preserved project-owned meaning and surfaced unresolved decisions
+7. role-led maintenance preserved project-owned bytes
+8. observed behavior matches the scenario's maintained postconditions
 
 # Findings
 
 Admit only evidence-backed findings. Use severity `blocker`, `major`, `minor`, or `observation`.
 
-Every finding must include:
-
-- a stable finding id
-- severity
-- concise summary
-- concrete evidence references
-- consequence
-- required correction, or an empty string when no correction is required
-- remediation owner: `repository`, `release-assets`, `fixture`, `runner`, `agent-behavior`, or `user-decision`
-- limitations or uncertainty
-
-A `blocker` or `major` finding requires terminal conclusion `needs-review`. A clean audit or findings limited to `minor` and `observation` may conclude `pass` only when the evidence is sufficient for the automated qualification claim.
+A behavioral finding may justify a release fix when it exposes a real product defect, but the optional audit itself is not a mechanical release gate.
 
 # Output
 
-Return only one JSON object matching `internal/release/qualification/schemas/audit-output.schema.json`. Do not wrap it in Markdown and do not include prose before or after it.
+When structured output is requested, return one JSON object matching `internal/release/qualification/schemas/audit-output.schema.json`.

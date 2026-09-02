@@ -1,7 +1,7 @@
 ---
 id: ava-5638
 title: Evaluate host-neutral release qualification execution
-status: To Do
+status: Parked
 assignee: []
 created_date: '2026-09-01 20:20'
 labels:
@@ -22,65 +22,102 @@ ordinal: 6636
 
 ## Description
 
-Evaluate whether Ava's release qualification can stop depending on OpenCode as the agent runtime and instead use a host-neutral qualification model that can be executed from other capable agent hosts, including the ChatGPT app with repository access.
+Evaluate and implement a release-qualification path that does not require OpenCode, ChatGPT Work, or another specific agent host as the mandatory runtime.
 
-Today the qualification system is coupled to OpenCode process execution, session inventory, session export, OpenCode-specific permissions/configuration, and transcript capture. The desired direction is that qualification semantics belong to Ava rather than to one agent host. OpenCode should not be required merely to exercise Ava's role, routing, ingestion, maintenance, semantic-review, and lifecycle behavior when another host can perform the same interactions and produce equivalent evidence.
+The release gate should protect deterministic release safety without coupling publication to one stochastic consumer-agent runtime or one ChatGPT mode. Agent-behavior simulations may remain useful QA, but normal release qualification should be executable regardless of whether the maintainer is operating from ordinary ChatGPT chat, Work, or another repository-capable session.
 
-This task must evaluate feasibility first. If the maintained qualification contract can be represented host-neutrally without weakening evidence or determinism, implement that path. If some checks genuinely require capabilities unavailable in the ChatGPT app or another non-local host, identify those checks precisely and preserve only the minimum host-specific execution needed.
+## Implemented direction
 
-## Evaluation questions
+PR [#122](https://github.com/phdah/ava/pull/122) now implements the approved minimal release qualification:
 
-1. Inventory every place qualification currently depends on OpenCode-specific behavior, including process invocation, session enumeration/export, nested-session discovery, permissions, configuration, transcript format, token/session metadata, and independent audit execution.
-2. Separate the qualification contract itself from the OpenCode adapter used to execute it today.
-3. Determine which qualification scenarios can be driven through a host-neutral interaction protocol using repository/filesystem operations and structured prompts/responses rather than spawning `opencode run`.
-4. Determine what evidence a non-OpenCode host must provide so results remain auditable, reproducible enough for release gating, and bound to the exact candidate/revision.
-5. Explicitly evaluate execution from the ChatGPT app with the available GitHub/repository capabilities. Do not claim support unless the complete required workflow can actually be represented and verified there.
-6. Identify any scenarios that require local process execution, temporary project roots, shell commands, mutable filesystem sandboxes, nested agent sessions, or other capabilities that cannot be reproduced through ChatGPT-connected repository operations.
+- `qualify-release.sh pre-edge` runs an ephemeral deterministic fail-fast preflight before semantic review and edge authoring.
+- The active maintainer session reviews the exact managed delta, records the semantic-impact decision and rationale, and authors the adjacent edge and any required transition-local guidance/migrations.
+- `qualify-release.sh final` is the single authoritative qualification run after the edge exists.
+- The final run repeats the pre-edge checks and adds authentic deterministic previous-to-target upgrade, resume, abort, and rollback checks.
+- Only the final deterministic run is committed as qualification evidence and may enter `awaiting-user-signoff`.
+- Mandatory deterministic qualification executes in GitHub Actions, so the active maintainer session does not need shell access or a particular ChatGPT execution mode.
+- GitHub Actions returns generated evidence/acceptance state as exact artifacts; the active repository-connected session applies those artifact bytes to the release PR, ensuring the resulting commits trigger the normal PR workflow cycle.
+- The normal repository Python/unit suite remains in GitHub Actions and is not duplicated by the maintainer session.
+- No synthetic routing, calendar, clarification, inbox-ingestion, semantic-reconciliation/finalization, role-led uninstall, or independent LLM-audit turn is required by the normal release gate.
+- Those scenarios remain optional behavioral QA for targeted changes, milestone testing, or future host evaluation.
 
-## Preferred design
+This redesign followed the first real Work validation attempt for alpha.17. Fresh same-workspace agent execution worked, but the run consumed substantial Work credits and then produced a false negative when a correct clarification question did not contain one of the validator's expected lexical tokens. That demonstrated that general consumer-agent simulation was too expensive and brittle to be mandatory release evidence.
 
-If feasible, define qualification as a host-neutral protocol plus deterministic validators:
+A subsequent simplification removed the remaining Work requirement entirely: because the mandatory gate is deterministic, GitHub Actions is now the canonical executor and the active chat only orchestrates repository changes, exact artifact handoff, and approval.
 
-- Ava owns scenario definitions, inputs, expected outcomes, evidence schema, and acceptance rules.
-- An agent host receives one scenario at a time and returns structured outputs/evidence through a documented interface.
-- Host-specific adapters are optional execution layers rather than the qualification contract itself.
-- OpenCode may remain one adapter, but must not be the mandatory runtime when another capable host can satisfy the same contract.
-- The ChatGPT app should be able to execute the qualification workflow directly when its available repository/file capabilities satisfy a scenario's requirements.
-- Deterministic checks should remain scripts/tests where an LLM is unnecessary rather than being converted into agent work.
+## Deterministic release-safety checks
 
-## Implementation scope
+The normal release path must retain at least:
 
-If the evaluation confirms feasibility:
+- exact immutable previous-release asset verification
+- exact local target/repository revision binding
+- candidate assembly and checksum validation
+- fresh empty installation
+- mature-project installation with project-owned byte preservation
+- rejection of modified managed content
+- rejection of missing managed content
+- rejection of corrupt upgrade state
+- rejection of unexpected managed content
+- exactly one authentic previous-to-target edge in the final candidate
+- deterministic previous-to-target upgrade preserving project-owned bytes
+- interrupted upgrade resume
+- interrupted upgrade abort
+- rollback to the previous release
+- synthetic corpus and external test-boundary integrity
+- required GitHub Actions checks
+- explicit user acceptance before merge
+- post-merge immutable release verification
 
-- extract OpenCode-independent scenario definitions and evidence contracts from the current qualification automation
-- replace direct OpenCode assumptions in the qualification core with a host-neutral execution boundary
-- provide a documented manual/agent-driven qualification flow that can be followed from ChatGPT or another compatible host
-- retain or simplify an OpenCode adapter only when useful as one execution option
-- make final evidence validation independent of OpenCode session IDs/database representation
-- preserve independent-audit semantics without requiring OpenCode specifically
-- update the release procedure and qualification documentation to describe supported execution modes and their capability requirements
-- add regression coverage proving equivalent accepted/rejected outcomes across the host-neutral path and the existing adapter for representative scenarios
-- integrate cleanly with AVA-5636's split qualification phases
+## Session-neutral release flow
 
-If full host-neutral execution is not feasible:
+The maintained flow must not require the user to switch ChatGPT modes.
 
-- record the exact blockers by scenario/capability rather than broadly concluding that OpenCode is required
-- decouple every feasible part anyway
-- keep OpenCode only for the bounded checks that actually require it
-- document what additional host capability would be needed for ChatGPT execution to become complete later
+From whichever repository-capable maintainer session is active:
 
-## Relationship to AVA-5637
+1. resolve the release PR and exact previous release
+2. configure the exact qualification pair
+3. let the release-qualification GitHub Actions workflow run the deterministic pre-edge checks automatically
+4. perform the maintainer semantic-impact assessment and author the adjacent edge after pre-edge is green
+5. let GitHub Actions run the authoritative deterministic final qualification and upload the exact evidence state transition as an artifact
+6. download and apply that evidence artifact exactly to the release PR through the connected GitHub capability
+7. inspect the committed final evidence and required checks
+8. stop for explicit user approval
+9. after approval, either run the acceptance helper directly when shell access exists or create the transient `internal/release/qualification/acceptance-request.json` through the connected GitHub capability
+10. let GitHub Actions validate the request and upload the accepted-state transition as an artifact
+11. download and apply that acceptance artifact exactly, including removal of the transient request
+12. merge only after Release PR policy and all required checks pass
 
-This task must be completed before AVA-5637 is considered. AVA-5637 disables MCPs for qualification-owned OpenCode sessions, but that hardening should only be implemented for whatever OpenCode execution remains after this evaluation and implementation.
+A normal ChatGPT chat with repository read/write access should therefore be sufficient. ChatGPT Work remains usable but is not privileged or required.
 
-If this task removes OpenCode entirely from qualification, close AVA-5637 as `Done` with the `Won't Fix` label rather than implementing it. If OpenCode remains as a fallback or is still required for bounded scenarios, AVA-5637 continues to apply only to those executions. Do not preserve OpenCode solely to justify AVA-5637.
+## Live validation gate
+
+The implementation remains **Parked**, not `Done`, until the simplified session-neutral flow is exercised against the alpha.17 release context.
+
+A successful proof should show that an ordinary repository-connected ChatGPT session can drive the release workflow without switching to Work and without using OpenCode or user-hosted compute for mandatory qualification.
+
+The proof should reach at least `awaiting-user-signoff` with deterministic qualification evidence created by GitHub Actions and applied from its exact artifact. If the user chooses to complete the real release, the same session should also be able to record the explicit acceptance request, apply the validated acceptance artifact, merge, and verify publication.
+
+After one complete session-neutral alpha.17 proof succeeds under those conditions, move AVA-5638 to `Done` and record the release/run as completion evidence.
+
+## Future generic behavioral execution follow-up
+
+The normal release gate is now host-neutral because it no longer needs an agent runtime at all. Optional behavioral QA is a separate concern.
+
+A future task may expose one generic behavioral protocol with interchangeable adapters. ChatGPT Work could be one adapter; OpenCode or another capable runtime could be reintroduced without changing the deterministic release gate.
+
+PR [#122](https://github.com/phdah/ava/pull/122) is the primary recovery reference because its history contains the OpenCode-specific pieces that were removed and the successive Work-specific designs that were later simplified away.
+
+Do not restore OpenCode merely for normal release qualification. If an OpenCode behavioral adapter is later reintroduced, AVA-5637 should apply only to those optional OpenCode-owned sessions and should hard-disable MCPs there.
 
 ## Completion criteria
 
-- every OpenCode-specific dependency in current qualification is inventoried and classified as essential, replaceable, or incidental
-- the qualification contract is clearly separated from any particular agent-host implementation
-- ChatGPT-app feasibility is tested against the actual capability requirements rather than assumed
-- when feasible, the complete release qualification can be driven without OpenCode and produces evidence accepted by the same release gate
-- when full portability is not feasible, all feasible qualification work is decoupled and the remaining host-specific blockers are explicit and minimal
-- release acceptance, revision binding, independent review, failure reporting, and evidence integrity are not weakened
-- documentation makes clear which host capabilities are required and does not make unverified compatibility claims
+- normal release qualification requires neither OpenCode nor ChatGPT Work nor delegated consumer-agent turns
+- deterministic pre-edge and final checks cover the maintained release-safety invariants
+- the adjacent edge and semantic-impact rationale are still reviewed before final qualification
+- only one authoritative final qualification run is required for acceptance
+- final evidence remains bound to the exact source, target, repository revision, and deterministic executor provenance
+- GitHub Actions and explicit user acceptance remain mandatory
+- qualification/acceptance artifacts can be applied exactly from an ordinary repository-connected ChatGPT session
+- an ordinary repository-connected ChatGPT session can drive the simplified flow end-to-end in the alpha.17 proof
+- optional behavioral QA is clearly separated from release acceptance
+- future generic host-adapter work has an explicit recovery reference to PR #122

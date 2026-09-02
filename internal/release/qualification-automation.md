@@ -1,183 +1,136 @@
 ---
 type: Internal Release Qualification Procedure
-title: Hands-Off Release Qualification and Evidence State
-description: Mandatory two-phase pre-merge release qualification, independent audit, explicit user acceptance, and release-quality state.
-tags: [internal, release, qualification, automation, evidence, opencode]
+title: Deterministic Release Qualification and Evidence State
+description: Minimal session-neutral release qualification using deterministic pre-edge and final checks plus explicit user acceptance.
+tags: [internal, release, qualification, automation, evidence, deterministic, session-neutral]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T12:45:00+02:00
+  at: 2026-09-02T20:55:00+02:00
 ---
 
 # Purpose
 
-Every Ava release must complete both explicit phases of `qualify-release.sh` before its release-please PR may merge.
+Ava's normal release qualification is deterministic and intentionally cheap in agent usage.
 
-The first phase qualifies target behavior that does not depend on an adjacent release edge. It runs immediately after release-please has identified the target version and before semantic-impact review, catalog authoring, guidance, or migrations. The second phase runs only after the adjacent edge exists and exercises the source-to-target upgrade contract.
+The release procedure is session-neutral. The active maintainer session does not need to supply a shell or a particular ChatGPT execution mode. GitHub Actions is the canonical executor for mandatory qualification on the release PR.
 
-Each phase inventories its own OpenCode sessions and receives its own independent audit. A clean edge-independent run is reusable evidence, not release acceptance. A clean edge-dependent run stops at `awaiting-user-signoff`, and publication remains blocked until the user explicitly accepts the linked two-phase chain.
+`internal/release/qualify-release.sh` contains no agent runtime dependency. The end-to-end deterministic execution contract is defined in [Session-neutral deterministic qualification](qualification-execution.md).
 
-# Control state
+# Release stages
 
-`internal/release/qualification/` contains:
+There are two execution stages with different purposes:
 
-- `config.json`: the active qualification pair and models
-- `pair-catalog.json`: exact source/target selectors used to execute qualification
-- `phase-state.json`: latest edge-independent result per release pair
-- `phase-runs/`: compact edge-independent run, session, issue, and audit evidence
-- `current-state.json`: edge-dependent execution state plus the durable release-acceptance ledger
-- `runs/`: compact edge-dependent run, session, issue, and audit evidence
-- `schemas/`: state and evidence schemas
-- `audit-prompt.md`: the prompt/contract used by each independent audit session
+1. **pre-edge**: an ephemeral fail-fast preflight before semantic-impact review and adjacent-edge authoring
+2. **final**: the single authoritative release qualification after the reviewed edge exists
 
-Historical releases through `v1.0.0-alpha.14` are explicitly accepted with `basis: historical-backfill`. This does not claim they were run through the current qualification system. New releases must use `basis: qualified-run`.
+The pre-edge result is not committed as qualification evidence. The final result is the only run used for user acceptance and release-PR gating.
 
-# Phase classification
+# Pre-edge checks
 
-Every maintained scenario in `fixtures/synthetic-qualification-vault/qualification-matrix.json` declares exactly one `qualification_phase`.
-
-Edge-independent scenarios are:
+The pre-edge stage runs:
 
 1. fresh empty installation
-2. mature project installation and preservation
-3. private routing
-4. work routing
-5. calendar regression
-6. ambiguous routing clarification
-7. complete pending-inbox ingestion plus independent semantic audit
-8. modified managed-content detection
-9. missing managed-content detection
-10. corrupt upgrade-journal detection
-11. unexpected managed-content detection
-12. role-led uninstall and pinned reinstall
+2. mature-project installation and preservation of existing project-owned bytes
+3. modified managed-content rejection
+4. missing managed-content rejection
+5. corrupt managed-state rejection
+6. unexpected managed-content rejection
+7. synthetic corpus and external test-boundary integrity
 
-Edge-dependent scenarios are:
+This stage exists to fail fast before spending maintainer effort on release semantics.
 
-1. interrupted upgrade resume
-2. interrupted upgrade abort
-3. rollback
-4. semantic reconciliation plus finalization
-5. pending semantic reconciliation
+# Maintainer semantic-impact assessment
 
-The independent audit is phase-scoped. It audits every session and terminal claim present in the current phase and does not treat scenarios assigned to the other phase as missing evidence.
+After pre-edge passes, the maintainer reviews the exact previous-to-target release delta.
 
-# Edge-independent phase
+The assessment must explicitly cover:
 
-The previous side remains the exact immutable published release. The target side is a provisional local candidate assembled from the clean release PR revision without an adjacent catalog:
+1. **Managed delta:** which managed contracts, behavior, authority, routing, validation, metadata, paths, or lifecycle rules changed
+2. **Project-owned compatibility:** whether valid active project-owned context could remain structurally unchanged yet become conflicting, misleading, semantically invalid, or behaviorally incompatible
+3. **Required reconciliation:** which bounded project-owned concepts require review when compatibility may be affected
 
-```sh
-early_assets="$(internal/release/assemble-candidate.sh --phase edge-independent)"
-internal/release/qualify-release.sh \
-  --phase edge-independent \
-  --target-assets "$early_assets"
-```
+The decision and its rationale are reviewed release evidence. A managed behavior change alone does not decide semantic impact. The presence or absence of a deterministic project-file migration does not decide it either.
 
-The provisional candidate intentionally contains no source-to-target adjacent edge. `qualification_phase_runner.py` therefore validates only distinct pinned source and target identities before running the edge-independent scenario set.
+# Final checks
 
-The edge-independent operation produces one of:
+The final stage reruns all pre-edge checks and additionally validates:
 
-- `failed`: mechanical, evidence, or incomplete-run failure
-- `needs-review`: independent audit found a blocker/major issue or cannot support the terminal claim
-- `passed`: all early mechanical and semantic claims passed
+1. exactly one authentic previous-to-target edge in the target release assets
+2. a complete deterministic source-to-target upgrade preserving project-owned bytes
+3. interrupted upgrade resume
+4. interrupted upgrade abort
+5. rollback to the previous release
+6. the mechanically correct semantic state after upgrade, whether complete or authentically pending project-owned reconciliation
 
-A `failed` or `needs-review` result stops the release before managed-delta review and edge authoring. Do not create the target catalog, guidance, migrations, or related release-specific state after a non-passing early result.
+A clean final result writes one run record and one deterministic summary under `internal/release/qualification/runs/`, updates `current-state.json`, and enters `awaiting-user-signoff` in the CI checkout.
 
-A clean early result writes compact evidence under `phase-runs/` and records it in `phase-state.json`. Commit that compact evidence to the release PR before beginning edge authoring. The automation itself does not commit it.
+The release-qualification workflow uploads those exact repository changes as an evidence artifact. The active repository-connected maintainer session applies the artifact exactly and commits it to the release PR. The next workflow run reuses the exact run when every post-qualification change is confined to `internal/release/qualification/`.
 
-# Edge authoring and invalidation
+# Executor model
 
-After the edge-independent phase passes, review the managed delta, determine semantic impact, and author only the target release's adjacent catalog, guidance, and migrations as required.
+The authoritative run records an executor label for provenance, for example `github-actions` or `direct-shell`. The executor label is not a compatibility claim and does not select or require a ChatGPT mode.
 
-The early result remains reusable only when the repository revision used by the later phase descends from the early qualified revision and every intervening path is one of:
+GitHub Actions is the normal release executor because it makes the workflow available from any repository-connected maintainer session. Direct shell execution is optional diagnostic capability, not a prerequisite for using the release procedure.
 
-- `internal/release/qualification/phase-state.json`
-- compact files for the exact prerequisite run under `internal/release/qualification/phase-runs/`
-- `internal/release/catalogs/<target-version>.json`
-- `internal/release/guidance/<target-version>/...`
-- `internal/release/migrations/...`
+# Agent-behavior scenarios
 
-Any other intervening change invalidates the early result and requires a new edge-independent run from the changed revision before continuing. This includes template, distribution, installer, fixture, matrix, qualification-tooling, or release-note changes.
+Routing, calendar reasoning, ambiguous clarification, inbox ingestion, semantic reconciliation/finalization, and role-led uninstall/reinstall are not normal release-gating checks.
 
-The final gate also proves that the target adjacent catalog and target guidance did not already exist at the early qualified revision. This makes the fail-fast ordering mechanically checkable rather than procedural convention.
+They remain **optional behavioral QA** in the synthetic qualification corpus. Run them deliberately when the changed release contract makes them useful, or when evaluating a host. They do not consume release acceptance state and do not require every alpha release to spend fresh agent turns.
 
-# Edge-dependent phase
+A later task may define a generic host protocol for optional behavioral QA, with ChatGPT Work, OpenCode, or another runtime as adapters. PR #122 preserves the implementation history for recovering earlier OpenCode-oriented pieces if needed.
 
-After the adjacent edge is complete, assemble the reviewed candidate and run only the edge-dependent scenarios:
+# Evidence model
 
-```sh
-final_assets="$(internal/release/assemble-candidate.sh --phase edge-dependent)"
-internal/release/qualify-release.sh \
-  --phase edge-dependent \
-  --target-assets "$final_assets"
-```
+The authoritative final run binds:
 
-Before executing any scenario, `qualification_phase_automation.py` requires a committed clean early result for the same active pair, validates the allowed intervening change set, validates that both phases use the same immutable source and target version, and requires the final target to declare the authentic reviewed upgrade edge.
+- exact repository revision
+- exact source and target release identities and asset hashes
+- non-empty qualification executor provenance
+- `qualification_mode: deterministic`
+- qualification matrix digest
+- deterministic qualification driver digest
+- deterministic summary file
+- automated state `awaiting-user-signoff`
+- explicit user signoff only after acceptance
 
-The final execution identity records both the prerequisite edge-independent run id and its repository revision. The edge-dependent result remains one of the existing release states:
+The release gate does not require:
 
-- `failed`
-- `needs-review`
-- `awaiting-user-signoff`
-
-Only `awaiting-user-signoff` may proceed to explicit user acceptance.
-
-# OpenCode JSON capture
-
-`qualify-release.sh` uses the maintained `qualification-opencode.sh` adapter. For session inventory, the adapter translates `session list --format json` to the required OpenCode database query. The adapter also handles session `export` capture.
-
-OpenCode environments affected by the 65,536-byte stdout-pipe truncation must not require an external wrapper. For both the session-list database query and `opencode export`, the maintained adapter first lets the real OpenCode process write JSON to a temporary regular file and then re-emits those bytes to qualification automation. Python-side parsing remains the JSON validation boundary.
-
-Session inventory is exact-run isolated. Qualification snapshots OpenCode sessions immediately before and after the runner, and only IDs newly created across that boundary can become current-run evidence. Runner stdout/stderr session IDs are binding hints only. A top-level session must belong to the current execution, nested sessions are admitted only through descendants of already-owned current-run sessions, and every inventoried project root must resolve inside the exact current execution root and bind to a maintained scenario. Historical host sessions may remain indefinitely without cleanup and cannot enter a later run merely because their IDs appear in preserved output.
-
-# Runner and audit boundary
-
-The synthetic runner owns deterministic and structural evidence. A scenario whose complete terminal claim can be proven mechanically returns `pass`. A scenario that deliberately requires evaluator-only semantic judgment may return `structural-pass` with `semantic_status: pending-audit` after every deterministic check succeeds.
-
-`structural-pass` is a mechanically successful runner outcome and does not stop the remaining scenarios in that phase. It is not semantic acceptance. The independent audit remains the authority for meaning preservation, including inbox section dispositions that require the evaluator-only oracle.
-
-# Operator handling of non-passing results
-
-When either phase produces `failed` or `needs-review`, the release operator must present the exact terminal result and individual findings to the user before taking corrective action.
-
-After reporting them, ask whether the user wants those findings recorded as bounded native Backlog.md tasks on `main`. This is opt-in for each failed qualification. Recording tasks is tracking only and does not accept qualification, satisfy the release merge gate, or authorize repository changes.
-
-Any user-directed correction is ordinary repository work. If it changes an input covered by the early phase, the early phase must run again. If it occurs after final qualification, both applicable evidence and final acceptance must be regenerated according to the revision rules.
+- an LLM audit model
+- synthetic consumer-agent transcript evidence
+- OpenCode sessions
+- ChatGPT thread IDs
+- provider session IDs
+- a committed pre-edge prerequisite run
+- ChatGPT Work
 
 # User acceptance
 
-After reviewing a clean edge-dependent run, explicit user approval is recorded with:
+A clean final run does not accept itself.
 
-```sh
-internal/release/accept-release-qualification.sh \
-  --identity user:<stable-identity> \
-  [--run-id <run-id>]
-```
+After the user explicitly approves the final evidence, a shell-capable environment may run `accept-release-qualification.sh` directly. A repository-connected session without shell access may create the transient `internal/release/qualification/acceptance-request.json` described in `procedure.md` and `qualification-execution.md`.
 
-The acceptance entry point first validates the linked edge-independent prerequisite and its non-invalidation relationship, then applies the existing qualification acceptance update. If `--run-id` is omitted, the latest edge-dependent run for the active pair is used.
-
-Acceptance updates the final run signoff, pair state, and `release_acceptance` entry in `current-state.json` to `accepted` with `basis: qualified-run`. Commit the resulting qualification-state changes to the release PR branch.
+The release-qualification workflow validates that request and invokes the maintained acceptance implementation in CI. It uploads the exact accepted-state changes plus deletion of the transient request as an acceptance artifact. The active maintainer session applies that artifact exactly to the release PR.
 
 # Release PR blocker
 
-The Release PR policy check rejects merge unless the existing qualification acceptance checks pass and the two-phase gate additionally proves:
+The release PR policy requires:
 
-1. the accepted run is an edge-dependent run
-2. it names one clean edge-independent prerequisite run
-3. both runs use the same exact source release and target version
-4. early target assets were assembled from the early qualified revision
-5. final target assets were assembled from the final qualified revision
-6. the early revision is an ancestor of the final revision
-7. the target adjacent catalog and guidance were absent at the early revision
-8. only early compact evidence and edge-specific authoring files changed between the two qualified revisions
-9. explicit user signoff applies to the clean final edge-dependent run
-10. after final qualification, only files under `internal/release/qualification/` changed
+- valid release identity and adjacent catalog
+- all prior accepted release-state history
+- one clean current final qualification run
+- exact local target/repository revision binding
+- explicit user signoff
+- no release-content changes after final qualification
+- required GitHub Actions checks to pass
 
-This preserves the original final revision/signoff binding while allowing expensive early checks to be reused only when their validated inputs remained unchanged.
+The former committed edge-independent prerequisite chain is no longer part of release acceptance. The final run repeats the applicable deterministic checks against the exact reviewed revision instead.
 
-# Evidence boundary
+# Semantic judgment boundary
 
-Raw workspaces, release assets, transcripts, and command evidence remain outside the repository. Compact early evidence lives under `phase-runs/`; compact final evidence and release-quality state live under `runs/` and `current-state.json`.
+Tooling validates release mechanics. It does not decide project-owned semantic meaning.
 
-The fixture oracle is evaluator-only. Qualification agents and deterministic runner checks must not rely on it; each independent audit uses it only for applicable phase claims.
+Tooling must not guess semantic migration need. The maintained semantic-impact assessment is the reviewed maintainer judgment over the Managed delta, Project-owned compatibility, and Required reconciliation questions. The deterministic final run verifies that the target reaches the correct mechanical state and stops at pending semantic reconciliation when that is the correct release behavior.

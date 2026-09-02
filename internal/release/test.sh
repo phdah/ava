@@ -10,8 +10,8 @@ sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/assemble-candidate.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
 sh -n "$ROOT/internal/release/qualify-release.sh"
+sh -n "$ROOT/internal/release/run-release-qualification.sh"
 sh -n "$ROOT/internal/release/accept-release-qualification.sh"
-sh -n "$ROOT/internal/release/qualification-opencode.sh"
 sh -n "$ROOT/internal/release/test-project-backlog.sh"
 python3 -m py_compile \
   "$ROOT/internal/release/adjacent_edges.py" \
@@ -27,6 +27,8 @@ python3 -m py_compile \
   "$ROOT/internal/release/interaction_evidence.py" \
   "$ROOT/internal/release/qualification_runner.py" \
   "$ROOT/internal/release/qualification_automation.py" \
+  "$ROOT/internal/release/qualification.py" \
+  "$ROOT/internal/release/qualification_work.py" \
   "$ROOT/internal/release/qualification_acceptance.py" \
   "$ROOT/internal/release/qualification_phase_runner.py" \
   "$ROOT/internal/release/qualification_phase_automation.py" \
@@ -69,7 +71,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_qualification_runner \
   internal.release.tests.test_qualification_automation \
   internal.release.tests.test_qualification_execution_identity \
-  internal.release.tests.test_qualification_opencode_adapter \
+  internal.release.tests.test_qualification_work \
   internal.release.tests.test_qualification_phases \
   internal.release.tests.test_assemble_candidate \
   internal.release.tests.test_qualification_acceptance \
