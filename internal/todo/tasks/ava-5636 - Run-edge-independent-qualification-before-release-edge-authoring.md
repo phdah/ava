@@ -1,7 +1,7 @@
 ---
 id: ava-5636
 title: Run edge-independent qualification before release-edge authoring
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-09-01 20:04'
 labels:
@@ -61,3 +61,15 @@ The existing release procedure performs edge authoring before the full qualifica
 - edge-dependent checks execute after edge authoring and remain mandatory
 - final user signoff and release-PR merge policy require complete valid evidence from both phases
 - the documented release procedure reflects the implemented order and can be followed without manual interpretation
+
+## Resolution evidence
+
+The maintained 17-scenario matrix now declares one explicit phase per scenario: 12 edge-independent scenarios covering target install/routing/inbox/damage/lifecycle behavior, and 5 edge-dependent scenarios covering authentic upgrade resume, abort, rollback, finalization, and semantic reconciliation.
+
+`assemble-candidate.sh --phase edge-independent` creates a clean revision-bound provisional candidate without an adjacent catalog. `qualify-release.sh --phase edge-independent` runs only the early matrix subset plus its independent audit and records compact evidence under `internal/release/qualification/phase-runs/` and `phase-state.json`. A non-passing result cannot satisfy the prerequisite for the later phase.
+
+After edge authoring, `qualify-release.sh --phase edge-dependent` requires the exact committed clean early run before executing. The phase gate proves the target catalog and target guidance were absent at the early revision, both phases use the same immutable source and target version, the early revision is an ancestor of the final revision, and every intervening change is limited to the exact early evidence plus target-specific catalog, guidance, or migration work. Any template, distribution, fixture, matrix, qualification-tooling, or other candidate-input change invalidates reuse and requires the early phase again.
+
+The final execution identity binds the prerequisite run id and revision. `accept-release-qualification.sh` validates that two-phase chain before applying existing explicit signoff, and the release-PR policy validates it again before merge. Existing final revision binding and post-qualification invalidation remain in `qualification_acceptance.py`.
+
+The authoritative release procedure, qualification documentation, audit scope, release implementation log, and qualification-state indexes are updated to the fail-fast order. Regression coverage exercises provisional no-catalog assembly, the complete phase classification, source/target edge requirements, allowed edge-authoring reuse, ordering proof, and invalidating post-early changes. The complete release test suite and native todo validator remain required PR checks.
