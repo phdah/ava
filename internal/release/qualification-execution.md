@@ -6,6 +6,9 @@ tags: [internal, release, qualification, deterministic, github-actions, session-
 generated:
   by: agent:openai-chatgpt
   at: 2026-09-02T20:45:00+02:00
+updated:
+  by: agent:openai-chatgpt
+  at: 2026-09-02T20:55:00+02:00
 ---
 
 # Purpose
@@ -51,7 +54,7 @@ The workflow sets `AVA_QUALIFICATION_EXECUTOR=github-actions`. The run record st
 6. assembles the provisional no-edge target
 7. runs deterministic empty-install, mature-install/preservation, and managed-damage checks
 
-It writes no committed qualification evidence.
+It writes no committed qualification evidence and produces no artifact when it passes.
 
 # Maintainer semantic review
 
@@ -74,9 +77,32 @@ The final run repeats the pre-edge checks and adds:
 - mechanically correct target semantic state
 - exact source/target/repository identity binding
 
-A passing final run creates the authoritative compact run record and summary under `internal/release/qualification/runs/` and sets the active pair to `awaiting-user-signoff`.
+A passing final run creates the authoritative compact run record and summary under `internal/release/qualification/runs/` and sets the active pair to `awaiting-user-signoff` in the workflow checkout.
 
-The workflow commits only those qualification files back to the release PR. On the resulting evidence commit, the workflow reuses the existing run when the qualified revision is an ancestor of `HEAD` and every intervening path is under `internal/release/qualification/`.
+The workflow then uploads those exact repository changes as a `release-qualification-evidence-*` artifact. It does not push them with `GITHUB_TOKEN`, because token-authored pushes do not provide the normal new-HEAD pull-request workflow cycle that release gating depends on.
+
+# Artifact handoff
+
+Each generated qualification artifact contains an `artifact-manifest.json` with:
+
+- `schema_version: 1`
+- `kind`, either `evidence` or `acceptance`
+- `files`, the exact repository-relative files whose bytes are included in the artifact
+- `delete`, the exact repository-relative paths to remove
+
+The active maintainer session must download the artifact through the connected GitHub capability and apply it exactly to the release PR branch.
+
+For every listed file:
+
+1. use the exact bytes from the artifact
+2. write them at the exact repository-relative path
+3. do not rewrite or normalize JSON
+
+For every `delete` path, delete exactly that repository file.
+
+Do not mix unrelated release-content changes into the artifact-application commit.
+
+After the evidence artifact is applied, pull-request workflows run on the normal repository commit. The release-qualification workflow reuses the existing final run when the qualified revision is an ancestor of `HEAD` and every intervening path is under `internal/release/qualification/`.
 
 # User acceptance without shell access
 
@@ -98,7 +124,9 @@ with exactly:
 }
 ```
 
-The request must be created only after explicit user approval. The release-qualification workflow validates it, invokes the maintained acceptance implementation, deletes the request, and commits the accepted state. The request must never survive into the released revision.
+The request must be created only after explicit user approval. The release-qualification workflow validates it and invokes the maintained acceptance implementation in CI. It removes the request in its checkout and uploads the resulting state transition as a `release-qualification-acceptance-*` artifact.
+
+The active maintainer session then applies that artifact exactly according to `artifact-manifest.json`. The accepted PR must not contain `acceptance-request.json`.
 
 # GitHub Actions versus the maintainer session
 
@@ -108,7 +136,8 @@ The maintainer session therefore only needs connected repository capabilities su
 
 - inspect the release PR and diffs
 - edit the qualification pair and release edge/guidance
-- inspect workflow results and compact evidence
+- inspect workflow results
+- download and apply qualification artifacts
 - create the transient acceptance request after explicit approval
 - merge the PR after all gates pass
 
