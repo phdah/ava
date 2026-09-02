@@ -112,3 +112,13 @@ A successful proof requires all of the following:
 After one complete `alpha.17` release succeeds under those conditions, move AVA-5638 to `Done` and record that release as completion evidence.
 
 If the live test proves that ChatGPT Work cannot provide the required blank-slate agent execution against the exact isolated cloud workspace, leave the release blocked and report the precise missing capability. The user may then explicitly close AVA-5638 as `Done` with the `Won't Fix` label if they decide not to pursue another architecture. Do not silently reintroduce local execution to make the test pass.
+
+## Future generic execution follow-up
+
+The current implementation intentionally prioritizes proving the ChatGPT Work path first. That should not be interpreted as a long-term requirement that qualification remain coupled specifically to ChatGPT Work.
+
+After the `alpha.17` live proof, reconsider whether the maintained qualification entry point should become generic again: one host-neutral qualification protocol and evidence contract, with execution supplied by whichever capable host is active. ChatGPT Work could then be one execution backend, and OpenCode or another agent runtime could be reintroduced as an optional backend without changing the qualification semantics, phase gates, evidence model, or release acceptance contract.
+
+The implementation/removal history in [PR #122](https://github.com/phdah/ava/pull/122) is the primary reference for that follow-up. In particular, its diff shows both the OpenCode-specific qualification pieces that were removed and the Work-specific path that replaced them, so it can be used to recover or adapt the prior OpenCode integration rather than recreating that behavior from memory.
+
+Do not broaden the current task before the ChatGPT Work proof merely to restore OpenCode. First establish whether the Work flow succeeds end-to-end. If it does, a subsequent change can decide whether a generic entry point with multiple interchangeable host adapters is worth maintaining.
