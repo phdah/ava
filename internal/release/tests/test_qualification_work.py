@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
+from internal.release import qualification_ci
 from internal.release import qualification_runner
 from internal.release import qualification_work as implementation
 
@@ -157,9 +159,45 @@ class QualificationExecutionTests(unittest.TestCase):
         self.assertIn("python3 internal/release/qualification_ci.py", qualification_workflow)
         self.assertNotIn("python3 - <<", qualification_workflow)
         self.assertNotIn("package_changes()", qualification_workflow)
+        self.assertNotIn("acceptance-request.json", qualification_workflow)
         self.assertIn("run-release-qualification.sh", ci_driver)
         self.assertIn("acceptance-request.json", ci_driver)
         self.assertIn("AVA_QUALIFICATION_EXECUTOR", qualification_workflow)
+
+    def test_ci_driver_validates_acceptance_request_shape(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "request.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "identity": "user:test",
+                        "run_id": "run-test",
+                        "schema_version": 1,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                qualification_ci.load_acceptance_request(path),
+                {
+                    "identity": "user:test",
+                    "run_id": "run-test",
+                    "schema_version": 1,
+                },
+            )
+            path.write_text(
+                json.dumps(
+                    {
+                        "identity": "user:test",
+                        "run_id": "run-test",
+                        "schema_version": 1,
+                        "unexpected": True,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaises(qualification_ci.QualificationCiError):
+                qualification_ci.load_acceptance_request(path)
 
 
 if __name__ == "__main__":
