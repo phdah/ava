@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-alpha.17](https://github.com/phdah/ava/compare/v1.0.0-alpha.16...v1.0.0-alpha.17) (2026-09-02)
+
+
+### Features
+
+* **release:** qualify edge-independent behavior before edge authoring ([#120](https://github.com/phdah/ava/issues/120)) ([8c4771f](https://github.com/phdah/ava/commit/8c4771f9b434ff02a936e84e55799636430c2ce9))
+
 ## [1.0.0-alpha.16](https://github.com/phdah/ava/compare/v1.0.0-alpha.15...v1.0.0-alpha.16) (2026-09-01)
 
 
