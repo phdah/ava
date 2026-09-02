@@ -1,0 +1,126 @@
+name: Release qualification
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-qualification-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  qualify:
+    name: Deterministic release qualification
+    if: >-
+      github.head_ref == 'release-please--branches--main' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out exact release PR head
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Run session-neutral release qualification
+        env:
+          AVA_QUALIFICATION_EXECUTOR: github-actions
+          GH_TOKEN: ${{ github.token }}
+          PR_HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          set -eu
+
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+          request=internal/release/qualification/acceptance-request.json
+          if [ -f "$request" ]; then
+            jq -e '
+              type == "object" and
+              keys == ["identity", "run_id", "schema_version"] and
+              .schema_version == 1 and
+              (.identity | type == "string" and length > 0) and
+              (.run_id | type == "string" and length > 0)
+            ' "$request" >/dev/null
+            identity=$(jq -r '.identity' "$request")
+            run_id=$(jq -r '.run_id' "$request")
+            internal/release/accept-release-qualification.sh \
+              --identity "$identity" \
+              --run-id "$run_id"
+            rm "$request"
+            git add internal/release/qualification
+            git commit -m "chore(release): record qualification acceptance"
+            git push origin "HEAD:$PR_HEAD_BRANCH"
+            exit 0
+          fi
+
+          if python3 - <<'PY'
+          import subprocess
+          from internal.release import qualification_automation as automation
+
+          root = automation.REPOSITORY_ROOT
+          config, catalog, _ = automation.load_configuration(root)
+          pair = automation.active_pair(config, catalog)
+          state = automation.load_json(root / "internal/release/qualification/current-state.json")
+          pair_state = state.get("pairs", {}).get(pair["id"])
+          if not isinstance(pair_state, dict) or pair_state.get("status") not in {"awaiting-user-signoff", "accepted"}:
+              raise SystemExit(1)
+          run_id = pair_state.get("latest_run_id")
+          if not isinstance(run_id, str) or not run_id:
+              raise SystemExit(1)
+          run = automation.load_json(root / "internal/release/qualification/runs" / f"{run_id}.json")
+          identity = run.get("execution_identity")
+          if (
+              run.get("automated_state") != "awaiting-user-signoff"
+              or not isinstance(identity, dict)
+              or identity.get("qualification_stage") != "final"
+              or identity.get("qualification_mode") != "deterministic"
+          ):
+              raise SystemExit(1)
+          revision = identity.get("repository_revision")
+          if not isinstance(revision, str):
+              raise SystemExit(1)
+          if subprocess.run(["git", "merge-base", "--is-ancestor", revision, "HEAD"]).returncode != 0:
+              raise SystemExit(1)
+          changed = subprocess.run(
+              ["git", "diff", "--name-only", revision, "HEAD"],
+              check=True,
+              text=True,
+              capture_output=True,
+          ).stdout.splitlines()
+          if any(path and not path.startswith("internal/release/qualification/") for path in changed):
+              raise SystemExit(1)
+          print(f"reusing final deterministic qualification evidence: {run_id}")
+          PY
+          then
+            exit 0
+          fi
+
+          target_version=$(cat version.txt)
+          if [ -f "internal/release/catalogs/$target_version.json" ]; then
+            stage=final
+          else
+            stage=pre-edge
+          fi
+
+          internal/release/run-release-qualification.sh "$stage"
+
+          if [ "$stage" = final ]; then
+            git add internal/release/qualification
+            if git diff --cached --quiet; then
+              echo "final qualification produced no evidence changes" >&2
+              exit 1
+            fi
+            git commit -m "chore(release): record deterministic qualification"
+            git push origin "HEAD:$PR_HEAD_BRANCH"
+          fi
