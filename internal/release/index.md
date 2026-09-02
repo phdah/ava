@@ -21,6 +21,7 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Session-neutral deterministic qualification execution](qualification-execution.md)
 - [Release qualification execution entry point](qualify-release.sh)
 - [Canonical session-neutral qualification driver](qualification.py)
+- [GitHub Actions qualification orchestration driver](qualification_ci.py)
 - [Host-neutral qualification setup runner](run-release-qualification.sh)
 - [Deterministic qualification implementation compatibility module](qualification_work.py)
 - [Explicit qualification acceptance entry point](accept-release-qualification.sh)
@@ -45,7 +46,7 @@ This directory contains maintainer-only release assembly, publication, qualifica
 
 `qualify-release.sh` is the qualification execution entry point. It routes through the session-neutral deterministic driver and does not select a ChatGPT mode or agent runtime.
 
-The canonical release flow is orchestrated from whichever repository-capable maintainer session is active. GitHub Actions executes the mandatory deterministic pre-edge/final checks, so normal ChatGPT chat does not need Work or shell access.
+The canonical release flow is orchestrated from whichever repository-capable maintainer session is active. GitHub Actions executes the mandatory deterministic pre-edge/final checks, so normal ChatGPT chat does not need Work or shell access. The workflow YAML remains declarative; `qualification_ci.py` owns CI-specific stage selection, acceptance-request validation, evidence reuse, qualification execution, and artifact packaging.
 
 The normal flow has an ephemeral `pre-edge` fail-fast stage and one authoritative `final` deterministic run. Optional agent-behavior scenarios remain in the synthetic fixture for targeted QA and future host-protocol work, but they are not publication gates.
 
