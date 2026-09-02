@@ -1,66 +1,55 @@
 ---
 type: Internal Release Qualification Audit
-title: Independent ChatGPT Work Qualification Audit
-description: Read-only semantic audit contract for one exact ChatGPT Work Cloud release qualification phase.
-tags: [internal, release, qualification, audit, chatgpt, work]
+title: Optional Behavioral Qualification Audit
+description: Optional semantic audit contract for targeted synthetic agent-behavior QA; not part of normal release acceptance.
+tags: [internal, release, qualification, audit, behavioral, optional]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T17:30:00+02:00
+  at: 2026-09-02T20:30:00+02:00
 ---
+
+# Status
+
+This audit contract is **optional behavioral QA**.
+
+The normal Ava release gate no longer requires synthetic consumer-agent interactions or an independent LLM audit. Release acceptance is based on the deterministic final qualification plus explicit user signoff and required GitHub Actions checks.
+
+Retain this document for deliberate behavioral investigations, larger milestone qualification, or future generic host-adapter work.
 
 # Scope
 
-Audit only the exact qualification run named in the appended Work Cloud run inputs. Execute this audit with a fresh ChatGPT Work Cloud subagent that did not execute any qualification scenario.
+When an optional behavioral run is explicitly requested, audit only the exact scenarios and evidence supplied for that run. The auditor must not infer that a behavioral result is release acceptance evidence.
 
-The audit is read-only. The only permitted write is the final audit JSON path supplied by the generated audit request.
-
-Use the runner summary, scenario workspaces, interaction request/response evidence, deterministic command logs, release contracts, and fixture oracle as the complete evidence boundary for the current `qualification_phase`. Scenarios assigned to the other phase are intentionally absent.
-
-# Work interaction evidence
-
-Each semantic interaction was executed by one fresh Work Cloud subagent. Its request binds the scenario, stage, prompt digest, configured model, isolated workspace, pre-interaction file manifest, and tool restrictions.
-
-Its response records the same identity, the final response, ordered required-reading evidence bound to pre-interaction SHA-256 values, and an empty external-tool list.
-
-Treat that structured evidence together with the final workspace and deterministic command log as the auditable record. Do not require ChatGPT thread IDs, hidden product session identifiers, OpenCode sessions, provider databases, token counters, or provider-specific transcript formats.
-
-Reconcile each claimed required-reading set against the active role/workflow indexes and final behavior. Missing required reading, an invalid baseline digest, or an incomplete role-required set weakens the affected terminal claim.
+Use the runner summary, scenario workspaces, interaction evidence, deterministic command logs, release contracts, and fixture oracle as the bounded evidence set.
 
 # Oracle boundary
 
-The fixture oracle is evaluator-only expected-outcome evidence. Scenario subagents must derive their work from the installed Ava contract and selected source material, not from the oracle.
+The fixture oracle is evaluator-only expected-outcome evidence. Scenario agents must derive their work from the installed Ava contract and selected source material, not from the oracle.
 
-Use the oracle independently to test whether final results preserved expected meaning, dispositions, provenance, chronology, and other declared outcomes. Evidence that a scenario subagent relied on the oracle is test contamination.
+Use the oracle independently to test whether final results preserved expected meaning, dispositions, provenance, chronology, and other declared outcomes. Evidence that a scenario agent relied on the oracle is test contamination.
 
-# Required review
+# Suggested review
 
-For scenarios present in the current phase, determine whether:
+For the optional scenarios that were actually run, determine whether:
 
-1. every required role was announced only after its complete required-reading set was loaded
-2. missing or invalid required paths were handled by the active contract rather than guessed around
-3. every mutation remained inside the active role and scenario boundary
-4. ambiguous requests remained unmodified and visibly requested clarification
-5. calendar persistence used deterministic verification and preserved the correct reference context
-6. inbox completion was independently reconciled against every selected source and the evaluator-only fixture oracle
-7. semantic reconciliation recorded every inspected and changed project-owned path before completion
-8. finalization followed the target release contract without an unqualified fallback to installer-backed behavior
-9. removal and reinstall preserved project-owned bytes
-10. interaction evidence reports no external tools and shows no evidence of contamination
-11. each runner outcome is supported by the evidence level it claims, including that `structural-pass` leaves semantic acceptance to this audit
-
-For `complete-pending-inbox`, review section dispositions against final rendered trusted destinations. Use the evaluator-only oracle to identify expected `mapped`, `non-durable`, and `pending` sections. Verify that mapped meaning is present with required qualifiers, non-durable meaning is absent from trusted destinations, and ambiguous or pending material was not promoted merely to complete the source.
+1. required routing and role instructions were loaded before role-scoped work
+2. mutations remained inside the intended project-owned boundary
+3. ambiguous requests requested clarification rather than guessing
+4. calendar behavior preserved verified dates and reference context
+5. inbox ingestion preserved source fidelity and did not promote ambiguous material
+6. semantic reconciliation preserved project-owned meaning and surfaced unresolved decisions
+7. role-led maintenance preserved project-owned bytes
+8. observed behavior matches the scenario's maintained postconditions
 
 # Findings
 
 Admit only evidence-backed findings. Use severity `blocker`, `major`, `minor`, or `observation`.
 
-Every finding must include a stable finding id, severity, concise summary, concrete evidence references, consequence, required correction or an empty string, remediation owner, and limitations or uncertainty.
-
-A `blocker` or `major` finding requires terminal conclusion `needs-review`. A clean audit or findings limited to `minor` and `observation` may conclude `pass` only when the evidence is sufficient.
+A behavioral finding may justify a release fix when it exposes a real product defect, but the optional audit itself is not a mechanical release gate.
 
 # Output
 
-Return only one JSON object matching `internal/release/qualification/schemas/audit-output.schema.json`. Write exactly that object to the response path named in the generated Work audit request.
+When structured output is requested, return one JSON object matching `internal/release/qualification/schemas/audit-output.schema.json`.
