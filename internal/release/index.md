@@ -20,11 +20,14 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Hands-off release qualification procedure](qualification-automation.md)
 - [Release qualification entry point](qualify-release.sh)
 - [Explicit qualification acceptance entry point](accept-release-qualification.sh)
-- [Qualification OpenCode session adapter](qualification-opencode.sh)
-- [Shared qualification automation helpers](qualification_automation.py)
+- [Host-neutral qualification contract and adapters](qualification_host.py)
+- [Host-neutral qualification runner](qualification_host_runner.py)
+- [Host-neutral two-phase qualification orchestration](qualification_host_automation.py)
+- [Qualification OpenCode adapter transport](qualification-opencode.sh)
+- [Shared qualification automation compatibility helpers](qualification_automation.py)
 - [Shared qualification scenario engine](qualification_runner.py)
-- [Phase-specific release qualification orchestration](qualification_phase_automation.py)
-- [Phase-specific synthetic qualification runner](qualification_phase_runner.py)
+- [Phase contract and matrix classification](qualification_phase_runner.py)
+- [Legacy phase orchestration compatibility module](qualification_phase_automation.py)
 - [Two-phase acceptance and release-PR gate](qualification_phase_gate.py)
 - [Qualification acceptance and release-PR state implementation](qualification_acceptance.py)
 - [Qualification configuration and compact evidence state](qualification/)
@@ -40,6 +43,6 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Release implementation tests](tests/)
 - [Release implementation log](log.md)
 
-`qualify-release.sh` is the qualification execution entry point. The phase-specific orchestration uses the shared qualification automation and scenario modules.
+`qualify-release.sh` is the qualification execution entry point. It runs through the host-neutral qualification contract; OpenCode is the currently configured local adapter rather than part of the release-gate evidence definition.
 
 `validate_upgrade_impact.py` and historical target-specific guidance remain available only for compatibility investigation of already published releases. They are not active release-authoring inputs.
