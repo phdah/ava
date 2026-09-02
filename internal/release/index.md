@@ -41,7 +41,7 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Release implementation tests](tests/)
 - [Release implementation log](log.md)
 
-`qualify-release.sh` is the canonical release qualification entry point. For the current release procedure it runs in ChatGPT Work Cloud, but the gate itself is deterministic: no OpenCode process, delegated subagent, semantic consumer simulation, or independent LLM audit is required.
+`qualify-release.sh` is the qualification execution entry point. For the current release procedure it runs in ChatGPT Work Cloud, but the gate itself is deterministic: no OpenCode process, delegated subagent, semantic consumer simulation, or independent LLM audit is required.
 
 The normal flow has an ephemeral `pre-edge` fail-fast stage and one authoritative `final` deterministic run. Optional agent-behavior scenarios remain in the synthetic fixture for targeted QA and future host-protocol work, but they are not publication gates.
 
