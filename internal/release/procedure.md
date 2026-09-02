@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T17:45:00+02:00
+  at: 2026-09-02T17:55:00+02:00
 ---
 
 # Ava Release Publication Procedure
@@ -26,12 +26,12 @@ The exact Work execution loop is defined in [ChatGPT Work Cloud qualification ex
 3. Start a ChatGPT Work Cloud task from the exact clean release PR revision. Do not use a local folder for qualification.
 4. Inside Work Cloud, download and verify the exact immutable previous release assets, generate the finalized synthetic qualification vault, and create the external test boundary.
 5. Assemble the provisional target with `assemble-candidate.sh --phase edge-independent`.
-6. Run the edge-independent Work qualification protocol with `qualify-release.sh init`, repeated `advance` calls and fresh Work agent contexts, then a fresh independent Work audit context and `finalize`.
+6. Run the edge-independent Work qualification protocol with `qualify-release.sh init`, repeated `advance` calls and fresh blank-slate Work agent contexts, then a fresh independent Work audit context and `finalize`.
 7. If the early result is `failed` or `needs-review`, stop. Report the exact result and findings. Do not perform managed-delta review or author the adjacent catalog, guidance, migrations, or source-retirement state.
 8. When the early result is `passed`, commit its compact `phase-runs/` evidence and `phase-state.json` to the release PR through the connected GitHub action.
 9. Review the exact previous-to-target managed delta and complete the project-owned semantic-impact assessment, including its explicit rationale.
 10. Author exactly one adjacent release record for `<previous> -> <target>`, plus only the guidance, migrations, and retirement decisions introduced by that edge.
-11. Run release-PR validation and the complete repository test suite.
+11. Require the release PR's normal GitHub Actions checks, including the Python/repository test suite, to pass. Do not duplicate those CI-owned tests inside Work merely as part of qualification.
 12. Start the final qualification from the new exact release PR revision in a new Work Cloud run root. Do not reuse early scenario workspaces.
 13. Assemble the reviewed target with `assemble-candidate.sh --phase edge-dependent`.
 14. Run the edge-dependent Work qualification protocol. Initialization must first prove the committed early result is for the same source/target and was not invalidated by intervening changes.
@@ -39,7 +39,7 @@ The exact Work execution loop is defined in [ChatGPT Work Cloud qualification ex
 16. When the final run reaches `awaiting-user-signoff`, present the complete two-phase Work evidence to the user.
 17. Only after explicit user approval, record acceptance with `accept-release-qualification.sh` and commit the resulting qualification-state changes to the release PR.
 18. Require the Release PR policy check to pass.
-19. Merge only after the release PR content, semantic-impact decision, both qualification phases, independent audits, and user acceptance are all accepted.
+19. Merge only after the release PR content, semantic-impact decision, both qualification phases, independent audits, required GitHub Actions checks, and user acceptance are all accepted.
 20. Publication automation creates and verifies the immutable release.
 
 # ChatGPT Work Cloud boundary
@@ -51,17 +51,15 @@ Required capabilities are:
 - Work Cloud code execution and cloud filesystem access
 - Work network access for the exact GitHub repository and release assets
 - connected GitHub access for committing compact evidence to the release PR
-- the ability to execute a semantic request in a fresh Work agent context
+- the ability to execute every semantic request in a newly created blank-slate Work agent context
+- read/write access from that fresh context to the exact isolated cloud scenario workspace prepared by the parent qualification driver
 - a cloud-only evidence handoff back to the parent Work task
 
-A fresh Work agent context can be satisfied in either of two ways:
+The fresh agent context may be exposed by the product as a delegated subagent, an additional Work agent, or another equivalent isolated execution primitive. The qualification contract does not depend on the UI label. It does require that the context inherit no parent conversation, saved memory, prior scenario context, or unrelated connected tools.
 
-1. when the selected Work capability can delegate additional agents, the parent delegates the generated request directly; or
-2. otherwise, including configurations without native multi-agent delegation, open a separate fresh Work chat in the ChatGPT app for that generated request and return its structured JSON response to the parent Work task as a ChatGPT/Project file.
+A separate new Work chat is acceptable only if ChatGPT can give it read/write access to the exact same isolated scenario workspace and return its evidence entirely within ChatGPT-hosted compute. A disconnected chat that can return only text or JSON is insufficient because semantic scenarios mutate the workspace and the parent deterministically validates those mutations afterward.
 
-The second form keeps the qualification entirely inside ChatGPT Work and preserves fresh-context isolation. It does not require local files or local compute.
-
-If Work Cloud code execution, network access, GitHub access, or fresh Work chat execution is unavailable, stop and report that exact missing capability. Do not move the operation to local compute.
+If Work Cloud code execution, network access, GitHub access, or fresh same-workspace agent execution is unavailable, stop and report that exact missing capability. Do not move the operation to local compute.
 
 # Agent execution model
 
@@ -69,13 +67,23 @@ If Work Cloud code execution, network access, GitHub access, or fresh Work chat 
 
 The parent Work task repeatedly calls `advance`. Deterministic scenarios run directly in the Work cloud execution environment. When semantic behavior is required, the command emits one `SUBAGENT_REQUIRED` request bound to an exact isolated workspace and prompt.
 
-`SUBAGENT_REQUIRED` is the protocol name for a fresh Work agent context, not a requirement that the user's plan expose a native subagent button or API. Where native delegation is unavailable, the request is executed in a separate fresh Work chat and its response JSON is handed back through ChatGPT before the parent writes it to the declared response path.
+`SUBAGENT_REQUIRED` is the protocol name for a fresh Work agent context, not a requirement that the product expose a button or API literally named subagent.
 
-The fresh Work agent reads and follows the installed Ava project, performs the user prompt, and returns the declared structured response. The parent calls `advance` again, which verifies deterministic postconditions before continuing.
+The generated request is the only conversational instruction supplied to the fresh agent context. The parent conversation, previous scenario interactions, saved memory, unrelated project context, and other connected tools must not be passed into it.
 
-Scenario agents must not use web search, cloud browser, plugins, apps, MCPs, other repositories, saved memory, or user-local files. This prevents unrelated connected context from entering qualification. Their only environment is the isolated Work Cloud scenario input supplied by the protocol.
+The fresh agent receives the generated request plus read/write access to the exact isolated `workspace_root`. It reads and follows the installed Ava project, performs the scenario prompt, mutates only the permitted project boundary, and returns the declared structured response. The parent calls `advance` again, which verifies deterministic postconditions before continuing.
 
-After all scenarios pass mechanically, `audit-request` emits one independent read-only request. A new fresh Work agent context that did not execute any scenario performs that audit. `finalize` validates the audit evidence and writes compact repository evidence.
+Most semantic scenarios use a workspace where the target Ava candidate was freshly installed immediately before the request. Scenarios that intentionally test upgrade, interruption, semantic reconciliation, finalization, or another lifecycle state instead receive that exact prepared lifecycle workspace. Blank-slate agent context means no inherited agent conversation; it does not erase the project state being tested.
+
+Scenario agents must not use web search, cloud browser, plugins, apps, MCPs, other repositories, saved memory, or user-local files. Their only environment is the isolated Work Cloud scenario input supplied by the protocol.
+
+After all scenarios pass mechanically, `audit-request` emits one independent read-only request. A new fresh blank-slate Work agent context that did not execute any scenario performs that audit. `finalize` validates the audit evidence and writes compact repository evidence.
+
+# GitHub Actions boundary
+
+Repository checks that already run on pull requests remain GitHub Actions responsibilities. In particular, `.github/workflows/python-tests.yml` runs internal Backlog validation, installed-project task-board checks, and `internal/release/test.sh`, which exercises the repository Python/unit test suite.
+
+The Work release task inspects and requires those checks to pass. It does not need to rerun the full repository test suite inside Work as qualification evidence. A Work-side rerun is diagnostic only when investigating a failure.
 
 # Early phase and fail-fast boundary
 
