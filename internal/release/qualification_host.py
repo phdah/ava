@@ -180,6 +180,7 @@ def validate_interaction_inventory(value: dict[str, Any]) -> None:
             "prompt_sha256",
             "model",
             "workspace_root",
+            "transcript_path",
             "transcript_sha256",
             "terminal_state",
         }
@@ -199,7 +200,7 @@ def validate_interaction_inventory(value: dict[str, Any]) -> None:
                 raise QualificationHostError(f"interaction inventory has invalid {digest_field}")
         if record["terminal_state"] != "completed":
             raise QualificationHostError("interaction inventory contains non-completed evidence")
-        for field in ("scenario", "model", "workspace_root"):
+        for field in ("scenario", "model", "workspace_root", "transcript_path"):
             if not isinstance(record[field], str) or not record[field]:
                 raise QualificationHostError(f"interaction inventory has invalid {field}")
     for record in interactions:
@@ -210,7 +211,10 @@ def validate_interaction_inventory(value: dict[str, Any]) -> None:
             )
 
 
-def normalize_opencode_inventory(session_inventory: dict[str, Any]) -> dict[str, Any]:
+def normalize_opencode_inventory(
+    session_inventory: dict[str, Any],
+    transcript_paths: dict[str, str],
+) -> dict[str, Any]:
     sessions = session_inventory.get("sessions")
     if session_inventory.get("schema_version") != 1 or not isinstance(sessions, list):
         raise QualificationHostError("OpenCode adapter returned invalid session evidence")
@@ -225,18 +229,11 @@ def normalize_opencode_inventory(session_inventory: dict[str, Any]) -> dict[str,
         ),
     )
     id_map: dict[str, str] = {}
-    for ordinal, record in enumerate(ordered, 1):
+    for record in ordered:
         session_id = record.get("session_id")
         if not isinstance(session_id, str) or not session_id:
             raise QualificationHostError("OpenCode session evidence has no session id")
-        identity = {
-            "ordinal": ordinal,
-            "scenario": record.get("scenario"),
-            "prompt_sha256": record.get("prompt_sha256"),
-            "transcript_sha256": record.get("transcript_sha256"),
-            "model": record.get("model"),
-        }
-        id_map[session_id] = "int_" + sha256_text(canonical_json(identity))[:24]
+        id_map[session_id] = "int_" + sha256_text(session_id)[:24]
 
     interactions: list[dict[str, Any]] = []
     for record in ordered:
@@ -249,6 +246,11 @@ def normalize_opencode_inventory(session_inventory: dict[str, Any]) -> dict[str,
                 raise QualificationHostError(
                     "OpenCode adapter evidence references a parent outside the current interaction set"
                 )
+        transcript_path = transcript_paths.get(session_id)
+        if not transcript_path:
+            raise QualificationHostError(
+                f"OpenCode adapter did not materialize transcript evidence for {session_id}"
+            )
         interactions.append(
             {
                 "interaction_id": id_map[session_id],
@@ -257,6 +259,7 @@ def normalize_opencode_inventory(session_inventory: dict[str, Any]) -> dict[str,
                 "prompt_sha256": record["prompt_sha256"],
                 "model": record["model"],
                 "workspace_root": record["project_root"],
+                "transcript_path": transcript_path,
                 "transcript_sha256": record["transcript_sha256"],
                 "terminal_state": record["terminal_state"],
             }
@@ -341,7 +344,29 @@ class OpenCodeHostAdapter:
             command_runner=self._command_runner,
             allow_empty=allow_empty,
         )
-        return normalize_opencode_inventory(session_inventory)
+        host_evidence = execution_root / "host-evidence"
+        transcripts = host_evidence / "transcripts"
+        transcripts.mkdir(parents=True, exist_ok=True)
+        (host_evidence / "opencode-sessions.json").write_text(
+            canonical_json(session_inventory),
+            encoding="utf-8",
+        )
+        transcript_paths: dict[str, str] = {}
+        for record in session_inventory["sessions"]:
+            session_id = record["session_id"]
+            interaction_id = "int_" + sha256_text(session_id)[:24]
+            result = self._command_runner(
+                [self.executable, "export", session_id],
+                check=True,
+            )
+            if sha256_text(result.stdout) != record["transcript_sha256"]:
+                raise QualificationHostError(
+                    f"OpenCode transcript changed while materializing evidence for {session_id}"
+                )
+            path = transcripts / f"{interaction_id}.json"
+            path.write_text(result.stdout, encoding="utf-8")
+            transcript_paths[session_id] = str(path.resolve())
+        return normalize_opencode_inventory(session_inventory, transcript_paths)
 
     def audit_command(
         self,
