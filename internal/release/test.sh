@@ -27,6 +27,9 @@ python3 -m py_compile \
   "$ROOT/internal/release/interaction_evidence.py" \
   "$ROOT/internal/release/qualification_runner.py" \
   "$ROOT/internal/release/qualification_automation.py" \
+  "$ROOT/internal/release/qualification_host.py" \
+  "$ROOT/internal/release/qualification_host_runner.py" \
+  "$ROOT/internal/release/qualification_host_automation.py" \
   "$ROOT/internal/release/qualification_acceptance.py" \
   "$ROOT/internal/release/qualification_phase_runner.py" \
   "$ROOT/internal/release/qualification_phase_automation.py" \
@@ -69,6 +72,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_qualification_runner \
   internal.release.tests.test_qualification_automation \
   internal.release.tests.test_qualification_execution_identity \
+  internal.release.tests.test_qualification_host \
   internal.release.tests.test_qualification_opencode_adapter \
   internal.release.tests.test_qualification_phases \
   internal.release.tests.test_assemble_candidate \
