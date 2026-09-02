@@ -1,23 +1,23 @@
 ---
 type: Internal Release Qualification Procedure
 title: Deterministic Release Qualification and Evidence State
-description: Minimal release qualification using deterministic pre-edge and final checks plus explicit user acceptance.
-tags: [internal, release, qualification, automation, evidence, deterministic, chatgpt, work]
+description: Minimal session-neutral release qualification using deterministic pre-edge and final checks plus explicit user acceptance.
+tags: [internal, release, qualification, automation, evidence, deterministic, session-neutral]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T20:30:00+02:00
+  at: 2026-09-02T20:45:00+02:00
 ---
 
 # Purpose
 
 Ava's normal release qualification is deterministic and intentionally cheap in agent usage.
 
-ChatGPT Work Cloud remains the validated non-CI execution environment for the current release procedure, but `internal/release/qualify-release.sh` does not start an agent runtime. It executes installation, integrity, damage, and upgrade mechanics only.
+The release procedure is session-neutral. The active maintainer session does not need to supply a shell or a particular ChatGPT execution mode. GitHub Actions is the canonical executor for mandatory qualification on the release PR.
 
-The execution commands are defined in [ChatGPT Work Cloud deterministic qualification](qualification-work.md).
+`internal/release/qualify-release.sh` contains no agent runtime dependency. The end-to-end deterministic execution contract is defined in [Session-neutral deterministic qualification](qualification-execution.md).
 
 # Release stages
 
@@ -67,6 +67,14 @@ The final stage reruns all pre-edge checks and additionally validates:
 
 A clean final result writes one run record and one deterministic summary under `internal/release/qualification/runs/`, updates `current-state.json`, and enters `awaiting-user-signoff`.
 
+The release-qualification workflow commits only those compact qualification changes back to the release PR. The next workflow run reuses the exact run when every post-qualification change is confined to `internal/release/qualification/`.
+
+# Executor model
+
+The authoritative run records an executor label for provenance, for example `github-actions` or `direct-shell`. The executor label is not a compatibility claim and does not select or require a ChatGPT mode.
+
+GitHub Actions is the normal release executor because it makes the workflow available from any repository-connected maintainer session. Direct shell execution is optional diagnostic capability, not a prerequisite for using the release procedure.
+
 # Agent-behavior scenarios
 
 Routing, calendar reasoning, ambiguous clarification, inbox ingestion, semantic reconciliation/finalization, and role-led uninstall/reinstall are not normal release-gating checks.
@@ -81,7 +89,7 @@ The authoritative final run binds:
 
 - exact repository revision
 - exact source and target release identities and asset hashes
-- `qualification_host: chatgpt-work-cloud`
+- non-empty qualification executor provenance
 - `qualification_mode: deterministic`
 - qualification matrix digest
 - deterministic qualification driver digest
@@ -97,20 +105,15 @@ The release gate does not require:
 - ChatGPT thread IDs
 - provider session IDs
 - a committed pre-edge prerequisite run
+- ChatGPT Work
 
 # User acceptance
 
 A clean final run does not accept itself.
 
-After the user explicitly approves the final evidence, run:
+After the user explicitly approves the final evidence, a shell-capable environment may run `accept-release-qualification.sh` directly. A repository-connected session without shell access may create the transient `internal/release/qualification/acceptance-request.json` described in `procedure.md` and `qualification-execution.md`.
 
-```sh
-internal/release/accept-release-qualification.sh \
-  --identity user:<stable-identity> \
-  [--run-id <run-id>]
-```
-
-Acceptance records signoff in the final run and in `current-state.json`.
+The release-qualification workflow validates that request, invokes the maintained acceptance implementation, removes the request, and commits the accepted state.
 
 # Release PR blocker
 
