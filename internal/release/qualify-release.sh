@@ -71,7 +71,7 @@ for raw in sys.argv[2:]:
         continue
     candidate = Path(raw).expanduser().resolve()
     if candidate == Path("/"):
-        raise SystemExit("qualification OpenCode permission root must not be filesystem root")
+        raise SystemExit("qualification host permission root must not be filesystem root")
     if candidate == repository_root or candidate.is_relative_to(repository_root):
         continue
     if any(candidate == root or candidate.is_relative_to(root) for root in roots):
@@ -80,14 +80,15 @@ for raw in sys.argv[2:]:
     roots.append(candidate)
 
 if not roots:
-    raise SystemExit("qualification OpenCode permission scope is empty")
+    raise SystemExit("qualification host permission scope is empty")
 print(json.dumps([str(root) for root in roots], separators=(",", ":")))
 PY
   )
   export AVA_QUALIFICATION_OPENCODE_EXTERNAL_ROOTS
 fi
 
-exec python3 "$ROOT/internal/release/qualification_phase_automation.py" \
+exec python3 "$ROOT/internal/release/qualification_host_automation.py" \
   "$@" \
   --repository-root "$ROOT" \
-  --opencode "$ROOT/internal/release/qualification-opencode.sh"
+  --host-kind opencode \
+  --host-executable "$ROOT/internal/release/qualification-opencode.sh"
