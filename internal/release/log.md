@@ -4,9 +4,9 @@ This log records major conceptual and structural changes to Ava's internal relea
 
 ## 2026-09-02
 
+- **Session-neutral release orchestration**: Removed ChatGPT Work as a release-procedure requirement after the mandatory qualification gate became fully deterministic. GitHub Actions now executes pre-edge/final qualification and can apply a validated transient acceptance request, so an ordinary repository-connected ChatGPT session can review the release delta, author the edge, inspect evidence, request explicit acceptance, and merge without switching modes or supplying shell compute.
 - **Deterministic release qualification gate**: Replaced the mandatory consumer-agent matrix and independent LLM audit with a minimal deterministic release gate. Normal releases now run an ephemeral `pre-edge` fail-fast check, perform reviewed maintainer semantic-impact assessment and adjacent-edge authoring, then run one authoritative `final` deterministic qualification covering installation, managed-damage rejection, exact edge identity, previous-to-target upgrade, resume, abort, rollback, and revision-bound evidence. Routing, calendar, clarification, inbox ingestion, agent-led semantic reconciliation/finalization, and role-led uninstall remain optional behavioral QA instead of publication gates.
 - **Work behavioral qualification experiment**: The first ChatGPT Work validation proved that fresh same-workspace agent execution can work, but it consumed substantial agent credits and produced a false negative when a correct clarification response did not match a lexical validator heuristic. That experiment superseded the earlier plan to require fresh Work agents and an independent Work audit for every release.
-- **ChatGPT Work Cloud release orchestration**: Non-CI release orchestration is validated in ChatGPT Work Cloud. The canonical qualification entry point itself now has no mandatory OpenCode or LLM-runtime dependency; historical OpenCode and two-phase modules remain only as compatibility/reference material for optional future host-adapter work.
 
 ## 2026-08-29
 
