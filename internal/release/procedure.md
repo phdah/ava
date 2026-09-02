@@ -8,7 +8,7 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T20:45:00+02:00
+  at: 2026-09-02T20:55:00+02:00
 ---
 
 # Ava Release Publication Procedure
@@ -19,7 +19,7 @@ The normal release gate is intentionally deterministic. Synthetic consumer-agent
 
 The release procedure is **session-neutral**. The maintainer may be operating from an ordinary ChatGPT chat, ChatGPT Work, or another repository-capable agent session. No particular ChatGPT mode is a release requirement.
 
-Mandatory deterministic qualification runs in **GitHub Actions** on the release PR. The active maintainer session orchestrates the release through the connected repository: it reviews the release delta, authors the edge, inspects CI/evidence, records explicit user acceptance, and merges when all gates pass. The session itself does not need a shell or mutable local workspace.
+Mandatory deterministic qualification runs in **GitHub Actions** on the release PR. The active maintainer session orchestrates the release through the connected repository: it reviews the release delta, authors the edge, inspects CI/evidence, applies validated qualification artifacts, records explicit user acceptance, and merges when all gates pass. The session itself does not need a shell or mutable local workspace.
 
 The deterministic execution details are documented in [Session-neutral deterministic qualification](qualification-execution.md).
 
@@ -29,21 +29,24 @@ The deterministic execution details are documented in [Session-neutral determini
 2. Configure the active qualification pair as the exact immutable previous published release -> exact local target version.
 3. Work from the exact release PR branch using the current maintainer session. Do not require the user to switch ChatGPT modes.
 4. The `Release qualification` GitHub Actions workflow detects that the target adjacent edge does not yet exist and runs the deterministic `pre-edge` qualification automatically.
-5. The pre-edge run acquires and verifies the exact previous published release assets, generates the finalized synthetic qualification vault, assembles the provisional no-edge candidate, and runs the cheap deterministic fail-fast checks. It writes no committed qualification evidence.
+5. The pre-edge run acquires and verifies the exact previous published release assets, generates the finalized synthetic qualification vault, assembles the provisional no-edge candidate, and runs the cheap deterministic fail-fast checks. It writes no qualification artifact because no repository evidence is required.
 6. If pre-edge fails, stop before semantic review and edge authoring.
 7. Review the exact previous-to-target managed delta and complete the project-owned semantic-impact assessment, including an explicit decision and rationale.
 8. Author exactly one adjacent release record for `<previous> -> <target>`, plus only the guidance, deterministic migrations, and retirement decisions introduced by that edge.
 9. Once the edge exists, the `Release qualification` workflow automatically runs the authoritative `final` deterministic qualification from the exact release PR revision.
 10. The final run reruns the pre-edge checks and additionally proves the authentic source-to-target edge, deterministic upgrade, interrupted resume, abort, rollback, project-owned preservation, and exact asset/revision identity.
 11. If final qualification fails, stop and report the exact deterministic finding.
-12. If final qualification passes, the workflow writes one authoritative final run under `internal/release/qualification/runs/`, updates `current-state.json` to `awaiting-user-signoff`, commits only that compact qualification evidence back to the release PR, and reruns the PR checks on the evidence commit.
-13. Require the normal GitHub Actions checks, including Python/repository tests, deterministic release qualification, and Release PR policy, to be in the expected state.
-14. Present the final deterministic evidence to the user.
-15. Only after explicit user approval, record an acceptance request for the exact run. A session with direct shell execution may use `accept-release-qualification.sh`; a normal repository-connected chat may instead commit `internal/release/qualification/acceptance-request.json` as described below.
-16. The `Release qualification` workflow validates the acceptance request, runs the maintained acceptance implementation, removes the transient request, and commits the resulting accepted qualification state.
-17. Require the Release PR policy check to pass on that accepted state.
-18. Merge only after the adjacent edge, semantic-impact decision, final deterministic qualification, required GitHub Actions checks, and explicit user acceptance are all accepted.
-19. Publication automation creates and verifies the immutable release.
+12. If final qualification passes, the workflow creates one authoritative final run under `internal/release/qualification/runs/`, updates `current-state.json` to `awaiting-user-signoff`, and uploads those exact repository changes as a `release-qualification-evidence-*` artifact.
+13. The active maintainer session downloads that artifact through the connected GitHub capability, validates its `artifact-manifest.json`, applies exactly the listed files/deletions to the release PR branch, and makes no other release-content change in that commit.
+14. The resulting PR checks rerun normally. `Release qualification` reuses the committed final evidence when its qualified revision is an ancestor of the current head and every intervening change is confined to `internal/release/qualification/`.
+15. Require the normal GitHub Actions checks, including Python/repository tests and deterministic release qualification, to be green. Release PR policy remains blocked until explicit acceptance exists.
+16. Present the final deterministic evidence to the user.
+17. Only after explicit user approval, record an acceptance request for the exact run. A session with direct shell execution may use `accept-release-qualification.sh`; a normal repository-connected chat may instead commit `internal/release/qualification/acceptance-request.json` as described below.
+18. The `Release qualification` workflow validates the acceptance request, runs the maintained acceptance implementation in CI, removes the transient request in its checkout, and uploads the resulting qualification-state transition as a `release-qualification-acceptance-*` artifact.
+19. The active maintainer session downloads that artifact, validates its manifest, applies the exact updated qualification files and deletion of `acceptance-request.json` to the release PR, and commits only those qualification changes.
+20. Require the Release PR policy check to pass on that accepted state.
+21. Merge only after the adjacent edge, semantic-impact decision, final deterministic qualification, required GitHub Actions checks, and explicit user acceptance are all accepted.
+22. Publication automation creates and verifies the immutable release.
 
 # Session boundary
 
@@ -57,6 +60,7 @@ The active maintainer session owns only work that genuinely benefits from mainta
 - make and record the semantic-impact decision and rationale
 - author the adjacent edge, guidance, migrations, and retirement decisions
 - inspect deterministic CI results and compact evidence
+- apply exact qualification artifacts through the connected repository capability
 - request acceptance only after explicit user approval
 - merge only after all checks are satisfied
 
@@ -131,11 +135,18 @@ The final run does not require:
 
 Any release-content change after the final qualified revision invalidates acceptance and requires a new final qualification. Changes confined to `internal/release/qualification/` may record qualification evidence and user acceptance without changing release content.
 
-# GitHub Actions execution
+# GitHub Actions execution and artifact handoff
 
 `.github/workflows/release-qualification.yml` is the canonical deterministic executor for release PRs. It runs only for the release-please branch in the repository itself.
 
-Before the edge exists it runs `pre-edge`. After the edge exists it runs `final`. A successful final run commits compact qualification evidence back to the release PR. A later workflow run recognizes that the exact final evidence is still valid when every change after the qualified revision is confined to `internal/release/qualification/`, avoiding an evidence-commit loop.
+Before the edge exists it runs `pre-edge`. After the edge exists it runs `final`. The workflow does **not** push generated evidence with `GITHUB_TOKEN`; instead it uploads the exact qualification state transition as an artifact so the active repository-connected maintainer session can apply it. This keeps subsequent PR workflow runs attached to a normal repository commit rather than relying on recursive Actions pushes.
+
+Each qualification artifact contains:
+
+- `artifact-manifest.json` with `schema_version`, `kind`, exact `files`, and exact `delete` paths
+- the complete bytes for every listed file at its repository-relative path
+
+The maintainer must apply the manifest exactly. Do not rewrite, normalize, reinterpret, or mix unrelated changes into the qualification artifact commit.
 
 The normal `.github/workflows/python-tests.yml` suite remains independently responsible for Backlog validation, installed-project task-board checks, and `internal/release/test.sh`. The release process does not duplicate that suite in the maintainer session.
 
@@ -165,7 +176,7 @@ with exactly:
 }
 ```
 
-Create that request only after explicit user approval. The Release qualification workflow validates the exact shape, runs the maintained acceptance implementation, deletes the request, and commits the resulting qualification state. The transient request itself is never release evidence and must not survive in the accepted release PR.
+Create that request only after explicit user approval. The Release qualification workflow validates the exact shape and invokes the maintained acceptance implementation in CI. It then uploads an acceptance artifact whose manifest includes the updated accepted qualification files and deletion of the transient request. The maintainer session applies that artifact exactly to finish the accepted state.
 
 # Optional behavioral QA
 
