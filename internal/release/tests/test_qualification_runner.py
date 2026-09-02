@@ -237,8 +237,7 @@ class QualificationRunnerTests(unittest.TestCase):
     def test_shared_runner_has_no_standalone_cli(self) -> None:
         for name in ("parse_args", "preflight", "planned_summary", "main"):
             self.assertFalse(hasattr(runner, name), name)
-        source = Path(runner.__file__).read_text(encoding="utf-8")
-        self.assertIn("use internal/release/qualify-release.sh", source)
+        self.assertEqual(runner.__doc__, "Shared qualification scenario engine.")
 
     def test_rollback_is_planned_as_one_installer_operation(self) -> None:
         import inspect
