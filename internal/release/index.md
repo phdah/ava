@@ -21,11 +21,11 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Release qualification entry point](qualify-release.sh)
 - [Explicit qualification acceptance entry point](accept-release-qualification.sh)
 - [Qualification OpenCode session adapter](qualification-opencode.sh)
+- [Shared qualification automation helpers](qualification_automation.py)
+- [Shared qualification scenario engine](qualification_runner.py)
 - [Phase-specific release qualification orchestration](qualification_phase_automation.py)
 - [Phase-specific synthetic qualification runner](qualification_phase_runner.py)
 - [Two-phase acceptance and release-PR gate](qualification_phase_gate.py)
-- [Shared automation implementation](_qualification_automation_core.py)
-- [Shared scenario implementation](_qualification_runner_core.py)
 - [Qualification acceptance and release-PR state implementation](qualification_acceptance.py)
 - [Qualification configuration and compact evidence state](qualification/)
 - [Deterministic inbox qualification checks](qualification_inbox.py)
@@ -40,6 +40,6 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Release implementation tests](tests/)
 - [Release implementation log](log.md)
 
-`qualify-release.sh` is the qualification execution entry point. `qualification_runner.py` and `qualification_automation.py` expose shared Python APIs used by the phase-specific orchestration and unit tests.
+`qualify-release.sh` is the qualification execution entry point. The phase-specific orchestration uses the shared qualification automation and scenario modules.
 
 `validate_upgrade_impact.py` and historical target-specific guidance remain available only for compatibility investigation of already published releases. They are not active release-authoring inputs.
