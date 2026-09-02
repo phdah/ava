@@ -145,14 +145,20 @@ class QualificationExecutionTests(unittest.TestCase):
         qualification_workflow = (
             root / ".github/workflows/release-qualification.yml"
         ).read_text(encoding="utf-8")
+        ci_driver = (root / "internal/release/qualification_ci.py").read_text(
+            encoding="utf-8"
+        )
         python_workflow = (root / ".github/workflows/python-tests.yml").read_text(
             encoding="utf-8"
         )
         self.assertIn("internal/release/test.sh", python_workflow)
         self.assertIn("session-neutral", procedure.lower())
         self.assertIn("GitHub Actions", procedure)
-        self.assertIn("run-release-qualification.sh", qualification_workflow)
-        self.assertIn("acceptance-request.json", qualification_workflow)
+        self.assertIn("python3 internal/release/qualification_ci.py", qualification_workflow)
+        self.assertNotIn("python3 - <<", qualification_workflow)
+        self.assertNotIn("package_changes()", qualification_workflow)
+        self.assertIn("run-release-qualification.sh", ci_driver)
+        self.assertIn("acceptance-request.json", ci_driver)
         self.assertIn("AVA_QUALIFICATION_EXECUTOR", qualification_workflow)
 
 
