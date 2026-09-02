@@ -8,53 +8,73 @@ generated:
   at: 2026-08-03T10:00:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-02T12:45:00+02:00
+  at: 2026-09-02T17:30:00+02:00
 ---
 
 # Ava Release Publication Procedure
 
 When the user asks to make, prepare, review, accept, merge, publish, or qualify an Ava release, the Ava Internal Maintainer must follow this procedure.
 
-Every Ava release uses the same two-phase qualification flow. Edge-independent qualification runs before adjacent-edge authoring. Edge-dependent qualification, independent audit, and explicit user acceptance remain mandatory before the release-please PR may merge.
+Every release uses the same fail-fast two-phase qualification chain. All qualification work that is not already executed by GitHub Actions runs in **ChatGPT Work Cloud**, using OpenAI-hosted filesystem/shell execution and fresh Work subagents. No qualification step requires OpenCode or the user's computer.
+
+The exact Work execution loop is defined in [ChatGPT Work Cloud qualification execution](qualification-work.md).
 
 # Release flow
 
 1. Let release-please determine the target version and release PR.
 2. Configure the qualification active pair as exact immutable previous published release -> exact local target version.
-3. From the clean release PR revision, assemble a provisional target with `assemble-candidate.sh --phase edge-independent`.
-4. Run `qualify-release.sh --phase edge-independent` against that provisional target.
-5. If the early result is `failed` or `needs-review`, stop. Report the exact result and findings. Do not perform managed-delta review or author the adjacent catalog, guidance, migrations, or source-retirement state.
-6. When the early result is `passed`, commit its compact `phase-runs/` evidence and `phase-state.json` to the release PR.
-7. Review the exact previous-to-target managed delta and complete the project-owned semantic-impact assessment.
-8. Author exactly one adjacent release record for `<previous> -> <target>`, plus only the guidance, migrations, and retirement decisions introduced by that edge.
-9. Run release-PR validation and the complete repository test suite.
-10. Assemble the reviewed target with `assemble-candidate.sh --phase edge-dependent`.
-11. Run `qualify-release.sh --phase edge-dependent`. The command must first prove the committed early result is for the same source and target and was not invalidated by intervening changes.
-12. Any final `failed` or `needs-review` result leaves the release PR blocked. Report the result and findings, then ask whether the user wants those findings recorded as bounded Backlog.md tasks on `main`. Create nothing unless the user explicitly agrees.
-13. When the final run reaches `awaiting-user-signoff`, present the complete two-phase evidence to the user.
-14. Only after explicit user approval, record acceptance with `accept-release-qualification.sh` and commit the qualification-state changes to the release PR.
-15. Require the Release PR policy check to pass.
-16. Merge only after the release PR content, semantic-impact decision, both qualification phases, and user acceptance are all accepted.
-17. Publication automation creates and verifies the immutable release.
+3. Start a ChatGPT Work Cloud task from the exact clean release PR revision. Do not use Work Local, Codex Local, OpenCode, or a developer terminal.
+4. Inside Work Cloud, download and verify the exact immutable previous release assets, generate the finalized synthetic qualification vault, and create the external test boundary.
+5. Assemble the provisional target with `assemble-candidate.sh --phase edge-independent`.
+6. Run the edge-independent Work qualification protocol with `qualify-release.sh init`, repeated `advance` calls and fresh scenario subagents, then a fresh independent audit subagent and `finalize`.
+7. If the early result is `failed` or `needs-review`, stop. Report the exact result and findings. Do not perform managed-delta review or author the adjacent catalog, guidance, migrations, or source-retirement state.
+8. When the early result is `passed`, commit its compact `phase-runs/` evidence and `phase-state.json` to the release PR through the connected GitHub action.
+9. Review the exact previous-to-target managed delta and complete the project-owned semantic-impact assessment.
+10. Author exactly one adjacent release record for `<previous> -> <target>`, plus only the guidance, migrations, and retirement decisions introduced by that edge.
+11. Run release-PR validation and the complete repository test suite.
+12. Start the final qualification from the new exact release PR revision in a new Work Cloud run root. Do not reuse early scenario workspaces.
+13. Assemble the reviewed target with `assemble-candidate.sh --phase edge-dependent`.
+14. Run the edge-dependent Work qualification protocol. Initialization must first prove the committed early result is for the same source/target and was not invalidated by intervening changes.
+15. Any final `failed` or `needs-review` result leaves the release PR blocked. Report the result and findings, then ask whether the user wants those findings recorded as bounded Backlog.md tasks on `main`.
+16. When the final run reaches `awaiting-user-signoff`, present the complete two-phase Work evidence to the user.
+17. Only after explicit user approval, record acceptance with `accept-release-qualification.sh` and commit the resulting qualification-state changes to the release PR.
+18. Require the Release PR policy check to pass.
+19. Merge only after the release PR content, semantic-impact decision, both qualification phases, independent audits, and user acceptance are all accepted.
+20. Publication automation creates and verifies the immutable release.
+
+# ChatGPT Work Cloud boundary
+
+Qualification runs in a Work cloud task on web/mobile or a cloud Work task on desktop. It must not open a local folder for the qualification operation.
+
+Required capabilities are:
+
+- cloud filesystem and shell execution
+- network access for the exact GitHub repository and release assets
+- connected GitHub write access for committing compact evidence to the release PR
+- fresh Work subagent delegation
+- shared cloud filesystem access between the parent task and those subagents
+
+If any required Work capability is unavailable, stop. Do not move the operation to local compute.
+
+# Agent execution model
+
+`qualify-release.sh` is not an agent runner. It is a deterministic Work protocol driver.
+
+The parent Work task repeatedly calls `advance`. Deterministic scenarios run directly in the Work cloud shell. When semantic behavior is required, the command emits one `SUBAGENT_REQUIRED` request bound to an exact isolated workspace and prompt.
+
+The parent delegates that exact request to one fresh Work subagent. The subagent reads and follows the installed Ava project, performs the user prompt, writes the declared structured response into the shared Work filesystem, and returns control. The parent calls `advance` again, which verifies deterministic postconditions before continuing.
+
+Scenario subagents must not use web search, cloud browser, plugins, apps, MCPs, other repositories, memory, or user-local files. This prevents unrelated connected context from entering qualification.
+
+After all scenarios pass mechanically, `audit-request` emits one independent read-only request. A new fresh Work subagent performs that audit and writes only the audit response. `finalize` validates audit immutability and writes compact repository evidence.
 
 # Early phase and fail-fast boundary
 
-The early phase validates target behavior that does not depend on an authored source-to-target edge. The maintained qualification matrix marks every scenario with `qualification_phase`.
-
-The edge-independent phase contains fresh install, mature install, registered routing, calendar, ambiguity, inbox ingestion and semantic audit, managed-damage detection, and uninstall/reinstall checks. It intentionally excludes authentic upgrade resume, abort, rollback, finalization, and semantic reconciliation.
-
-Assemble and run it with:
-
-```sh
-early_assets="$(internal/release/assemble-candidate.sh --phase edge-independent)"
-internal/release/qualify-release.sh \
-  --phase edge-independent \
-  --target-assets "$early_assets"
-```
+The edge-independent phase validates target behavior that does not depend on an authored source-to-target edge. The maintained qualification matrix marks every scenario with `qualification_phase`.
 
 The provisional candidate is assembled from the current clean release PR revision without `internal/release/catalogs/<target>.json`. Its release identity remains pinned to the same previous published release and target version used by the final phase.
 
-A clean early result is reusable evidence, not acceptance. Commit the compact early evidence before edge authoring so the later phase can prove ordering and revision ancestry.
+A clean early result is reusable evidence, not acceptance. Commit the compact early evidence before edge authoring so the final phase can prove ordering and revision ancestry.
 
 # Adjacent release state
 
@@ -64,12 +84,7 @@ The authored upgrade history under `internal/release/catalogs/` is immutable. Ea
 
 `internal/release/catalogs/<target>.json`
 
-That record contains only:
-
-- the immediately previous-to-target edge
-- migrations introduced by that edge
-- semantic guidance introduced by that edge
-- source-retirement decisions introduced by that release
+That record contains only the immediately previous-to-target edge, migrations introduced by that edge, semantic guidance introduced by that edge, and source-retirement decisions introduced by that release.
 
 Existing release records must not be rewritten or copied into cumulative state.
 
@@ -83,7 +98,7 @@ For the exact previous-to-target managed delta, answer:
 
 Set `semantic_review_required: true` only when project-owned semantic reconciliation may be required. When true, transition-local guidance must define affected concepts, bounded discovery conditions, and completion criteria.
 
-A managed behavior change alone does not decide semantic impact, and the presence or absence of a deterministic project-file migration does not decide it either. Tooling must not guess semantic migration need from changed paths or categories. The release PR must preserve the reviewed rationale for the semantic-impact decision.
+A managed behavior change alone does not decide semantic impact, and the presence or absence of a deterministic project-file migration does not decide it either.
 
 # Early-result invalidation
 
@@ -95,22 +110,15 @@ The final phase may reuse the early result only if the early qualified revision 
 - `internal/release/guidance/<target>/...`
 - `internal/release/migrations/...`
 
-Any other change invalidates the early evidence and requires a new edge-independent run before edge authoring can continue. In particular, changes to templates, distribution assets, installer behavior, release notes, fixtures, matrix classification, qualification tooling, or other candidate inputs must rerun the early phase.
+Any other change invalidates the early evidence and requires a new edge-independent Work qualification before edge authoring can continue.
 
-The phase gate also verifies that the target adjacent catalog and target guidance did not exist at the early qualified revision. This prevents an operator from running the early command after doing the expensive edge-authoring work and still claiming fail-fast coverage.
+The phase gate also verifies that the target adjacent catalog and target guidance did not exist at the early qualified revision.
 
 # Final edge-dependent qualification
 
-After the adjacent edge is complete, assemble and run:
+The final phase uses a new Work cloud run root and the reviewed adjacent catalog.
 
-```sh
-final_assets="$(internal/release/assemble-candidate.sh --phase edge-dependent)"
-internal/release/qualify-release.sh \
-  --phase edge-dependent \
-  --target-assets "$final_assets"
-```
-
-The final candidate uses the reviewed adjacent catalog. Before the first scenario runs, qualification requires:
+Before the first final scenario runs, qualification requires:
 
 - one committed clean edge-independent prerequisite for the active pair
 - identical source release identity across both phases
@@ -120,23 +128,15 @@ The final candidate uses the reviewed adjacent catalog. Before the first scenari
 - an authentic final source-to-target upgrade edge
 - only allowed edge-authoring changes between the qualified revisions
 
-The edge-dependent phase runs authentic resume, abort, rollback, finalization, and semantic-reconciliation scenarios. It captures its own session inventory and independent audit.
-
-Terminal final states are:
-
-- `failed`
-- `needs-review`
-- `awaiting-user-signoff`
-
-Only `awaiting-user-signoff` may proceed to user acceptance.
+Terminal final states are `failed`, `needs-review`, and `awaiting-user-signoff`. Only `awaiting-user-signoff` may proceed to user acceptance.
 
 # Qualification evidence boundary
 
-`qualify-release.sh` owns the OpenCode access required for repository-external temporary evidence. It creates a unique external operation root and passes the exact required roots through the maintained OpenCode adapter. Qualification must not rely on user-global OpenCode permissions or a global auto-approval mode.
+Raw scenario workspaces, downloaded release assets, generated fixture data, and Work protocol request files remain in the Work cloud run root and outside Git.
 
-Raw workspaces, release assets, transcripts, and generated roots remain outside Git. Compact early evidence is written under `internal/release/qualification/phase-runs/`; compact final evidence and release-quality state are written under `internal/release/qualification/runs/` and `current-state.json`.
+Compact early evidence is written under `internal/release/qualification/phase-runs/`. Compact final evidence and release-quality state are written under `internal/release/qualification/runs/` and `current-state.json`.
 
-The independent audit runs for both phases. It is scoped to scenarios present in the current phase and does not treat the other phase as missing evidence.
+Compact Work evidence is independent of ChatGPT thread IDs and product-internal session identifiers. It records exact prompt/model/workspace identity, ordered required-reading evidence, structured subagent responses, deterministic results, independent audit, and exact repository/release hashes.
 
 # User acceptance
 
@@ -150,15 +150,11 @@ internal/release/accept-release-qualification.sh \
   [--run-id <run-id>]
 ```
 
-The acceptance entry point validates the two-phase prerequisite chain before recording the existing final run signoff and `release_acceptance` entry.
-
-Commit the resulting files under `internal/release/qualification/` to the release PR branch. The target is recorded as `accepted` with `basis: qualified-run`.
-
-Historical releases through `v1.0.0-alpha.14` remain backfilled as accepted with `basis: historical-backfill`; this preserves history without claiming those releases ran the current system.
+The acceptance entry point validates the two-phase prerequisite chain before recording the final run signoff and `release_acceptance` entry.
 
 # Release PR merge gate
 
-The Release PR policy check must fail until qualification is accepted. It verifies both the existing final acceptance requirements and the phase-chain requirements:
+The Release PR policy must fail until qualification is accepted. It verifies:
 
 - all prior catalog releases have accepted release-quality state
 - the target has a current `qualified-run` acceptance
@@ -167,35 +163,25 @@ The Release PR policy check must fail until qualification is accepted. It verifi
 - it references one clean `edge-independent` prerequisite
 - both phases use the same immutable source and target version
 - the early edge was absent when early qualification ran
-- no invalidating change occurred between the early and final qualified revisions
+- no invalidating change occurred between early and final qualification
 - final target assets were assembled from the final qualified revision
-- the final qualified revision belongs to the release pr
+- the final qualified revision belongs to the release PR
 - only `internal/release/qualification/` changes occurred after final qualification
 
-A release-content change after final qualification requires new applicable qualification evidence and fresh user acceptance. Acceptance is never carried forward blindly across changed release content.
+A release-content change after final qualification requires new applicable Work qualification evidence and fresh user acceptance.
 
 # Publication
 
-After the accepted release PR is merged, publication automation:
-
-1. binds the final tag, version, channel, and source revision
-2. validates the complete recursive release catalog
-3. runs deterministic repository/release checks
-4. assembles reproducible release assets
-5. validates release conformance and checksums
-6. creates/verifies attestations
-7. publishes the immutable GitHub release without replacing existing assets
+After the accepted release PR is merged, publication automation binds the final tag/version/revision, validates the recursive release catalog, runs deterministic repository/release checks, assembles reproducible assets, validates checksums and conformance, verifies attestations, and publishes the immutable GitHub release.
 
 Publication must not bypass the pre-merge qualification gate.
 
-Post-publication verification checks immutable tag, asset inventory, checksums, attestations, and release identity. It does not replace or retroactively grant pre-merge qualification acceptance.
-
 # Failure handling
 
-Any failure leaves publication blocked. Existing tags and assets are never moved, overwritten, or reused.
+Any qualification failure leaves publication blocked.
 
-For either qualification phase, report the exact result and each actionable finding. Do not modify repository or release content automatically to make the run pass.
+Report the exact result and each actionable finding. Do not modify repository or release content automatically to make the run pass.
 
-After reporting findings, ask whether the user wants them recorded as bounded native Backlog.md tasks on `main`. Create no tasks without explicit approval. Task creation is tracking only and does not accept qualification or advance release state.
+After reporting findings, ask whether the user wants them recorded as bounded native Backlog.md tasks on `main`. Create no tasks without explicit approval.
 
-If the user directs a repository correction, treat it as ordinary repository work. The invalidation rules determine whether the edge-independent phase must rerun, and any final release-content correction requires a new final qualification and fresh user acceptance.
+If the user directs a repository correction, treat it as ordinary repository work. The invalidation rules determine whether the early phase must rerun, and any final release-content correction requires new final Work qualification and fresh user acceptance.
