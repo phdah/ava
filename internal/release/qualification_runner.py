@@ -1,9 +1,7 @@
-#!/usr/bin/env python3
-"""Run the repository-external synthetic Ava qualification matrix."""
+"""Shared qualification scenario engine."""
 
 from __future__ import annotations
 
-import argparse
 import hashlib
 import json
 import os
@@ -210,7 +208,7 @@ def validate_upgrade_pair(source: ReleaseIdentity, target: ReleaseIdentity) -> N
         )
     if not target.semantic_review_required:
         raise QualificationError(
-            "the complete synthetic matrix requires a semantic target so rollback, semantic reconciliation, and finalization are authentic"
+            "edge-dependent qualification requires a semantic target so rollback, semantic reconciliation, and finalization are authentic"
         )
 
 
@@ -341,7 +339,7 @@ def initialize_execution_root(execution_root: Path, qualification_root: Path) ->
                     "schema_version": 1,
                     "qualification_root": str(qualification_root),
                     "corpus_sha256": inventory_digest(qualification_root / "corpus"),
-                    "owner": "internal/release/qualify-synthetic.sh",
+                    "owner": "internal/release/qualify-release.sh",
                 }
             ),
             encoding="utf-8",
@@ -917,126 +915,3 @@ def print_summary(outcomes: list[dict[str, Any]]) -> None:
     for item in outcomes:
         detail = f": {item['detail']}" if item.get("detail") else ""
         print(f"{item['outcome'].upper():22} {item['id']}{detail}")
-
-
-def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repository-root", type=Path, default=REPOSITORY_ROOT)
-    parser.add_argument("--qualification-root", type=Path, required=True)
-    parser.add_argument("--execution-root", type=Path, required=True)
-    parser.add_argument("--source-assets", type=Path, required=True)
-    parser.add_argument("--target-assets", type=Path, required=True)
-    parser.add_argument("--test-project", type=Path, required=True)
-    parser.add_argument("--opencode", required=True, help="OpenCode executable path or name")
-    parser.add_argument("--model", required=True, help="Explicit OpenCode provider/model identifier")
-    parser.add_argument("--transcript-dir", type=Path)
-    parser.add_argument("--preflight-only", action="store_true")
-    return parser.parse_args(argv)
-
-
-def preflight(args: argparse.Namespace) -> tuple[dict[str, Any], ReleaseIdentity, ReleaseIdentity, str]:
-    repository_root = resolve_path(args.repository_root)
-    qualification_root = resolve_path(args.qualification_root)
-    execution_root = resolve_path(args.execution_root)
-    source_assets = resolve_path(args.source_assets)
-    target_assets = resolve_path(args.target_assets)
-    test_project = resolve_path(args.test_project)
-
-    if sys.version_info < (3, 11):
-        raise QualificationError("qualification runner requires Python 3.11 or newer")
-    if not repository_root.is_dir():
-        raise QualificationError(f"repository root does not exist: {repository_root}")
-    if not repository_is_clean(repository_root):
-        raise QualificationError("Ava repository must be clean before qualification")
-    require_external(qualification_root, repository_root, "qualification root")
-    require_external(source_assets, repository_root, "source assets")
-    require_external(target_assets, repository_root, "target assets")
-    require_external(test_project, repository_root, "test project")
-    if not qualification_root.is_dir() or not test_project.is_dir():
-        raise QualificationError("qualification root and test project must be existing directories")
-    matrix = load_matrix(repository_root / "internal/release/fixtures/synthetic-qualification-vault/qualification-matrix.json")
-    validate_materialized_variants(qualification_root, matrix)
-    source = validate_asset_dir(source_assets, "source assets")
-    target = validate_asset_dir(target_assets, "target assets")
-    validate_upgrade_pair(source, target)
-    validate_execution_root(
-        execution_root,
-        repository_root=repository_root,
-        qualification_root=qualification_root,
-        test_project=test_project,
-        source_assets=source_assets,
-        target_assets=target_assets,
-    )
-    opencode = resolve_executable(args.opencode)
-    version = subprocess.run([opencode, "--version"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if version.returncode != 0:
-        raise QualificationError(f"OpenCode version check failed: {version.stderr.strip()}")
-    if not args.model.strip() or "/" not in args.model:
-        raise QualificationError("--model must be an explicit provider/model identifier")
-    fixture = subprocess.run(
-        [sys.executable, str(repository_root / "internal/release/fixtures/synthetic-qualification-vault/fixture.py"), "verify", str(qualification_root)],
-        cwd=str(repository_root),
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    if fixture.returncode != 0:
-        raise QualificationError(f"finalized qualification vault verification failed: {fixture.stderr.strip()}")
-    return matrix, source, target, opencode
-
-
-def planned_summary(
-    args: argparse.Namespace,
-    matrix: dict[str, Any],
-    source: ReleaseIdentity,
-    target: ReleaseIdentity,
-    opencode: str,
-) -> None:
-    print(f"qualification root: {resolve_path(args.qualification_root)}")
-    print(f"execution root:     {resolve_path(args.execution_root)}")
-    print(f"source assets:      {source.tag} {source.revision}")
-    print(f"target assets:      {target.tag} {target.revision}")
-    print(f"test project:       {resolve_path(args.test_project)} (read-only source boundary)")
-    print(f"OpenCode:           {opencode}")
-    print(f"model:              {args.model}")
-    print("scenarios:")
-    for scenario in matrix["scenarios"]:
-        print(f"  {scenario['order']:02d}. {scenario['id']} [{scenario['family']}]")
-
-
-def main(argv: list[str] | None = None) -> int:
-    args = parse_args(argv)
-    try:
-        matrix, source, target, opencode = preflight(args)
-        planned_summary(args, matrix, source, target, opencode)
-        if args.preflight_only:
-            return 0
-        repository_root = resolve_path(args.repository_root)
-        qualification_root = resolve_path(args.qualification_root)
-        execution_root = resolve_path(args.execution_root)
-        test_project = resolve_path(args.test_project)
-        transcript_dir = resolve_path(args.transcript_dir) if args.transcript_dir else None
-        if transcript_dir:
-            require_external(transcript_dir, repository_root, "transcript directory")
-            require_disjoint(transcript_dir, qualification_root, "transcript directory", "qualification root")
-        initialize_execution_root(execution_root, qualification_root)
-        runner = Runner(
-            repository_root=repository_root,
-            qualification_root=qualification_root,
-            execution_root=execution_root,
-            source=source,
-            target=target,
-            test_project=test_project,
-            opencode=opencode,
-            model=args.model,
-            transcript_dir=transcript_dir,
-            matrix=matrix,
-        )
-        return runner.run()
-    except (QualificationError, OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
-        print(f"synthetic qualification runner error: {exc}", file=sys.stderr)
-        return 2
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

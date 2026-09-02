@@ -18,15 +18,16 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Pull-request title validator](validate_pr_title.py)
 - [Alpha qualification policy](alpha-qualification.md)
 - [Hands-off release qualification procedure](qualification-automation.md)
-- [Hands-off qualification shell entry point](qualify-release.sh)
+- [Release qualification entry point](qualify-release.sh)
 - [Explicit qualification acceptance entry point](accept-release-qualification.sh)
 - [Qualification OpenCode session adapter](qualification-opencode.sh)
-- [Hands-off qualification implementation](qualification_automation.py)
-- [Qualification acceptance and release-PR gate](qualification_acceptance.py)
+- [Shared qualification automation helpers](qualification_automation.py)
+- [Shared qualification scenario engine](qualification_runner.py)
+- [Phase-specific release qualification orchestration](qualification_phase_automation.py)
+- [Phase-specific synthetic qualification runner](qualification_phase_runner.py)
+- [Two-phase acceptance and release-PR gate](qualification_phase_gate.py)
+- [Qualification acceptance and release-PR state implementation](qualification_acceptance.py)
 - [Qualification configuration and compact evidence state](qualification/)
-- [One-command synthetic qualification component](qualification-runner.md)
-- [Synthetic qualification shell entry point](qualify-synthetic.sh)
-- [Synthetic qualification runner implementation](qualification_runner.py)
 - [Deterministic inbox qualification checks](qualification_inbox.py)
 - [Conformance validation contract](conformance.md)
 - [Unified conformance validator](conformance.py)
@@ -38,5 +39,7 @@ This directory contains maintainer-only release assembly, publication, qualifica
 - [Validation fixtures](fixtures/)
 - [Release implementation tests](tests/)
 - [Release implementation log](log.md)
+
+`qualify-release.sh` is the qualification execution entry point. The phase-specific orchestration uses the shared qualification automation and scenario modules.
 
 `validate_upgrade_impact.py` and historical target-specific guidance remain available only for compatibility investigation of already published releases. They are not active release-authoring inputs.

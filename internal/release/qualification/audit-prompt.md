@@ -1,19 +1,21 @@
 ---
 type: Internal Release Qualification Audit
 title: Independent Qualification Session Audit
-description: Read-only audit contract for OpenCode sessions created by one exact hands-off release qualification run.
+description: Read-only audit contract for OpenCode sessions created by one exact hands-off release qualification phase.
 tags: [internal, release, qualification, audit, opencode]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-14T16:27:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-24T17:23:00+02:00
+  at: 2026-09-02T12:45:00+02:00
 ---
 
 # Scope
 
 Audit only the exact qualification run named in the appended run inputs. This is an independent, read-only review. Do not edit the Ava repository, generated fixture, isolated projects, runner evidence, transcripts, release assets, or qualification state.
+
+The appended inputs identify the `qualification_phase`. Use the supplied runner summary and session inventory as the complete boundary for that phase. Inspect every listed top-level and nested session. Scenarios explicitly assigned to the other qualification phase are intentionally absent and are not missing evidence. Apply each required review item only when the current phase contains a scenario to which it is relevant.
 
 Use the supplied session inventory as the complete session boundary. Inspect every listed top-level and nested session and reconcile it against the runner evidence, applicable release contracts, and fixture oracle. Do not inspect or infer from unrelated OpenCode sessions.
 
@@ -31,7 +33,7 @@ Treat command errors, retries, nested work, superseded attempts, missing evidenc
 
 # Required review
 
-Determine whether:
+For the scenarios present in the current phase, determine whether:
 
 1. every required role was announced only after its complete required-reading set was loaded
 2. missing or invalid required paths were handled by the active contract rather than guessed around

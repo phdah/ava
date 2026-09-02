@@ -5,4 +5,5 @@
 - [Current-state schema](current-state.schema.json)
 - [Session-inventory schema](session-inventory.schema.json)
 - [Audit-output schema](audit-output.schema.json)
-- [Run-record schema](run-record.schema.json)
+- [Final run-record schema](run-record.schema.json)
+- [Edge-independent run-record schema](edge-independent-run.schema.json)

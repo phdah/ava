@@ -158,6 +158,8 @@ class QualificationRunnerTests(unittest.TestCase):
             source_assets=self.source_assets,
             target_assets=self.target_assets,
         )
+        sentinel = json.loads((execution / runner.SENTINEL).read_text(encoding="utf-8"))
+        self.assertEqual(sentinel["owner"], "internal/release/qualify-release.sh")
         (self.qualification / "corpus/source.txt").write_text("changed\n", encoding="utf-8")
         with self.assertRaisesRegex(runner.QualificationError, "finalized corpus differs"):
             runner.validate_execution_root(
@@ -232,33 +234,16 @@ class QualificationRunnerTests(unittest.TestCase):
                 1,
             )
 
-    def test_cli_requires_explicit_inputs_and_supports_preflight_only(self) -> None:
-        args = runner.parse_args(
-            [
-                "--qualification-root", str(self.qualification),
-                "--execution-root", str(self.root / "execution"),
-                "--source-assets", str(self.source_assets),
-                "--target-assets", str(self.target_assets),
-                "--test-project", str(self.test_project),
-                "--opencode", "opencode",
-                "--model", "provider/model",
-                "--preflight-only",
-            ]
-        )
-        self.assertTrue(args.preflight_only)
-        self.assertEqual(args.model, "provider/model")
+    def test_shared_runner_has_no_standalone_cli(self) -> None:
+        for name in ("parse_args", "preflight", "planned_summary", "main"):
+            self.assertFalse(hasattr(runner, name), name)
+        self.assertEqual(runner.__doc__, "Shared qualification scenario engine.")
 
     def test_rollback_is_planned_as_one_installer_operation(self) -> None:
         import inspect
 
         source = inspect.getsource(runner.Runner.run_scenario)
         self.assertEqual(source.count('"--rollback"'), 1)
-
-    def test_complete_runner_is_not_executed_by_release_test_gate(self) -> None:
-        test_script = (runner.REPOSITORY_ROOT / "internal/release/test.sh").read_text(encoding="utf-8")
-        matching = [line.strip() for line in test_script.splitlines() if "qualify-synthetic.sh" in line]
-        self.assertEqual(len(matching), 1)
-        self.assertTrue(matching[0].startswith("sh -n "))
 
     def test_runner_and_matrix_remain_internal_release_inputs(self) -> None:
         self.assertTrue(str(Path(runner.__file__).resolve()).startswith(str(runner.REPOSITORY_ROOT / "internal")))
