@@ -4,6 +4,32 @@ set -eu
 ROOT=$(CDPATH= cd "$(dirname "$0")/../.." && pwd -P)
 cd "$ROOT"
 
+phase=edge-dependent
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --phase)
+      [ "$#" -ge 2 ] || { echo "ERROR: --phase requires a value" >&2; exit 2; }
+      phase=$2
+      shift 2
+      ;;
+    --phase=*)
+      phase=${1#*=}
+      shift
+      ;;
+    *)
+      echo "ERROR: unsupported candidate assembly argument: $1" >&2
+      exit 2
+      ;;
+  esac
+done
+case "$phase" in
+  edge-independent|edge-dependent) ;;
+  *)
+    echo "ERROR: --phase must be edge-independent or edge-dependent" >&2
+    exit 2
+    ;;
+esac
+
 if [ -n "$(git status --porcelain)" ]; then
   echo "ERROR: Ava repository must be clean before candidate assembly" >&2
   exit 1
@@ -26,7 +52,7 @@ case "$version" in
 esac
 
 catalog="$ROOT/internal/release/catalogs/$version.json"
-if [ ! -f "$catalog" ]; then
+if [ "$phase" = edge-dependent ] && [ ! -f "$catalog" ]; then
   echo "ERROR: missing adjacent release catalog: $catalog" >&2
   exit 1
 fi
@@ -42,20 +68,35 @@ esac
 mkdir -p "$output_parent"
 
 short_revision=$(printf '%s' "$revision" | cut -c1-7)
-output="$output_parent/ava-$version-$short_revision"
+if [ "$phase" = edge-independent ]; then
+  output="$output_parent/ava-$version-$short_revision-edge-independent"
+else
+  output="$output_parent/ava-$version-$short_revision"
+fi
 if [ -e "$output" ]; then
   echo "ERROR: candidate output already exists: $output" >&2
   exit 1
 fi
 
-AVA_UPGRADE_CATALOG="$catalog" \
+if [ "$phase" = edge-independent ]; then
   "$ROOT/internal/release/assemble.sh" \
-  --output "$output" \
-  --version "$version" \
-  --channel "$channel" \
-  --source-revision "$revision" \
-  --source-date-epoch "$source_date_epoch" \
-  --published-at "$published_at" \
-  --release-notes "$ROOT/CHANGELOG.md" >&2
+    --output "$output" \
+    --version "$version" \
+    --channel "$channel" \
+    --source-revision "$revision" \
+    --source-date-epoch "$source_date_epoch" \
+    --published-at "$published_at" \
+    --release-notes "$ROOT/CHANGELOG.md" >&2
+else
+  AVA_UPGRADE_CATALOG="$catalog" \
+    "$ROOT/internal/release/assemble.sh" \
+    --output "$output" \
+    --version "$version" \
+    --channel "$channel" \
+    --source-revision "$revision" \
+    --source-date-epoch "$source_date_epoch" \
+    --published-at "$published_at" \
+    --release-notes "$ROOT/CHANGELOG.md" >&2
+fi
 
 printf '%s\n' "$output"
