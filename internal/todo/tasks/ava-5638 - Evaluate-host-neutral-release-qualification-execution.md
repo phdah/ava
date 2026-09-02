@@ -1,7 +1,7 @@
 ---
 id: ava-5638
 title: Evaluate host-neutral release qualification execution
-status: In Progress
+status: Parked
 assignee: []
 created_date: '2026-09-01 20:20'
 labels:
@@ -89,4 +89,26 @@ If this task removes OpenCode entirely from qualification, close AVA-5637 as `Do
 
 The first implementation incorrectly treated the GitHub connector available in an ordinary Chat session as the complete ChatGPT execution surface and concluded that local execution remained required. That conclusion is rejected.
 
-The approved target is now explicit: the complete non-CI qualification workflow must run in ChatGPT Work Cloud on OpenAI-hosted compute. It must not require OpenCode, Codex Local, Work Local, a developer workstation, or any other user-hosted process. Work Cloud shell/filesystem execution provides the isolated mutable workspace, and Work subagents provide the fresh agent interactions and independent audit.
+The approved target is now explicit: the complete non-CI qualification workflow must run in ChatGPT Work Cloud on OpenAI-hosted compute. It must not require OpenCode, Codex Local, Work Local, a developer workstation, or any other user-hosted process. Work Cloud execution provides the isolated mutable workspace. Every semantic qualification interaction must execute in a fresh blank-slate Work agent context that receives only the generated interaction request plus access to the exact isolated scenario workspace. The independent audit must use another fresh blank-slate Work agent context.
+
+## Live validation gate
+
+The implementation is intentionally **Parked**, not `Done`, until it is proven by the next real Ava release. The intended proof target is `1.0.0-alpha.17`.
+
+The live acceptance test is intentionally user-level rather than a bespoke developer command: from the ChatGPT app with **Work** selected, the user should be able to ask for the Ava release PR to be merged (for example, `please merge my Ava release PR`) and have the release procedure discover and execute the required flow.
+
+A successful proof requires all of the following:
+
+- all non-CI qualification execution occurs on ChatGPT-hosted Work Cloud compute
+- no OpenCode, Work Local, Codex Local, developer shell, local filesystem, or other user-hosted fallback is used
+- every semantic scenario runs in a newly created blank-slate Work agent context with no inherited parent conversation, saved memory, prior scenario context, or unrelated connected tools
+- that fresh agent context receives only the generated request and read/write access to the exact isolated scenario workspace prepared by the deterministic qualification driver
+- scenarios that intentionally exercise upgrade/interruption state receive their exact prepared lifecycle workspace rather than an unrelated fresh install
+- the independent audit runs in another fresh blank-slate Work agent context that executed no scenario
+- deterministic qualification checks and evidence binding run in Work Cloud
+- the normal repository Python/test suite remains owned by the release PR's GitHub Actions checks and does not need to be duplicated inside the Work qualification session
+- the existing two-phase fail-fast boundary, revision binding, release gate, explicit user signoff, merge, publication, and post-publication verification remain intact
+
+After one complete `alpha.17` release succeeds under those conditions, move AVA-5638 to `Done` and record that release as completion evidence.
+
+If the live test proves that ChatGPT Work cannot provide the required blank-slate agent execution against the exact isolated cloud workspace, leave the release blocked and report the precise missing capability. The user may then explicitly close AVA-5638 as `Done` with the `Won't Fix` label if they decide not to pursue another architecture. Do not silently reintroduce local execution to make the test pass.
