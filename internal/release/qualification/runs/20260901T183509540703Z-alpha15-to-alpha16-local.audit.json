@@ -1,0 +1,181 @@
+{
+  "findings": [
+    {
+      "consequence": "Qualification runs are not isolated/reproducible from the executing operator's personal machine configuration; a different operator's global OpenCode config could inject different tool calls or behavior into an otherwise 'identical' qualification run of the same release candidate. In the 5 sessions checked this did not change any routing decision or cause a mutation, but the extra calls are unaccounted-for behavior mixed into a compliance-critical trace.",
+      "correction": "Run the qualification harness's OpenCode invocations with an isolated HOME/XDG_CONFIG_HOME (or an explicit --config pointing at a minimal, Ava-only configuration) so spawned sessions only load the target project's own AGENTS.md and Ava-relevant MCP servers.",
+      "evidence": [
+        "internal/release/qualification-opencode.sh only patches OPENCODE_CONFIG_CONTENT.permission.external_directory; it never sets/isolates HOME or XDG_CONFIG_HOME before exec'ing the real opencode binary.",
+        "The operator's global ~/.config/opencode/AGENTS.md instructs: 'At the beginning of each session, list the available resources and read the first one' for the backlog MCP server.",
+        "Export ses_fa1b3d836ffenMlCSmOecOdeEM.json (registered-ambiguous-routing) message 1: list_mcp_resources(server=backlog) then read_mcp_resource(backlog://...) before any Ava-specific read.",
+        "Same pattern confirmed in ses_fa1b747ddffeAeXEq37adtIAIO.json (registered-calendar-regression) message 1, ses_fa1bb1af8ffeafor8qUcF8tSpR.json (registered-work-routing) message 1, ses_fa1be84fdffebmSn7eslWPtDR7.json (registered-private-routing) message 1, and ses_fa199633cffedgJX3N1ymJ9M0S.json (pending-semantic-reconciliation parent) message 1."
+      ],
+      "id": "QUAL-RUNNER-01",
+      "limitations": "Verified directly in 5 of 11 sessions (all 4 registered-* sessions plus the pending-semantic-reconciliation parent); not exhaustively re-checked in the remaining 6, though the same harness invocation path applies to all of them.",
+      "remediation_owner": "runner",
+      "severity": "minor",
+      "summary": "The qualification OpenCode adapter does not isolate the host operator's global OpenCode configuration, so every audited session's managed-state-gate phase is contaminated with contract-irrelevant tool calls to the operator's personal `backlog` MCP server."
+    },
+    {
+      "consequence": "For several scenario categories the recorded qualification evidence trail does not by itself demonstrate that the final on-disk state was structurally checked after the agent acted; this audit substituted independent conformance re-runs (all returned valid with no findings) as a compensating check, but that substitution was not part of the original recorded evidence.",
+      "correction": "Add a post-agent-session `internal.release.conformance --mode installed` invocation to runner-commands.jsonl for every scenario category that currently lacks one.",
+      "evidence": [
+        "registered-ambiguous-routing, registered-calendar-regression, registered-work-routing, registered-private-routing runner-commands.jsonl: each contains exactly 4 entries (dry-run install, install, pre-prompt 'installed conformance', OpenCode prompt) with no post-prompt conformance entry.",
+        "uninstall-reinstall runner-commands.jsonl contains 6 entries, but the only two conformance checks are pre-uninstall (index 2) and post-reinstall (index 5); no conformance check specifically validates the state immediately after the audited uninstall session and before the deterministic reinstall.",
+        "interrupted-finalize runner-commands.jsonl does capture a final 'internal.release.conformance --mode installed' entry after the finalize session, which reported {\"valid\": true, \"normal_routing_permitted\": true, \"findings\": []}."
+      ],
+      "id": "QUAL-RUNNER-02",
+      "limitations": "Independent conformance re-runs were performed by this audit only for the 4 registered-* scenarios and are reported as passing; this does not itself resolve the missing runner-side capture.",
+      "remediation_owner": "runner",
+      "severity": "observation",
+      "summary": "Recorded runner-commands.jsonl evidence is inconsistent across scenario categories in whether it captures a deterministic structural check AFTER the agent session's mutations, versus only before."
+    },
+    {
+      "consequence": "An evaluator relying on oracle/baseline.json's per-source non-durable descriptions without checking them against the literal corpus bytes could incorrectly fault a session for under-disposing a source that in fact contains no non-durable material.",
+      "correction": "Regenerate selection.json and oracle/baseline.json from the final, committed corpus bytes so declared per-source disposition expectations are literally achievable; add a fixture-generation check that every oracle excerpt string is a literal substring of its corresponding corpus file.",
+      "evidence": [
+        "selection.json requires dispositions [\"mapped\",\"non-durable\"] for 2025-01-15-appointment-travel-001.ics (sha256 30ddd95a...), but the 381-byte corpus file (byte-identical to the project's ingested copy) contains exactly one VEVENT with no separable non-durable content; oracle/baseline.json nonetheless describes a 'packing reminder' non-durable section for this file that is not present in the bytes.",
+        "The same style of mismatch recurs for 2025-01-02-running-001.csv, where oracle/baseline.json describes a non-durable 'momentary weather impression' absent from the actual 4-row CSV (selection.json correctly requires only [\"mapped\"] for this file, so the two fixture artifacts disagree with each other, not just with the ingesting session)."
+      ],
+      "id": "CPI-FIX-01",
+      "limitations": "Checked directly for these two sources only (via independent hex/byte inspection); not exhaustively checked across the full 150+ file corpus.",
+      "remediation_owner": "fixture",
+      "severity": "observation",
+      "summary": "The fixture's evaluator-only oracle (oracle/baseline.json) describes non-durable passages for two of the seven complete-pending-inbox sources that are not actually present in the corresponding corpus file bytes, and disagrees with selection.json's own required-disposition set for at least one of them."
+    },
+    {
+      "consequence": "No factual harm (the claim is accurately hedged as 'the source identifies,' not asserted as world fact), but it is an inconsistent application of the meta-remark-is-non-durable pattern the same session otherwise applied correctly three other times in this batch.",
+      "correction": "",
+      "evidence": [
+        "Session ses_fa1b297aaffeM6sxyIL3Lsdkdu, source 2025-01-15-appointment-travel-001.ics DESCRIPTION field: 'scheduled appointment in Stockholm; state completed; fictional fixture event.'",
+        "Destination knowledge/personal/home/uno.md states: 'The source identifies the event as a fictional fixture event.'",
+        "The same corpus-generation self-reference phrase recurs verbatim in sibling appointment-travel-*.ics files elsewhere in the corpus, indicating it is fixture metadata rather than an in-universe fact, analogous to the household-finance aside the same session correctly treated as non-durable."
+      ],
+      "id": "CPI-AGENT-01",
+      "limitations": "Low-confidence classification call; reasonable graders could disagree on whether this phrase is substantive versus fixture noise, and the shared instruction does not explicitly address self-referential fixture-authenticity text.",
+      "remediation_owner": "agent-behavior",
+      "severity": "minor",
+      "summary": "Inconsistent non-durable judgment: a fixture/corpus self-referential phrase ('fictional fixture event') was mapped into trusted knowledge, while structurally identical meta-remarks elsewhere in the same batch were correctly excluded as non-durable."
+    },
+    {
+      "consequence": "No factual defect resulted (the source's own 2025-03-26 dateline unambiguously anchors the year), but the required procedural gate in calendar-verification.md for deriving an absolute calendar value from partial/relative information was skipped.",
+      "correction": "Read calendar-verification.md and run a trivial deterministic check (e.g. confirm date validity against the document's own dateline) before persisting a year-qualified date derived from a partial source date.",
+      "evidence": [
+        "Source (2025-03-26-kitchen-renovation-009.docx / 2025-04-02-kitchen-renovation-011.pdf) states: 'worktop delivery moved from March 17 to March 21' with no year given.",
+        "Destination knowledge/personal/home/kitchen-renovation.md persists: 'the worktop delivery moved from 2025-03-17 to 2025-03-21.'",
+        "Session transcript ses_fa1b297aaffeM6sxyIL3Lsdkdu shows no read of templates/base/shared/instructions/calendar-verification.md and no deterministic date-arithmetic tool call for this inference."
+      ],
+      "id": "CPI-AGENT-02",
+      "limitations": "None material; the correct outcome here does not guarantee correctness in a genuinely ambiguous case.",
+      "remediation_owner": "agent-behavior",
+      "severity": "minor",
+      "summary": "calendar-verification.md's deterministic-verification procedure was not invoked before persisting a derived, year-qualified absolute date completed from a partial in-source date, even though the outcome was correct."
+    },
+    {
+      "consequence": "The disclosed limitation is honest and the underlying frontmatter/type/sources claims were independently confirmed valid by this audit, but the 'validated' claim in the completion report rests on weaker (manual) evidence than the deterministic script it silently replaced.",
+      "correction": "On tool-not-found for a deterministic validator, retry the same check with another commonly available interpreter (e.g. python3) before downgrading to a manual-verification claim.",
+      "evidence": [
+        "Session ses_fa1b297aaffeM6sxyIL3Lsdkdu message 20: `ruby -ryaml -e '...'` -> `zsh:1: command not found: ruby`.",
+        "Final completion report states: 'No Ava or Ruby validator executable was available; semantic and structural verification was performed through final-state reads and targeted checks,' with no retry via python3 or another interpreter shown in the transcript."
+      ],
+      "id": "CPI-AGENT-03",
+      "limitations": "None material.",
+      "remediation_owner": "agent-behavior",
+      "severity": "minor",
+      "summary": "When a deterministic validation tool (ruby) was unavailable, the session did not retry the same check with a commonly available alternate interpreter before downgrading to a manual-verification claim."
+    },
+    {
+      "consequence": "This audit independently reconstructed and cross-checked all 26 footnote markers against all 26 definitions and confirmed the claim is in fact true, but the automated proof for it was silently degraded rather than the coverage gap being surfaced in the report.",
+      "correction": "When a validation regex errors, report the degraded check explicitly in completion notes rather than presenting the substitute as equivalent coverage.",
+      "evidence": [
+        "Session ses_fa1b297aaffeM6sxyIL3Lsdkdu message 16: grep pattern `\\[\\^[0-9]+\\](?!:)` -> status: error (lookahead unsupported by the grep engine).",
+        "Substitute check `^\\[\\^[0-9]+\\]: Sources:` only counts footnote definitions (26 found) and does not verify every used marker has a matching definition or vice versa.",
+        "Final completion report asserts 'Grouped footnotes resolve through document-local source metadata' as a verified fact despite the degraded check."
+      ],
+      "id": "CPI-AGENT-04",
+      "limitations": "None material; verified true by independent reconstruction in this audit.",
+      "remediation_owner": "agent-behavior",
+      "severity": "minor",
+      "summary": "A footnote-orphan validation regex errored (unsupported lookahead syntax) and was silently replaced with a materially weaker check (counting footnote definitions only, not cross-referencing markers to definitions) without the completion report flagging the reduced coverage."
+    },
+    {
+      "consequence": "Cosmetic only: the miscount did not propagate into the final report (which correctly states '66 managed files' removed under .ava, i.e. 67 total minus AGENTS.md) and did not affect deletion scope or the byte-preservation result.",
+      "correction": "",
+      "evidence": [
+        "Session ses_fa192a72bffeqs0IDQ22UvvkSi message 7 text: 'All removal preconditions pass: 67 checksummed payloads match...'.",
+        "The actual command (message 5): `jq -r '.managed_files[]|select(.sha256!=null)|...' | sha256sum --check --strict` produced exactly 65 'OK' lines; the manifest's 67 managed_files entries include 2 kind:\"state\" entries with no checksum."
+      ],
+      "id": "UR-AGENT-01",
+      "limitations": "None material; independently recounted from the transcript's own command output.",
+      "remediation_owner": "agent-behavior",
+      "severity": "minor",
+      "summary": "The uninstall-reinstall session's intermediate narration miscounts checksummed managed payloads (states 67, actual command output was 65) by conflating total manifest entries with checksum-bearing payload entries."
+    },
+    {
+      "consequence": "In this specific run the omission was inconsequential because root index.md's content was boilerplate and genuinely unaffected by the alpha.16 edge's named concepts, so semantic_compatibility.status=\"complete\" was not falsely advanced. However, the contract text itself is not fully reconciled: a future transaction with substantive root index.md content and a guidance document that (like this one) does not explicitly name it as an affected concept could reach the same technically-compliant-but-incomplete-feeling result.",
+      "correction": "Reconcile role.md's Scope wording with instructions.md's guidance-driven discovery procedure -- either qualify ./index.md and ./log.md in Scope the same way ./inbox/ is qualified ('only when a routing or structural contract explicitly affects it'), or add root index.md/log.md as a standing minimum-check item in the Impact analysis procedure regardless of guidance-named concepts.",
+      "evidence": [
+        "templates/base/roles/upgrade-role/role.md Scope section: 'The role may inspect and update affected project-owned content under: ./roles/ ./workflows/ ./shared/ ./knowledge/ ... ./index.md and ./log.md ...' (no guidance-affected-concept qualifier attached to ./index.md/./log.md, unlike ./inbox/).",
+        "templates/base/roles/upgrade-role/instructions.md Impact analysis step 3: 'Build a bounded inventory from the affected concept conditions in the guidance.'",
+        "internal/release/guidance/1.0.0-alpha.16/1.0.0-alpha.15-to-1.0.0-alpha.16/UPGRADE.md 'Affected project-owned concepts' names only interaction-evidence/conversational-mutation content, project task routing/ownership content, and precise-claim-provenance content -- it does not name the project root index.md as an affected concept for this edge.",
+        "In session ses_fa199633cffedgJX3N1ymJ9M0S (pending-semantic-reconciliation), the agent inspected exactly roles/index.md, workflows/index.md, shared/index.md, inbox/processed/index.md, and knowledge/index.md (all tied to the guidance's three named concepts) and did not open the project root ./index.md, whose actual content in this fixture is boilerplate ('# Project Context ... Ava upgrades never replace content under these paths.') carrying no role/workflow/task/interaction-evidence/claim-provenance material."
+      ],
+      "id": "PSR-CONTRACT-01",
+      "limitations": "This is a documentation-consistency finding, not a confirmed instance of falsely-advanced semantic compatibility; the fixture's trivial root index.md content means this specific run cannot demonstrate the failure mode the ambiguity could theoretically enable.",
+      "remediation_owner": "repository",
+      "severity": "minor",
+      "summary": "templates/base/roles/upgrade-role/role.md's Scope section lists `./index.md` and `./log.md` as unconditionally in-scope, while instructions.md's actual discovery procedure ties bounded inspection strictly to the installed guidance document's named 'Affected project-owned concepts' -- an ambiguity that could, in a project with non-trivial root index.md content, allow a technically guidance-compliant reconciliation to skip content the role's own Scope section implies should be considered."
+    },
+    {
+      "consequence": "A second-pass reviewer that inherits the first pass's candidate-path list provides materially less independent assurance than the label 'independent review' implies, since it cannot detect an omitted path the first pass never surfaced.",
+      "correction": "When delegating a corroborating review, instruct the reviewer to re-run its own bounded discovery (e.g. globs against roles/**, workflows/**, shared/**, knowledge/**, inbox/processed/*, plus role-scope defaults ./index.md/./log.md) rather than accepting the supplied project_changes list as the definition of what should have been discovered.",
+      "evidence": [
+        "Child session ses_fa1958f0affeCl3Ad6wJSnodbB performed only `read` tool calls throughout (routing/state/role docs, the guidance file, and the same 5 project files already listed in upgrade.json.project_changes) -- no glob/grep/directory-listing discovery call appears anywhere in the child transcript.",
+        "Child's final text: 'Bounded discovery is satisfied. The five recorded project indexes expose no affected roles, workflows...' -- phrased as a discovery-completeness claim despite the method only re-checking content-sufficiency of a pre-given list.",
+        "Parent session ses_fa199633cffedgJX3N1ymJ9M0S message 19 cites 'an independent semantic review passed' as corroborating evidence for completeness in its terminal report."
+      ],
+      "id": "PSR-AGENT-01",
+      "limitations": "The review subagent behaved exactly as its own task prompt (written by the parent) instructed it to; the gap originates in how the parent framed the delegated review task.",
+      "remediation_owner": "agent-behavior",
+      "severity": "minor",
+      "summary": "The corroborating 'independent semantic review' subagent for pending-semantic-reconciliation was scoped by the parent session to only re-validate the parent's already-selected 5 recorded paths, rather than independently re-deriving bounded discovery from the guidance; it therefore could not have caught a discovery-scope gap even in principle, weakening the evidentiary value of citing it as independent corroboration of completeness."
+    },
+    {
+      "consequence": "Neither behavior individually violates scoped-history.md's letter, but the inconsistency across otherwise-identical actions suggests the threshold text leaves too much room for divergent judgment calls, which could produce inconsistent audit results across otherwise-comparable projects.",
+      "correction": "Add an explicit worked example to templates/base/shared/instructions/scoped-history.md clarifying whether creating the first concept under a brand-new knowledge/<scope>/ directory counts as 'structurally significant.'",
+      "evidence": [
+        "registered-calendar-regression session ses_fa1b747ddffeAeXEq37adtIAIO message 9: 'this routine knowledge addition does not require a scoped log' when first creating knowledge/work/.",
+        "registered-work-routing session ses_fa1bb1af8ffeafor8qUcF8tSpR message 13: 'No trusted knowledge concepts exist yet, so this fact requires creating the first work scope ... I'll add only the work concept plus the minimum discovery and scoped-history entries' -- and did create knowledge/work/log.md for the same kind of first-time scope creation."
+      ],
+      "id": "SH-CONSIST-01",
+      "limitations": "Low-impact stylistic/documentation consistency issue; did not affect either scenario's correctness.",
+      "remediation_owner": "repository",
+      "severity": "observation",
+      "summary": "Two structurally identical qualification scenarios (first-time creation of a new knowledge/<scope>/ concept under the same Work Context Steward role) reached opposite judgments on whether a scoped-history log.md entry was required, indicating scoped-history.md's 'structurally significant' threshold is not applied deterministically."
+    },
+    {
+      "consequence": "No user-facing or persisted claim was ultimately wrong -- the premature statement was corrected before any mutation occurred -- but it is a narration-fidelity lapse distinct from action fidelity.",
+      "correction": "",
+      "evidence": [
+        "Session ses_fa1be84fdffebmSn7eslWPtDR7 message 12 (immediately after 'Active role: Private Life Steward'): 'The request is private, bounded to Uno's appointment ... I will update only the existing canonical private concept and its required metadata.'",
+        "Subsequent tool calls in the same session: an attempted read of the (non-existent) knowledge/private directory (error) and a grep for 'Uno' returning 'No files found,' after which the session correctly created a new concept instead of updating one.",
+        "Final report (message 18) accurately states 'Recorded,' not 'updated.'"
+      ],
+      "id": "RPR-AGENT-01",
+      "limitations": "None material; purely a narration-timing observation with no consequence to the persisted result.",
+      "remediation_owner": "agent-behavior",
+      "severity": "minor",
+      "summary": "In registered-private-routing, the session narrated an intended action ('update the existing canonical concept') immediately after role activation but before checking whether any such concept existed; it self-corrected before taking any action once discovery showed no prior concept existed."
+    }
+  ],
+  "limitations": [
+    "All 11 transcript_sha256 digests in the session inventory were independently reproduced from `internal/release/qualification-opencode.sh export <session_id>` and matched exactly, confirming export integrity for every audited session.",
+    "The session inventory covers 8 of the 16 scenario ids present in execution/128dccc.../summary.json (uninstall-reinstall, pending-semantic-reconciliation, interrupted-finalize, complete-pending-inbox, registered-ambiguous-routing, registered-calendar-regression, registered-work-routing, registered-private-routing). The remaining 8 (fresh-empty-install, mature-project-install, managed-modified, managed-missing, managed-corrupt, managed-unexpected, interrupted-resume, interrupted-abort, interrupted-rollback) have no corresponding OpenCode sessions and are outside this audit's session-based review boundary per the audit contract's instruction to treat the session inventory as the complete session boundary; their runner-reported 'pass' outcomes rely on deterministic/non-agent verification that was not independently re-examined by this audit.",
+    "Exported reasoning/chain-of-thought parts are truncated to short summary headers rather than full deliberation text in this OpenCode installation's export format; conclusions about internal reasoning (e.g. per-section ledger construction during inbox ingestion) were inferred from tool-call ordering, tool outputs, and final rendered state rather than observed directly.",
+    "For complete-pending-inbox, binary source formats (DOCX, PDF, PPTX) were independently re-derived from the transcript's own tool-call records (OOXML unzip extraction, base64/PDF content-stream decoding) to establish ground truth for fidelity comparison, rather than treated as an unverifiable gap.",
+    "The interrupted-finalize and pending-semantic-reconciliation scenarios' multi-session relationships were verified directly from each session export's own info.parentID and info.time.created fields (cross-checked against session-inventory.json's recorded parent_session_id values, which were confirmed accurate) rather than from an assumed linear retry chain; interrupted-finalize's two top-level sessions (reconcile, finalize) are independent runner-launched sessions connected only by shared on-disk project state, and pending-semantic-reconciliation's child session is a same-run task-tool review subagent spawned by the parent after the parent's own mutation had already completed, not a retry of an incomplete attempt.",
+    "The uninstall-reinstall scenario's audited OpenCode session covers only the role-led uninstall step; runner-commands.jsonl confirms a subsequent deterministic reinstall (a second ava-install.sh invocation) occurred after the session completed, so the final on-disk project/ directory reflects the reinstalled state. Project-owned byte preservation across the uninstall step itself was verified from the session's own before/after deterministic tar+sha256 hash comparison rather than from a standalone post-uninstall filesystem snapshot, which no longer exists.",
+    "This audit did not have access to model provider-side logs beyond the OpenCode session export format; all conclusions rest on tool-call records, file contents, and rendered final state reachable from the qualification operation directory and the repository at the reviewed revision."
+  ],
+  "schema_version": 1,
+  "terminal_conclusion": "pass"
+}
