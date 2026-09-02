@@ -10,6 +10,7 @@ sh -n "$ROOT/internal/release/assemble.sh"
 sh -n "$ROOT/internal/release/assemble-candidate.sh"
 sh -n "$ROOT/internal/release/ava-install.sh"
 sh -n "$ROOT/internal/release/qualify-release.sh"
+sh -n "$ROOT/internal/release/run-release-qualification.sh"
 sh -n "$ROOT/internal/release/accept-release-qualification.sh"
 sh -n "$ROOT/internal/release/test-project-backlog.sh"
 python3 -m py_compile \
@@ -26,6 +27,7 @@ python3 -m py_compile \
   "$ROOT/internal/release/interaction_evidence.py" \
   "$ROOT/internal/release/qualification_runner.py" \
   "$ROOT/internal/release/qualification_automation.py" \
+  "$ROOT/internal/release/qualification.py" \
   "$ROOT/internal/release/qualification_work.py" \
   "$ROOT/internal/release/qualification_acceptance.py" \
   "$ROOT/internal/release/qualification_phase_runner.py" \
