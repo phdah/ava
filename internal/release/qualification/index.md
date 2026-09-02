@@ -4,11 +4,13 @@ This directory is the repository-owned control and compact-evidence scope for ma
 
 - [Qualification configuration](config.json) - Active release pair plus fixed qualification and audit models.
 - [Release-pair catalog](pair-catalog.json) - Reviewed exact published or local selectors used to execute qualification.
-- [Current state](current-state.json) - Pair execution state plus the durable per-release acceptance ledger.
-- [Independent audit prompt](audit-prompt.md) - Prompt/contract used by the fresh independent audit session.
+- [Edge-independent phase state](phase-state.json) - Latest fail-fast phase result per release pair.
+- [Edge-independent run evidence](phase-runs/) - Compact early run records, session inventories, audit reports, and issue inventories.
+- [Current state](current-state.json) - Final edge-dependent pair execution state plus the durable per-release acceptance ledger.
+- [Independent audit prompt](audit-prompt.md) - Prompt/contract used by each fresh phase-scoped independent audit session.
 - [Schemas](schemas/) - Validation contracts for control state and compact evidence.
-- [Run evidence](runs/) - Compact run records, session inventories, audit reports, and issue inventories.
+- [Final run evidence](runs/) - Compact edge-dependent run records, session inventories, audit reports, and issue inventories.
 
-Historical releases are distinguished with `basis: historical-backfill`. New releases may satisfy the merge gate only with `basis: qualified-run` and explicit user signoff.
+Historical releases are distinguished with `basis: historical-backfill`. New releases may satisfy the merge gate only with `basis: qualified-run`, a linked clean edge-independent prerequisite, a clean edge-dependent run, and explicit user signoff.
 
 Raw release assets, generated qualification vaults, isolated projects, command logs, and full transcripts remain repository-external. Qualification and acceptance update compact state here but never create Git commits automatically.
