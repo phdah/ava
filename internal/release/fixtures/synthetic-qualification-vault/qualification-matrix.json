@@ -15,6 +15,7 @@
       "id": "fresh-empty-install",
       "kind": "fresh-install",
       "order": 1,
+      "qualification_phase": "edge-independent",
       "source": "variants/01-empty-before-installation"
     },
     {
@@ -22,6 +23,7 @@
       "id": "mature-project-install",
       "kind": "mature-install",
       "order": 2,
+      "qualification_phase": "edge-independent",
       "source": "variants/02-mature-mixed-project"
     },
     {
@@ -32,6 +34,7 @@
       "mutation_boundary": "private",
       "order": 3,
       "prompt": "In this isolated qualification project, record in trusted private context that Uno's next routine appointment is on 2026-09-03. Do not change work context.",
+      "qualification_phase": "edge-independent",
       "source": "variants/03-registered-private-work-roles"
     },
     {
@@ -42,6 +45,7 @@
       "mutation_boundary": "work",
       "order": 4,
       "prompt": "In this isolated qualification project, record in trusted work context that the Aurora stale-data alert review was completed on 2026-08-12. Do not change private context.",
+      "qualification_phase": "edge-independent",
       "source": "variants/03-registered-private-work-roles"
     },
     {
@@ -54,6 +58,7 @@
       "kind": "registered-calendar",
       "order": 5,
       "prompt": "Today is Thursday, 2026-08-13. In this isolated qualification project, record in trusted work context that the Aurora cache review is due Friday. Persist the verified weekday and absolute date. Do not change private context.",
+      "qualification_phase": "edge-independent",
       "source": "variants/03-registered-private-work-roles"
     },
     {
@@ -62,6 +67,7 @@
       "kind": "registered-clarification",
       "order": 6,
       "prompt": "In this isolated qualification project, record a reimbursement for a pizza oven that was used both personally and for a Northstar team event. Do not guess whether this belongs to private or work context.",
+      "qualification_phase": "edge-independent",
       "source": "variants/03-registered-private-work-roles"
     },
     {
@@ -70,6 +76,7 @@
       "kind": "complete-inbox",
       "order": 7,
       "prompt": "Use the ingest-inbox workflow in this isolated qualification project to process every pending direct inbox source. Apply the user's established qualification decision that the shared headset is a personal expense incurred for work, not a work reimbursement. When dated sources report differing collaborators, task states, or same-day activity and race details, preserve each source-attributed claim and chronology without selecting an unsupported canonical winner; those source reports are not by themselves a material trusted-context conflict. Preserve every source under inbox/processed, maintain only project-owned context, reconcile every source section against the final rendered trusted destinations before claiming completion, verify that every non-durable section remains absent from trusted destinations, and keep any ambiguous section or source pending rather than promoting it wholesale. Derive final disposition totals only after that rendered reconciliation, and stop with a clear user-decision-required report if any source cannot be completed safely.",
+      "qualification_phase": "edge-independent",
       "semantic_audit_required": true,
       "source": "variants/04-complete-pending-inbox"
     },
@@ -80,6 +87,7 @@
       "id": "managed-modified",
       "kind": "managed-damage",
       "order": 8,
+      "qualification_phase": "edge-independent",
       "source": "variants/05-managed-content-damage/modified"
     },
     {
@@ -89,6 +97,7 @@
       "id": "managed-missing",
       "kind": "managed-damage",
       "order": 9,
+      "qualification_phase": "edge-independent",
       "source": "variants/05-managed-content-damage/missing"
     },
     {
@@ -98,6 +107,7 @@
       "id": "managed-corrupt",
       "kind": "managed-damage",
       "order": 10,
+      "qualification_phase": "edge-independent",
       "source": "variants/05-managed-content-damage/corrupt"
     },
     {
@@ -107,6 +117,7 @@
       "id": "managed-unexpected",
       "kind": "managed-damage",
       "order": 11,
+      "qualification_phase": "edge-independent",
       "source": "variants/05-managed-content-damage/unexpected"
     },
     {
@@ -114,6 +125,7 @@
       "id": "interrupted-resume",
       "kind": "resume",
       "order": 12,
+      "qualification_phase": "edge-dependent",
       "source": "variants/06-interrupted-upgrade-states/resume"
     },
     {
@@ -121,6 +133,7 @@
       "id": "interrupted-abort",
       "kind": "abort",
       "order": 13,
+      "qualification_phase": "edge-dependent",
       "source": "variants/06-interrupted-upgrade-states/abort"
     },
     {
@@ -128,6 +141,7 @@
       "id": "interrupted-rollback",
       "kind": "rollback",
       "order": 14,
+      "qualification_phase": "edge-dependent",
       "source": "variants/06-interrupted-upgrade-states/rollback"
     },
     {
@@ -136,6 +150,7 @@
       "id": "interrupted-finalize",
       "kind": "finalize",
       "order": 15,
+      "qualification_phase": "edge-dependent",
       "semantic_prompt": "Reconcile this isolated project's project-owned Ava context with the installed Ava version. Use the managed Upgrade Role, apply only the installed upgrade guidance, preserve project-owned meaning, and report any unresolved decision instead of inventing one.",
       "source": "variants/06-interrupted-upgrade-states/finalize"
     },
@@ -145,6 +160,7 @@
       "kind": "semantic-reconciliation",
       "order": 16,
       "prompt": "Reconcile this isolated project's project-owned Ava context with the installed Ava version. Use the managed Upgrade Role, apply only the installed upgrade guidance, preserve project-owned meaning, and report any unresolved decision instead of inventing one.",
+      "qualification_phase": "edge-dependent",
       "source": "variants/07-pending-semantic-reconciliation"
     },
     {
@@ -152,6 +168,7 @@
       "id": "uninstall-reinstall",
       "kind": "lifecycle",
       "order": 17,
+      "qualification_phase": "edge-independent",
       "source": "variants/08-uninstall-reinstallation/installed",
       "uninstall_prompt": "Remove Ava from this isolated qualification project. Use Ava Maintenance and follow the supported role-led removal procedure. Preserve every project-owned byte, including OpenCode configuration, and report any conflict instead of discarding uncertain content."
     }
