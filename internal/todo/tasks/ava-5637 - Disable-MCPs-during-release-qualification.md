@@ -1,9 +1,10 @@
 ---
 id: ava-5637
 title: Disable MCPs during release qualification
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-09-01 20:15'
+updated_date: '2026-09-03 18:26'
 labels:
   - internal
   - roadmap
