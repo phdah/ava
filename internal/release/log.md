@@ -2,6 +2,10 @@
 
 This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
 
+## 2026-09-03
+
+- **Durable recoverable publication**: Split release-please release creation from next-release-PR maintenance and removed `release_created` as Ava's publication gate. Publication now resolves an exact tag/revision/accepted-qualification identity, can recreate a missing draft GitHub Release for an already-established tag, verifies and reuses matching assets by SHA-256, uploads only missing assets without clobbering, treats an exact published release as a no-op, and exposes explicit `workflow_dispatch` tag recovery. Current recovery tooling is checked out separately from the immutable tagged source so older partial releases can be repaired while validation and assembly remain bound to their exact release revision.
+
 ## 2026-09-02
 
 - **Session-neutral release orchestration**: Removed ChatGPT Work as a release-procedure requirement after the mandatory qualification gate became fully deterministic. GitHub Actions now executes pre-edge/final qualification and can apply a validated transient acceptance request, so an ordinary repository-connected ChatGPT session can review the release delta, author the edge, inspect evidence, request explicit acceptance, and merge without switching modes or supplying shell compute.

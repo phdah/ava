@@ -30,6 +30,7 @@ python3 -m py_compile \
   "$ROOT/internal/release/qualification.py" \
   "$ROOT/internal/release/qualification_work.py" \
   "$ROOT/internal/release/qualification_acceptance.py" \
+  "$ROOT/internal/release/publication.py" \
   "$ROOT/internal/release/qualification_phase_runner.py" \
   "$ROOT/internal/release/qualification_phase_automation.py" \
   "$ROOT/internal/release/qualification_phase_gate.py" \
@@ -75,6 +76,8 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_qualification_phases \
   internal.release.tests.test_assemble_candidate \
   internal.release.tests.test_qualification_acceptance \
+  internal.release.tests.test_publication \
+  internal.release.tests.test_publication_workflow \
   internal.release.tests.test_adjacent_edges \
   internal.release.tests.test_release_catalog \
   internal.release.tests.test_release_catalog_history \

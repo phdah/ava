@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Existing release tag to recover, for example v1.0.0-alpha.17"
+        required: false
+        type: string
 
 concurrency:
   group: release-please-main
@@ -21,68 +26,87 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - name: Create or update release pull request
+      - name: Create release identity without next-PR maintenance
         id: release
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.release_tag == '' }}
+        continue-on-error: true
         uses: googleapis/release-please-action@v5
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           target-branch: main
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+          skip-github-pull-request: true
 
-      - name: Check out exact tagged source
-        if: ${{ steps.release.outputs.release_created == 'true' }}
+      - name: Check out maintained publication tooling
         uses: actions/checkout@v4
         with:
-          ref: ${{ steps.release.outputs.sha }}
+          path: tooling
+
+      - name: Check out exact publication source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_tag || github.sha }}
           fetch-depth: 0
+          path: source
 
       - name: Set up Python
-        if: ${{ steps.release.outputs.release_created == 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Validate prepared identity
-        if: ${{ steps.release.outputs.release_created == 'true' }}
+      - name: Resolve durable publication identity
         id: identity
+        working-directory: source
         env:
-          TAG: ${{ steps.release.outputs.tag_name }}
-          VERSION: ${{ steps.release.outputs.version }}
-          SOURCE_REVISION: ${{ steps.release.outputs.sha }}
+          RECOVERY_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -eu
+          PYTHONPATH="$GITHUB_WORKSPACE/tooling" \
+            python3 -m internal.release.publication \
+              --root "$GITHUB_WORKSPACE/source" \
+              identity \
+              --tag "$RECOVERY_TAG"
+
+      - name: Report release-please identity hint
+        if: ${{ steps.release.outputs.sha != '' }}
+        env:
+          RELEASE_PLEASE_SHA: ${{ steps.release.outputs.sha }}
+        run: echo "release-please reported source revision $RELEASE_PLEASE_SHA"
+
+      - name: Fail an unresolved release-please attempt
+        if: ${{ steps.identity.outputs.eligible != 'true' && steps.release.outcome == 'failure' }}
+        run: |
+          echo "release-please failed before establishing a durable tag at this revision" >&2
+          exit 1
+
+      - name: Validate prepared identity and accepted qualification
+        if: ${{ steps.identity.outputs.eligible == 'true' }}
+        working-directory: source
+        env:
+          TAG: ${{ steps.identity.outputs.tag }}
+          VERSION: ${{ steps.identity.outputs.version }}
+          SOURCE_REVISION: ${{ steps.identity.outputs.source_revision }}
+          PREVIOUS_REVISION: ${{ steps.identity.outputs.previous_revision }}
+          PREVIOUS_VERSION: ${{ steps.identity.outputs.previous_version }}
         run: |
           set -eu
           test "$TAG" = "v$VERSION"
           test "$(cat version.txt)" = "$VERSION"
           test "$(git rev-parse HEAD)" = "$SOURCE_REVISION"
           test "$(git rev-list -n 1 "$TAG")" = "$SOURCE_REVISION"
-          case "$VERSION" in
-            *-alpha.*) channel=alpha ;;
-            *-beta.*) channel=beta ;;
-            *-rc.*) channel=rc ;;
-            *-*) echo "Unsupported prerelease version: $VERSION" >&2; exit 1 ;;
-            *) channel=stable ;;
-          esac
-          source_date_epoch=$(git show -s --format=%ct "$SOURCE_REVISION")
-          published_at=$(SOURCE_DATE_EPOCH="$source_date_epoch" python3 -c 'import datetime, os; print(datetime.datetime.fromtimestamp(int(os.environ["SOURCE_DATE_EPOCH"]), datetime.timezone.utc).isoformat().replace("+00:00", "Z"))')
-          printf 'tag=%s\nversion=%s\nsource_revision=%s\nchannel=%s\nsource_date_epoch=%s\npublished_at=%s\n' \
-            "$TAG" "$VERSION" "$SOURCE_REVISION" "$channel" "$source_date_epoch" "$published_at" >> "$GITHUB_OUTPUT"
-
-      - name: Run release qualification
-        if: ${{ steps.release.outputs.release_created == 'true' }}
-        env:
-          SOURCE_REVISION: ${{ steps.identity.outputs.source_revision }}
-        run: |
-          set -eu
-          previous_revision="${SOURCE_REVISION}^"
-          previous_version=$(git show "${previous_revision}:version.txt")
           python3 -m internal.release.validate_release_pr \
-            --previous-version "$previous_version" \
-            --base-revision "$previous_revision"
+            --previous-version "$PREVIOUS_VERSION" \
+            --base-revision "$PREVIOUS_REVISION"
+          python3 -m internal.release.qualification_acceptance \
+            validate-release-pr \
+            --previous-version "$PREVIOUS_VERSION" \
+            --base-revision "$PREVIOUS_REVISION"
           internal/release/test.sh
 
       - name: Assemble release twice
-        if: ${{ steps.release.outputs.release_created == 'true' }}
+        if: ${{ steps.identity.outputs.eligible == 'true' }}
+        working-directory: source
         run: |
           set -eu
           for output in release-a release-b; do
@@ -101,29 +125,150 @@ jobs:
           cmp release-a.sha256 release-b.sha256
           python3 -m internal.release.conformance --root release-a --mode release --format text
 
-      - name: Confirm draft release state
-        if: ${{ steps.release.outputs.release_created == 'true' }}
+      - name: Prepare exact GitHub Release notes
+        if: ${{ steps.identity.outputs.eligible == 'true' }}
+        working-directory: source
+        run: |
+          set -eu
+          PYTHONPATH="$GITHUB_WORKSPACE/tooling" \
+            python3 -m internal.release.publication \
+              notes \
+              --version "${{ steps.identity.outputs.version }}" \
+              --changelog CHANGELOG.md \
+              --output release-body.md
+
+      - name: Inspect durable GitHub Release
+        if: ${{ steps.identity.outputs.eligible == 'true' }}
+        id: release_state
+        working-directory: source
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          TAG: ${{ steps.identity.outputs.tag }}
+        run: |
+          set -eu
+          set +e
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" \
+            > release-state.json 2> release-state.err
+          status=$?
+          set -e
+          if [ "$status" -eq 0 ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          elif grep -q "HTTP 404" release-state.err; then
+            rm -f release-state.json
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          else
+            cat release-state.err >&2
+            exit "$status"
+          fi
+
+      - name: Recreate missing draft GitHub Release
+        if: ${{ steps.identity.outputs.eligible == 'true' && steps.release_state.outputs.exists != 'true' }}
+        working-directory: source
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          TAG: ${{ steps.identity.outputs.tag }}
+          SOURCE_REVISION: ${{ steps.identity.outputs.source_revision }}
+          CHANNEL: ${{ steps.identity.outputs.channel }}
+        run: |
+          set -eu
+          if [ "$CHANNEL" = "stable" ]; then
+            gh release create "$TAG" \
+              --draft \
+              --verify-tag \
+              --target "$SOURCE_REVISION" \
+              --title "$TAG" \
+              --notes-file release-body.md
+          else
+            gh release create "$TAG" \
+              --draft \
+              --prerelease \
+              --verify-tag \
+              --target "$SOURCE_REVISION" \
+              --title "$TAG" \
+              --notes-file release-body.md
+          fi
+
+      - name: Plan idempotent asset recovery
+        if: ${{ steps.identity.outputs.eligible == 'true' }}
+        id: plan
+        working-directory: source
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
         run: |
           set -eu
-          test "$(gh release view "${{ steps.identity.outputs.tag }}" --json isDraft --jq .isDraft)" = true
+          gh api \
+            "repos/$GITHUB_REPOSITORY/releases/tags/${{ steps.identity.outputs.tag }}" \
+            > release-state.json
+          PYTHONPATH="$GITHUB_WORKSPACE/tooling" \
+            python3 -m internal.release.publication \
+              plan \
+              --release-dir release-a \
+              --release-json release-state.json \
+              --upload-dir release-upload \
+              --notes release-body.md \
+              --version "${{ steps.identity.outputs.version }}" \
+              --tag "${{ steps.identity.outputs.tag }}" \
+              --source-revision "${{ steps.identity.outputs.source_revision }}" \
+              --previous-revision "${{ steps.identity.outputs.previous_revision }}" \
+              --previous-version "${{ steps.identity.outputs.previous_version }}" \
+              --source-date-epoch "${{ steps.identity.outputs.source_date_epoch }}" \
+              --published-at "${{ steps.identity.outputs.published_at }}"
 
-      - name: Attest verified assets
-        if: ${{ steps.release.outputs.release_created == 'true' }}
+      - name: Attest verified draft assets
+        if: ${{ steps.identity.outputs.eligible == 'true' && steps.plan.outputs.release_state == 'draft' }}
         uses: actions/attest@v4
         with:
-          subject-path: release-a/*
+          subject-path: source/release-a/*
 
-      - name: Upload assets to draft release
-        if: ${{ steps.release.outputs.release_created == 'true' }}
+      - name: Upload only missing draft assets
+        if: ${{ steps.identity.outputs.eligible == 'true' && steps.plan.outputs.missing_count != '0' }}
+        working-directory: source
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-        run: gh release upload "${{ steps.identity.outputs.tag }}" release-a/*
+          TAG: ${{ steps.identity.outputs.tag }}
+        run: gh release upload "$TAG" release-upload/*
 
       - name: Publish qualified release
-        if: ${{ steps.release.outputs.release_created == 'true' }}
+        if: ${{ steps.identity.outputs.eligible == 'true' && steps.plan.outputs.release_state == 'draft' }}
+        working-directory: source
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-          TAG: ${{ steps.release.outputs.tag_name }}
+          TAG: ${{ steps.identity.outputs.tag }}
         run: gh release edit "$TAG" --draft=false
+
+      - name: Verify immutable published release
+        if: ${{ steps.identity.outputs.eligible == 'true' }}
+        working-directory: source
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          TAG: ${{ steps.identity.outputs.tag }}
+        run: |
+          set -eu
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" > release-final.json
+          PYTHONPATH="$GITHUB_WORKSPACE/tooling" \
+            python3 -m internal.release.publication \
+              plan \
+              --release-dir release-a \
+              --release-json release-final.json \
+              --upload-dir release-verify-upload \
+              --notes release-body.md \
+              --version "${{ steps.identity.outputs.version }}" \
+              --tag "$TAG" \
+              --source-revision "${{ steps.identity.outputs.source_revision }}" \
+              --previous-revision "${{ steps.identity.outputs.previous_revision }}" \
+              --previous-version "${{ steps.identity.outputs.previous_version }}" \
+              --source-date-epoch "${{ steps.identity.outputs.source_date_epoch }}" \
+              --published-at "${{ steps.identity.outputs.published_at }}"
+          test "$(gh release view "$TAG" --json isDraft --jq .isDraft)" = false
+          test "$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" --jq .immutable)" = true
+          gh release verify "$TAG" --format json >/dev/null
+
+      - name: Create or update next release pull request
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.release_tag == '' }}
+        uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          target-branch: main
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          skip-github-release: true
