@@ -4,6 +4,7 @@ title: Evaluate host-neutral release qualification execution
 status: Parked
 assignee: []
 created_date: '2026-09-01 20:20'
+updated_date: '2026-09-03 20:39'
 labels:
   - internal
   - roadmap
@@ -22,6 +23,7 @@ ordinal: 6636
 
 ## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 Evaluate and implement a release-qualification path that does not require OpenCode, ChatGPT Work, or another specific agent host as the mandatory runtime.
 
 The release gate should protect deterministic release safety without coupling publication to one stochastic consumer-agent runtime or one ChatGPT mode. Agent-behavior simulations may remain useful QA, but normal release qualification should be executable regardless of whether the maintainer is operating from ordinary ChatGPT chat, Work, or another repository-capable session.
@@ -121,3 +123,10 @@ Do not restore OpenCode merely for normal release qualification. If an OpenCode 
 - an ordinary repository-connected ChatGPT session can drive the simplified flow end-to-end in the alpha.17 proof
 - optional behavioral QA is clearly separated from release acceptance
 - future generic host-adapter work has an explicit recovery reference to PR #122
+<!-- SECTION:DESCRIPTION:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Re-evaluated 2026-09-03: closing as superseded rather than proceeding with the ChatGPT-specific live-validation gate. The substantive goal is achieved and verified: release qualification runs deterministically in GitHub Actions (qualification_host: github-actions on the alpha16->17 run), pre-edge + final checks both ran, the adjacent edge/semantic review was authored (PR #122), exactly one final run was produced, and acceptance was recorded and PR #121 merged. What is NOT satisfied is the narrow 'ordinary repository-connected ChatGPT session (not OpenCode/Work) drives the flow end-to-end' proof this task specifically asked for -- but that proof is now moot: the team no longer uses ChatGPT Work sessions at all, so validating plain-ChatGPT-chat portability serves no practical purpose. Archiving rather than marking Done, since the specific completion criterion as written was never literally exercised, but the underlying architecture it was chasing (host-neutral, GH-Actions-driven qualification) is real and in place. Unrelated finding surfaced during this review, tracked separately: v1.0.0-alpha.17 is stuck as a GitHub Draft release with zero uploaded assets (unlike alpha.16, which published normally with all assets); the release-please publish steps (assemble/attest/upload/publish) show as skipped on the runs right after the PR #121 merge. Needs investigation independent of this task.
+<!-- SECTION:NOTES:END -->

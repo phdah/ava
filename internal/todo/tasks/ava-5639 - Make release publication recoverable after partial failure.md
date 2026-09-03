@@ -4,6 +4,7 @@ title: Harden and recover release publication after partial failure
 status: To Do
 assignee: []
 created_date: '2026-09-02 22:46'
+updated_date: '2026-09-03 20:39'
 labels:
   - internal
   - roadmap
@@ -13,8 +14,6 @@ labels:
   - github-actions
 milestone: m-0
 dependencies: []
-references:
-  - ava-5638
 type: enhancement
 ordinal: 6638
 ---

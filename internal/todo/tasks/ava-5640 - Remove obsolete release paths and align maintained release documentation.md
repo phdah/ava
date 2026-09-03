@@ -4,6 +4,7 @@ title: Remove obsolete release paths and align maintained release documentation
 status: To Do
 assignee: []
 created_date: '2026-09-03 08:10'
+updated_date: '2026-09-03 20:39'
 labels:
   - internal
   - roadmap
@@ -15,7 +16,6 @@ milestone: m-0
 dependencies:
   - ava-5639
 references:
-  - ava-5638
   - ava-5639
 type: enhancement
 ordinal: 6639

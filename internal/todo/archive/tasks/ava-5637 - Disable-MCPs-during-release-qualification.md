@@ -5,6 +5,7 @@ status: Done
 assignee: []
 created_date: '2026-09-01 20:15'
 updated_date: '2026-09-03 18:26'
+updated_date: '2026-09-03 20:39'
 labels:
   - internal
   - roadmap
@@ -13,8 +14,7 @@ labels:
   - opencode
   - mcp
 milestone: m-0
-dependencies:
-  - ava-5638
+dependencies: []
 type: enhancement
 ordinal: 6637
 ---
