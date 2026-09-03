@@ -1,6 +1,6 @@
 ---
 id: ava-5639
-title: Make release publication recoverable after partial failure
+title: Harden and recover release publication after partial failure
 status: To Do
 assignee: []
 created_date: '2026-09-02 22:46'
@@ -21,31 +21,43 @@ ordinal: 6638
 
 ## Description
 
-Make Ava's post-merge publication workflow safely resumable when release-please creates only part of the release state before failing.
+Harden Ava's post-merge publication workflow so the normal release path is not unnecessarily vulnerable to unrelated release-please failures, and make publication safely resumable when an unavoidable transient or external failure still leaves partial release state.
 
-The alpha.17 release exposed the failure mode: release-please created tag `v1.0.0-alpha.17` at merge commit `fa51a2b1578443115e076bfb54edd66eec4dbc1e`, then workflow run `33680822686` failed with `other side closed` before Ava's validation, assembly, attestation, asset upload, and publication steps ran. Retrying the job succeeded superficially, but release-please returned `release_created == false`, causing every publication step guarded by that output to skip. No GitHub Release object was present afterward.
+The alpha.17 release exposed both problems. In workflow run `33680822686`, release-please successfully identified PR #121, created the alpha.17 release/tag state, and marked the PR `autorelease: tagged`. It then continued into its separate next-release-PR bookkeeping. While backfilling the file list for commit `c91f1781b6a966444458e9f5ad1f3e68e06ae1a7`, the GitHub/API connection terminated with `other side closed`. The whole `googleapis/release-please-action` step was therefore marked failed even though release creation had already progressed, so every Ava validation, assembly, attestation, upload, and publication step was skipped.
 
-A correct recovery path must preserve the accepted immutable release identity and resume publication without deleting or moving a correct tag merely to make release-please emit a fresh release event.
+The retry demonstrated the second weakness: release-please could now see `v1.0.0-alpha.17` and completed successfully, but reported no newly-created release in that attempt. Because Ava's publication steps are all gated only by `steps.release.outputs.release_created == 'true'`, the retry skipped the complete publication pipeline rather than resuming the already-established release identity.
+
+The immediate network/API disconnect itself may be transient and outside Ava's control. The preventable design problem is that successful release creation and Ava publication are coupled to additional release-please bookkeeping that can fail afterward, and that publication eligibility is represented only by an ephemeral action output rather than durable repository/release state.
+
+A correct implementation must therefore address both prevention and recovery. It should reduce or eliminate the failure window that caused alpha.17 where reasonably possible, and it must still recover safely if GitHub, release-please, attestation, upload, or another external dependency fails after any durable release mutation.
 
 ## Required behavior
 
-1. Detect a partially-created target release after the release PR has merged, including at least the state where the correct tag exists but the GitHub Release object or release assets are missing.
-2. Before resuming, prove the target tag points to the exact accepted release merge revision and that the corresponding qualification acceptance is valid.
-3. Resume the same validation, reproducible assembly, conformance, attestation, asset upload, and publish sequence from the exact tagged source even when `release_created` is false.
-4. Make retry/recovery idempotent: rerunning after partial success must reuse compatible state or fail closed rather than duplicate, overwrite, retag, or silently publish mismatched assets.
-5. A fully published matching release should be a safe no-op or explicit already-complete result.
-6. `workflow_dispatch` or another explicit GitHub Actions recovery entry point must be capable of finishing a known partially published release without requiring local or user-hosted release tooling.
-7. Document the recovery procedure in the authoritative internal release flow.
-8. Preserve normal release-please creation behavior for the first successful post-merge run.
+1. Investigate the alpha.17 first-attempt failure and explicitly document which part was an external/transient transport failure versus which part was caused by Ava's workflow structure.
+2. Decouple Ava's publication decision from unrelated post-release release-please PR-maintenance work where the release-please interface permits it. A successfully-established release identity must not be discarded merely because subsequent next-release-PR bookkeeping fails.
+3. Do not use `release_created` from one action invocation as the sole durable source of truth for whether publication should run. Resolve and verify durable state such as the accepted version, exact tag, tagged revision, and GitHub Release state.
+4. Detect a partially-created target release after the release PR has merged, including at least the state where the correct tag exists but the GitHub Release object or release assets are missing.
+5. Before continuing or resuming publication, prove the target tag points to the exact accepted release merge revision and that the corresponding qualification acceptance is valid.
+6. Run or resume the same validation, reproducible assembly, conformance, attestation, asset upload, and publish sequence from the exact tagged source even when the current release-please invocation did not emit `release_created == true`.
+7. Make retry/recovery idempotent: rerunning after partial success must reuse compatible state or fail closed rather than duplicate, overwrite, retag, or silently publish mismatched assets.
+8. A fully published matching release should be a safe no-op or explicit already-complete result.
+9. `workflow_dispatch` or another explicit GitHub Actions recovery entry point must be capable of finishing a known partially published release without requiring local or user-hosted release tooling.
+10. Consider bounded automatic retry only for operations that are demonstrably safe and idempotent. Do not mask persistent failures or retry release mutations blindly.
+11. Document both the normal hardened publication path and the recovery procedure in the authoritative internal release flow.
+12. Preserve release-please's required version/tag/release-PR behavior while avoiding unnecessary coupling between release creation, next-PR maintenance, and Ava asset publication.
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Tests cover an interruption after tag creation but before publication and prove a subsequent recovery run reaches the normal publication steps even when release-please no longer reports `release_created == true`
-- [ ] #2 Recovery verifies tag, version, accepted qualification, and exact source revision before assembling or publishing
-- [ ] #3 Recovery never deletes, moves, or recreates a correct existing tag merely to retrigger release-please
-- [ ] #4 Release assembly is still performed reproducibly from the exact tagged source, conformance is checked, assets are attested, and only matching assets are uploaded
-- [ ] #5 Repeated recovery attempts are idempotent across missing-release, draft or partial-release, and already-published states, with mismatches failing closed
-- [ ] #6 The GitHub Actions manual recovery entry point is documented and can be operated from a repository-connected maintainer session
-- [ ] #7 The authoritative release procedure documents how to diagnose and recover partial post-merge publication
-- [ ] #8 The alpha.17 partial publication incident is recovered through the maintained path and the resulting immutable release is verified; AVA-5638 records the successful end-to-end proof
+- [ ] #1 The alpha.17 first-attempt failure is reproduced or modeled accurately in tests: release/tag creation succeeds, later release-please bookkeeping fails, and Ava still has a well-defined durable publication state instead of losing the release event
+- [ ] #2 The implementation distinguishes the external `other side closed` transport failure from the preventable workflow coupling that allowed it to strand publication
+- [ ] #3 Ava publication eligibility is derived from verified durable release identity/state and is not solely dependent on a fresh `release_created == true` action output
+- [ ] #4 Tests cover interruption after tag/release creation and prove a subsequent normal retry or explicit recovery run reaches the publication steps even when release-please no longer reports a newly-created release
+- [ ] #5 Recovery verifies tag, version, accepted qualification, exact source revision, and existing GitHub Release state before assembling or publishing
+- [ ] #6 Recovery never deletes, moves, or recreates a correct existing tag merely to retrigger release-please
+- [ ] #7 Release assembly is still performed reproducibly from the exact tagged source, conformance is checked, assets are attested, and only matching assets are uploaded
+- [ ] #8 Repeated publication/recovery attempts are idempotent across missing-release, draft or partial-release, and already-published states, with mismatches failing closed
+- [ ] #9 The design evaluates whether release creation/publication can be separated from next-release-PR maintenance, or otherwise prevents a later release-please bookkeeping failure from suppressing an already-valid publication path
+- [ ] #10 The GitHub Actions manual recovery entry point is documented and can be operated from a repository-connected maintainer session
+- [ ] #11 The authoritative release procedure documents diagnosis, prevention strategy, automatic retry boundaries, and manual recovery for partial post-merge publication
+- [ ] #12 The alpha.17 partial publication incident is recovered through the maintained path and the resulting immutable release is verified; AVA-5638 records the successful end-to-end proof
 <!-- AC:END -->
