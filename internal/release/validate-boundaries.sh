@@ -26,6 +26,7 @@ for path in \
   .github/workflows/conventional-pr-title.yml \
   .github/workflows/release-please.yml \
   .github/workflows/release-qualification.yml \
+  .github/workflows/python-tests.yml \
   distribution/index.md \
   distribution/paths.md \
   distribution/ownership.md \
@@ -44,29 +45,38 @@ for path in \
   internal/release/index.md \
   internal/release/procedure.md \
   internal/release/release-please.md \
+  internal/release/publication-recovery.md \
   internal/release/installer.md \
   internal/release/conformance.md \
   internal/release/qualification-automation.md \
   internal/release/qualification-execution.md \
   internal/release/assemble.sh \
+  internal/release/assemble-candidate.sh \
   internal/release/assemble.py \
+  internal/release/assemble_reviewed.py \
+  internal/release/adjacent_edges.py \
+  internal/release/release_catalog.py \
+  internal/release/compose_adjacent_catalog.py \
+  internal/release/validate_adjacent_catalog.py \
   internal/release/conformance.py \
   internal/release/conformance_common.py \
   internal/release/conformance_repository.py \
   internal/release/conformance_installed.py \
   internal/release/conformance_release.py \
   internal/release/qualification_runner.py \
-  internal/release/qualification_automation.py \
+  internal/release/qualification_state.py \
   internal/release/qualification.py \
-  internal/release/qualification_work.py \
-  internal/release/qualification_phase_runner.py \
-  internal/release/qualification_phase_automation.py \
-  internal/release/qualification_phase_gate.py \
+  internal/release/qualification_engine.py \
+  internal/release/qualification_ci.py \
+  internal/release/qualification_acceptance.py \
+  internal/release/qualification_inbox.py \
   internal/release/qualify-release.sh \
   internal/release/run-release-qualification.sh \
   internal/release/accept-release-qualification.sh \
+  internal/release/publication.py \
   internal/release/validate-installed-paths.py \
   internal/release/validate_pr_title.py \
+  internal/release/validate_release_pr.py \
   internal/release/ava-install.sh \
   internal/release/installer/00.py \
   internal/release/installer/01.py \
@@ -79,6 +89,8 @@ for path in \
   internal/release/test.sh \
   internal/release/fixtures/conformance-matrix.json \
   internal/release/fixtures/release-please-policy.json \
+  internal/release/fixtures/release-upgrade-policy.json \
+  internal/release/fixtures/semantic-impact-assessment.json \
   internal/release/fixtures/synthetic-qualification-vault/index.md \
   internal/release/fixtures/synthetic-qualification-vault/blueprint.md \
   internal/release/fixtures/synthetic-qualification-vault/blueprint.json \
@@ -89,7 +101,13 @@ for path in \
   internal/release/fixtures/synthetic-qualification-vault/requirements.lock \
   internal/release/fixtures/synthetic-qualification-vault/oracle.schema.json \
   internal/release/fixtures/synthetic-qualification-vault/run-manifest.schema.json \
-  internal/release/qualification/schemas/work-run-record.schema.json \
+  internal/release/qualification/config.json \
+  internal/release/qualification/pair-catalog.json \
+  internal/release/qualification/current-state.json \
+  internal/release/qualification/schemas/config.schema.json \
+  internal/release/qualification/schemas/pair-catalog.schema.json \
+  internal/release/qualification/schemas/current-state.schema.json \
+  internal/release/qualification/schemas/qualification-run-record.schema.json \
   internal/release/tests/test_installed_paths.py \
   internal/release/tests/test_installer.py \
   internal/release/tests/test_installer_conformance.py \
@@ -99,8 +117,10 @@ for path in \
   internal/release/tests/test_synthetic_qualification_vault.py \
   internal/release/tests/test_qualification_checkpoints.py \
   internal/release/tests/test_qualification_runner.py \
-  internal/release/tests/test_qualification_phases.py \
-  internal/release/tests/test_qualification_work.py
+  internal/release/tests/test_qualification_state.py \
+  internal/release/tests/test_qualification_engine.py \
+  internal/release/tests/test_assembly_contract.py \
+  internal/release/tests/test_release_surface.py
 do
   require_file "$path"
 done
@@ -108,12 +128,33 @@ done
 qualification_entrypoints=$(find "$ROOT/internal/release" -maxdepth 1 -type f -name 'qualify-*.sh' -printf '%f\n' | sort)
 [ "$qualification_entrypoints" = "qualify-release.sh" ] || fail "qualification shell entrypoint inventory is invalid: $qualification_entrypoints"
 
-[ ! -e "$ROOT/internal/release/qualification-opencode.sh" ] || fail "obsolete OpenCode qualification runtime remains"
-[ ! -e "$ROOT/internal/release/tests/test_qualification_opencode_adapter.py" ] || fail "obsolete OpenCode qualification adapter coverage remains"
-[ ! -e "$ROOT/internal/release/qualification/schemas/work-edge-independent-run.schema.json" ] || fail "obsolete committed pre-edge evidence schema remains"
-[ ! -e "$ROOT/internal/release/qualification-work.md" ] || fail "obsolete Work-specific qualification procedure remains"
+for obsolete in \
+  internal/release/qualification_automation.py \
+  internal/release/qualification_work.py \
+  internal/release/qualification_phase_runner.py \
+  internal/release/qualification_phase_automation.py \
+  internal/release/qualification_phase_gate.py \
+  internal/release/qualification/phase-state.json \
+  internal/release/qualification/audit-prompt.md \
+  internal/release/qualification/schemas/audit-output.schema.json \
+  internal/release/qualification/schemas/edge-independent-run.schema.json \
+  internal/release/qualification/schemas/session-inventory.schema.json \
+  internal/release/qualification/schemas/run-record.schema.json \
+  internal/release/qualification/schemas/work-run-record.schema.json \
+  internal/release/tests/test_qualification_automation.py \
+  internal/release/tests/test_qualification_execution_identity.py \
+  internal/release/tests/test_qualification_work.py \
+  internal/release/tests/test_qualification_phases.py \
+  internal/release/alpha-qualification.md \
+  internal/release/fixtures/alpha-qualification.json \
+  internal/release/tests/test_alpha_qualification.py \
+  internal/release/validate_upgrade_impact.py \
+  internal/release/tests/test_upgrade_impact.py
+do
+  [ ! -e "$ROOT/$obsolete" ] || fail "obsolete release path remains: $obsolete"
+done
 
-for path in templates/base templates/project-scaffolds internal/release/installer internal/release/fixtures
+for path in templates/base templates/project-scaffolds internal/release/installer internal/release/fixtures internal/release/qualification/schemas
 do
   require_dir "$path"
 done
@@ -185,16 +226,17 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/conformance_release.py" \
   "$ROOT/internal/release/qualification_runner.py" \
-  "$ROOT/internal/release/qualification_automation.py" \
+  "$ROOT/internal/release/qualification_state.py" \
   "$ROOT/internal/release/qualification.py" \
-  "$ROOT/internal/release/qualification_work.py" \
-  "$ROOT/internal/release/qualification_phase_runner.py" \
-  "$ROOT/internal/release/qualification_phase_automation.py" \
-  "$ROOT/internal/release/qualification_phase_gate.py" \
+  "$ROOT/internal/release/qualification_engine.py" \
+  "$ROOT/internal/release/qualification_ci.py" \
+  "$ROOT/internal/release/qualification_acceptance.py" \
+  "$ROOT/internal/release/publication.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/checkpoint.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \
-  "$ROOT/internal/release/validate_pr_title.py"
+  "$ROOT/internal/release/validate_pr_title.py" \
+  "$ROOT/internal/release/validate_release_pr.py"
 python3 "$ROOT/internal/release/validate-installed-paths.py" --root "$ROOT"
 python3 "$ROOT/internal/release/conformance.py" --root "$ROOT" --mode repository --format text
 

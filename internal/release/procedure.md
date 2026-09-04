@@ -1,213 +1,110 @@
----
-type: Internal Release Procedure
-title: Ava Release Publication Procedure
-description: Authoritative procedure for preparing, qualifying, accepting, merging, publishing, and verifying Ava releases.
-tags: [internal, releases, publication, verification, maintenance]
-generated:
-  by: agent:openai-chatgpt
-  at: 2026-08-03T10:00:00+02:00
-updated:
-  by: agent:openai-chatgpt
-  at: 2026-09-02T20:55:00+02:00
----
+# Ava release procedure
 
-# Ava Release Publication Procedure
+This is the authoritative release operator flow. The release PR defines the candidate version. GitHub Actions performs mandatory deterministic qualification. The maintainer owns semantic review and explicit user acceptance. Post-merge publication is derived from durable tag and release state and is safely resumable.
 
-When the user asks to make, prepare, review, accept, merge, publish, or qualify an Ava release, the Ava Internal Maintainer must follow this procedure.
+## 1. Identify the release candidate
 
-The normal release gate is intentionally deterministic. Synthetic consumer-agent behavior is optional QA, not mandatory publication evidence.
+Use the current release-please PR targeting `main`. Read the candidate version from its release changes and validate it with `internal.release.validate_release_pr`.
 
-The release procedure is **session-neutral**. The maintainer may be operating from an ordinary ChatGPT chat, ChatGPT Work, or another repository-capable agent session. No particular ChatGPT mode is a release requirement.
+The candidate must be an exact repository revision. Do not qualify or publish mutable working state.
 
-Mandatory deterministic qualification runs in **GitHub Actions** on the release PR. The active maintainer session orchestrates the release through the connected repository: it reviews the release delta, authors the edge, inspects CI/evidence, applies validated qualification artifacts, records explicit user acceptance, and merges when all gates pass. The session itself does not need a shell or mutable local workspace.
+## 2. Bind the qualification pair
 
-The deterministic execution details are documented in [Session-neutral deterministic qualification](qualification-execution.md).
+`internal/release/qualification/config.json` selects one active adjacent source-to-target pair from `pair-catalog.json`.
 
-# Release flow
+- Source is the exact previous published release and its verified asset digests.
+- Target is the exact local candidate revision.
+- Only the immediately previous supported release is authored as the new edge. Earlier support is composed from immutable adjacent catalogs.
 
-1. Let release-please determine the target version and release PR.
-2. Configure the active qualification pair as the exact immutable previous published release -> exact local target version.
-3. Work from the exact release PR branch using the current maintainer session. Do not require the user to switch ChatGPT modes.
-4. The `Release qualification` GitHub Actions workflow detects that the target adjacent edge does not yet exist and runs the deterministic `pre-edge` qualification automatically.
-5. The pre-edge run acquires and verifies the exact previous published release assets, generates the finalized synthetic qualification vault, assembles the provisional no-edge candidate, and runs the cheap deterministic fail-fast checks. It writes no qualification artifact because no repository evidence is required.
-6. If pre-edge fails, stop before semantic review and edge authoring.
-7. Review the exact previous-to-target managed delta and complete the project-owned semantic-impact assessment, including an explicit decision and rationale.
-8. Author exactly one adjacent release record for `<previous> -> <target>`, plus only the guidance, deterministic migrations, and retirement decisions introduced by that edge.
-9. Once the edge exists, the `Release qualification` workflow automatically runs the authoritative `final` deterministic qualification from the exact release PR revision.
-10. The final run reruns the pre-edge checks and additionally proves the authentic source-to-target edge, deterministic upgrade, interrupted resume, abort, rollback, project-owned preservation, and exact asset/revision identity.
-11. If final qualification fails, stop and report the exact deterministic finding.
-12. If final qualification passes, the workflow creates one authoritative final run under `internal/release/qualification/runs/`, updates `current-state.json` to `awaiting-user-signoff`, and uploads those exact repository changes as a `release-qualification-evidence-*` artifact.
-13. The active maintainer session downloads that artifact through the connected GitHub capability, validates its `artifact-manifest.json`, applies exactly the listed files/deletions to the release PR branch, and makes no other release-content change in that commit.
-14. The resulting PR checks rerun normally. `Release qualification` reuses the committed final evidence when its qualified revision is an ancestor of the current head and every intervening change is confined to `internal/release/qualification/`.
-15. Require the normal GitHub Actions checks, including Python/repository tests and deterministic release qualification, to be green. Release PR policy remains blocked until explicit acceptance exists.
-16. Present the final deterministic evidence to the user.
-17. Only after explicit user approval, record an acceptance request for the exact run. A session with direct shell execution may use `accept-release-qualification.sh`; a normal repository-connected chat may instead commit `internal/release/qualification/acceptance-request.json` as described below.
-18. The `Release qualification` workflow validates the acceptance request, runs the maintained acceptance implementation in CI, removes the transient request in its checkout, and uploads the resulting qualification-state transition as a `release-qualification-acceptance-*` artifact.
-19. The active maintainer session downloads that artifact, validates its manifest, applies the exact updated qualification files and deletion of `acceptance-request.json` to the release PR, and commits only those qualification changes.
-20. Require the Release PR policy check to pass on that accepted state.
-21. Merge only after the adjacent edge, semantic-impact decision, final deterministic qualification, required GitHub Actions checks, and explicit user acceptance are all accepted.
-22. Publication automation creates and verifies the immutable release.
+The pair, target revision, release manifest, and qualification matrix are part of execution identity.
 
-# Session boundary
+## 3. Run pre-edge qualification
 
-Mandatory release qualification uses **zero delegated qualification agents** and does not require a particular ChatGPT session type.
+The release PR triggers `.github/workflows/release-qualification.yml`, which executes `python3 -m internal.release.qualification_ci` against the exact PR head. The CI driver prepares immutable source assets and a repository-external synthetic fixture, then runs the deterministic `pre-edge` stage.
 
-The active maintainer session owns only work that genuinely benefits from maintainer judgment or repository orchestration:
+Pre-edge qualification covers target installation and managed-damage behavior that does not depend on the new adjacent upgrade edge. It fails before edge authoring when the candidate is mechanically invalid. Pre-edge output is transient CI evidence and does not create release acceptance state.
 
-- discover the release PR and exact release context
-- configure the active release pair
-- inspect the managed delta
-- make and record the semantic-impact decision and rationale
-- author the adjacent edge, guidance, migrations, and retirement decisions
-- inspect deterministic CI results and compact evidence
-- apply exact qualification artifacts through the connected repository capability
-- request acceptance only after explicit user approval
-- merge only after all checks are satisfied
+A failing qualification is a release blocker. Correct the implementation in normal repository work and rerun CI.
 
-The deterministic release checks themselves run in GitHub Actions. A session with shell access may invoke the same entry points directly for diagnostics, but normal release acceptance must not depend on Work, OpenCode, a user workstation, or another session-specific runtime.
+## 4. Perform semantic impact review
 
-# Mandatory deterministic checks
+The Ava Internal Maintainer reviews the exact previous release against the target candidate and records whether project-owned semantic reconciliation is required. Tooling must not guess semantic migration need.
 
-The mandatory release gate covers:
+The review records these sections:
 
-- exact source and target assets and checksums
-- exact target/repository revision binding
-- empty-project installation
-- mature-project installation with project-owned preservation
-- rejection of modified, missing, corrupt, and unexpected managed state
-- exact adjacent edge presence in the final assets
-- a real deterministic previous-to-target upgrade
-- interrupted upgrade resume
-- interrupted upgrade abort
-- rollback to the previous release
-- finalized synthetic corpus and external test-boundary integrity
+### Managed delta
 
-Routing, calendar interpretation, ambiguous clarification, inbox ingestion, agent-led semantic reconciliation/finalization, and role-led uninstall/reinstall remain useful behavioral tests, but they are optional behavioral QA rather than release-gating evidence.
+Describe changes to Ava-managed files, installation behavior, schemas, routing, lifecycle behavior, or other managed contracts. A managed behavior change is evidence to review, not a semantic decision by itself.
 
-# Pre-edge fail-fast boundary
+### Project-owned compatibility
 
-The pre-edge run exists only to avoid wasting maintainer effort on an obviously broken candidate.
+Determine whether the managed delta can invalidate project-owned meaning or behavior, including roles, workflows, shared instructions, indexes, host entrypoints, or other project-owned extensions. The presence or absence of deterministic project-file migrations does not decide this question.
 
-It runs before the target adjacent catalog or guidance is authored and intentionally writes no repository evidence. There is no committed early-run ancestry chain to preserve.
+### Required reconciliation
 
-A release-content change after pre-edge does not require proving that the early result remains valid; the authoritative final run simply reruns the applicable deterministic checks against the final exact revision.
+When project-owned compatibility can be affected, define bounded discovery conditions, completion criteria, and reviewed guidance for reconciliation. When it cannot, state that no project-owned reconciliation is required and record the rationale.
 
-# Adjacent release state
+The decision and rationale are maintainer-owned. Deterministic validation may verify that the reviewed decision is represented consistently, but it must not infer semantic impact from managed behavioral change or deterministic project-file changes.
 
-After pre-edge succeeds, author exactly one immutable release record:
+## 5. Author the adjacent edge
 
-`internal/release/catalogs/<target>.json`
+After pre-edge qualification passes and semantic impact is reviewed, author exactly one adjacent upgrade edge from the previous release to the candidate using the maintained catalog model and reviewed guidance.
 
-That record contains only the immediately previous-to-target edge, migrations introduced by that edge, semantic guidance introduced by that edge, and source-retirement decisions introduced by that release.
-
-Existing release records must not be rewritten or copied into cumulative state.
-
-# Project-owned semantic-impact assessment
-
-For the exact previous-to-target managed delta, answer:
-
-1. **Managed delta:** Which managed contracts, behavior, authority, routing, validation, metadata, paths, or lifecycle rules changed?
-2. **Project-owned compatibility:** Could valid active project-owned context remain structurally unchanged yet become conflicting, misleading, semantically invalid, or behaviorally incompatible under the target?
-3. **Required reconciliation:** If yes, which bounded project-owned concepts must be inspected or reconciled before semantic compatibility may advance?
-
-Record the reviewed decision and its rationale as release evidence.
-
-Set `semantic_review_required: true` only when project-owned semantic reconciliation may be required. When true, transition-local guidance must define affected concepts, bounded discovery conditions, and completion criteria.
-
-Tooling must not guess semantic migration need. The decision is reviewed maintainer judgment over the exact managed delta and project-owned compatibility question. A managed behavior change alone does not decide semantic impact, and the presence or absence of a deterministic project-file migration does not decide it either.
-
-The deterministic final qualification verifies that the installer reaches the mechanically correct target state. When semantic review is required, that correct state may be `pending`; the release gate does not spend a synthetic agent turn pretending to reconcile arbitrary project-owned meaning.
-
-# Final deterministic qualification
-
-The final run is the only qualification run used for acceptance.
-
-It must be assembled and executed from the exact final release PR revision after edge authoring. The run record binds that revision to the local target asset identity, source release identity, qualification matrix digest, deterministic driver digest, executor label, deterministic summary, and `awaiting-user-signoff` state.
-
-The final run does not require:
-
-- a prerequisite committed pre-edge run
-- an independent LLM audit
-- agent interaction transcripts
-- provider session IDs
-- OpenCode session state
-- ChatGPT Work
-
-Any release-content change after the final qualified revision invalidates acceptance and requires a new final qualification. Changes confined to `internal/release/qualification/` may record qualification evidence and user acceptance without changing release content.
-
-# GitHub Actions execution and artifact handoff
-
-`.github/workflows/release-qualification.yml` is the canonical deterministic executor for release PRs. It runs only for the release-please branch in the repository itself.
-
-Before the edge exists it runs `pre-edge`. After the edge exists it runs `final`. The workflow does **not** push generated evidence with `GITHUB_TOKEN`; instead it uploads the exact qualification state transition as an artifact so the active repository-connected maintainer session can apply it. This keeps subsequent PR workflow runs attached to a normal repository commit rather than relying on recursive Actions pushes.
-
-Each qualification artifact contains:
-
-- `artifact-manifest.json` with `schema_version`, `kind`, exact `files`, and exact `delete` paths
-- the complete bytes for every listed file at its repository-relative path
-
-The maintainer must apply the manifest exactly. Do not rewrite, normalize, reinterpret, or mix unrelated changes into the qualification artifact commit.
-
-The normal `.github/workflows/python-tests.yml` suite remains independently responsible for Backlog validation, installed-project task-board checks, and `internal/release/test.sh`. The release process does not duplicate that suite in the maintainer session.
-
-# Session-neutral user acceptance
-
-Qualification does not accept itself.
-
-After the user explicitly approves the exact final run, a shell-capable environment may record acceptance with:
+Run the maintained release suite:
 
 ```sh
-internal/release/accept-release-qualification.sh \
-  --identity user:<stable-identity> \
-  [--run-id <run-id>]
+internal/release/test.sh
 ```
 
-A normal repository-connected chat does not need shell access. It may create exactly this transient file on the release PR branch:
+The suite validates release policy, assembly, catalogs, conformance, qualification contracts, publication/recovery behavior, and repository boundaries.
 
-`internal/release/qualification/acceptance-request.json`
+## 6. Run final qualification
 
-with exactly:
+Push the completed release PR. GitHub Actions reruns qualification and selects the `final` stage when the target declares the required adjacent edge.
 
-```json
-{
-  "identity": "user:<stable-identity>",
-  "run_id": "<exact-final-run-id>",
-  "schema_version": 1
-}
-```
+Final qualification repeats the deterministic mechanical scenarios, validates the adjacent edge, exercises lifecycle recovery paths, and runs a deterministic source-to-target upgrade. A passing final run writes a run record with status `awaiting-user-signoff` and exposes the evidence as a CI artifact.
 
-Create that request only after explicit user approval. The Release qualification workflow validates the exact shape and invokes the maintained acceptance implementation in CI. It then uploads an acceptance artifact whose manifest includes the updated accepted qualification files and deletion of the transient request. The maintainer session applies that artifact exactly to finish the accepted state.
+## 7. Accept qualification
 
-# Optional behavioral QA
+Review the final CI evidence. A clean deterministic run does not accept itself.
 
-The synthetic qualification vault may continue to contain agent-behavior scenarios. These can be run deliberately when a change materially affects routing, inbox behavior, semantic reconciliation, role maintenance, or another agent-interpreted contract.
+After the user explicitly accepts that exact final run, apply acceptance through `internal/release/accept-release-qualification.sh` or the validated acceptance-request path handled by `qualification_ci.py`. Acceptance is bound to the run ID, pair, repository revision, source/target identity, and execution digest.
 
-Optional behavioral QA is not part of normal release acceptance. A future task may expose it through a generic protocol with ChatGPT Work, OpenCode, or other host adapters.
+Do not synthesize acceptance, reuse acceptance for another revision, or merge before the release policy validator observes the accepted state.
 
-# Release PR merge gate
+## 8. Merge the release PR
 
-The Release PR policy verifies:
+Once required CI checks pass and the final qualification is accepted, merge the current release-please PR. Do not manually create, move, or recreate release tags.
 
-- all prior catalog releases have accepted release-quality state
-- the target has a current `qualified-run` acceptance
-- the accepted run was a clean `awaiting-user-signoff` final deterministic run
-- source and target versions match the release edge
-- target assets were assembled from the qualified repository revision
-- the qualified revision belongs to the release PR
-- only `internal/release/qualification/` changes occurred after final qualification
+## 9. Publish from durable release state
 
-A release-content change after final qualification requires a new final deterministic run and fresh user acceptance.
+`.github/workflows/release-please.yml` owns post-merge publication. It separates release identity creation from next-release-PR maintenance and does not use a fresh `release_created` action output as publication authority.
 
-# Publication
+For the accepted target it:
 
-After the accepted release PR is merged, publication automation binds the final tag/version/revision, validates the recursive release catalog, runs deterministic repository/release checks, assembles reproducible assets, validates checksums and conformance, verifies attestations, and publishes the immutable GitHub release.
+1. resolves the expected version, tag, tagged revision, and GitHub Release candidates,
+2. proves the tag matches the exact accepted release revision,
+3. validates qualification acceptance from maintained tooling,
+4. runs `internal/release/test.sh`,
+5. assembles the release twice from the exact tagged source and proves byte-for-byte reproducibility,
+6. runs release conformance,
+7. validates or creates one compatible draft release,
+8. attests the release assets,
+9. uploads only assets that are missing and fails closed on digest mismatches,
+10. publishes the exact draft by release ID,
+11. verifies the published release is immutable and complete,
+12. runs release-please PR maintenance for the next release separately.
 
-Publication must not bypass the pre-merge qualification gate.
+A fully published matching release is an already-complete result.
 
-# Failure handling
+## Recovery after partial publication
 
-Any mandatory deterministic qualification failure leaves publication blocked.
+Use the `workflow_dispatch` entry point in `.github/workflows/release-please.yml` with the known release tag. The same durable-state planner and publication sequence are used for recovery; there is no separate recovery implementation.
 
-Report the exact result and actionable finding. Do not weaken a deterministic check merely to make the release pass.
+Recovery may reuse a compatible draft and matching uploaded assets. It may delete only redundant compatible drafts after validating all same-tag candidates. It must never move a correct tag, overwrite mismatched assets, reuse an incompatible draft, or publish when release identity is ambiguous.
 
-A failure in optional behavioral QA should be reported separately and judged according to whether it exposes a real release defect; optional QA does not automatically become release-gating evidence.
+See [publication recovery](publication-recovery.md) for diagnosis and operator commands.
+
+## Retry boundary
+
+Automatic retry is appropriate only for read-only or demonstrably idempotent operations. Mutating tag, release, asset, and publication operations are guarded by durable identity and digest checks. Persistent or ambiguous failures stop the workflow for explicit diagnosis.

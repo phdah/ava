@@ -1,16 +1,16 @@
-# Release Qualification State
+# Release qualification state
 
-This directory is the repository-owned control and compact-evidence scope for mandatory release qualification. It is internal maintainer state and is never distributed to Ava projects.
+This directory contains current qualification configuration/state plus immutable evidence from completed runs.
 
-- [Qualification configuration](config.json) - Active release pair plus fixed qualification and audit models.
-- [Release-pair catalog](pair-catalog.json) - Reviewed exact published or local selectors used to execute qualification.
-- [Edge-independent phase state](phase-state.json) - Latest fail-fast phase result per release pair.
-- [Edge-independent run evidence](phase-runs/) - Compact early run records, session inventories, audit reports, and issue inventories.
-- [Current state](current-state.json) - Final edge-dependent pair execution state plus the durable per-release acceptance ledger.
-- [Independent audit prompt](audit-prompt.md) - Prompt/contract used by each fresh phase-scoped independent audit session.
-- [Schemas](schemas/) - Validation contracts for control state and compact evidence.
-- [Final run evidence](runs/) - Compact edge-dependent run records, session inventories, audit reports, and issue inventories.
+## Current operational state
 
-Historical releases are distinguished with `basis: historical-backfill`. New releases may satisfy the merge gate only with `basis: qualified-run`, a linked clean edge-independent prerequisite, a clean edge-dependent run, and explicit user signoff.
+- [Qualification configuration](config.json) - Selects the active adjacent release pair.
+- [Release-pair catalog](pair-catalog.json) - Exact published/local selectors and expected release digests.
+- [Current state](current-state.json) - Final qualification state and per-release acceptance ledger.
+- [Schemas](schemas/) - Validation schemas for current configuration, state, pair catalog, and final run records.
 
-Raw release assets, generated qualification vaults, isolated projects, command logs, and full transcripts remain repository-external. Qualification and acceptance update compact state here but never create Git commits automatically.
+## Historical evidence
+
+- [Run records](runs/) - Committed qualification evidence from completed release candidates.
+
+Run records are immutable historical evidence. Their field names and recorded executor provenance reflect the format used when each run was produced and are not operational instructions for new qualification runs.

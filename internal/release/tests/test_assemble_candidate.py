@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from internal.release import qualification_automation as automation
+from internal.release import qualification_state as state
 
 
 class AssembleCandidateTests(unittest.TestCase):
@@ -18,7 +18,7 @@ class AssembleCandidateTests(unittest.TestCase):
         self.repo = self.root / "repo"
         (self.repo / "internal/release/catalogs").mkdir(parents=True)
 
-        source = automation.REPOSITORY_ROOT / "internal/release/assemble-candidate.sh"
+        source = state.REPOSITORY_ROOT / "internal/release/assemble-candidate.sh"
         self.script = self.repo / "internal/release/assemble-candidate.sh"
         shutil.copy2(source, self.script)
         self.script.chmod(0o755)
@@ -178,7 +178,7 @@ class AssembleEntrypointTests(unittest.TestCase):
         (self.repo / "internal/__init__.py").write_text("", encoding="utf-8")
         (release / "__init__.py").write_text("", encoding="utf-8")
 
-        source = automation.REPOSITORY_ROOT / "internal/release/assemble.sh"
+        source = state.REPOSITORY_ROOT / "internal/release/assemble.sh"
         self.script = release / "assemble.sh"
         shutil.copy2(source, self.script)
         self.script.chmod(0o755)
@@ -216,7 +216,3 @@ class AssembleEntrypointTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), "reviewed-import-ok")
-
-
-if __name__ == "__main__":
-    unittest.main()

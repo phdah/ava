@@ -17,9 +17,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from internal.release import qualification_automation as automation
+from internal.release import qualification_state as state
 
-REPOSITORY_ROOT = automation.REPOSITORY_ROOT
+REPOSITORY_ROOT = state.REPOSITORY_ROOT
 QUALIFICATION_ROOT = REPOSITORY_ROOT / "internal/release/qualification"
 ACCEPTANCE_REQUEST = QUALIFICATION_ROOT / "acceptance-request.json"
 ALLOWED_ARTIFACT_KINDS = {"evidence", "acceptance"}
@@ -57,10 +57,10 @@ def load_acceptance_request(path: Path = ACCEPTANCE_REQUEST) -> dict[str, Any]:
 
 
 def reusable_final_evidence() -> bool:
-    config, catalog, _ = automation.load_configuration(REPOSITORY_ROOT)
-    pair = automation.active_pair(config, catalog)
-    state = automation.load_json(QUALIFICATION_ROOT / "current-state.json")
-    pair_state = state.get("pairs", {}).get(pair["id"])
+    config, catalog, _ = state.load_configuration(REPOSITORY_ROOT)
+    pair = state.active_pair(config, catalog)
+    current = state.load_json(QUALIFICATION_ROOT / "current-state.json")
+    pair_state = current.get("pairs", {}).get(pair["id"])
     if not isinstance(pair_state, dict):
         return False
     if pair_state.get("status") not in {"awaiting-user-signoff", "accepted"}:
@@ -71,7 +71,7 @@ def reusable_final_evidence() -> bool:
     run_path = QUALIFICATION_ROOT / "runs" / f"{run_id}.json"
     if not run_path.is_file():
         return False
-    run_record = automation.load_json(run_path)
+    run_record = state.load_json(run_path)
     identity = run_record.get("execution_identity")
     if (
         run_record.get("automated_state") != "awaiting-user-signoff"
@@ -231,7 +231,7 @@ def main() -> int:
         return 0
     except (
         QualificationCiError,
-        automation.AutomationError,
+        state.QualificationStateError,
         OSError,
         ValueError,
         KeyError,

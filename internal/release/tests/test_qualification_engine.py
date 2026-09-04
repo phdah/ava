@@ -6,8 +6,8 @@ import unittest
 from pathlib import Path
 
 from internal.release import qualification_ci
+from internal.release import qualification_engine as implementation
 from internal.release import qualification_runner
-from internal.release import qualification_work as implementation
 
 
 class QualificationExecutionTests(unittest.TestCase):
@@ -43,7 +43,7 @@ class QualificationExecutionTests(unittest.TestCase):
         )
         self.assertTrue(
             all(
-                scenario["kind"] not in implementation.AGENT_KINDS
+                scenario["kind"] not in implementation.BEHAVIORAL_KINDS
                 for scenario in pre + final
             )
         )
@@ -53,7 +53,7 @@ class QualificationExecutionTests(unittest.TestCase):
         behavioral = {
             scenario["id"]
             for scenario in matrix["scenarios"]
-            if scenario["kind"] in implementation.AGENT_KINDS
+            if scenario["kind"] in implementation.BEHAVIORAL_KINDS
         }
         selected = {
             scenario["id"]
@@ -103,43 +103,46 @@ class QualificationExecutionTests(unittest.TestCase):
             )
             implementation.validate_final_edge(source, target)
 
-    def test_canonical_entrypoint_selects_no_chatgpt_mode(self) -> None:
+    def test_canonical_entrypoint_uses_current_engine(self) -> None:
         release_root = implementation.REPOSITORY_ROOT / "internal/release"
         shell = (release_root / "qualify-release.sh").read_text(encoding="utf-8")
         driver = (release_root / "qualification.py").read_text(encoding="utf-8")
+        engine = (release_root / "qualification_engine.py").read_text(encoding="utf-8")
         self.assertIn("qualification.py", shell)
-        self.assertNotIn("qualification_work.py", shell)
-        self.assertNotIn("opencode", shell.lower())
-        self.assertNotIn("subagent", shell.lower())
+        self.assertIn("qualification_engine", driver)
         self.assertIn("AVA_QUALIFICATION_EXECUTOR", driver)
-        self.assertIn("ordinary ChatGPT chat", driver)
+        for obsolete in ("qualification_work", "ChatGPT Work", "session-neutral"):
+            self.assertNotIn(obsolete, driver)
+            self.assertNotIn(obsolete, engine)
 
-    def test_final_evidence_schema_is_executor_neutral(self) -> None:
+    def test_final_evidence_schema_is_executor_based(self) -> None:
         schema_path = (
             implementation.REPOSITORY_ROOT
-            / "internal/release/qualification/schemas/work-run-record.schema.json"
+            / "internal/release/qualification/schemas/qualification-run-record.schema.json"
         )
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
         fields = set(schema["properties"])
         self.assertIn("qualification_mode", fields)
-        self.assertIn("qualification_host", fields)
-        self.assertNotIn("const", schema["properties"]["qualification_host"])
+        self.assertIn("qualification_executor", fields)
+        self.assertNotIn("qualification_host", fields)
+        self.assertNotIn("const", schema["properties"]["qualification_executor"])
         self.assertNotIn("qualification_model", fields)
         self.assertNotIn("audit_model", fields)
         self.assertNotIn("audit_report_file", fields)
         self.assertNotIn("interaction_evidence_file", fields)
-        self.assertNotIn("work_protocol_version", fields)
 
-    def test_execution_procedure_is_session_neutral(self) -> None:
+    def test_execution_procedure_describes_current_gate(self) -> None:
         root = implementation.REPOSITORY_ROOT
         text = (root / "internal/release/qualification-execution.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("session-neutral", text.lower())
-        self.assertIn("zero delegated qualification agents", text.lower())
-        self.assertIn("ordinary ChatGPT chat", text)
-        self.assertIn("There is no requirement to switch from normal Chat to Work", text)
         self.assertIn("GitHub Actions", text)
+        self.assertIn("deterministic", text.lower())
+        self.assertIn("pre-edge", text)
+        self.assertIn("final", text)
+        self.assertNotIn("session-neutral", text.lower())
+        self.assertNotIn("ChatGPT Work", text)
+        self.assertNotIn("OpenCode", text)
 
     def test_github_actions_owns_mandatory_execution(self) -> None:
         root = implementation.REPOSITORY_ROOT
@@ -154,8 +157,8 @@ class QualificationExecutionTests(unittest.TestCase):
             encoding="utf-8"
         )
         self.assertIn("internal/release/test.sh", python_workflow)
-        self.assertIn("session-neutral", procedure.lower())
         self.assertIn("GitHub Actions", procedure)
+        self.assertNotIn("session-neutral", procedure.lower())
         self.assertIn("python3 -m internal.release.qualification_ci", qualification_workflow)
         self.assertNotIn("python3 - <<", qualification_workflow)
         self.assertNotIn("package_changes()", qualification_workflow)

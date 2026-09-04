@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""Canonical session-neutral deterministic Ava release qualification driver.
-
-The release gate has no LLM runtime dependency. The active maintainer session may
-be an ordinary ChatGPT chat, ChatGPT Work, or another repository-capable agent.
-Deterministic execution is normally delegated to GitHub Actions; direct shell
-execution remains supported when the current environment provides it.
-"""
+"""Canonical deterministic Ava release qualification CLI."""
 
 from __future__ import annotations
 
@@ -13,9 +7,9 @@ import json
 import os
 import sys
 
-from internal.release import qualification_automation as automation
+from internal.release import qualification_engine
 from internal.release import qualification_runner
-from internal.release import qualification_work as implementation
+from internal.release import qualification_state as state
 
 
 def execution_label() -> str:
@@ -26,27 +20,24 @@ def execution_label() -> str:
 
 
 def validate_config(args) -> int:
-    repository_root = implementation.resolve(args.repository_root)
-    config, _, _ = automation.load_configuration(repository_root)
+    repository_root = qualification_engine.resolve(args.repository_root)
+    config, _, _ = state.load_configuration(repository_root)
     print(f"qualification configuration valid: active pair {config['active_pair']}")
-    print(f"release qualification mode: {implementation.QUALIFICATION_MODE}")
+    print(f"release qualification mode: {qualification_engine.QUALIFICATION_MODE}")
     print(f"qualification executor: {execution_label()}")
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = implementation.parse_args(argv)
+    args = qualification_engine.parse_args(argv)
     try:
-        # The underlying deterministic implementation historically called this
-        # value WORK_HOST. It now records the actual executor label and imposes
-        # no ChatGPT mode requirement.
-        implementation.WORK_HOST = execution_label()
+        qualification_engine.QUALIFICATION_EXECUTOR = execution_label()
         if args.command == "validate-config":
             return validate_config(args)
-        return implementation.execute(args)
+        return qualification_engine.execute(args)
     except (
-        implementation.WorkQualificationError,
-        automation.AutomationError,
+        qualification_engine.QualificationExecutionError,
+        state.QualificationStateError,
         qualification_runner.QualificationError,
         OSError,
         ValueError,

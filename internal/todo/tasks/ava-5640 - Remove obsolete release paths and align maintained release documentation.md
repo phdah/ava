@@ -1,10 +1,10 @@
 ---
 id: ava-5640
 title: Remove obsolete release paths and align maintained release documentation
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-09-03 08:10'
-updated_date: '2026-09-03 20:39'
+updated_date: '2026-09-04 19:48'
 labels:
   - internal
   - roadmap
@@ -46,14 +46,43 @@ This cleanup should follow AVA-5639 so the resilient publication/recovery design
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 The implementation records an inventory of the maintained release surface and classifies every release-related executable/documentation artifact as current, required historical evidence, or obsolete
-- [ ] #2 Every artifact classified as obsolete is removed rather than retained as a dormant fallback or possible future option
-- [ ] #3 Retained scripts, Python modules, workflows, helpers, fixtures, and configuration contain no branches whose only purpose is supporting a superseded release process
-- [ ] #4 The authoritative release procedure and all maintained release instructions/examples use current terminology and describe one current supported flow without references to obsolete host-specific or superseded qualification/publication mechanisms
-- [ ] #5 Repository-wide references to removed release files, commands, environment variables, workflows, and terminology are eliminated or intentionally confined to immutable historical logs/evidence
-- [ ] #6 Historical logs, changelog/history, completed task resolution evidence, and required release evidence remain preserved but are clearly non-operational records
-- [ ] #7 Duplicate current release entry points or helpers are consolidated unless their separation has an explicit maintained purpose
-- [ ] #8 Regression coverage detects dangling release references and prevents known deprecated entry points or compatibility paths from being reintroduced accidentally
-- [ ] #9 The complete current release test suite passes after cleanup, including AVA-5639's resilient publication and manual recovery behavior
-- [ ] #10 A maintainer reading only the live release procedure and retained operational files can understand and execute the current release process without needing historical context
+- [x] #1 The implementation records an inventory of the maintained release surface and classifies every release-related executable/documentation artifact as current, required historical evidence, or obsolete
+- [x] #2 Every artifact classified as obsolete is removed rather than retained as a dormant fallback or possible future option
+- [x] #3 Retained scripts, Python modules, workflows, helpers, fixtures, and configuration contain no branches whose only purpose is supporting a superseded release process
+- [x] #4 The authoritative release procedure and all maintained release instructions/examples use current terminology and describe one current supported flow without references to obsolete host-specific or superseded qualification/publication mechanisms
+- [x] #5 Repository-wide references to removed release files, commands, environment variables, workflows, and terminology are eliminated or intentionally confined to immutable historical logs/evidence
+- [x] #6 Historical logs, changelog/history, completed task resolution evidence, and required release evidence remain preserved but are clearly non-operational records
+- [x] #7 Duplicate current release entry points or helpers are consolidated unless their separation has an explicit maintained purpose
+- [x] #8 Regression coverage detects dangling release references and prevents known deprecated entry points or compatibility paths from being reintroduced accidentally
+- [x] #9 The complete current release test suite passes after cleanup, including AVA-5639's resilient publication and manual recovery behavior
+- [x] #10 A maintainer reading only the live release procedure and retained operational files can understand and execute the current release process without needing historical context
 <!-- AC:END -->
+
+## Implementation inventory
+
+### Current runtime and support surface
+
+- `.github/workflows/release-qualification.yml` and `qualification_ci.py` own mandatory release-PR qualification execution and evidence handoff.
+- `run-release-qualification.sh` owns immutable source acquisition and repository-external fixture/test-boundary setup.
+- `qualify-release.sh` and `qualification.py` are the stable shell and Python qualification entry points.
+- `qualification_engine.py` owns deterministic pre-edge/final execution; `qualification_runner.py` owns reusable scenario mechanics and targeted behavioral QA; `qualification_state.py` owns current config/schema/digest/repository-state helpers.
+- `qualification_acceptance.py` and `accept-release-qualification.sh` own explicit acceptance.
+- `assemble*.{sh,py}`, adjacent catalog modules, immutable `catalogs/`, and reviewed `guidance/` own candidate assembly and supported upgrade composition.
+- `.github/workflows/release-please.yml`, `publication.py`, and `publication-recovery.md` own durable publication and AVA-5639 recovery.
+- `conformance*.py`, `validate-boundaries.sh`, `test.sh`, and maintained release tests own validation.
+- `procedure.md`, `release-please.md`, `qualification-automation.md`, `qualification-execution.md`, `conformance.md`, and release indexes are live operator documentation.
+
+### Required historical evidence
+
+- `internal/release/log.md`, `CHANGELOG.md`, completed/archive roadmap task evidence, committed records under `internal/release/qualification/runs/`, immutable published release metadata, catalogs, and reviewed guidance remain preserved as records or compatibility evidence. Historical terminology in those records is non-operational.
+
+### Removed obsolete surface
+
+- The Work-named qualification implementation, old two-phase runner/automation/gate stack, phase state, independent audit prompt and schemas, old run/session schemas, and their tests.
+- The old model/session-oriented `qualification_automation.py` helper plus model configuration and execution-identity/session-inventory tests; current state helpers are now bounded in `qualification_state.py`.
+- The superseded alpha qualification policy/fixture/test stack. Its still-current assembly link and release-edge conformance checks now live in `test_assembly_contract.py` and remain referenced by the conformance matrix.
+- The compatibility-only `validate_upgrade_impact.py` validator and its test. The current adjacent-catalog and release-PR policy remain unchanged.
+
+## Validation
+
+PR #126 validates the final release surface. Python tests run `33902374660` passed the complete Backlog and release suite after the cleanup, including AVA-5639 publication/recovery regression coverage. `test_release_surface.py` and `validate-boundaries.sh` fail if known obsolete paths return, while `test_assembly_contract.py` preserves current assembly-link and release-edge behavior that had previously lived in the removed alpha-specific test stack.

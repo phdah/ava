@@ -4,7 +4,6 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from internal.release import qualification_automation as automation
 from internal.release import qualification_runner as runner
 
 
@@ -24,14 +23,12 @@ class QualificationSemanticStatusTests(unittest.TestCase):
             {"outcome": "structural-pass", "semantic_status": "pending-audit"},
         ]
         self.assertEqual(runner.summary_exit_status(outcomes), 0)
-        self.assertEqual(automation.qualification_exit({"outcomes": outcomes}), 0)
         self.assertEqual(outcomes[1]["semantic_status"], "pending-audit")
 
-    def test_nonpassing_outcome_still_blocks_runner_and_automation(self) -> None:
+    def test_nonpassing_outcome_still_blocks_runner(self) -> None:
         for outcome in ("fail", "skipped", "user-decision-required"):
             outcomes = [{"outcome": "pass"}, {"outcome": outcome}]
             self.assertEqual(runner.summary_exit_status(outcomes), 1)
-            self.assertEqual(automation.qualification_exit({"outcomes": outcomes}), 1)
 
     def test_structural_pass_workspace_is_reused(self) -> None:
         with tempfile.TemporaryDirectory() as temp:

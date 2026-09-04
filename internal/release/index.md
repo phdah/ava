@@ -1,59 +1,61 @@
-# Ava Internal Release Procedures
+# Ava internal release
 
-This directory contains maintainer-only release assembly, publication, qualification, validation, fixtures, and tests. It is never distributed to Ava projects.
+[Release procedure](procedure.md) is the authoritative operator flow. The files below are the maintained implementation and support surface for that procedure.
 
-- [Release assembler entry point](assemble.sh)
-- [One-command qualification candidate assembler](assemble-candidate.sh)
-- [Release assembler implementation](assemble.py)
-- [Reviewed recursive-edge assembler](assemble_reviewed.py)
-- [Immutable release edge records](catalogs/)
-- [Adjacent edge model](adjacent_edges.py)
-- [Release-record and recursive composition policy](release_catalog.py)
-- [Release-local edge composer](compose_adjacent_catalog.py)
-- [Recursive edge-chain validator](validate_adjacent_catalog.py)
-- [Installer and updater shell template](ava-install.sh)
-- [Embedded installer Python fragments](installer/)
-- [Release automation and Conventional Commit contract](release-please.md)
-- [Release publication recovery procedure](publication-recovery.md)
-- [Durable publication recovery planner](publication.py)
-- [Release pull-request policy validator](validate_release_pr.py)
-- [Pull-request title validator](validate_pr_title.py)
-- [Alpha qualification policy](alpha-qualification.md)
-- [Deterministic release qualification procedure](qualification-automation.md)
-- [Session-neutral deterministic qualification execution](qualification-execution.md)
-- [Release qualification execution entry point](qualify-release.sh)
-- [Canonical session-neutral qualification driver](qualification.py)
-- [GitHub Actions qualification orchestration driver](qualification_ci.py)
-- [Host-neutral qualification setup runner](run-release-qualification.sh)
-- [Deterministic qualification implementation compatibility module](qualification_work.py)
-- [Explicit qualification acceptance entry point](accept-release-qualification.sh)
-- [Shared qualification automation helpers](qualification_automation.py)
-- [Shared qualification scenario engine](qualification_runner.py)
-- [Historical phase contract and matrix runner](qualification_phase_runner.py)
-- [Historical phase orchestration compatibility module](qualification_phase_automation.py)
-- [Historical two-phase gate](qualification_phase_gate.py)
-- [Qualification acceptance and release-PR state implementation](qualification_acceptance.py)
-- [Qualification configuration and compact evidence state](qualification/)
-- [Deterministic inbox qualification checks](qualification_inbox.py)
-- [Conformance validation contract](conformance.md)
-- [Unified conformance validator](conformance.py)
-- [Interaction evidence validator](interaction_evidence.py)
-- [Release publication procedure](procedure.md)
-- [Release guidance sources](guidance/)
-- [Repository boundary validator](validate-boundaries.sh)
-- [Installer and conformance test runner](test.sh)
-- [Validation fixtures](fixtures/)
-- [Release implementation tests](tests/)
-- [Release implementation log](log.md)
+## Release identity and policy
 
-`qualify-release.sh` is the qualification execution entry point. It routes through the session-neutral deterministic driver and does not select a ChatGPT mode or agent runtime.
+- [release-please policy](release-please.md)
+- [release PR validator](validate_release_pr.py)
+- [PR title validator](validate_pr_title.py)
+- [release-please workflow](../../.github/workflows/release-please.yml)
+- [release qualification workflow](../../.github/workflows/release-qualification.yml)
+- [Python release test workflow](../../.github/workflows/python-tests.yml)
 
-The canonical release flow is orchestrated from whichever repository-capable maintainer session is active. GitHub Actions executes the mandatory deterministic pre-edge/final checks, so normal ChatGPT chat does not need Work or shell access. The workflow YAML remains declarative; `qualification_ci.py` owns CI-specific stage selection, acceptance-request validation, evidence reuse, qualification execution, and artifact packaging.
+## Assembly and compatibility
 
-The normal flow has an ephemeral `pre-edge` fail-fast stage and one authoritative `final` deterministic run. Optional agent-behavior scenarios remain in the synthetic fixture for targeted QA and future host-protocol work, but they are not publication gates.
+- [release assembler](assemble.sh)
+- [release assembler implementation](assemble.py)
+- [reviewed catalog assembler](assemble_reviewed.py)
+- [qualification candidate assembler](assemble-candidate.sh)
+- [adjacent edge model](adjacent_edges.py)
+- [release catalog model](release_catalog.py)
+- [adjacent catalog composer](compose_adjacent_catalog.py)
+- [adjacent catalog validator](validate_adjacent_catalog.py)
+- [immutable release catalogs](catalogs/)
+- [release guidance](guidance/)
 
-`qualification_work.py` is retained as the current deterministic implementation module while `qualification.py` provides the canonical host-neutral interface. Its historical name does not imply a Work requirement.
+## Qualification
 
-`qualification_phase_runner.py`, `qualification_phase_automation.py`, `qualification_phase_gate.py`, and historical qualification evidence remain available to interpret earlier runs. They are not the canonical execution or acceptance path for new releases.
+- [qualification contract](qualification-automation.md)
+- [qualification execution](qualification-execution.md)
+- [qualification CLI](qualification.py)
+- [deterministic qualification engine](qualification_engine.py)
+- [qualification state helpers](qualification_state.py)
+- [GitHub Actions qualification driver](qualification_ci.py)
+- [qualification setup runner](run-release-qualification.sh)
+- [qualification shell entry point](qualify-release.sh)
+- [qualification scenario engine](qualification_runner.py)
+- [qualification acceptance](qualification_acceptance.py)
+- [qualification acceptance shell entry point](accept-release-qualification.sh)
+- [qualification state and evidence](qualification/)
+- [synthetic qualification fixture](fixtures/synthetic-qualification-vault/)
 
-`validate_upgrade_impact.py` and historical target-specific guidance remain available only for compatibility investigation of already published releases. They are not active release-authoring inputs.
+`qualification.py` is the stable CLI facade. `qualification_engine.py` owns deterministic execution. `qualification_state.py` owns only current configuration, schema, digest, and repository-state helpers. `run-release-qualification.sh` prepares immutable source assets and repository-external fixture state before invoking the CLI; `qualification_ci.py` owns GitHub Actions orchestration and artifact handoff. These responsibilities are intentionally separate.
+
+## Publication and recovery
+
+- [publication state planner](publication.py)
+- [publication recovery procedure](publication-recovery.md)
+- [release workflow](../../.github/workflows/release-please.yml)
+
+## Validation
+
+- [conformance contract](conformance.md)
+- [conformance validator](conformance.py)
+- [repository boundary validator](validate-boundaries.sh)
+- [maintained release suite](test.sh)
+- [release tests](tests/)
+
+## Historical records
+
+`log.md`, committed records under `qualification/runs/`, the repository changelog, completed roadmap task evidence, and published GitHub Release metadata are historical records. They may contain terminology from the process that produced them. They are evidence only and are not release instructions or executable alternatives.
