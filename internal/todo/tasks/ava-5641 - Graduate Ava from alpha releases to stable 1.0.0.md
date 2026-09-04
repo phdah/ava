@@ -1,10 +1,10 @@
 ---
 id: ava-5641
 title: Graduate Ava from alpha releases to stable 1.0.0
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-09-05 00:23'
-updated_date: '2026-09-05 00:41'
+updated_date: '2026-09-05 00:42'
 labels:
   - internal
   - roadmap
@@ -63,6 +63,14 @@ The migration is not complete when `1.0.0` exists. It must also switch Ava's mai
 - The completed-task migration must use Backlog.md's native completed-task semantics and preserve task content/history; it is not an archival substitute for unfinished work.
 - `1.0.1` must be produced by the ordinary stable workflow, not by repeating the manual/bootstrap mechanism used for `1.0.0`.
 - Stable release tags must resolve to the exact accepted revisions and published assets must come from those exact tagged sources.
+
+## Implementation notes
+
+- PR #126 is merged at `f9edbf6153be9375347aa27674ee4b67875535d6`, satisfying the AVA-5640 dependency.
+- The post-merge Release Please run found no releasable unit because PR #126 was correctly classified as repository-only `refactor(release)` work, so it created no release PR.
+- The final-alpha gate is therefore initiated with a temporary package-level `release-as: 1.0.0-alpha.19` override. This keeps the existing prerelease strategy and all qualification/publication gates unchanged while asking Release Please for the exact final prerelease required by this task.
+- Remove the temporary `release-as` override as part of the stable configuration cutover after `v1.0.0-alpha.19` has been fully qualified, accepted, published, immutable, and verified.
+- No destructive alpha cleanup, stable configuration switch, completed-task migration, or acceptance criterion is complete yet.
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
