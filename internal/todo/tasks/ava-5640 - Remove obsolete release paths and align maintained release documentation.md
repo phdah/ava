@@ -1,10 +1,10 @@
 ---
 id: ava-5640
 title: Remove obsolete release paths and align maintained release documentation
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-09-03 08:10'
-updated_date: '2026-09-04 15:30'
+updated_date: '2026-09-04 19:48'
 labels:
   - internal
   - roadmap
@@ -54,7 +54,7 @@ This cleanup should follow AVA-5639 so the resilient publication/recovery design
 - [x] #6 Historical logs, changelog/history, completed task resolution evidence, and required release evidence remain preserved but are clearly non-operational records
 - [x] #7 Duplicate current release entry points or helpers are consolidated unless their separation has an explicit maintained purpose
 - [x] #8 Regression coverage detects dangling release references and prevents known deprecated entry points or compatibility paths from being reintroduced accidentally
-- [ ] #9 The complete current release test suite passes after cleanup, including AVA-5639's resilient publication and manual recovery behavior
+- [x] #9 The complete current release test suite passes after cleanup, including AVA-5639's resilient publication and manual recovery behavior
 - [x] #10 A maintainer reading only the live release procedure and retained operational files can understand and execute the current release process without needing historical context
 <!-- AC:END -->
 
@@ -80,9 +80,9 @@ This cleanup should follow AVA-5639 so the resilient publication/recovery design
 
 - The Work-named qualification implementation, old two-phase runner/automation/gate stack, phase state, independent audit prompt and schemas, old run/session schemas, and their tests.
 - The old model/session-oriented `qualification_automation.py` helper plus model configuration and execution-identity/session-inventory tests; current state helpers are now bounded in `qualification_state.py`.
-- The superseded alpha qualification policy/fixture/test stack.
+- The superseded alpha qualification policy/fixture/test stack. Its still-current assembly link and release-edge conformance checks now live in `test_assembly_contract.py` and remain referenced by the conformance matrix.
 - The compatibility-only `validate_upgrade_impact.py` validator and its test. The current adjacent-catalog and release-PR policy remain unchanged.
 
 ## Validation
 
-`test_release_surface.py` and `validate-boundaries.sh` fail if the known obsolete paths return. The maintained release suite now compiles and executes only current release modules while retaining publication/recovery regression coverage. Final task completion is gated on the PR CI result.
+PR #126 validates the final release surface. Python tests run `33902374660` passed the complete Backlog and release suite after the cleanup, including AVA-5639 publication/recovery regression coverage. `test_release_surface.py` and `validate-boundaries.sh` fail if known obsolete paths return, while `test_assembly_contract.py` preserves current assembly-link and release-edge behavior that had previously lived in the removed alpha-specific test stack.
