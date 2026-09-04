@@ -87,7 +87,7 @@
       }
     },
     {
-      "historical": false,
+      "historical": true,
       "id": "alpha16-to-alpha17-local",
       "source": {
         "asset_sha256": {
@@ -109,6 +109,31 @@
         "kind": "local",
         "tag": "v1.0.0-alpha.17",
         "version": "1.0.0-alpha.17"
+      }
+    },
+    {
+      "historical": false,
+      "id": "alpha17-to-alpha18-local",
+      "source": {
+        "asset_sha256": {
+          "SHA256SUMS": "43c313c04b8191036864f6ef62e753904cb41936028d29d095dfb4b208748f8f",
+          "ava-base.tar.gz": "fa733ee5ea7c08d424e0f7c665a318fbc76ec8905b22494cf0658af90cdb079e",
+          "ava-guidance.tar.gz": "d19897a42b14e118c09c39be1310e44cff5b594b26e05007c9a776008faf57cf",
+          "ava-install.sh": "ef067c672e6873287e9efb617a057b037c4b67645fa6fc434f40165ab2282c71",
+          "ava-migrations.tar.gz": "c0c3e7404fa783c0fbf874921c0a259ffcef5cabc7dee0dad11f671d82664031",
+          "ava-release-notes.md": "e132ec7d7b7bdb2f30aa1e48d81c158df702d8b7f391d7c61394a53dc77837de",
+          "ava-release.json": "5d57330cfc7240f89b6ccf96d9773e3bdbb9d9fd04ff5e962894ab6ab4d3fd10"
+        },
+        "kind": "published",
+        "release_manifest_sha256": "5d57330cfc7240f89b6ccf96d9773e3bdbb9d9fd04ff5e962894ab6ab4d3fd10",
+        "source_revision": "fa51a2b1578443115e076bfb54edd66eec4dbc1e",
+        "tag": "v1.0.0-alpha.17",
+        "version": "1.0.0-alpha.17"
+      },
+      "target": {
+        "kind": "local",
+        "tag": "v1.0.0-alpha.18",
+        "version": "1.0.0-alpha.18"
       }
     }
   ],
