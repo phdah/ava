@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-alpha.18](https://github.com/phdah/ava/compare/v1.0.0-alpha.17...v1.0.0-alpha.18) (2026-09-04)
+
+
+### Bug Fixes
+
+* **release:** recover draft releases by id ([#124](https://github.com/phdah/ava/issues/124)) ([008fa72](https://github.com/phdah/ava/commit/008fa72182abdb2ca47130e5ac2a2a547ca821e5))
+
 ## [1.0.0-alpha.17](https://github.com/phdah/ava/compare/v1.0.0-alpha.16...v1.0.0-alpha.17) (2026-09-02)
 
 
