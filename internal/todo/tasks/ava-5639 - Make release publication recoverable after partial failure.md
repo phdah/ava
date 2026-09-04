@@ -4,7 +4,7 @@ title: Harden and recover release publication after partial failure
 status: Parked
 assignee: []
 created_date: '2026-09-02 22:46'
-updated_date: '2026-09-03 20:39'
+updated_date: '2026-09-04 13:37'
 labels:
   - internal
   - roadmap
@@ -68,7 +68,9 @@ A correct implementation must therefore address both prevention and recovery. It
 - Recovery checks out current maintained publication tooling separately from the exact immutable tagged source, then runs release identity validation, qualification acceptance, the maintained release suite, reproducible double assembly, conformance, attestation, missing-only upload, publication, and immutable release verification from that tag.
 - `internal/release/tests/test_publication.py` models missing, partial draft, mismatched, already-published, non-release, and stale-tag states. `test_publication_workflow.py` freezes the split release-please and explicit recovery contract.
 - `internal/release/publication-recovery.md` records the alpha.17 diagnosis, hardened normal path, retry boundaries, and manual recovery procedure.
+- Live recovery run `33859391629` successfully resolved `v1.0.0-alpha.17` to `fa51a2b1578443115e076bfb54edd66eec4dbc1e`, validated its accepted qualification, passed all 309 maintained release tests, and reproduced/conformed the release twice. It then exposed that GitHub's release-by-tag endpoint does not expose drafts: the workflow mistook the existing draft as missing, created a second empty compatible draft, and failed before any asset upload or publication.
+- Follow-up recovery hardening enumerates the Releases collection including drafts, validates every same-tag candidate before mutation, preserves the most complete compatible draft, deletes only redundant compatible drafts by release ID, fails closed on any mismatch or published-state ambiguity, and performs draft upload/publication mutations by exact release ID rather than tag lookup.
 
 ## Parked boundary
 
-Implementation is complete but the task remains `Parked` until the maintained workflow is available on `main` and the live alpha.17 partial release is recovered and verified. That same live proof should close acceptance criteria 10 and 12 and provide the publication evidence required to move AVA-5638 from `Parked` to `Done`.
+Implementation remains `Parked` until the follow-up recovery fix is merged and the live alpha.17 recovery is rerun successfully. The rerun must collapse the two currently compatible empty alpha.17 drafts without touching the existing tag, publish and verify the exact immutable release, and provide the evidence needed for acceptance criterion 12. Acceptance criterion 10 remains open because the connected ChatGPT GitHub capability can inspect and rerun workflows but cannot currently initiate a new `workflow_dispatch`; the user can trigger the documented recovery entry point directly in GitHub Actions.
