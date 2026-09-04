@@ -1,5 +1,5 @@
 {
-  "active_pair": "alpha16-to-alpha17-local",
+  "active_pair": "alpha17-to-alpha18-local",
   "pairs": {
     "alpha13-to-alpha14": {
       "historical": true,
@@ -26,13 +26,19 @@
       }
     },
     "alpha16-to-alpha17-local": {
-      "historical": false,
+      "historical": true,
       "latest_run_id": "20260902T200505423005Z-alpha16-to-alpha17-local",
       "status": "accepted",
       "user_signoff": {
         "identity": "user:phdah",
         "time": "2026-09-02T20:37:05Z"
       }
+    },
+    "alpha17-to-alpha18-local": {
+      "historical": false,
+      "latest_run_id": null,
+      "status": "not-run",
+      "user_signoff": null
     }
   },
   "release_acceptance": {
