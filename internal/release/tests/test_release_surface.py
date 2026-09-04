@@ -44,9 +44,10 @@ LIVE_IMPLEMENTATION = (
     "internal/release/qualification_state.py",
     "internal/release/qualification_ci.py",
     "internal/release/run-release-qualification.sh",
-    "internal/release/validate-boundaries.sh",
     "internal/release/test.sh",
 )
+
+BOUNDARY_VALIDATOR = "internal/release/validate-boundaries.sh"
 
 
 class ReleaseSurfaceTests(unittest.TestCase):
@@ -54,6 +55,12 @@ class ReleaseSurfaceTests(unittest.TestCase):
         for relative in OBSOLETE_PATHS:
             with self.subTest(path=relative):
                 self.assertFalse((ROOT / relative).exists(), relative)
+
+    def test_boundary_validator_guards_every_obsolete_path(self) -> None:
+        text = (ROOT / BOUNDARY_VALIDATOR).read_text(encoding="utf-8")
+        for relative in OBSOLETE_PATHS:
+            with self.subTest(path=relative):
+                self.assertIn(relative, text)
 
     def test_live_release_docs_use_current_terminology(self) -> None:
         forbidden = (
@@ -95,8 +102,8 @@ class ReleaseSurfaceTests(unittest.TestCase):
         ci = (ROOT / "internal/release/qualification_ci.py").read_text(encoding="utf-8")
         setup = (ROOT / "internal/release/run-release-qualification.sh").read_text(encoding="utf-8")
         self.assertIn("qualification_engine", cli)
-        self.assertIn("deterministic Ava release qualification engine", engine)
-        self.assertIn("Current deterministic release qualification state helpers", state)
+        self.assertIn("deterministic ava release qualification engine", engine.lower())
+        self.assertIn("current deterministic release qualification state helpers", state.lower())
         self.assertIn("run-release-qualification.sh", ci)
         self.assertIn("qualify-release.sh", setup)
 

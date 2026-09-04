@@ -70,6 +70,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_qualification_state \
   internal.release.tests.test_qualification_engine \
   internal.release.tests.test_assemble_candidate \
+  internal.release.tests.test_assembly_contract \
   internal.release.tests.test_qualification_acceptance \
   internal.release.tests.test_publication \
   internal.release.tests.test_publication_workflow \

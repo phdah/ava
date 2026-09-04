@@ -119,6 +119,7 @@ for path in \
   internal/release/tests/test_qualification_runner.py \
   internal/release/tests/test_qualification_state.py \
   internal/release/tests/test_qualification_engine.py \
+  internal/release/tests/test_assembly_contract.py \
   internal/release/tests/test_release_surface.py
 do
   require_file "$path"
