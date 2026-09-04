@@ -12,6 +12,7 @@ from internal.release.publication import (
     extract_release_notes,
     plan_assets,
     resolve_identity,
+    select_release,
     stage_missing_assets,
 )
 
@@ -39,9 +40,11 @@ class PublicationTests(unittest.TestCase):
         *,
         draft=True,
         body="## [1.0.0-alpha.17]\n\nNotes\n",
+        release_id=1,
     ):
         identity = self.identity()
         return {
+            "id": release_id,
             "tag_name": identity.tag,
             "name": identity.tag,
             "target_commitish": identity.source_revision,
@@ -193,6 +196,94 @@ class PublicationTests(unittest.TestCase):
                     release,
                     identity=self.identity(),
                     expected_body=release["body"],
+                )
+
+    def test_select_release_returns_missing_when_no_tag_matches(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            release_dir = Path(directory)
+            self.write_assets(release_dir)
+            unrelated = self.release([], release_id=2)
+            unrelated["tag_name"] = "v1.0.0-alpha.16"
+            selected, state, redundant = select_release(
+                release_dir,
+                [unrelated],
+                identity=self.identity(),
+                expected_body="## [1.0.0-alpha.17]\n\nNotes\n",
+            )
+            self.assertIsNone(selected)
+            self.assertEqual(state, "missing")
+            self.assertEqual(redundant, [])
+
+    def test_select_release_prefers_most_complete_compatible_draft(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            release_dir = Path(directory)
+            values = self.write_assets(release_dir)
+            empty = self.release([], release_id=10)
+            partial = self.release(
+                [self.asset("ava-install.sh", values["ava-install.sh"])],
+                release_id=11,
+            )
+            selected, state, redundant = select_release(
+                release_dir,
+                [empty, partial],
+                identity=self.identity(),
+                expected_body=empty["body"],
+            )
+            self.assertIsNotNone(selected)
+            assert selected is not None
+            self.assertEqual(selected["id"], 11)
+            self.assertEqual(state, "draft")
+            self.assertEqual(redundant, [10])
+
+    def test_select_release_prefers_oldest_id_when_drafts_are_equivalent(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            release_dir = Path(directory)
+            self.write_assets(release_dir)
+            older = self.release([], release_id=10)
+            newer = self.release([], release_id=11)
+            selected, state, redundant = select_release(
+                release_dir,
+                [newer, older],
+                identity=self.identity(),
+                expected_body=older["body"],
+            )
+            self.assertIsNotNone(selected)
+            assert selected is not None
+            self.assertEqual(selected["id"], 10)
+            self.assertEqual(state, "draft")
+            self.assertEqual(redundant, [11])
+
+    def test_select_release_rejects_incompatible_duplicate_before_cleanup(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            release_dir = Path(directory)
+            self.write_assets(release_dir)
+            valid = self.release([], release_id=10)
+            invalid = self.release([], release_id=11)
+            invalid["target_commitish"] = "c" * 40
+            with self.assertRaisesRegex(PublicationError, "target_commitish mismatch"):
+                select_release(
+                    release_dir,
+                    [valid, invalid],
+                    identity=self.identity(),
+                    expected_body=valid["body"],
+                )
+
+    def test_select_release_never_deduplicates_published_state(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            release_dir = Path(directory)
+            values = self.write_assets(release_dir)
+            published = self.release(
+                [self.asset(name, value) for name, value in values.items()],
+                draft=False,
+                release_id=10,
+            )
+            draft = self.release([], release_id=11)
+            with self.assertRaisesRegex(PublicationError, "published state"):
+                select_release(
+                    release_dir,
+                    [published, draft],
+                    identity=self.identity(),
+                    expected_body=published["body"],
                 )
 
     def test_stage_missing_assets_replaces_old_staging_state(self) -> None:

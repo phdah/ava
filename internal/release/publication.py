@@ -166,6 +166,13 @@ def _release_assets(release: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return result
 
 
+def _release_id(release: dict[str, Any]) -> int:
+    release_id = release.get("id")
+    if not isinstance(release_id, int) or release_id <= 0:
+        raise PublicationError("GitHub Release id must be a positive integer")
+    return release_id
+
+
 def plan_assets(
     release_dir: Path,
     release: dict[str, Any] | None,
@@ -235,6 +242,51 @@ def plan_assets(
     )
 
 
+def select_release(
+    release_dir: Path,
+    releases: list[dict[str, Any]],
+    *,
+    identity: PublicationIdentity,
+    expected_body: str,
+) -> tuple[dict[str, Any] | None, str, list[int]]:
+    """Select one exact release and identify only safe redundant draft duplicates."""
+
+    matches = [release for release in releases if release.get("tag_name") == identity.tag]
+    if not matches:
+        return None, "missing", []
+
+    candidates: list[tuple[dict[str, Any], int, str, int]] = []
+    for release in matches:
+        release_id = _release_id(release)
+        state, missing, _complete = plan_assets(
+            release_dir,
+            release,
+            identity=identity,
+            expected_body=expected_body,
+        )
+        candidates.append((release, release_id, state, len(missing)))
+
+    published = [candidate for candidate in candidates if candidate[2] == "published"]
+    if published:
+        if len(candidates) != 1:
+            raise PublicationError(
+                f"multiple GitHub Releases reference {identity.tag}; "
+                "published state is never deduplicated automatically"
+            )
+        release, _release_id_value, state, _missing_count = published[0]
+        return release, state, []
+
+    # All matching releases are exact, compatible drafts at this point. Preserve the
+    # most complete draft; on a tie preserve the oldest release id. Redundant drafts
+    # can then be deleted without discarding any unique or mismatched release state.
+    selected = min(candidates, key=lambda candidate: (candidate[3], candidate[1]))
+    release, selected_id, state, _missing_count = selected
+    redundant_ids = sorted(
+        candidate[1] for candidate in candidates if candidate[1] != selected_id
+    )
+    return release, state, redundant_ids
+
+
 def stage_missing_assets(paths: list[Path], upload_dir: Path) -> None:
     if upload_dir.exists():
         shutil.rmtree(upload_dir)
@@ -254,6 +306,39 @@ def _write_outputs(values: dict[str, str]) -> None:
             if "\n" in value:
                 raise PublicationError(f"workflow output {key} must be single-line")
             handle.write(f"{key}={value}\n")
+
+
+def _identity_from_args(args: argparse.Namespace) -> PublicationIdentity:
+    return PublicationIdentity(
+        version=_version(args.version, label="--version"),
+        tag=args.tag,
+        source_revision=args.source_revision,
+        previous_revision=args.previous_revision,
+        previous_version=_version(
+            args.previous_version,
+            label="--previous-version",
+        ),
+        channel=derive_channel(args.version),
+        source_date_epoch=args.source_date_epoch,
+        published_at=args.published_at,
+    )
+
+
+def _release_records(value: Any) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        raise PublicationError("GitHub Releases JSON must contain an array")
+    if all(isinstance(item, dict) for item in value):
+        return list(value)
+
+    releases: list[dict[str, Any]] = []
+    for page in value:
+        if not isinstance(page, list):
+            raise PublicationError("paginated GitHub Releases JSON is invalid")
+        for release in page:
+            if not isinstance(release, dict):
+                raise PublicationError("GitHub Releases JSON contains an invalid record")
+            releases.append(release)
+    return releases
 
 
 def _identity_command(args: argparse.Namespace) -> int:
@@ -292,20 +377,49 @@ def _notes_command(args: argparse.Namespace) -> int:
     return 0
 
 
-def _plan_command(args: argparse.Namespace) -> int:
-    identity = PublicationIdentity(
-        version=_version(args.version, label="--version"),
-        tag=args.tag,
-        source_revision=args.source_revision,
-        previous_revision=args.previous_revision,
-        previous_version=_version(
-            args.previous_version,
-            label="--previous-version",
-        ),
-        channel=derive_channel(args.version),
-        source_date_epoch=args.source_date_epoch,
-        published_at=args.published_at,
+def _select_command(args: argparse.Namespace) -> int:
+    identity = _identity_from_args(args)
+    releases = _release_records(
+        json.loads(args.releases_json.read_text(encoding="utf-8"))
     )
+    expected_body = args.notes.read_text(encoding="utf-8")
+    selected, state, redundant_ids = select_release(
+        args.release_dir,
+        releases,
+        identity=identity,
+        expected_body=expected_body,
+    )
+
+    args.redundant_ids.write_text(
+        "".join(f"{release_id}\n" for release_id in redundant_ids),
+        encoding="utf-8",
+    )
+    if selected is None:
+        args.selected_json.unlink(missing_ok=True)
+        release_id = ""
+    else:
+        release_id = str(_release_id(selected))
+        args.selected_json.write_text(
+            json.dumps(selected, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+
+    _write_outputs(
+        {
+            "release_state": state,
+            "release_id": release_id,
+            "redundant_count": str(len(redundant_ids)),
+        }
+    )
+    print(
+        f"selected release state: {state}; redundant compatible drafts: "
+        f"{len(redundant_ids)}"
+    )
+    return 0
+
+
+def _plan_command(args: argparse.Namespace) -> int:
+    identity = _identity_from_args(args)
     release = None
     if args.release_json and args.release_json.exists():
         value = json.loads(args.release_json.read_text(encoding="utf-8"))
@@ -333,6 +447,16 @@ def _plan_command(args: argparse.Namespace) -> int:
     return 0
 
 
+def _add_identity_arguments(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--version", required=True)
+    parser.add_argument("--tag", required=True)
+    parser.add_argument("--source-revision", required=True)
+    parser.add_argument("--previous-revision", required=True)
+    parser.add_argument("--previous-version", required=True)
+    parser.add_argument("--source-date-epoch", required=True)
+    parser.add_argument("--published-at", required=True)
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd())
@@ -346,18 +470,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     notes.add_argument("--changelog", type=Path, default=Path("CHANGELOG.md"))
     notes.add_argument("--output", type=Path, required=True)
 
+    select = subparsers.add_parser("select")
+    select.add_argument("--release-dir", type=Path, required=True)
+    select.add_argument("--releases-json", type=Path, required=True)
+    select.add_argument("--selected-json", type=Path, required=True)
+    select.add_argument("--redundant-ids", type=Path, required=True)
+    select.add_argument("--notes", type=Path, required=True)
+    _add_identity_arguments(select)
+
     plan = subparsers.add_parser("plan")
     plan.add_argument("--release-dir", type=Path, required=True)
     plan.add_argument("--release-json", type=Path)
     plan.add_argument("--upload-dir", type=Path, required=True)
     plan.add_argument("--notes", type=Path, required=True)
-    plan.add_argument("--version", required=True)
-    plan.add_argument("--tag", required=True)
-    plan.add_argument("--source-revision", required=True)
-    plan.add_argument("--previous-revision", required=True)
-    plan.add_argument("--previous-version", required=True)
-    plan.add_argument("--source-date-epoch", required=True)
-    plan.add_argument("--published-at", required=True)
+    _add_identity_arguments(plan)
     return parser.parse_args(argv)
 
 
@@ -368,6 +494,8 @@ def main(argv: list[str] | None = None) -> int:
             return _identity_command(args)
         if args.command == "notes":
             return _notes_command(args)
+        if args.command == "select":
+            return _select_command(args)
         return _plan_command(args)
     except (OSError, json.JSONDecodeError, PublicationError) as exc:
         print(f"release publication invalid: {exc}", file=sys.stderr)

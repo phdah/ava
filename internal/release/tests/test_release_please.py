@@ -186,18 +186,18 @@ class ReleasePleasePolicyTests(unittest.TestCase):
             self.release_workflow,
         )
         self.assertIn("actions/attest@v4", self.release_workflow)
-        self.assertIn("gh release upload", self.release_workflow)
+        self.assertIn("releases/$RELEASE_ID/assets", self.release_workflow)
+        self.assertNotIn("gh release upload", self.release_workflow)
         self.assertNotIn("--clobber", self.release_workflow)
         self.assertIn("--json isDraft", self.release_workflow)
+        self.assertIn("--method PATCH", self.release_workflow)
         self.assertIn(
-            'gh release edit "$TAG" --draft=false',
+            '"repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID"',
             self.release_workflow,
         )
         self.assertLess(
-            self.release_workflow.index("gh release upload"),
-            self.release_workflow.index(
-                'gh release edit "$TAG" --draft=false'
-            ),
+            self.release_workflow.index("Upload only missing draft assets"),
+            self.release_workflow.index("Publish qualified release"),
         )
 
     def test_release_workflow_uses_reviewed_adjacent_catalog(self) -> None:

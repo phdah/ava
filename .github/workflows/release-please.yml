@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Existing release tag to recover, for example v1.0.0-alpha.17"
+        description: "Exact existing release tag to recover"
         required: false
         type: string
 
@@ -143,26 +143,43 @@ jobs:
         working-directory: source
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-          TAG: ${{ steps.identity.outputs.tag }}
         run: |
           set -eu
-          set +e
-          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" \
-            > release-state.json 2> release-state.err
-          status=$?
-          set -e
-          if [ "$status" -eq 0 ]; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          elif grep -q "HTTP 404" release-state.err; then
-            rm -f release-state.json
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          else
-            cat release-state.err >&2
-            exit "$status"
-          fi
+          gh api --paginate --slurp \
+            "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            > release-pages.json
+          PYTHONPATH="$GITHUB_WORKSPACE/tooling" \
+            python3 -m internal.release.publication \
+              select \
+              --release-dir release-a \
+              --releases-json release-pages.json \
+              --selected-json release-state.json \
+              --redundant-ids redundant-release-ids.txt \
+              --notes release-body.md \
+              --version "${{ steps.identity.outputs.version }}" \
+              --tag "${{ steps.identity.outputs.tag }}" \
+              --source-revision "${{ steps.identity.outputs.source_revision }}" \
+              --previous-revision "${{ steps.identity.outputs.previous_revision }}" \
+              --previous-version "${{ steps.identity.outputs.previous_version }}" \
+              --source-date-epoch "${{ steps.identity.outputs.source_date_epoch }}" \
+              --published-at "${{ steps.identity.outputs.published_at }}"
+
+      - name: Remove redundant compatible draft Releases
+        if: ${{ steps.identity.outputs.eligible == 'true' && steps.release_state.outputs.redundant_count != '0' }}
+        working-directory: source
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: |
+          set -eu
+          while IFS= read -r release_id; do
+            test -n "$release_id"
+            gh api --method DELETE \
+              "repos/$GITHUB_REPOSITORY/releases/$release_id"
+          done < redundant-release-ids.txt
 
       - name: Recreate missing draft GitHub Release
-        if: ${{ steps.identity.outputs.eligible == 'true' && steps.release_state.outputs.exists != 'true' }}
+        id: create_release
+        if: ${{ steps.identity.outputs.eligible == 'true' && steps.release_state.outputs.release_state == 'missing' }}
         working-directory: source
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
@@ -172,33 +189,56 @@ jobs:
         run: |
           set -eu
           if [ "$CHANNEL" = "stable" ]; then
-            gh release create "$TAG" \
-              --draft \
-              --verify-tag \
-              --target "$SOURCE_REVISION" \
-              --title "$TAG" \
-              --notes-file release-body.md
+            prerelease=false
           else
-            gh release create "$TAG" \
-              --draft \
-              --prerelease \
-              --verify-tag \
-              --target "$SOURCE_REVISION" \
-              --title "$TAG" \
-              --notes-file release-body.md
+            prerelease=true
           fi
+          jq -n \
+            --arg tag "$TAG" \
+            --arg target "$SOURCE_REVISION" \
+            --rawfile body release-body.md \
+            --argjson prerelease "$prerelease" \
+            '{
+              tag_name: $tag,
+              target_commitish: $target,
+              name: $tag,
+              body: $body,
+              draft: true,
+              prerelease: $prerelease
+            }' > create-release.json
+          gh api --method POST \
+            "repos/$GITHUB_REPOSITORY/releases" \
+            --input create-release.json \
+            > release-state.json
+          release_id=$(jq -r '.id // empty' release-state.json)
+          test -n "$release_id"
+          echo "release_id=$release_id" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve active GitHub Release
+        id: active_release
+        if: ${{ steps.identity.outputs.eligible == 'true' }}
+        working-directory: source
+        env:
+          DISCOVERED_STATE: ${{ steps.release_state.outputs.release_state }}
+          DISCOVERED_ID: ${{ steps.release_state.outputs.release_id }}
+          CREATED_ID: ${{ steps.create_release.outputs.release_id }}
+        run: |
+          set -eu
+          if [ "$DISCOVERED_STATE" = "missing" ]; then
+            release_id="$CREATED_ID"
+          else
+            release_id="$DISCOVERED_ID"
+          fi
+          test -n "$release_id"
+          test "$(jq -r .id release-state.json)" = "$release_id"
+          echo "release_id=$release_id" >> "$GITHUB_OUTPUT"
 
       - name: Plan idempotent asset recovery
         if: ${{ steps.identity.outputs.eligible == 'true' }}
         id: plan
         working-directory: source
-        env:
-          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
         run: |
           set -eu
-          gh api \
-            "repos/$GITHUB_REPOSITORY/releases/tags/${{ steps.identity.outputs.tag }}" \
-            > release-state.json
           PYTHONPATH="$GITHUB_WORKSPACE/tooling" \
             python3 -m internal.release.publication \
               plan \
@@ -225,16 +265,38 @@ jobs:
         working-directory: source
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-          TAG: ${{ steps.identity.outputs.tag }}
-        run: gh release upload "$TAG" release-upload/*
+          RELEASE_ID: ${{ steps.active_release.outputs.release_id }}
+        run: |
+          set -eu
+          for asset in release-upload/*; do
+            name=$(basename "$asset")
+            encoded_name=$(python3 -c \
+              'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1], safe=""))' \
+              "$name")
+            curl --fail-with-body --silent --show-error -L \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -H "Content-Type: application/octet-stream" \
+              "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$encoded_name" \
+              --data-binary "@$asset" \
+              >/dev/null
+          done
 
       - name: Publish qualified release
         if: ${{ steps.identity.outputs.eligible == 'true' && steps.plan.outputs.release_state == 'draft' }}
         working-directory: source
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-          TAG: ${{ steps.identity.outputs.tag }}
-        run: gh release edit "$TAG" --draft=false
+          RELEASE_ID: ${{ steps.active_release.outputs.release_id }}
+        run: |
+          set -eu
+          gh api --method PATCH \
+            "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" \
+            -F draft=false \
+            > release-published.json
+          test "$(jq -r .draft release-published.json)" = false
 
       - name: Verify immutable published release
         if: ${{ steps.identity.outputs.eligible == 'true' }}
