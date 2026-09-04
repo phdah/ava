@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Existing release tag to recover, for example v1.0.0-alpha.17"
+        description: "Exact existing release tag to recover"
         required: false
         type: string
 
