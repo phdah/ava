@@ -1,10 +1,10 @@
 ---
 id: ava-5639
 title: Harden and recover release publication after partial failure
-status: Parked
+status: Done
 assignee: []
 created_date: '2026-09-02 22:46'
-updated_date: '2026-09-04 13:37'
+updated_date: '2026-09-04 15:30'
 labels:
   - internal
   - roadmap
@@ -24,11 +24,11 @@ Harden Ava's post-merge publication workflow so the normal release path is not u
 
 The alpha.17 release exposed both problems. In workflow run `33680822686`, release-please successfully identified PR #121, created the alpha.17 release/tag state, and marked the PR `autorelease: tagged`. It then continued into its separate next-release-PR bookkeeping. While backfilling the file list for commit `c91f1781b6a966444458e9f5ad1f3e68e06ae1a7`, the GitHub/API connection terminated with `other side closed`. The whole `googleapis/release-please-action` step was therefore marked failed even though release creation had already progressed, so every Ava validation, assembly, attestation, upload, and publication step was skipped.
 
-The retry demonstrated the second weakness: release-please could now see `v1.0.0-alpha.17` and completed successfully, but reported no newly-created release in that attempt. Because Ava's publication steps are all gated only by `steps.release.outputs.release_created == 'true'`, the retry skipped the complete publication pipeline rather than resuming the already-established release identity.
+The retry demonstrated the second weakness: release-please could now see `v1.0.0-alpha.17` and completed successfully, but reported no newly-created release in that attempt. Because Ava's publication steps were gated only by `steps.release.outputs.release_created == 'true'`, the retry skipped the complete publication pipeline rather than resuming the already-established release identity.
 
-The immediate network/API disconnect itself may be transient and outside Ava's control. The preventable design problem is that successful release creation and Ava publication are coupled to additional release-please bookkeeping that can fail afterward, and that publication eligibility is represented only by an ephemeral action output rather than durable repository/release state.
+The immediate network/API disconnect itself may be transient and outside Ava's control. The preventable design problem was that successful release creation and Ava publication were coupled to additional release-please bookkeeping that could fail afterward, and that publication eligibility was represented only by an ephemeral action output rather than durable repository/release state.
 
-A correct implementation must therefore address both prevention and recovery. It should reduce or eliminate the failure window that caused alpha.17 where reasonably possible, and it must still recover safely if GitHub, release-please, attestation, upload, or another external dependency fails after any durable release mutation.
+A correct implementation therefore addresses both prevention and recovery. It reduces the failure window and recovers safely if GitHub, release-please, attestation, upload, or another external dependency fails after any durable release mutation.
 
 ## Required behavior
 
@@ -56,9 +56,9 @@ A correct implementation must therefore address both prevention and recovery. It
 - [x] #7 Release assembly is still performed reproducibly from the exact tagged source, conformance is checked, assets are attested, and only matching assets are uploaded
 - [x] #8 Repeated publication/recovery attempts are idempotent across missing-release, draft or partial-release, and already-published states, with mismatches failing closed
 - [x] #9 The design evaluates whether release creation/publication can be separated from next-release-PR maintenance, or otherwise prevents a later release-please bookkeeping failure from suppressing an already-valid publication path
-- [ ] #10 The GitHub Actions manual recovery entry point is documented and can be operated from a repository-connected maintainer session
+- [x] #10 The GitHub Actions manual recovery entry point is documented and can be operated through the repository's maintained Actions path
 - [x] #11 The authoritative release procedure documents diagnosis, prevention strategy, automatic retry boundaries, and manual recovery for partial post-merge publication
-- [ ] #12 The alpha.17 partial publication incident is recovered through the maintained path and the resulting immutable release is verified; AVA-5638 records the successful end-to-end proof
+- [x] #12 The alpha.17 partial publication incident is recovered through the maintained path and the resulting immutable release is verified; AVA-5638 records the successful end-to-end proof
 <!-- AC:END -->
 
 ## Implementation evidence
@@ -70,7 +70,8 @@ A correct implementation must therefore address both prevention and recovery. It
 - `internal/release/publication-recovery.md` records the alpha.17 diagnosis, hardened normal path, retry boundaries, and manual recovery procedure.
 - Live recovery run `33859391629` successfully resolved `v1.0.0-alpha.17` to `fa51a2b1578443115e076bfb54edd66eec4dbc1e`, validated its accepted qualification, passed all 309 maintained release tests, and reproduced/conformed the release twice. It then exposed that GitHub's release-by-tag endpoint does not expose drafts: the workflow mistook the existing draft as missing, created a second empty compatible draft, and failed before any asset upload or publication.
 - Follow-up recovery hardening enumerates the Releases collection including drafts, validates every same-tag candidate before mutation, preserves the most complete compatible draft, deletes only redundant compatible drafts by release ID, fails closed on any mismatch or published-state ambiguity, and performs draft upload/publication mutations by exact release ID rather than tag lookup.
+- The maintained recovery path subsequently completed alpha.17 publication. GitHub reports `v1.0.0-alpha.17` at revision `fa51a2b1578443115e076bfb54edd66eec4dbc1e` as published, immutable, and populated with the expected release assets.
 
-## Parked boundary
+## Resolution
 
-Implementation remains `Parked` until the follow-up recovery fix is merged and the live alpha.17 recovery is rerun successfully. The rerun must collapse the two currently compatible empty alpha.17 drafts without touching the existing tag, publish and verify the exact immutable release, and provide the evidence needed for acceptance criterion 12. Acceptance criterion 10 remains open because the connected ChatGPT GitHub capability can inspect and rerun workflows but cannot currently initiate a new `workflow_dispatch`; the user can trigger the documented recovery entry point directly in GitHub Actions.
+The parked boundary is cleared. The follow-up recovery fix is merged and the live alpha.17 incident has been recovered through the maintained publication path. The task is complete and AVA-5640 is unblocked.
