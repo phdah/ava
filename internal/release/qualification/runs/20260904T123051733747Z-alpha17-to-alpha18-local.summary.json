@@ -1,0 +1,59 @@
+{
+  "exit_status": 0,
+  "outcomes": [
+    {
+      "id": "fresh-empty-install",
+      "outcome": "pass"
+    },
+    {
+      "id": "mature-project-install",
+      "outcome": "pass"
+    },
+    {
+      "id": "managed-modified",
+      "outcome": "pass"
+    },
+    {
+      "id": "managed-missing",
+      "outcome": "pass"
+    },
+    {
+      "id": "managed-corrupt",
+      "outcome": "pass"
+    },
+    {
+      "id": "managed-unexpected",
+      "outcome": "pass"
+    },
+    {
+      "id": "interrupted-resume",
+      "outcome": "pass"
+    },
+    {
+      "id": "interrupted-abort",
+      "outcome": "pass"
+    },
+    {
+      "id": "interrupted-rollback",
+      "outcome": "pass"
+    },
+    {
+      "id": "deterministic-upgrade",
+      "outcome": "pass"
+    }
+  ],
+  "qualification_host": "github-actions",
+  "qualification_mode": "deterministic",
+  "qualification_stage": "final",
+  "schema_version": 1,
+  "source": {
+    "revision": "fa51a2b1578443115e076bfb54edd66eec4dbc1e",
+    "tag": "v1.0.0-alpha.17",
+    "version": "1.0.0-alpha.17"
+  },
+  "target": {
+    "revision": "96cb0bfa3cf2bdd52d651845ab1551959f9eb87d",
+    "tag": "v1.0.0-alpha.18",
+    "version": "1.0.0-alpha.18"
+  }
+}
