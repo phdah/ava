@@ -3,12 +3,6 @@ type: Internal Release Procedure
 title: Ava Conformance Validation
 description: Defines the stable machine-readable finding contract and validation modes used to qualify repository sources, installed projects, and release assets.
 tags: [internal, release, validation, conformance, fixtures]
-generated:
-  by: agent:openai-chatgpt
-  at: 2026-08-03T22:30:00+02:00
-updated:
-  by: agent:openai-opencode
-  at: 2026-08-20T15:36:31Z
 ---
 
 # Purpose
@@ -18,7 +12,7 @@ updated:
 # Validation modes
 
 - `repository` validates public contracts, release sources, metadata, source and installed-destination inline links, indexes, role and workflow discovery, routing references, deprecated paths, and internal-content leakage.
-- `installed` validates the managed router, manifest, journal, managed payload integrity, semantic compatibility, routing gates, host metadata, and OpenCode access.
+- `installed` validates the managed router, manifest, journal, managed payload integrity, semantic compatibility, routing gates, host metadata, and supported host access.
 - `release` validates the exact release asset inventory, checksums, release identity, channel consistency, and optional immutable-publication evidence.
 - `auto` selects a mode from the target root without mutating it.
 
@@ -58,9 +52,9 @@ Installed validation reports `normal_routing_permitted` separately from overall 
 
 `normal_routing_permitted` means the managed-state gate allows ordinary conversation-aware routing. It does not mean every turn must traverse workflow and role registries.
 
-Host-access findings do not silently mutate project-owned configuration. Ava Maintenance reports the required OpenCode merge or host correction.
+Host-access findings do not silently mutate project-owned configuration. Ava Maintenance reports the required host correction.
 
-Root-router regression coverage separately freezes unconditional router entry and the managed-state gate on every turn, then the normal-operation continuity decision between roleless conversational handling, same-role continuation, and fresh routing. It verifies that roleless clarification performs no project action, same-role continuation retains an already-loaded role without registry traversal or required-reading reload, explicit workflows and routing transitions force fresh resolution, a roleless turn clears stale role continuity, and the original warranty request still cannot be answered or refused by a generic host persona before Ava decides routing. The coverage validates both the repository source and assembled installed `/AGENTS.md` bytes against the maintained OpenCode access model.
+Root-router regression coverage separately freezes unconditional router entry and the managed-state gate on every turn, then the normal-operation continuity decision between roleless conversational handling, same-role continuation, and fresh routing. It verifies that roleless clarification performs no project action, same-role continuation retains an already-loaded role without registry traversal or required-reading reload, explicit workflows and routing transitions force fresh resolution, a roleless turn clears stale role continuity, and the original warranty request still cannot be answered or refused by a generic host persona before Ava decides routing. The coverage validates both the repository source and assembled installed `/AGENTS.md` bytes against the maintained host access model.
 
 # Semantic review sufficiency
 
@@ -68,27 +62,17 @@ Change Reviewer regression coverage freezes the default bounded `acceptance` sta
 
 Re-review coverage requires prior findings and remediation to be evaluated first. It permits a new or reopened finding only from changed evidence, changed scope, changed authority, or a genuine regression that independently passes the admission test. The maintained fixture covers a clean first review, satisfied remediation and re-review, a remediation regression, and an explicitly exhaustive audit.
 
-These semantic fixtures validate the managed review contract. They do not turn deterministic conformance into semantic approval or replace installed-release dogfood qualification.
+These semantic fixtures validate the managed review contract. They do not turn deterministic conformance into semantic approval or replace installed-release qualification.
 
 # Publication evidence
 
 Before publication, missing `publication.json` is a recommendation. Release qualification uses `--require-publication-evidence`, which requires evidence that immutable releases are enabled, the release is immutable, and attestation verification succeeded.
 
-# Alpha qualification
+# Release qualification
 
-The [alpha qualification policy](alpha-qualification.md) composes repository, installed, and release conformance with roadmap completion, reproducible assembly, prerelease support declarations, defect classification, and exact publication approval.
+The authoritative [release procedure](procedure.md) composes repository, installed, and release conformance with deterministic qualification, semantic impact review, adjacent upgrade-edge policy, explicit acceptance, reproducible assembly, and immutable publication.
 
-[alpha-qualification.json](fixtures/alpha-qualification.json) freezes the required gates and their conformance evidence. [test_alpha_qualification.py](tests/test_alpha_qualification.py) proves that:
-
-- every evidence reference resolves
-- Phase 1 through Phase 4 tasks are complete
-- the first alpha assembles reproducibly
-- `1.0.0-alpha.1` declares no supported source release
-- later intended prerelease transitions are represented as release-manifest upgrade edges
-- historical unversioned sources are rejected
-- publication approval is bound to both version and source revision
-
-Passing individual conformance modes is necessary but not sufficient for alpha publication. Every alpha gate must pass and the exact publication transaction must be approved.
+Passing an individual conformance mode is necessary but not sufficient for publication. The complete maintained release procedure and its exact acceptance state must pass.
 
 # Fixture matrix
 

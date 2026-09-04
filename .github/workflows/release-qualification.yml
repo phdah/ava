@@ -32,7 +32,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run session-neutral release qualification
+      - name: Run deterministic release qualification
         id: qualify
         env:
           AVA_QUALIFICATION_EXECUTOR: github-actions

@@ -26,20 +26,17 @@ python3 -m py_compile \
   "$ROOT/internal/release/conformance_installed.py" \
   "$ROOT/internal/release/interaction_evidence.py" \
   "$ROOT/internal/release/qualification_runner.py" \
-  "$ROOT/internal/release/qualification_automation.py" \
+  "$ROOT/internal/release/qualification_state.py" \
   "$ROOT/internal/release/qualification.py" \
-  "$ROOT/internal/release/qualification_work.py" \
+  "$ROOT/internal/release/qualification_engine.py" \
+  "$ROOT/internal/release/qualification_ci.py" \
   "$ROOT/internal/release/qualification_acceptance.py" \
   "$ROOT/internal/release/publication.py" \
-  "$ROOT/internal/release/qualification_phase_runner.py" \
-  "$ROOT/internal/release/qualification_phase_automation.py" \
-  "$ROOT/internal/release/qualification_phase_gate.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/checkpoint.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \
   "$ROOT/internal/release/validate_pr_title.py" \
-  "$ROOT/internal/release/validate_release_pr.py" \
-  "$ROOT/internal/release/validate_upgrade_impact.py"
+  "$ROOT/internal/release/validate_release_pr.py"
 python3 "$ROOT/internal/release/validate-installed-paths.py" --root "$ROOT"
 python3 "$ROOT/internal/release/validate_adjacent_catalog.py" \
   "$ROOT/internal/release/catalogs/1.0.0-alpha.12.json" \
@@ -70,10 +67,8 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_synthetic_qualification_vault \
   internal.release.tests.test_qualification_checkpoints \
   internal.release.tests.test_qualification_runner \
-  internal.release.tests.test_qualification_automation \
-  internal.release.tests.test_qualification_execution_identity \
-  internal.release.tests.test_qualification_work \
-  internal.release.tests.test_qualification_phases \
+  internal.release.tests.test_qualification_state \
+  internal.release.tests.test_qualification_engine \
   internal.release.tests.test_assemble_candidate \
   internal.release.tests.test_qualification_acceptance \
   internal.release.tests.test_publication \
@@ -83,7 +78,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_release_catalog_history \
   internal.release.tests.test_conformance \
   internal.release.tests.test_conformance_matrix \
-  internal.release.tests.test_alpha_qualification \
   internal.release.tests.test_release_please \
   internal.release.tests.test_semantic_impact_assessment \
+  internal.release.tests.test_release_surface \
   internal.release.tests.release_pr_policy_test

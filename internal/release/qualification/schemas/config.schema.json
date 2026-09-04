@@ -2,11 +2,9 @@
   "additionalProperties": false,
   "properties": {
     "active_pair": {"minLength": 1, "type": "string"},
-    "audit_model": {"minLength": 3, "pattern": "[^/]+/[^/]+", "type": "string"},
-    "qualification_model": {"minLength": 3, "pattern": "[^/]+/[^/]+", "type": "string"},
     "repository": {"pattern": "[^/]+/[^/]+", "type": "string"},
     "schema_version": {"const": 1, "type": "integer"}
   },
-  "required": ["schema_version", "repository", "active_pair", "qualification_model", "audit_model"],
+  "required": ["schema_version", "repository", "active_pair"],
   "type": "object"
 }

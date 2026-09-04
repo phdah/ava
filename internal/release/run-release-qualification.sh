@@ -26,9 +26,9 @@ mkdir -p "$run_root/assets/source" "$run_root/fixture" "$run_root/test-project" 
 
 pair_json=$(python3 - <<'PY'
 import json
-from internal.release import qualification_automation as automation
-config, catalog, _ = automation.load_configuration(automation.REPOSITORY_ROOT)
-pair = automation.active_pair(config, catalog)
+from internal.release import qualification_state as state
+config, catalog, _ = state.load_configuration(state.REPOSITORY_ROOT)
+pair = state.active_pair(config, catalog)
 print(json.dumps({"repository": config["repository"], "pair": pair}, sort_keys=True))
 PY
 )
