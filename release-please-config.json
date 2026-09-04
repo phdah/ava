@@ -31,7 +31,8 @@
   ],
   "packages": {
     ".": {
-      "version-file": "version.txt"
+      "version-file": "version.txt",
+      "release-as": "1.0.0-alpha.19"
     }
   }
 }
