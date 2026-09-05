@@ -19,7 +19,9 @@ jobs:
           fetch-depth: 0
 
       - name: Normalize remaining synthetic release identities
-        run: PYTHONPATH="$GITHUB_WORKSPACE" python3 internal/release/normalize_stable_lineage_tmp.py
+        run: |
+          sed -i "s/gate_replacement = '''/gate_replacement = r'''/" internal/release/normalize_stable_lineage_tmp.py
+          PYTHONPATH="$GITHUB_WORKSPACE" python3 internal/release/normalize_stable_lineage_tmp.py
 
       - name: Remove temporary normalization machinery
         run: |
