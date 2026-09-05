@@ -1,0 +1,44 @@
+{
+  "bootstrap": true,
+  "exit_status": 0,
+  "outcomes": [
+    {
+      "id": "fresh-empty-install",
+      "outcome": "pass"
+    },
+    {
+      "id": "mature-project-install",
+      "outcome": "pass"
+    },
+    {
+      "id": "managed-modified",
+      "outcome": "pass"
+    },
+    {
+      "id": "managed-missing",
+      "outcome": "pass"
+    },
+    {
+      "id": "managed-corrupt",
+      "outcome": "pass"
+    },
+    {
+      "id": "managed-unexpected",
+      "outcome": "pass"
+    }
+  ],
+  "qualification_executor": "github-actions",
+  "qualification_mode": "deterministic",
+  "qualification_stage": "final",
+  "schema_version": 1,
+  "source": {
+    "revision": "0000000000000000000000000000000000000000",
+    "tag": "bootstrap",
+    "version": "0.0.0"
+  },
+  "target": {
+    "revision": "70ac2eda2b7e2fb8c83d7a5bf4b5c10ed4868b3b",
+    "tag": "v1.0.0",
+    "version": "1.0.0"
+  }
+}
