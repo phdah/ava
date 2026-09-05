@@ -16,26 +16,19 @@ class QualificationExecutionTests(unittest.TestCase):
         pre = implementation.deterministic_scenarios(matrix, "pre-edge")
         final = implementation.deterministic_scenarios(matrix, "final")
 
-        self.assertEqual(
-            [scenario["id"] for scenario in pre],
-            [
-                "fresh-empty-install",
-                "mature-project-install",
-                "managed-modified",
-                "managed-missing",
-                "managed-corrupt",
-                "managed-unexpected",
-            ],
-        )
+        expected_target_only = [
+            "fresh-empty-install",
+            "mature-project-install",
+            "managed-modified",
+            "managed-missing",
+            "managed-corrupt",
+            "managed-unexpected",
+        ]
+        self.assertEqual([scenario["id"] for scenario in pre], expected_target_only)
         self.assertEqual(
             [scenario["id"] for scenario in final],
             [
-                "fresh-empty-install",
-                "mature-project-install",
-                "managed-modified",
-                "managed-missing",
-                "managed-corrupt",
-                "managed-unexpected",
+                *expected_target_only,
                 "interrupted-resume",
                 "interrupted-abort",
                 "interrupted-rollback",
@@ -46,6 +39,25 @@ class QualificationExecutionTests(unittest.TestCase):
                 scenario["kind"] not in implementation.BEHAVIORAL_KINDS
                 for scenario in pre + final
             )
+        )
+
+    def test_root_release_final_uses_target_only_scenarios(self) -> None:
+        matrix = qualification_runner.load_matrix()
+        target_only = implementation.deterministic_scenarios(
+            matrix,
+            "final",
+            bootstrap=True,
+        )
+        self.assertEqual(
+            [scenario["id"] for scenario in target_only],
+            [
+                "fresh-empty-install",
+                "mature-project-install",
+                "managed-modified",
+                "managed-missing",
+                "managed-corrupt",
+                "managed-unexpected",
+            ],
         )
 
     def test_behavioral_scenarios_remain_outside_release_gate(self) -> None:
@@ -77,8 +89,8 @@ class QualificationExecutionTests(unittest.TestCase):
     def test_final_edge_accepts_semantic_or_mechanical_targets(self) -> None:
         source = qualification_runner.ReleaseIdentity(
             Path("/source"),
-            "1.0.0-alpha.16",
-            "v1.0.0-alpha.16",
+            "1.0.0",
+            "v1.0.0",
             "1" * 40,
             False,
             {"upgrade_paths": {"edges": []}},
@@ -86,8 +98,8 @@ class QualificationExecutionTests(unittest.TestCase):
         for semantic_review_required in (False, True):
             target = qualification_runner.ReleaseIdentity(
                 Path("/target"),
-                "1.0.0-alpha.17",
-                "v1.0.0-alpha.17",
+                "1.0.1",
+                "v1.0.1",
                 "2" * 40,
                 semantic_review_required,
                 {
@@ -95,13 +107,36 @@ class QualificationExecutionTests(unittest.TestCase):
                         "edges": [
                             {
                                 "from": source.version,
-                                "to": "1.0.0-alpha.17",
+                                "to": "1.0.1",
                             }
                         ]
                     }
                 },
             )
             implementation.validate_final_edge(source, target)
+
+    def test_root_target_requires_no_upgrade_edge(self) -> None:
+        target = qualification_runner.ReleaseIdentity(
+            Path("/target"),
+            "1.0.0",
+            "v1.0.0",
+            "2" * 40,
+            False,
+            {"upgrade_paths": {"edges": []}},
+        )
+        implementation.validate_bootstrap_target(target)
+
+    def test_root_target_rejects_upgrade_edge(self) -> None:
+        target = qualification_runner.ReleaseIdentity(
+            Path("/target"),
+            "1.0.0",
+            "v1.0.0",
+            "2" * 40,
+            False,
+            {"upgrade_paths": {"edges": [{"from": "0.9.0", "to": "1.0.0"}]}},
+        )
+        with self.assertRaises(implementation.QualificationExecutionError):
+            implementation.validate_bootstrap_target(target)
 
     def test_canonical_entrypoint_uses_current_engine(self) -> None:
         release_root = implementation.REPOSITORY_ROOT / "internal/release"
@@ -140,6 +175,7 @@ class QualificationExecutionTests(unittest.TestCase):
         self.assertIn("deterministic", text.lower())
         self.assertIn("pre-edge", text)
         self.assertIn("final", text)
+        self.assertIn("Root release", text)
         self.assertNotIn("session-neutral", text.lower())
         self.assertNotIn("ChatGPT Work", text)
         self.assertNotIn("OpenCode", text)

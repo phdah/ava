@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -9,17 +8,20 @@ from internal.release import qualification_state as state
 
 
 class QualificationStateTests(unittest.TestCase):
-    def test_checked_in_configuration_has_one_active_pair(self) -> None:
+    def test_checked_in_configuration_has_one_active_operation(self) -> None:
         config, catalog, current = state.load_configuration()
         self.assertEqual(set(config), {"schema_version", "repository", "active_pair"})
         self.assertEqual(config["repository"], "phdah/ava")
         pairs = {item["id"]: item for item in catalog["pairs"]}
-        self.assertIn(config["active_pair"], pairs)
+        self.assertEqual(set(pairs), {"bootstrap-to-1.0.0"})
+        self.assertEqual(config["active_pair"], "bootstrap-to-1.0.0")
         self.assertEqual(current["active_pair"], config["active_pair"])
         active = pairs[config["active_pair"]]
         self.assertFalse(active["historical"])
-        self.assertEqual(active["source"]["kind"], "published")
+        self.assertEqual(active["source"], {"kind": "bootstrap", "version": "0.0.0"})
         self.assertEqual(active["target"]["kind"], "local")
+        self.assertEqual(active["target"]["version"], "1.0.0")
+        self.assertEqual(current["release_acceptance"], {})
 
     def test_config_schema_has_no_agent_runtime_configuration(self) -> None:
         schema = state.load_json(
@@ -60,9 +62,9 @@ class QualificationStateTests(unittest.TestCase):
             second = state.tree_digest(root)
             self.assertNotEqual(first, second)
 
-    def test_run_ids_are_bound_to_pair(self) -> None:
-        run_id = state.utc_run_id("alpha17-to-alpha18-local")
-        self.assertTrue(run_id.endswith("-alpha17-to-alpha18-local"))
+    def test_run_ids_are_bound_to_operation(self) -> None:
+        run_id = state.utc_run_id("stable100-to-stable101-local")
+        self.assertTrue(run_id.endswith("-stable100-to-stable101-local"))
 
 
 if __name__ == "__main__":

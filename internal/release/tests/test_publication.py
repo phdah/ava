@@ -24,12 +24,12 @@ def digest(value: bytes) -> str:
 class PublicationTests(unittest.TestCase):
     def identity(self) -> PublicationIdentity:
         return PublicationIdentity(
-            version="1.0.0-alpha.17",
-            tag="v1.0.0-alpha.17",
+            version="1.0.1",
+            tag="v1.0.1",
             source_revision="a" * 40,
             previous_revision="b" * 40,
-            previous_version="1.0.0-alpha.16",
-            channel="alpha",
+            previous_version="1.0.0",
+            channel="stable",
             source_date_epoch="1",
             published_at="1970-01-01T00:00:01Z",
         )
@@ -39,7 +39,7 @@ class PublicationTests(unittest.TestCase):
         assets,
         *,
         draft=True,
-        body="## [1.0.0-alpha.17]\n\nNotes\n",
+        body="## [1.0.1]\n\nNotes\n",
         release_id=1,
     ):
         identity = self.identity()
@@ -48,7 +48,7 @@ class PublicationTests(unittest.TestCase):
             "tag_name": identity.tag,
             "name": identity.tag,
             "target_commitish": identity.source_revision,
-            "prerelease": True,
+            "prerelease": False,
             "draft": draft,
             "body": body,
             "assets": assets,
@@ -70,13 +70,13 @@ class PublicationTests(unittest.TestCase):
     def test_extract_release_notes_selects_exact_section(self) -> None:
         changelog = (
             "# Changelog\n\n"
-            "## [1.0.0-alpha.17](compare) (2026-09-02)\n\n"
+            "## [1.0.1](compare) (2026-09-02)\n\n"
             "### Features\n\n* current\n\n"
-            "## [1.0.0-alpha.16](compare) (2026-09-01)\n\n* previous\n"
+            "## [1.0.0](compare) (2026-09-01)\n\n* previous\n"
         )
         self.assertEqual(
-            extract_release_notes(changelog, "1.0.0-alpha.17"),
-            "## [1.0.0-alpha.17](compare) (2026-09-02)\n\n"
+            extract_release_notes(changelog, "1.0.1"),
+            "## [1.0.1](compare) (2026-09-02)\n\n"
             "### Features\n\n* current\n",
         )
 
@@ -89,7 +89,7 @@ class PublicationTests(unittest.TestCase):
                 release_dir,
                 None,
                 identity=self.identity(),
-                expected_body="## [1.0.0-alpha.17]\n\nNotes\n",
+                expected_body="## [1.0.1]\n\nNotes\n",
             )
             self.assertEqual(state, "missing")
             self.assertEqual({path.name for path in missing}, set(values))
@@ -203,12 +203,12 @@ class PublicationTests(unittest.TestCase):
             release_dir = Path(directory)
             self.write_assets(release_dir)
             unrelated = self.release([], release_id=2)
-            unrelated["tag_name"] = "v1.0.0-alpha.16"
+            unrelated["tag_name"] = "v1.0.0"
             selected, state, redundant = select_release(
                 release_dir,
                 [unrelated],
                 identity=self.identity(),
-                expected_body="## [1.0.0-alpha.17]\n\nNotes\n",
+                expected_body="## [1.0.1]\n\nNotes\n",
             )
             self.assertIsNone(selected)
             self.assertEqual(state, "missing")
@@ -311,29 +311,29 @@ class PublicationTests(unittest.TestCase):
                 check=True,
             )
 
-            (root / "version.txt").write_text("1.0.0-alpha.16\n")
+            (root / "version.txt").write_text("1.0.0\n")
             subprocess.run(["git", "-C", root, "add", "version.txt"], check=True)
             subprocess.run(
                 ["git", "-C", root, "commit", "-qm", "previous"],
                 check=True,
             )
 
-            (root / "version.txt").write_text("1.0.0-alpha.17\n")
+            (root / "version.txt").write_text("1.0.1\n")
             subprocess.run(["git", "-C", root, "add", "version.txt"], check=True)
             subprocess.run(
                 ["git", "-C", root, "commit", "-qm", "release"],
                 check=True,
             )
             subprocess.run(
-                ["git", "-C", root, "tag", "v1.0.0-alpha.17"],
+                ["git", "-C", root, "tag", "v1.0.1"],
                 check=True,
             )
 
             identity = resolve_identity(root)
             self.assertIsNotNone(identity)
             assert identity is not None
-            self.assertEqual(identity.version, "1.0.0-alpha.17")
-            self.assertEqual(identity.previous_version, "1.0.0-alpha.16")
+            self.assertEqual(identity.version, "1.0.1")
+            self.assertEqual(identity.previous_version, "1.0.0")
 
     def test_normal_nonrelease_push_is_not_eligible(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -347,14 +347,14 @@ class PublicationTests(unittest.TestCase):
                 ["git", "-C", root, "config", "user.email", "test@example.com"],
                 check=True,
             )
-            (root / "version.txt").write_text("1.0.0-alpha.16\n")
+            (root / "version.txt").write_text("1.0.0\n")
             subprocess.run(["git", "-C", root, "add", "version.txt"], check=True)
             subprocess.run(
                 ["git", "-C", root, "commit", "-qm", "release"],
                 check=True,
             )
             subprocess.run(
-                ["git", "-C", root, "tag", "v1.0.0-alpha.16"],
+                ["git", "-C", root, "tag", "v1.0.0"],
                 check=True,
             )
             (root / "README.md").write_text("later\n")
@@ -378,14 +378,14 @@ class PublicationTests(unittest.TestCase):
                 ["git", "-C", root, "config", "user.email", "test@example.com"],
                 check=True,
             )
-            (root / "version.txt").write_text("1.0.0-alpha.17\n")
+            (root / "version.txt").write_text("1.0.1\n")
             subprocess.run(["git", "-C", root, "add", "version.txt"], check=True)
             subprocess.run(
                 ["git", "-C", root, "commit", "-qm", "tagged"],
                 check=True,
             )
             subprocess.run(
-                ["git", "-C", root, "tag", "v1.0.0-alpha.17"],
+                ["git", "-C", root, "tag", "v1.0.1"],
                 check=True,
             )
             (root / "README.md").write_text("later\n")
@@ -396,7 +396,7 @@ class PublicationTests(unittest.TestCase):
             )
 
             with self.assertRaisesRegex(PublicationError, "points to"):
-                resolve_identity(root, requested_tag="v1.0.0-alpha.17")
+                resolve_identity(root, requested_tag="v1.0.1")
 
 
 if __name__ == "__main__":

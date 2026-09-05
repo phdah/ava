@@ -42,9 +42,9 @@ class AssembleCandidateTests(unittest.TestCase):
         )
         assembler.chmod(0o755)
 
-        (self.repo / "version.txt").write_text("1.0.0-alpha.15\n", encoding="utf-8")
+        (self.repo / "version.txt").write_text("1.0.1\n", encoding="utf-8")
         (self.repo / "CHANGELOG.md").write_text("# Changes\n", encoding="utf-8")
-        (self.repo / "internal/release/catalogs/1.0.0-alpha.15.json").write_text(
+        (self.repo / "internal/release/catalogs/1.0.1.json").write_text(
             "{}\n", encoding="utf-8"
         )
 
@@ -96,23 +96,23 @@ class AssembleCandidateTests(unittest.TestCase):
         ).isoformat().replace("+00:00", "Z")
 
         result = self.run_script()
-        expected_output = self.candidate_root / f"ava-1.0.0-alpha.15-{revision[:7]}"
+        expected_output = self.candidate_root / f"ava-1.0.1-{revision[:7]}"
         self.assertEqual(result.stdout.strip(), str(expected_output.resolve()))
         self.assertTrue(expected_output.is_dir())
 
         captured = self.capture.read_text(encoding="utf-8").splitlines()
         self.assertEqual(
             captured[0],
-            str((self.repo / "internal/release/catalogs/1.0.0-alpha.15.json").resolve()),
+            str((self.repo / "internal/release/catalogs/1.0.1.json").resolve()),
         )
         arguments = captured[1:]
         for expected in (
             "--output",
             str(expected_output.resolve()),
             "--version",
-            "1.0.0-alpha.15",
+            "1.0.1",
             "--channel",
-            "alpha",
+            "stable",
             "--source-revision",
             revision,
             "--source-date-epoch",
@@ -125,7 +125,7 @@ class AssembleCandidateTests(unittest.TestCase):
             self.assertIn(expected, arguments)
 
     def test_edge_independent_candidate_does_not_require_or_pass_catalog(self) -> None:
-        catalog = self.repo / "internal/release/catalogs/1.0.0-alpha.15.json"
+        catalog = self.repo / "internal/release/catalogs/1.0.1.json"
         catalog.unlink()
         self.git("add", "-u")
         self.git("commit", "-qm", "remove target edge")
@@ -134,7 +134,7 @@ class AssembleCandidateTests(unittest.TestCase):
         result = self.run_script("--phase", "edge-independent")
         expected_output = (
             self.candidate_root
-            / f"ava-1.0.0-alpha.15-{revision[:7]}-edge-independent"
+            / f"ava-1.0.1-{revision[:7]}-edge-independent"
         )
         self.assertEqual(result.stdout.strip(), str(expected_output.resolve()))
         self.assertTrue(expected_output.is_dir())
@@ -144,7 +144,7 @@ class AssembleCandidateTests(unittest.TestCase):
         self.assertIn(revision, captured[1:])
 
     def test_edge_dependent_candidate_requires_catalog(self) -> None:
-        catalog = self.repo / "internal/release/catalogs/1.0.0-alpha.15.json"
+        catalog = self.repo / "internal/release/catalogs/1.0.1.json"
         catalog.unlink()
         self.git("add", "-u")
         self.git("commit", "-qm", "remove target edge")

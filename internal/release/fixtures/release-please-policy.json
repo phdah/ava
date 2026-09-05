@@ -61,13 +61,13 @@
   ],
   "channels": [
     {
-      "name": "alpha",
-      "example": "1.0.0-alpha.1",
-      "settings": {"prerelease": true, "versioning": "prerelease", "prerelease-type": "alpha"}
+      "name": "beta",
+      "example": "2.0.0-beta.1",
+      "settings": {"prerelease": true, "versioning": "prerelease", "prerelease-type": "beta"}
     },
     {
       "name": "rc",
-      "example": "1.0.0-rc.1",
+      "example": "2.0.0-rc.1",
       "settings": {"prerelease": true, "versioning": "prerelease", "prerelease-type": "rc"}
     },
     {

@@ -32,18 +32,12 @@ python3 -m py_compile \
   "$ROOT/internal/release/qualification_ci.py" \
   "$ROOT/internal/release/qualification_acceptance.py" \
   "$ROOT/internal/release/publication.py" \
-  "$ROOT/internal/release/stable_bootstrap.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/checkpoint.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \
   "$ROOT/internal/release/validate_pr_title.py" \
   "$ROOT/internal/release/validate_release_pr.py"
 python3 "$ROOT/internal/release/validate-installed-paths.py" --root "$ROOT"
-python3 "$ROOT/internal/release/validate_adjacent_catalog.py" \
-  "$ROOT/internal/release/catalogs/1.0.0-alpha.12.json" \
-  --guidance-root "$ROOT/internal/release/guidance" \
-  --installed-version 1.0.0-alpha.11 \
-  --compatible-through 1.0.0-alpha.9
 python3 "$ROOT/internal/release/conformance.py" \
   --root "$ROOT" \
   --mode repository \
@@ -75,13 +69,12 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_qualification_acceptance \
   internal.release.tests.test_publication \
   internal.release.tests.test_publication_workflow \
-  internal.release.tests.test_stable_bootstrap \
   internal.release.tests.test_adjacent_edges \
   internal.release.tests.test_release_catalog \
-  internal.release.tests.test_release_catalog_history \
   internal.release.tests.test_conformance \
   internal.release.tests.test_conformance_matrix \
   internal.release.tests.test_release_please \
   internal.release.tests.test_semantic_impact_assessment \
   internal.release.tests.test_release_surface \
+  internal.release.tests.test_stable_lineage_clean \
   internal.release.tests.release_pr_policy_test

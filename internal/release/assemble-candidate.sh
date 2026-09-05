@@ -52,8 +52,16 @@ case "$version" in
 esac
 
 catalog="$ROOT/internal/release/catalogs/$version.json"
-if [ "$phase" = edge-dependent ] && [ ! -f "$catalog" ]; then
+root_release=false
+if [ "$version" = "1.0.0" ]; then
+  root_release=true
+fi
+if [ "$phase" = edge-dependent ] && [ "$root_release" = false ] && [ ! -f "$catalog" ]; then
   echo "ERROR: missing adjacent release catalog: $catalog" >&2
+  exit 1
+fi
+if [ "$root_release" = true ] && [ -f "$catalog" ]; then
+  echo "ERROR: root release 1.0.0 must not define an upgrade edge catalog" >&2
   exit 1
 fi
 
@@ -78,7 +86,7 @@ if [ -e "$output" ]; then
   exit 1
 fi
 
-if [ "$phase" = edge-independent ]; then
+assemble_without_edge() {
   unset AVA_UPGRADE_CATALOG
   "$ROOT/internal/release/assemble.sh" \
     --output "$output" \
@@ -88,6 +96,10 @@ if [ "$phase" = edge-independent ]; then
     --source-date-epoch "$source_date_epoch" \
     --published-at "$published_at" \
     --release-notes "$ROOT/CHANGELOG.md" >&2
+}
+
+if [ "$phase" = edge-independent ] || [ "$root_release" = true ]; then
+  assemble_without_edge
 else
   AVA_UPGRADE_CATALOG="$catalog" \
     "$ROOT/internal/release/assemble.sh" \

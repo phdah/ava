@@ -1,71 +1,11 @@
 # Ava Release Implementation Log
 
-This log records major conceptual and structural changes to Ava's internal release implementation. It does not replace Git history.
+This log records major conceptual and structural changes to the maintained stable release implementation. Detailed pre-stable development history remains available in task records and Git history rather than in the operational release surface.
 
-## 2026-09-03
+## 2026-09-05
 
-- **Durable recoverable publication**: Split release-please release creation from next-release-PR maintenance and removed `release_created` as Ava's publication gate. Publication now resolves an exact tag/revision/accepted-qualification identity, can recreate a missing draft GitHub Release for an already-established tag, verifies and reuses matching assets by SHA-256, uploads only missing assets without clobbering, treats an exact published release as a no-op, and exposes explicit `workflow_dispatch` tag recovery. Current recovery tooling is checked out separately from the immutable tagged source so older partial releases can be repaired while validation and assembly remain bound to their exact release revision.
-
-## 2026-09-02
-
-- **Session-neutral release orchestration**: Removed ChatGPT Work as a release-procedure requirement after the mandatory qualification gate became fully deterministic. GitHub Actions now executes pre-edge/final qualification and can apply a validated transient acceptance request, so an ordinary repository-connected ChatGPT session can review the release delta, author the edge, inspect evidence, request explicit acceptance, and merge without switching modes or supplying shell compute.
-- **Deterministic release qualification gate**: Replaced the mandatory consumer-agent matrix and independent LLM audit with a minimal deterministic release gate. Normal releases now run an ephemeral `pre-edge` fail-fast check, perform reviewed maintainer semantic-impact assessment and adjacent-edge authoring, then run one authoritative `final` deterministic qualification covering installation, managed-damage rejection, exact edge identity, previous-to-target upgrade, resume, abort, rollback, and revision-bound evidence. Routing, calendar, clarification, inbox ingestion, agent-led semantic reconciliation/finalization, and role-led uninstall remain optional behavioral QA instead of publication gates.
-- **Work behavioral qualification experiment**: The first ChatGPT Work validation proved that fresh same-workspace agent execution can work, but it consumed substantial agent credits and produced a false negative when a correct clarification response did not match a lexical validator heuristic. That experiment superseded the earlier plan to require fresh Work agents and an independent Work audit for every release.
-
-## 2026-08-29
-
-- **Outcome-based inbox qualification**: Removed the complete pending-inbox runner's transient project-root guard. Qualification continues to require exact processed-source preservation, trusted provenance, structural fidelity, conformance, `structural-pass`, and independent semantic audit.
-
-## 2026-08-24
-
-- **Audit-gated structural qualification**: Evidence-only scenarios may now finish as `structural-pass` with semantic status pending independent audit instead of claiming a semantic `pass` the deterministic runner cannot prove. Complete pending-inbox qualification adds bounded non-oracle checks for exact processed-source preservation, trusted `sources:` traceability, metadata resource resolution, and claim-footnote consistency while leaving mapped/non-durable/pending meaning to the evaluator-only audit. `structural-pass` remains mechanically successful so the full matrix and audit can complete; the audit still determines `needs-review` versus `awaiting-user-signoff`.
-- **Transient inbox root guard**: The complete pending-inbox qualification scenario now observes direct project-root entries throughout the OpenCode process and fails on any new entry, including one deleted before final conformance. This closes the evidence gap that allowed a temporary ingestion helper script to escape deterministic qualification checks.
-- **Removed the hardcoded semantic-inspection-path qualification gate**: The deterministic postcondition added on 2026-08-15 compared each semantic scenario's recorded inspected paths against one fixed, edge-agnostic list. The list was copied from a single prior release edge and did not generalize: it produced false failures against correctly behaving candidates whose guidance named different affected paths. `qualification_postconditions.py` and its dedicated test suite are removed; `qualify-synthetic.sh` runs the scenario runner directly. Judging whether an edge's actual inspected-path set satisfies its own guidance remains an independent-audit responsibility rather than a fixed structural check.
-
-## 2026-08-17
-
-- **Mandatory pre-merge release qualification**: Every release-please PR must qualify its exact locally assembled candidate through the full hands-off OpenCode matrix and independent audit before merge.
-- **Explicit qualification acceptance**: A clean automated result stops at `awaiting-user-signoff`; explicit user approval records `qualified-run` acceptance and enables the release PR policy gate.
-- **Revision-bound merge safety**: Release acceptance is bound to the qualified repository revision and local asset identity. Any non-qualification content change after qualification requires a fresh run and signoff.
-- **Historical release-quality backfill**: Releases `v1.0.0-alpha.1` through `v1.0.0-alpha.14` are explicitly grandfathered as accepted with `basis: historical-backfill`, without claiming they ran the current qualification system.
-
-## 2026-08-15
-
-- **Semantic inspection postconditions**: Added fixture-declared project-path accounting for semantic reconciliation and a deterministic post-run gate that changes otherwise passing scenarios to failure when required inspected or changed paths are missing, duplicated, or unresolved.
-
-## 2026-08-14
-
-- **Hands-off qualification evidence state**: Added one repository-only qualification operation that resolves the reviewed exact release pair, verifies immutable published assets or exact local assets, regenerates the pinned synthetic fixture, runs the maintained matrix, captures top-level and nested OpenCode sessions, runs a fresh read-only audit, and writes compact uncommitted evidence bound to the complete execution identity. Successful automation stops at `awaiting-user-signoff`; blocking or major audit findings stop at `needs-review`.
-- **Pinned synthetic image inputs**: Imported the five visually accepted fictional qualification PNGs into the repository-only fixture with an exact manifest and maintained copy command. Clean generated vaults no longer depend on user-local image bytes, while assembly regression coverage keeps every pinned image out of Ava release assets and installed projects.
-- **One-command synthetic qualification**: Added one repository-only manual shell entry point for the complete pinned-input synthetic qualification matrix, with safe external workspaces, exact managed-damage interpretation, authentic resume and abort checkpoints, calendar regression coverage, bounded OpenCode execution, interrupted reruns, and deterministic terminal summaries. The complete matrix remains a local maintainer operation; CI exercises only bounded runner tests.
-
-## 2026-08-10
-
-- **Release-impact-based change types**: Conventional Commit types now describe impact on the supported Ava distribution rather than implementation novelty or repository location. Repository-only qualification, tests, CI, documentation, and maintenance remain non-releasable when they do not change produced assets or supported behavior, while internal release tooling remains releasable when its output or guarantees change. Maintained examples and release tests freeze the boundary, including the synthetic qualification vault case.
-
-## 2026-08-09
-
-- **Strict recursive adjacent release authoring**: Normalized retained alpha.5 through alpha.12 history into immutable release-local records, with exactly one previous-to-target edge per file. Removed active `upgrade-impact.json` authoring, made cumulative guidance non-selectable archival evidence, and changed release validation to reject historical record changes. Upgrade qualification and release assembly now follow predecessor records recursively and derive installer-compatible source projections in memory.
-- **Adjacent upgrade edge catalogs**: Added separate managed and semantic path resolution, supported-source retention, exact-once guidance composition with explicit supersession, catalog composition and validation tools, a multi-edge fixture, and regression coverage for invalid graphs and semantically lagging projects.
-
-## 2026-08-07
-
-- **Synthetic v1 qualification fixture**: Added a repository-only standard-library generator for a reproducible 300-file fictional corpus, external image slots, semantic oracle, run-evidence contract, and isolated qualification variants.
-
-## 2026-08-05
-
-- **Isolated release PR policy gate**: Added a required-check workflow for release-please proposals while ordinary pull requests remain unaffected.
-
-## 2026-08-04
-
-- **Executable alpha qualification**: Added frozen readiness gates, defect classes, source policy, reproducible assembly proof, and transition fixtures.
-- **Release preparation automation**: Added release-please coordination, Conventional Commit validation, immutable draft releases, exact-SHA qualification, attestation, and non-clobbering publication.
-
-## 2026-08-03
-
-- **Deterministic release assembly**: Added reproducible release assets, explicit installed mappings, checksums, identity, guidance, migrations, and project scaffolds.
-- **Thin installer and updater**: Added the distributed POSIX shell entry point with embedded Python.
-- **Managed transaction protocol**: Added installation, upgrades, reconciliation, recovery, rollback, and semantic blocking.
-- **Restricted migrations**: Added declarative apply and verify operations.
-- **Explicit source ownership**: Separated managed base and project scaffold sources.
-- **Unified conformance validation**: Added repository, installed-project, and release validation.
+- **Stable root release**: Established `1.0.0` as the first supported release and the root of the permanent upgrade ledger. The root release has no previous supported release, no upgrade edge, and no source-to-target semantic transition.
+- **Target-only first-release qualification**: The mandatory deterministic qualification gate can qualify the root release without fabricating a source release. It verifies applicable installation, mature-project preservation, managed-damage, conformance, reproducibility, attestation, publication, and immutable-release guarantees.
+- **Stable adjacent history**: Permanent release-to-release history begins with `1.0.0 -> 1.0.1`. Later releases use exact previous-release assets, reviewed adjacent edges, deterministic lifecycle qualification, explicit user acceptance, merge-commit publication, and durable recovery.
+- **Release PR merge safety**: Ordinary implementation PRs may be squash merged. Release Please PRs must use merge commits so the accepted qualified revision remains in publication ancestry.
+- **Durable recoverable publication**: Publication resolves exact tag, revision, accepted qualification, release metadata, and asset digests from durable state. Compatible partial drafts can be resumed without moving tags or clobbering assets, and exact immutable published state is treated as success.

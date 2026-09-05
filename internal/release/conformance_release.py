@@ -70,8 +70,8 @@ def validate_release(root: Path, require_publication_evidence: bool = False) -> 
         upgrade_paths = manifest.get("upgrade_paths")
         if isinstance(upgrade_paths, dict):
             edges = upgrade_paths.get("edges")
-            if isinstance(edges, list) and len(edges) == 0 and isinstance(version, str) and version != "1.0.0-alpha.1":
-                findings.append(Finding("AVA-RELEASE-UPGRADE-EDGES", "error", "ava-release.json", "release must declare at least one supported upgrade source; only 1.0.0-alpha.1 may have an empty edge list", category="release"))
+            if isinstance(edges, list) and len(edges) == 0 and isinstance(version, str) and version != "1.0.0":
+                findings.append(Finding("AVA-RELEASE-UPGRADE-EDGES", "error", "ava-release.json", "release must declare at least one supported upgrade source; only the root stable 1.0.0 release may have an empty edge list", category="release"))
 
         assets = manifest.get("assets")
         if not isinstance(assets, list):

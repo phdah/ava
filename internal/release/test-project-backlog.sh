@@ -10,10 +10,17 @@ ASSETS="$WORK/assets"
 TARGET="$WORK/project"
 mkdir -p "$ASSETS" "$TARGET"
 
-version=$(cat "$ROOT/version.txt")
+repository_version=$(cat "$ROOT/version.txt")
+case "$repository_version" in
+  0.0.0) version=1.0.0 ;;
+  *) version=$repository_version ;;
+esac
 revision=$(git -C "$ROOT" rev-parse HEAD)
 epoch=$(git -C "$ROOT" show -s --format=%ct HEAD)
 
+# 0.0.0 is a Release Please coordination sentinel only. Tests that need an
+# installable bundle use the first real stable version instead of installing
+# the sentinel as if it were an Ava release.
 PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 "$ROOT/internal/release/assemble.py" \
   --root "$ROOT" \
   --output "$ASSETS" \
