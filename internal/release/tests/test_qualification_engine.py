@@ -60,6 +60,75 @@ class QualificationExecutionTests(unittest.TestCase):
             ],
         )
 
+    def test_ci_stage_selection_treats_root_release_as_final_without_catalog(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            fixtures = root / "internal/release/fixtures"
+            fixtures.mkdir(parents=True)
+            (fixtures / "release-upgrade-policy.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "initial_release_version": "1.0.0",
+                        "protected_direct_sources": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (root / "version.txt").write_text("1.0.0\n", encoding="utf-8")
+
+            self.assertEqual(qualification_ci.qualification_stage(root), "final")
+
+    def test_ci_stage_selection_keeps_post_root_release_pre_edge_until_catalog(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            fixtures = root / "internal/release/fixtures"
+            fixtures.mkdir(parents=True)
+            (fixtures / "release-upgrade-policy.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "initial_release_version": "1.0.0",
+                        "protected_direct_sources": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (root / "version.txt").write_text("1.0.1\n", encoding="utf-8")
+
+            self.assertEqual(qualification_ci.qualification_stage(root), "pre-edge")
+
+            catalogs = root / "internal/release/catalogs"
+            catalogs.mkdir(parents=True)
+            (catalogs / "1.0.1.json").write_text("{}\n", encoding="utf-8")
+            self.assertEqual(qualification_ci.qualification_stage(root), "final")
+
+    def test_ci_stage_selection_rejects_root_upgrade_catalog(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            fixtures = root / "internal/release/fixtures"
+            fixtures.mkdir(parents=True)
+            (fixtures / "release-upgrade-policy.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "initial_release_version": "1.0.0",
+                        "protected_direct_sources": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (root / "version.txt").write_text("1.0.0\n", encoding="utf-8")
+            catalogs = root / "internal/release/catalogs"
+            catalogs.mkdir(parents=True)
+            (catalogs / "1.0.0.json").write_text("{}\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(
+                qualification_ci.QualificationCiError,
+                "root release must not define",
+            ):
+                qualification_ci.qualification_stage(root)
+
     def test_behavioral_scenarios_remain_outside_release_gate(self) -> None:
         matrix = qualification_runner.load_matrix()
         behavioral = {
