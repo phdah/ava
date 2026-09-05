@@ -26,7 +26,7 @@ ordinal: 6640
 
 Graduate Ava from the alpha prerelease line to the real stable `1.0.0` release line, then prove that the ordinary stable release workflow works by producing `1.0.1` through Release Please and the maintained release gates.
 
-Ava is currently at `1.0.0-alpha.18`. After AVA-5640/PR #126 is merged, the existing alpha release process should first produce one final fully-qualified prerelease, expected to be `v1.0.0-alpha.19`. That successful release is a hard gate for this migration. If Release Please proposes a different next prerelease version, stop and resolve the version-state discrepancy rather than silently proceeding.
+The final prerelease `v1.0.0-alpha.19` has now been fully qualified, explicitly accepted, published, populated with the maintained assets, and verified immutable. Its exact published source identity and stable-bootstrap inputs are retained as historical repository evidence before the destructive alpha cleanup begins.
 
 After the final alpha release is proven, intentionally reset the public prerelease release history: remove every alpha GitHub Release and every corresponding alpha tag, including stale or duplicate draft releases. Then bootstrap a clean stable `v1.0.0` release from the verified repository state. The stable bootstrap may require a one-time manual publication path because the normal release-to-release qualification assumes a previous release exists.
 
@@ -68,14 +68,17 @@ The migration is not complete when `1.0.0` exists. It must also switch Ava's mai
 
 - PR #126 is merged at `f9edbf6153be9375347aa27674ee4b67875535d6`, satisfying the AVA-5640 dependency.
 - The post-merge Release Please run found no releasable unit because PR #126 was correctly classified as repository-only `refactor(release)` work, so it created no release PR.
-- The final-alpha gate is therefore initiated with a temporary package-level `release-as: 1.0.0-alpha.19` override. This keeps the existing prerelease strategy and all qualification/publication gates unchanged while asking Release Please for the exact final prerelease required by this task.
-- Remove the temporary `release-as` override as part of the stable configuration cutover after `v1.0.0-alpha.19` has been fully qualified, accepted, published, immutable, and verified.
-- No destructive alpha cleanup, stable configuration switch, completed-task migration, or acceptance criterion is complete yet.
+- The final-alpha gate was initiated with a temporary package-level `release-as: 1.0.0-alpha.19` override. The temporary package-level `chore` visibility used only to expose that release proposal was removed in PR #130; the `release-as` pin remains until the stable configuration cutover.
+- Release PR #129 was accidentally squash merged. PR #130 added a one-time, exact alpha.19 recovery proof plus permanent guidance that Release Please release PRs must use merge commits. Manual recovery workflow run `33954172775` then published and immutably verified the existing `v1.0.0-alpha.19` tag without moving it.
+- Published final-alpha identity: tag `v1.0.0-alpha.19`, revision `4aeb06b4292b9c768ea745ca5989e94c24d4be7c`, tree `4a881af3836573a6557615e68b9f895c4fd0ef08`, GitHub Release ID `383159767`, published `2026-09-05T08:03:32Z`.
+- Explicit qualification acceptance remains bound to run `20260905T062356253224Z-alpha18-to-alpha19-local` and qualified revision `464f1470b691b2e43e43cf8010e9bcd8de5e3491`.
+- Stable-bootstrap source evidence is captured in `internal/release/history/final-alpha-1.0.0-alpha.19.json`. It deliberately records the immutable published asset digests separately from the pre-merge qualification target digests; the published tag and published asset set are the stable-bootstrap source of truth.
+- No destructive alpha cleanup, stable configuration switch, or completed-task migration has occurred yet.
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 AVA-5640 is merged and the final alpha release, expected `v1.0.0-alpha.19`, is fully qualified, explicitly accepted, published, immutable, and populated with the expected assets before migration proceeds
-- [ ] #2 The exact final-alpha revision and deterministic inputs needed for the stable bootstrap are recorded before any destructive release/tag deletion
+- [x] #1 AVA-5640 is merged and the final alpha release, expected `v1.0.0-alpha.19`, is fully qualified, explicitly accepted, published, immutable, and populated with the expected assets before migration proceeds
+- [x] #2 The exact final-alpha revision and deterministic inputs needed for the stable bootstrap are recorded before any destructive release/tag deletion
 - [ ] #3 Release Please and maintained release configuration are converted from alpha prerelease semantics to ordinary stable semantic versioning
 - [ ] #4 Every alpha GitHub Release, including drafts/duplicates, is deleted and GitHub contains no remaining `1.0.0-alpha.*` release object
 - [ ] #5 Every alpha Git tag/ref is deleted and GitHub contains no remaining `v1.0.0-alpha.*` tag
