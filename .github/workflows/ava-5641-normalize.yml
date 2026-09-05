@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0
 
       - name: Normalize remaining synthetic release identities
-        run: python3 internal/release/normalize_stable_lineage_tmp.py
+        run: PYTHONPATH="$GITHUB_WORKSPACE" python3 internal/release/normalize_stable_lineage_tmp.py
 
       - name: Remove temporary normalization machinery
         run: |
