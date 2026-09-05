@@ -43,7 +43,7 @@ A failing qualification is a release blocker. Correct the implementation and rer
 
 This step applies only when a source release exists.
 
-The Ava Internal Maintainer reviews the exact previous release against the target candidate and records whether project-owned semantic reconciliation is required.
+The Ava Internal Maintainer reviews the exact previous release against the target candidate and records whether project-owned semantic reconciliation is required. Tooling must not guess semantic migration need. A managed behavior change and the presence or absence of deterministic project-file migrations are evidence for the maintainer, not a substitute for reviewed judgment. The recorded result must include a rationale.
 
 ### Managed delta
 
