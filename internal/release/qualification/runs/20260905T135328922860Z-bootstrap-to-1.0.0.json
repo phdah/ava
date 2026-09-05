@@ -61,5 +61,8 @@
     "tag": "v1.0.0",
     "version": "1.0.0"
   },
-  "user_signoff": null
+  "user_signoff": {
+    "identity": "user:phdah",
+    "time": "2026-09-05T14:05:54Z"
+  }
 }
