@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-alpha.19](https://github.com/phdah/ava/compare/v1.0.0-alpha.18...v1.0.0-alpha.19) (2026-09-05)
+
+
+### Release Operations
+
+* **release:** expose final alpha trigger ([#128](https://github.com/phdah/ava/issues/128)) ([3d45f49](https://github.com/phdah/ava/commit/3d45f49ade63604cadeff89d376f3fa36b8f007d))
+* **release:** trigger final alpha cutover ([#127](https://github.com/phdah/ava/issues/127)) ([614884a](https://github.com/phdah/ava/commit/614884af2ccbb96871024b35aedf19907cf3a224))
+
 ## [1.0.0-alpha.18](https://github.com/phdah/ava/compare/v1.0.0-alpha.17...v1.0.0-alpha.18) (2026-09-04)
 
 
