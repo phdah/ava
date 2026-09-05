@@ -3,12 +3,9 @@
   "pairs": {
     "1.0.0-to-1.0.1": {
       "historical": false,
-      "latest_run_id": "20260905T155337236473Z-1.0.0-to-1.0.1",
-      "status": "accepted",
-      "user_signoff": {
-        "identity": "user:phdah",
-        "time": "2026-09-05T16:23:38Z"
-      }
+      "latest_run_id": "20260905T162810213896Z-1.0.0-to-1.0.1",
+      "status": "awaiting-user-signoff",
+      "user_signoff": null
     },
     "bootstrap-to-1.0.0": {
       "historical": true,
