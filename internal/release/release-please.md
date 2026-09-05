@@ -35,7 +35,16 @@ Release Please PRs are the exception. After final qualification and explicit acc
 
 A pull request title is a release-impact claim. Select the Conventional Commit type from what merging the pull request changes in the supported Ava distribution, not from implementation novelty or repository location.
 
-Use `feat`, `fix`, `perf`, or `revert` for supported distribution impact. Use non-releasable types such as `test`, `docs`, `ci`, `build`, `refactor`, or `chore` when the change remains repository-only. Mark incompatible supported distribution changes as breaking.
+Implementation novelty alone never justifies `feat`. Repository location is not the classification boundary. Internal release tooling can still be a `feat` or `fix` when it changes the produced distribution or supported release behavior, while repository-only tests, documentation, CI, and bookkeeping remain non-releasable.
+
+Maintained examples:
+
+- `feat(host): add opt-in managed host support` is a distribution capability and therefore a minor release.
+- `fix(installer): preserve project-owned host configuration` is a supported distribution fix even though its implementation lives under internal release tooling.
+- `test(release): add synthetic qualification vault` is repository-only and does not create a release.
+- `docs(release): clarify internal qualification procedure` is repository-only and does not create a release.
+- `chore(internal): reorganize roadmap bookkeeping` is repository-only and does not create a release.
+- `feat!: replace the public manifest contract` is a breaking supported distribution change and therefore a major release.
 
 The public [Ava Versioning and Compatibility](../../distribution/versioning.md) contract is authoritative for PATCH, MINOR, and MAJOR compatibility meaning.
 
@@ -76,11 +85,19 @@ The release gate validates:
 
 ## Semantic-impact assessment
 
-Semantic-impact assessment applies only when a source release exists.
+Semantic-impact assessment applies only when a source release exists. Before authoring a later adjacent edge, the maintainer reviews the exact previous-to-target delta and records a rationale. A managed behavior change is evidence to inspect, not an automatic semantic result. The presence or absence of deterministic project-file migrations is also evidence, not the decision itself.
 
-Before authoring a later adjacent edge, the maintainer reviews the exact previous-to-target managed delta and determines whether supported project-owned context can require semantic reconciliation. The decision and rationale are maintainer-owned.
+### Managed delta
 
-For a semantic transition, transition-local guidance identifies the affected project-owned concepts, bounded discovery conditions, and completion criteria. For a mechanical transition, no semantic guidance is authored.
+Describe the exact change to Ava-managed files, installer behavior, schemas, routing, lifecycle behavior, or other managed contracts.
+
+### Project-owned compatibility
+
+Determine whether that managed delta can invalidate project-owned meaning or behavior, including roles, workflows, shared instructions, indexes, host entrypoints, or other project-owned extensions.
+
+### Required reconciliation
+
+If project-owned compatibility can be affected, define bounded discovery conditions, completion criteria, and reviewed guidance. Otherwise record the reviewed rationale for why compatibility advances mechanically without guidance.
 
 `1.0.0` has no source release, so this transition-specific assessment is not applicable to the root release.
 
