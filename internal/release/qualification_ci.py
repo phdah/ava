@@ -161,11 +161,31 @@ def package_changes(kind: str, artifact_root: Path) -> None:
     )
 
 
-def qualification_stage() -> str:
-    target_version = (REPOSITORY_ROOT / "version.txt").read_text(encoding="utf-8").strip()
+def initial_release_version(root: Path = REPOSITORY_ROOT) -> str:
+    policy_path = root / "internal/release/fixtures/release-upgrade-policy.json"
+    try:
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise QualificationCiError(f"invalid release upgrade policy: {exc}") from exc
+    initial = policy.get("initial_release_version") if isinstance(policy, dict) else None
+    if not isinstance(initial, str) or not initial:
+        raise QualificationCiError(
+            "release upgrade policy initial_release_version must be non-empty"
+        )
+    return initial
+
+
+def qualification_stage(root: Path = REPOSITORY_ROOT) -> str:
+    target_version = (root / "version.txt").read_text(encoding="utf-8").strip()
     if not target_version:
         raise QualificationCiError("version.txt is empty")
-    target_catalog = REPOSITORY_ROOT / "internal/release/catalogs" / f"{target_version}.json"
+    target_catalog = root / "internal/release/catalogs" / f"{target_version}.json"
+    if target_version == initial_release_version(root):
+        if target_catalog.exists():
+            raise QualificationCiError(
+                "the root release must not define an upgrade-edge catalog"
+            )
+        return "final"
     return "final" if target_catalog.is_file() else "pre-edge"
 
 
