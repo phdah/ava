@@ -34,7 +34,7 @@ jobs:
       - name: Validate Backlog.md native parsing
         run: |
           npx -y backlog.md@1.50.1 task list --json \
-            | jq -e '.tasks | any(.id | ascii_downcase == "ava-701")' >/dev/null
+            | jq -e '.tasks | any(.id | ascii_downcase == "ava-5641")' >/dev/null
 
       - name: Exercise Backlog.md lifecycle
         run: |
@@ -43,9 +43,9 @@ jobs:
           cp -a "$GITHUB_WORKSPACE/." "$test_root/"
           cd "$test_root"
 
-          npx -y backlog.md@1.50.1 task edit ava-701 -s "In Progress" >/dev/null
-          npx -y backlog.md@1.50.1 task edit ava-701 -s "Done" >/dev/null
-          npx -y backlog.md@1.50.1 task edit ava-701 -s "To Do" >/dev/null
+          npx -y backlog.md@1.50.1 task edit ava-5641 -s "In Progress" >/dev/null
+          npx -y backlog.md@1.50.1 task edit ava-5641 -s "Done" >/dev/null
+          npx -y backlog.md@1.50.1 task edit ava-5641 -s "To Do" >/dev/null
           python3 internal/todo/validate.py
 
       - name: Smoke test Backlog.md browser
