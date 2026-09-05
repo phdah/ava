@@ -52,7 +52,7 @@ jobs:
           cp "internal/todo/archive/milestones/$milestone_file" "internal/todo/milestones/$milestone_file"
           rm "internal/todo/archive/milestones/$milestone_file"
 
-          npx -y backlog.md@1.50.1 cleanup >/dev/null
+          npx -y backlog.md@1.50.1 task complete ava-5641 >/dev/null
           npx -y backlog.md@1.50.1 milestone archive m-0 >/dev/null
 
           test -f "internal/todo/completed/$task_file"
