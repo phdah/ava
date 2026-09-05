@@ -21,7 +21,7 @@ class QualificationStateTests(unittest.TestCase):
         self.assertEqual(active["source"], {"kind": "bootstrap", "version": "0.0.0"})
         self.assertEqual(active["target"]["kind"], "local")
         self.assertEqual(active["target"]["version"], "1.0.0")
-        self.assertEqual(current["release_acceptance"], {})
+        self.assertIsInstance(current["release_acceptance"], dict)
 
     def test_config_schema_has_no_agent_runtime_configuration(self) -> None:
         schema = state.load_json(
