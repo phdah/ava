@@ -58,4 +58,6 @@
 
 ## Historical records
 
-`log.md`, committed records under `qualification/runs/`, the repository changelog, completed roadmap task evidence, and published GitHub Release metadata are historical records. They may contain terminology from the process that produced them. They are evidence only and are not release instructions or executable alternatives.
+- [final alpha stable-bootstrap evidence](history/final-alpha-1.0.0-alpha.19.json)
+
+`log.md`, committed records under `qualification/runs/`, the final-alpha stable-bootstrap evidence, the repository changelog, completed roadmap task evidence, and published GitHub Release metadata are historical records. They may contain terminology from the process that produced them. They are evidence only and are not release instructions or executable alternatives.
