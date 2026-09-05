@@ -45,8 +45,8 @@
     },
     "alpha18-to-alpha19-local": {
       "historical": false,
-      "latest_run_id": null,
-      "status": "not-run",
+      "latest_run_id": "20260905T062356253224Z-alpha18-to-alpha19-local",
+      "status": "awaiting-user-signoff",
       "user_signoff": null
     }
   },
