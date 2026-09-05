@@ -4,7 +4,7 @@ title: Graduate Ava from alpha releases to stable 1.0.0
 status: In Progress
 assignee: []
 created_date: '2026-09-05 00:23'
-updated_date: '2026-09-05 00:42'
+updated_date: '2026-09-05 13:20'
 labels:
   - internal
   - roadmap
@@ -24,72 +24,72 @@ ordinal: 6640
 
 ## Description
 
-Graduate Ava from the alpha prerelease line to the real stable `1.0.0` release line, then prove that the ordinary stable release workflow works by producing `1.0.1` through Release Please and the maintained release gates.
+Graduate Ava from the prerelease development line to the real stable `1.0.0` release line, then prove that the ordinary stable release workflow works by producing `1.0.1` through Release Please and the maintained release gates.
 
-The final prerelease `v1.0.0-alpha.19` has now been fully qualified, explicitly accepted, published, populated with the maintained assets, and verified immutable. Its exact published source identity and stable-bootstrap inputs are retained as historical repository evidence before the destructive alpha cleanup begins.
+The public prerelease Releases and tags were intentionally removed after their final publication and evidence capture. The stable-line design was subsequently tightened: `1.0.0` is a fresh root release, not an upgrade from the final prerelease. No prerelease edge, source release, semantic-transition state, catalog history, qualification history, or bootstrap reconstruction is retained in the operational stable repository state. Development history remains only in task records and Git history.
 
-After the final alpha release is proven, intentionally reset the public prerelease release history: remove every alpha GitHub Release and every corresponding alpha tag, including stale or duplicate draft releases. Then bootstrap a clean stable `v1.0.0` release from the verified repository state. The stable bootstrap may require a one-time manual publication path because the normal release-to-release qualification assumes a previous release exists.
+Stable `1.0.0` therefore has zero supported upgrade sources. The first permanent immutable adjacent edge is `1.0.0 -> 1.0.1`.
 
-Publishing stable `v1.0.0` also closes the pre-1.0 roadmap era. Once `v1.0.0` is fully qualified, explicitly accepted, published, immutable, and verified, every roadmap task that is already `Done` must be moved out of the active `internal/todo/tasks/` directory into Backlog.md's `internal/todo/completed/` directory using the native completed-task workflow. Ava's roadmap documentation and validation must be changed at the same time so `completed/` becomes the canonical location for fully completed work rather than keeping `Done` tasks mixed into the active task inventory.
+Publishing `v1.0.0` also closes the pre-1.0 roadmap era. Once `v1.0.0` is fully qualified, explicitly accepted, published, immutable, and verified, every roadmap task already `Done` must move from `internal/todo/tasks/` into Backlog.md's `internal/todo/completed/` directory using the native completed-task workflow. Unfinished work must not move.
 
-The migration is not complete when `1.0.0` exists. It must also switch Ava's maintained Release Please configuration and release gates to stable semantic versions and exercise the resulting normal path end-to-end by producing and publishing `1.0.1` from `1.0.0`.
+The migration remains active through the `1.0.1` proof. AVA-5641 is not complete merely because `1.0.0` exists.
 
 ## Required behavior
 
-1. Treat merged AVA-5640/PR #126 as a prerequisite so the stable cutover starts from the cleaned, single maintained release implementation.
-2. Produce one final release through the current prerelease flow, expected to be `v1.0.0-alpha.19`, and require normal qualification, explicit acceptance, publication, immutable release verification, and complete assets before any alpha cleanup begins.
-3. Before destructive cleanup, record the exact final-alpha source revision and any checksums, qualification evidence, catalog/guidance state, or other deterministic inputs needed to bootstrap the stable baseline safely.
-4. Change maintained release configuration from alpha prerelease versioning to ordinary stable semantic versioning. Remove live assumptions that every release is `1.0.0-alpha.N` or that `prerelease`/`alpha` settings remain enabled.
-5. Delete every GitHub Release belonging to the alpha line, including published releases and any stale, duplicate, or draft alpha release objects.
-6. Delete every corresponding alpha Git tag/ref, including `v1.0.0-alpha.*`, and verify that no alpha release object or alpha tag remains in GitHub after cleanup.
-7. Audit repository release state after the deletion. Alpha-specific material may remain only when it is required immutable historical evidence; it must not remain as live release configuration, an active release dependency, or an alternative release path.
-8. Bootstrap a clean `v1.0.0` stable release from the exact intended stable baseline. If the normal workflow cannot create the first stable release because it requires a previous release, implement or use an explicitly bounded one-time bootstrap/manual path rather than weakening the permanent release gates.
-9. The `v1.0.0` release must use the normal reproducible assembly, conformance, attestation, asset publication, and immutable release verification guarantees that are applicable without a previous stable release.
-10. After stable `v1.0.0` is fully qualified, explicitly accepted, published, immutable, and verified, migrate every roadmap task that is `Done` at that point from `internal/todo/tasks/` to Backlog.md's `internal/todo/completed/` directory. Preserve each task's complete history and completion evidence.
-11. Replace Ava's current repository-specific rule that forbids `internal/todo/completed/`. Update `internal/todo/index.md`, `internal/todo/validate.py`, Backlog-related tests, and any other maintained guidance so active work is discovered from `tasks/` while fully completed work is retained under `completed/` according to Backlog.md's native completed-task lifecycle.
-12. The completion migration must not archive or otherwise hide `To Do`, `In Progress`, or `Parked` tasks. AVA-5641 itself remains active until all of its acceptance criteria, including the `1.0.1` proof, are complete; when AVA-5641 is ultimately completed it should follow the same canonical completed-task lifecycle.
-13. After `v1.0.0` is established, ensure Release Please operates in stable mode and creates the next patch release as `1.0.1` from ordinary post-`1.0.0` changes.
-14. Qualify `1.0.0 -> 1.0.1` through the normal release-to-release workflow, including the maintained upgrade edge where required, deterministic qualification, explicit user acceptance, merge, publication, and post-publication verification.
-15. Remove any temporary bootstrap exception or one-off stable-seeding mechanism after `1.0.0` is established unless it has an independently justified permanent purpose. The normal maintained state after this task must be the ordinary stable Release Please + release qualification flow.
-16. Update authoritative release documentation, tests, schemas, policies, examples, and boundary checks so stable releases are the canonical current behavior and alpha-specific operational assumptions cannot silently return.
+1. Start from merged AVA-5640/PR #126 and the single maintained release implementation.
+2. Complete the final prerelease publication and capture sufficient evidence before destructive cleanup.
+3. Inventory the complete prerelease GitHub Release/tag deletion set and fail closed on unexpected objects.
+4. Delete every prerelease Release object and tag in the frozen target set and independently verify none remain publicly.
+5. Switch Release Please to stable semantics with `1.0.0` as the first supported release.
+6. Purge prerelease operational lineage from the repository working tree outside task history: release catalogs, transition guidance, qualification runs/acceptance history, semantic-transition evidence, reconstruction/reset tooling, release-history evidence, changelog history, and maintained documentation references.
+7. Treat repository `0.0.0` only as an internal Release Please sentinel before the first stable PR. It must never be a published release, tag, installed version, or upgrade edge.
+8. Bootstrap `v1.0.0` as a source-less root release. It must have no release-local catalog record and an empty `upgrade_paths.edges` inventory.
+9. Qualify `v1.0.0` through all applicable deterministic target-only checks, including fresh install, mature-project preservation, managed-damage handling, conformance, reproducible assembly, attestation, publication, and immutable verification. Upgrade resume/abort/rollback and semantic-transition checks are inapplicable because no supported source exists.
+10. Require explicit user acceptance of the exact final `1.0.0` qualification run before merging the Release Please PR.
+11. Merge Release Please PRs with a merge commit so accepted qualification ancestry is preserved. Ordinary implementation PRs may continue to squash merge.
+12. After verified `v1.0.0` publication, migrate every roadmap task already `Done` to `internal/todo/completed/` while preserving task history. Leave `To Do`, `In Progress`, and `Parked` tasks active.
+13. Update the roadmap validator and guidance so `completed/` is the canonical finished-task location.
+14. Remove the temporary first-release seeding state after `1.0.0` is established unless it has an independently justified permanent purpose.
+15. Produce `1.0.1` from ordinary post-`1.0.0` work using normal stable Release Please behavior.
+16. Qualify `1.0.0 -> 1.0.1` through the ordinary adjacent-edge workflow, including semantic-impact assessment where applicable, deterministic upgrade qualification, explicit user acceptance, merge-commit publication, attestation, and immutable verification.
 
 ## Hard constraints
 
-- Do not delete alpha releases or tags until the final alpha release has completed successfully and the exact stable-bootstrap inputs have been captured.
-- Treat deletion of alpha releases and tags as an intentional destructive reset. Inventory the complete target set first and fail closed if unexpected non-alpha releases/tags would be affected.
-- Do not preserve an alpha GitHub Release or alpha tag merely for convenience. The intended public release history after the reset begins at `v1.0.0`.
-- Do not permanently bypass qualification, reproducible assembly, attestation, or publication verification to create `1.0.0`. Any bootstrap exception must be one-time, narrow, explicit, and removed or disabled after use.
-- Do not move completed roadmap tasks until `v1.0.0` itself is fully qualified, explicitly accepted, published, immutable, and verified. The completed-directory migration is the repository-level conclusion of the pre-1.0 roadmap.
-- The completed-task migration must use Backlog.md's native completed-task semantics and preserve task content/history; it is not an archival substitute for unfinished work.
-- `1.0.1` must be produced by the ordinary stable workflow, not by repeating the manual/bootstrap mechanism used for `1.0.0`.
-- Stable release tags must resolve to the exact accepted revisions and published assets must come from those exact tagged sources.
+- The public release history begins at `v1.0.0`.
+- The stable operational repository state must not depend on or describe the removed prerelease release lineage outside task history.
+- Do not create an upgrade edge into `1.0.0`.
+- Do not synthesize a fake previous release merely to reuse the ordinary upgrade gate.
+- Do not bypass deterministic qualification, reproducible assembly, conformance, attestation, explicit acceptance, or immutable publication.
+- Do not move completed roadmap tasks until `v1.0.0` itself is published and verified.
+- `1.0.1` must use the ordinary stable adjacent-release workflow.
+- Stable Release Please PRs must preserve the exact accepted release-branch revision in merge ancestry.
 
 ## Implementation notes
 
-- PR #126 is merged at `f9edbf6153be9375347aa27674ee4b67875535d6`, satisfying the AVA-5640 dependency.
-- The post-merge Release Please run found no releasable unit because PR #126 was correctly classified as repository-only `refactor(release)` work, so it created no release PR.
-- The final-alpha gate was initiated with a temporary package-level `release-as: 1.0.0-alpha.19` override. The temporary package-level `chore` visibility used only to expose that release proposal was removed in PR #130; the `release-as` pin remains until the stable configuration cutover.
-- Release PR #129 was accidentally squash merged. PR #130 added a one-time, exact alpha.19 recovery proof plus permanent guidance that Release Please release PRs must use merge commits. Manual recovery workflow run `33954172775` then published and immutably verified the existing `v1.0.0-alpha.19` tag without moving it.
-- Published final-alpha identity: tag `v1.0.0-alpha.19`, revision `4aeb06b4292b9c768ea745ca5989e94c24d4be7c`, tree `4a881af3836573a6557615e68b9f895c4fd0ef08`, GitHub Release ID `383159767`, published `2026-09-05T08:03:32Z`.
-- Explicit qualification acceptance remains bound to run `20260905T062356253224Z-alpha18-to-alpha19-local` and qualified revision `464f1470b691b2e43e43cf8010e9bcd8de5e3491`.
-- Stable-bootstrap source evidence is captured in `internal/release/history/final-alpha-1.0.0-alpha.19.json`. It deliberately records the immutable published asset digests separately from the pre-merge qualification target digests; the published tag and published asset set are the stable-bootstrap source of truth.
-- The destructive public-alpha target set is frozen in `internal/release/history/alpha-reset-inventory.json` against repository revision `164f486aefc62896ec1175fdcdeed8fc4ed07dcb`: exactly 19 alpha Release objects and 19 alpha tag refs. The Release objects are 17 published immutable releases for `alpha.3` through `alpha.19` plus two stale drafts for `alpha.1` and `alpha.2`; those draft targets differ from the actual alpha.1/alpha.2 tag revisions. Deletion must use the recorded exact Release IDs and tag refs and must fail closed if any ref moves or any new `v1.0.0-alpha.*` object appears before execution.
-- No destructive alpha cleanup, stable configuration switch, or completed-task migration has occurred yet.
+- PR #126 merged AVA-5640 and established the single maintained release implementation.
+- The final prerelease was fully qualified, explicitly accepted, published, and verified immutable before cleanup.
+- Release PR #129 was accidentally squash merged; PR #130 repaired that publication with a bounded recovery and permanently documented the merge-commit requirement for Release Please PRs.
+- Final prerelease publication evidence and the destructive deletion inventory were captured before cleanup.
+- PR #133 switched Release Please to stable semantics and installed a fail-closed deletion workflow.
+- The destructive reset deleted all 19 recorded prerelease GitHub Release objects and all 19 recorded prerelease tag refs. Independent checks then showed zero public Releases and zero matching prerelease refs.
+- The original transition design reconstructed the final prerelease as a source for `1.0.0`. That design was rejected in favor of a clean stable root.
+- Branch `ava-5641-clean-stable-baseline` now removes the old operational lineage, resets checked-in qualification state to `bootstrap-to-1.0.0`, makes root qualification target-only, refreshes the README and changelog, and adds regression coverage preventing old release-line identifiers outside task history.
+- AVA-5641 remains `In Progress` until `v1.0.1` proves the ordinary stable workflow.
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [x] #1 AVA-5640 is merged and the final alpha release, expected `v1.0.0-alpha.19`, is fully qualified, explicitly accepted, published, immutable, and populated with the expected assets before migration proceeds
-- [x] #2 The exact final-alpha revision and deterministic inputs needed for the stable bootstrap are recorded before any destructive release/tag deletion
-- [ ] #3 Release Please and maintained release configuration are converted from alpha prerelease semantics to ordinary stable semantic versioning
-- [ ] #4 Every alpha GitHub Release, including drafts/duplicates, is deleted and GitHub contains no remaining `1.0.0-alpha.*` release object
-- [ ] #5 Every alpha Git tag/ref is deleted and GitHub contains no remaining `v1.0.0-alpha.*` tag
-- [ ] #6 No alpha-only assumption remains in live release configuration, gates, documentation, tests, or runtime state; any retained alpha material is clearly non-operational historical evidence
-- [ ] #7 A clean stable `v1.0.0` release is bootstrapped from the intended exact source revision with applicable reproducible assembly, conformance, attestation, asset publication, and immutable verification guarantees
-- [ ] #8 Any one-time bootstrap/manual exception needed for `v1.0.0` is narrowly scoped and removed or disabled after the stable baseline exists
-- [ ] #9 After verified `v1.0.0` publication, every roadmap task already in `Done` state is moved from `internal/todo/tasks/` into Backlog.md's `internal/todo/completed/` directory with its history and completion evidence preserved
-- [ ] #10 Ava's roadmap documentation, validator, and Backlog-related tests are updated so `completed/` is the canonical location for fully completed tasks and `tasks/` is the active-work inventory; unfinished `To Do`, `In Progress`, and `Parked` tasks are not moved
-- [ ] #11 Release Please subsequently proposes `1.0.1` using stable version semantics without alpha/prerelease configuration
-- [ ] #12 The `1.0.0 -> 1.0.1` transition passes the normal maintained release qualification and release-to-release/upgrade workflow with explicit user acceptance
-- [ ] #13 `v1.0.1` is published through the ordinary stable workflow, immutable, points to the exact accepted revision, and contains the expected release assets
-- [ ] #14 The final maintained repository state has stable `1.0.x` release behavior as the sole current release path, uses Backlog.md's completed-task lifecycle for finished roadmap work, and has regression coverage preventing accidental return to alpha release semantics or the old mixed active/completed task layout
+- [x] #1 The final prerelease is fully qualified, explicitly accepted, published, immutable, and populated with the expected assets before migration proceeds
+- [x] #2 Exact evidence and a fail-closed deletion inventory are captured before destructive public cleanup
+- [x] #3 Release Please is configured for ordinary stable semantic versioning with `1.0.0` as the initial stable release
+- [x] #4 Every inventoried prerelease GitHub Release object is deleted and independent verification finds no public prerelease Release remaining
+- [x] #5 Every inventoried prerelease Git tag/ref is deleted and independent verification finds no matching prerelease tag remaining
+- [ ] #6 No prerelease operational lineage remains in live release configuration, catalogs, guidance, qualification state/history, documentation, tests, runtime state, or changelog outside task history
+- [ ] #7 A clean source-less stable `v1.0.0` root release passes applicable qualification, reproducible assembly, conformance, attestation, publication, and immutable verification
+- [ ] #8 Any first-release-only seeding mechanism is removed or reduced to a justified permanent root-release contract after `v1.0.0` exists
+- [ ] #9 After verified `v1.0.0` publication, every roadmap task already in `Done` state is moved to `internal/todo/completed/` with complete history preserved
+- [ ] #10 Roadmap documentation, validator, and tests recognize `completed/` as canonical finished work and leave unfinished statuses active
+- [ ] #11 Release Please subsequently proposes `1.0.1` using ordinary stable version semantics
+- [ ] #12 The `1.0.0 -> 1.0.1` transition passes the normal adjacent-edge qualification flow with explicit user acceptance
+- [ ] #13 `v1.0.1` is published through the ordinary stable workflow, immutable, points to the exact accepted revision, and contains the expected assets
+- [ ] #14 The final maintained repository state has stable `1.0.x` release behavior as the sole current release path and regression coverage against reintroducing the removed pre-stable operational lineage
 <!-- AC:END -->
