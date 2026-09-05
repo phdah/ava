@@ -9,8 +9,11 @@ TODO_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = TODO_ROOT.parents[1]
 CONFIG = REPO_ROOT / "backlog.config.yml"
 TASK_DIR = TODO_ROOT / "tasks"
+COMPLETED_DIR = TODO_ROOT / "completed"
 MILESTONE_DIR = TODO_ROOT / "milestones"
-ALLOWED_STATUSES = {"To Do", "In Progress", "Parked", "Done"}
+ARCHIVED_MILESTONE_DIR = TODO_ROOT / "archive" / "milestones"
+ACTIVE_TASK_STATUSES = {"To Do", "In Progress", "Parked"}
+COMPLETED_TASK_STATUS = "Done"
 EXPECTED_TASK_COUNT = 76
 V1_MILESTONE_ID = "m-0"
 V1_MILESTONE_TITLE = "v1.0.0"
@@ -112,50 +115,58 @@ def main() -> int:
         fail(f"legacy phase directories remain after Backlog migration: {legacy_dirs}")
     if (REPO_ROOT / "internal" / "todo.md").exists():
         fail("legacy internal/todo.md remains after Backlog migration")
-    if (TODO_ROOT / "completed").exists():
-        fail("internal roadmap must keep all lifecycle states in internal/todo/tasks")
     if not TASK_DIR.is_dir():
         fail(f"missing Backlog.md task directory: {TASK_DIR.relative_to(REPO_ROOT)}")
+    if not COMPLETED_DIR.is_dir():
+        fail(f"missing Backlog.md completed directory: {COMPLETED_DIR.relative_to(REPO_ROOT)}")
     if not (TASK_DIR / "index.md").is_file():
         fail("internal/todo/tasks/index.md is required for repository discovery")
 
     tasks: dict[str, dict[str, object]] = {}
-    for path in sorted(TASK_DIR.glob("ava-*.md")):
-        match = TASK_FILENAME_PATTERN.fullmatch(path.name)
-        if not match:
-            fail(f"{path}: filename is not native Backlog task form for prefix ava")
 
-        data = parse_frontmatter(path)
-        task_id = str(data.get("id", ""))
-        expected_id = f"ava-{match.group(1)}"
-        if task_id != expected_id:
-            fail(f"{path}: id {task_id!r} does not match filename ({expected_id})")
-        if task_id in tasks:
-            fail(f"duplicate task id: {task_id}")
+    def load_tasks(directory: Path, allowed_statuses: set[str], location: str) -> None:
+        for path in sorted(directory.glob("ava-*.md")):
+            match = TASK_FILENAME_PATTERN.fullmatch(path.name)
+            if not match:
+                fail(f"{path}: filename is not native Backlog task form for prefix ava")
 
-        title = str(data.get("title", ""))
-        status = str(data.get("status", ""))
-        if not title:
-            fail(f"{path}: missing title")
-        if status not in ALLOWED_STATUSES:
-            fail(f"{path}: unsupported status {status!r}")
+            data = parse_frontmatter(path)
+            task_id = str(data.get("id", ""))
+            expected_id = f"ava-{match.group(1)}"
+            if task_id != expected_id:
+                fail(f"{path}: id {task_id!r} does not match filename ({expected_id})")
+            if task_id in tasks:
+                fail(f"duplicate task id across active/completed roadmap: {task_id}")
 
-        labels = data.get("labels", [])
-        dependencies = data.get("dependencies", [])
-        milestone = str(data.get("milestone", ""))
-        if not isinstance(labels, list):
-            fail(f"{path}: labels must be a list")
-        if not isinstance(dependencies, list):
-            fail(f"{path}: dependencies must be a list")
-        if "legacy-spec" in labels:
-            fail(f"{path}: legacy-spec indirection is not allowed after full migration")
+            title = str(data.get("title", ""))
+            status = str(data.get("status", ""))
+            if not title:
+                fail(f"{path}: missing title")
+            if status not in allowed_statuses:
+                fail(
+                    f"{path}: status {status!r} is invalid in {location}; "
+                    f"allowed: {sorted(allowed_statuses)}"
+                )
 
-        tasks[task_id] = {
-            "path": path,
-            "status": status,
-            "dependencies": dependencies,
-            "milestone": milestone,
-        }
+            labels = data.get("labels", [])
+            dependencies = data.get("dependencies", [])
+            milestone = str(data.get("milestone", ""))
+            if not isinstance(labels, list):
+                fail(f"{path}: labels must be a list")
+            if not isinstance(dependencies, list):
+                fail(f"{path}: dependencies must be a list")
+            if "legacy-spec" in labels:
+                fail(f"{path}: legacy-spec indirection is not allowed after full migration")
+
+            tasks[task_id] = {
+                "path": path,
+                "status": status,
+                "dependencies": dependencies,
+                "milestone": milestone,
+            }
+
+    load_tasks(TASK_DIR, ACTIVE_TASK_STATUSES, "internal/todo/tasks")
+    load_tasks(COMPLETED_DIR, {COMPLETED_TASK_STATUS}, "internal/todo/completed")
 
     if len(tasks) != EXPECTED_TASK_COUNT:
         fail(f"expected {EXPECTED_TASK_COUNT} migrated tasks, found {len(tasks)}")
@@ -185,22 +196,31 @@ def main() -> int:
         visit(task_id)
 
     milestones: dict[str, dict[str, object]] = {}
-    for path in sorted(MILESTONE_DIR.glob("*.md")):
-        match = MILESTONE_FILENAME_PATTERN.fullmatch(path.name)
-        if not match:
-            fail(f"{path}: filename is not native Backlog milestone form")
-        if not path.is_file():
-            fail(f"{path}: milestone path is not a regular file")
 
-        data = parse_frontmatter(path)
-        milestone_id = str(data.get("id", ""))
-        expected_id = match.group(1)
-        if milestone_id != expected_id:
-            fail(f"{path}: id {milestone_id!r} does not match filename ({expected_id})")
-        title = str(data.get("title", ""))
-        if not title:
-            fail(f"{path}: missing milestone title")
-        milestones[milestone_id] = {"path": path, "title": title}
+    def load_milestones(directory: Path, location: str) -> None:
+        if not directory.exists():
+            return
+        for path in sorted(directory.glob("*.md")):
+            match = MILESTONE_FILENAME_PATTERN.fullmatch(path.name)
+            if not match:
+                fail(f"{path}: filename is not native Backlog milestone form")
+            if not path.is_file():
+                fail(f"{path}: milestone path is not a regular file")
+
+            data = parse_frontmatter(path)
+            milestone_id = str(data.get("id", ""))
+            expected_id = match.group(1)
+            if milestone_id != expected_id:
+                fail(f"{path}: id {milestone_id!r} does not match filename ({expected_id})")
+            if milestone_id in milestones:
+                fail(f"duplicate milestone id across active/archive: {milestone_id}")
+            title = str(data.get("title", ""))
+            if not title:
+                fail(f"{path}: missing milestone title")
+            milestones[milestone_id] = {"path": path, "title": title, "location": location}
+
+    load_milestones(MILESTONE_DIR, "active")
+    load_milestones(ARCHIVED_MILESTONE_DIR, "archived")
 
     if V1_MILESTONE_ID not in milestones:
         fail(f"missing v1.0.0 milestone {V1_MILESTONE_ID}")
@@ -214,7 +234,12 @@ def main() -> int:
         if milestone and milestone not in milestones:
             fail(f"{task_id}: references unknown milestone {milestone!r}")
 
-    print(f"Backlog.md validation passed: {len(tasks)} tasks")
+    active_count = sum(1 for task in tasks.values() if task["path"].parent == TASK_DIR)
+    completed_count = len(tasks) - active_count
+    print(
+        "Backlog.md validation passed: "
+        f"{len(tasks)} tasks ({active_count} active, {completed_count} completed)"
+    )
     return 0
 
 

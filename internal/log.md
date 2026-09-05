@@ -2,6 +2,12 @@
 
 This log records major conceptual and structural changes to Ava's internal development instructions. It does not replace Git history.
 
+## 2026-09-05
+
+* **Stable roadmap cleanup**: After verified `v1.0.0` publication, adopted Backlog.md's native `internal/todo/completed/` cleanup location as the canonical home for `Done` roadmap tasks while leaving unfinished work under `internal/todo/tasks/`.
+* **Lifecycle validation**: Updated internal validation and CI expectations to resolve inventory, dependencies, milestones, and historical release evidence across active and completed task locations while rejecting lifecycle states stored in the wrong directory.
+* **Milestone completion**: Aligned roadmap guidance and validation with Backlog.md milestone archival under `internal/todo/archive/milestones/` so completed release milestones can leave the active milestone set without losing task references or history.
+
 ## 2026-08-30
 
 * **Backlog.md internal roadmap**: Adopted Backlog.md `1.50.1` as the Markdown-native lifecycle system for Ava's internal todos, using `internal/todo/` as the configured project root.
