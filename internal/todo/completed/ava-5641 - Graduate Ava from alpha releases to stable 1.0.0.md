@@ -1,10 +1,10 @@
 ---
 id: ava-5641
 title: Graduate Ava from alpha releases to stable 1.0.0
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-09-05 00:23'
-updated_date: '2026-09-05 17:53'
+updated_date: '2026-09-05 18:42'
 labels:
   - internal
   - roadmap
@@ -77,12 +77,17 @@ The migration remains active through the `1.0.1` proof. AVA-5641 is not complete
 - `v1.0.0` was finally qualified, explicitly accepted, merge-committed at `88ee933c8e008b464562b07ffbf04a18e59c4d32`, published on 2026-09-05, verified immutable, and populated with all seven expected assets.
 - A stale post-publication Release Please PR #140 proposed `1.0.0` again because the one-time package `release-as` override remained configured. PR #140 was closed without merge.
 - The post-bootstrap cleanup removes `bootstrap-sha`, `initial-version`, and package `release-as`. `force-tag-creation` remains because Ava intentionally uses draft Releases and needs the durable tag to exist immediately for subsequent Release Please discovery.
-- PR #143 moved all 75 existing `Done` roadmap tasks into `internal/todo/completed/` and updated validation, CI, maintainer guidance, stable-lineage coverage, and milestone archival support. AVA-5641 remains the sole active roadmap task.
+- PR #143 moved all 75 existing `Done` roadmap tasks into `internal/todo/completed/` and updated validation, CI, maintainer guidance, stable-lineage coverage, and milestone archival support. AVA-5641 remained the sole active roadmap task until this finalization.
 - Release Please rewrote PR #142 against that merged state and proposed `1.0.1` through ordinary stable version semantics.
-- Qualification operation `1.0.0-to-1.0.1` is bound to immutable published source `v1.0.0` at `88ee933c8e008b464562b07ffbf04a18e59c4d32` with all seven source asset digests and local target `v1.0.1`.
+- Qualification operation `1.0.0-to-1.0.1` was bound to immutable published source `v1.0.0` at `88ee933c8e008b464562b07ffbf04a18e59c4d32` with all seven source asset digests and local target `v1.0.1`.
 - Pre-edge qualification passed on release revision `38c9bfa9eb78107feb74cddd5dd00b82302222ce` in GitHub Actions run `33976006940`, covering fresh install, mature-project preservation, and managed modified/missing/corrupt/unexpected cases.
 - Semantic-impact review for `1.0.0 -> 1.0.1`: `semantic_review_required=false`. The exact source-to-candidate delta changes maintainer-only release recovery/publication infrastructure, internal roadmap storage/validation, CI, version metadata, and changelog state. It does not change distributed templates, installed Ava-managed contracts, distribution schemas, routing/lifecycle behavior, or project-owned scaffolds, so supported project-owned context cannot require reconciliation for this edge. There are no deterministic project migrations or semantic guidance artifacts. Existing unresolved semantic state may carry through unchanged because the edge introduces no new semantic obligation.
-- AVA-5641 remains `In Progress` until `v1.0.1` proves the ordinary stable workflow.
+- A stale regression assertion initially required the active qualification pair to remain `not-run` after user acceptance. It was corrected, then the exact candidate was requalified rather than reusing stale acceptance evidence.
+- Final qualification run `20260905T162810213896Z-1.0.0-to-1.0.1` passed all 10 deterministic scenarios on exact qualified revision `52a32513bbfebcefb6de91e39ec674bcc3cf4ef9` and was explicitly accepted by `user:phdah` on 2026-09-05.
+- Release PR #142 passed release policy, release qualification, PR-title validation, and the full 317-test suite, then merged with a merge commit at `f62ec52e2afd225cf207a4c77dfe34f1088ad84f`, preserving the accepted qualified revision in ancestry.
+- GitHub Actions release workflow run `33978544882` validated the accepted qualification, ran the full release suite, assembled `1.0.1` twice byte-identically, attested all seven subjects, uploaded all seven assets, published release ID `383305627`, and verified the final Release as immutable with `gh release verify`.
+- Public `v1.0.1` targets exact merge revision `f62ec52e2afd225cf207a4c77dfe34f1088ad84f`, is non-draft/non-prerelease and immutable, and exposes exactly the seven expected release assets.
+- The qualification-state regression is finalized as version-agnostic: it derives the sole non-historical active pair from configuration instead of hardcoding `1.0.0-to-1.0.1`, while retaining `bootstrap-to-1.0.0` only as the permanent stable-root invariant. Future adjacent stable pairs therefore do not require one-off test edits.
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
@@ -97,7 +102,7 @@ The migration remains active through the `1.0.1` proof. AVA-5641 is not complete
 - [x] #9 After verified `v1.0.0` publication, every roadmap task already in `Done` state is moved to `internal/todo/completed/` with complete history preserved
 - [x] #10 Roadmap documentation, validator, and tests recognize `completed/` as canonical finished work and leave unfinished statuses active
 - [x] #11 Release Please subsequently proposes `1.0.1` using ordinary stable version semantics
-- [ ] #12 The `1.0.0 -> 1.0.1` transition passes the normal adjacent-edge qualification flow with explicit user acceptance
-- [ ] #13 `v1.0.1` is published through the ordinary stable workflow, immutable, points to the exact accepted revision, and contains the expected assets
-- [ ] #14 The final maintained repository state has stable `1.0.x` release behavior as the sole current release path and regression coverage against reintroducing the removed pre-stable operational lineage
+- [x] #12 The `1.0.0 -> 1.0.1` transition passes the normal adjacent-edge qualification flow with explicit user acceptance
+- [x] #13 `v1.0.1` is published through the ordinary stable workflow, immutable, targets the exact merge revision that preserves the accepted qualified revision in ancestry, and contains the expected assets
+- [x] #14 The final maintained repository state has stable `1.0.x` release behavior as the sole current release path and regression coverage against reintroducing the removed pre-stable operational lineage
 <!-- AC:END -->

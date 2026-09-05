@@ -13,33 +13,37 @@ class QualificationStateTests(unittest.TestCase):
         self.assertEqual(set(config), {"schema_version", "repository", "active_pair"})
         self.assertEqual(config["repository"], "phdah/ava")
         pairs = {item["id"]: item for item in catalog["pairs"]}
-        self.assertEqual(set(pairs), {"bootstrap-to-1.0.0", "1.0.0-to-1.0.1"})
-        self.assertEqual(config["active_pair"], "1.0.0-to-1.0.1")
+        self.assertIn("bootstrap-to-1.0.0", pairs)
+        self.assertIn(config["active_pair"], pairs)
         self.assertEqual(current["active_pair"], config["active_pair"])
 
-        historical = pairs["bootstrap-to-1.0.0"]
-        self.assertTrue(historical["historical"])
-        self.assertEqual(historical["source"], {"kind": "bootstrap", "version": "0.0.0"})
-        self.assertEqual(historical["target"]["version"], "1.0.0")
+        bootstrap = pairs["bootstrap-to-1.0.0"]
+        self.assertTrue(bootstrap["historical"])
+        self.assertEqual(bootstrap["source"], {"kind": "bootstrap", "version": "0.0.0"})
+        self.assertEqual(bootstrap["target"]["version"], "1.0.0")
 
-        active = pairs[config["active_pair"]]
-        self.assertFalse(active["historical"])
-        self.assertEqual(active["source"]["kind"], "published")
-        self.assertEqual(active["source"]["version"], "1.0.0")
-        self.assertEqual(active["source"]["tag"], "v1.0.0")
-        self.assertEqual(active["target"]["kind"], "local")
-        self.assertEqual(active["target"]["version"], "1.0.1")
-        self.assertEqual(active["target"]["tag"], "v1.0.1")
+        active_pairs = [item for item in pairs.values() if not item["historical"]]
+        self.assertEqual(len(active_pairs), 1)
+        active = active_pairs[0]
+        self.assertEqual(active["id"], config["active_pair"])
 
-        active_state = current["pairs"]["1.0.0-to-1.0.1"]
+        source = active["source"]
+        target = active["target"]
+        self.assertEqual(source["kind"], "published")
+        self.assertEqual(source["tag"], f"v{source['version']}")
+        self.assertEqual(target["kind"], "local")
+        self.assertEqual(target["tag"], f"v{target['version']}")
+        self.assertEqual(active["id"], f"{source['version']}-to-{target['version']}")
+
+        active_state = current["pairs"][config["active_pair"]]
         self.assertIn(active_state["status"], state.PAIR_STATUSES)
-        self.assertIn("1.0.0", current["release_acceptance"])
-        if "1.0.1" in current["release_acceptance"]:
+        self.assertIn(source["version"], current["release_acceptance"])
+
+        target_acceptance = current["release_acceptance"].get(target["version"])
+        if target_acceptance is not None:
             self.assertEqual(active_state["status"], "accepted")
-            self.assertEqual(
-                current["release_acceptance"]["1.0.1"]["run_id"],
-                active_state["latest_run_id"],
-            )
+            self.assertEqual(target_acceptance["run_id"], active_state["latest_run_id"])
+            self.assertEqual(target_acceptance["previous_version"], source["version"])
 
     def test_config_schema_has_no_agent_runtime_configuration(self) -> None:
         schema = state.load_json(
