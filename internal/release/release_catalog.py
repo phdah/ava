@@ -18,7 +18,9 @@ from internal.release.adjacent_edges import (
 )
 
 
-BOOTSTRAP_VERSION = "0.0.0"
+# Stable 1.0.0 is the root of the permanent upgrade ledger. It is a first
+# release, not an upgrade from any prerelease or synthetic published source.
+BOOTSTRAP_VERSION = "1.0.0"
 CATALOG_DIRECTORY = Path("internal/release/catalogs")
 RELEASE_RECORD_FIELDS = {
     "catalog_schema",
