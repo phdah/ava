@@ -32,20 +32,7 @@
   "packages": {
     ".": {
       "version-file": "version.txt",
-      "release-as": "1.0.0-alpha.19",
-      "changelog-sections": [
-        {"type": "feat", "section": "Features"},
-        {"type": "fix", "section": "Bug Fixes"},
-        {"type": "perf", "section": "Performance"},
-        {"type": "revert", "section": "Reverts"},
-        {"type": "docs", "section": "Documentation", "hidden": true},
-        {"type": "refactor", "section": "Code Refactoring", "hidden": true},
-        {"type": "test", "section": "Tests", "hidden": true},
-        {"type": "build", "section": "Build", "hidden": true},
-        {"type": "ci", "section": "Continuous Integration", "hidden": true},
-        {"type": "style", "section": "Styles", "hidden": true},
-        {"type": "chore", "section": "Release Operations"}
-      ]
+      "release-as": "1.0.0-alpha.19"
     }
   }
 }
