@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://github.com/phdah/ava/compare/v1.0.0...v1.0.0) (2026-09-05)
+
+
+### Bug Fixes
+
+* **release:** execute maintained recovery tooling ([8e38302](https://github.com/phdah/ava/commit/8e38302ccfbff1f3a2654318c904189839cd08d7))
+
 ## 1.0.0 (2026-09-05)
 
 
