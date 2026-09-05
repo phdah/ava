@@ -106,6 +106,8 @@ def validate_catalog_change_scope(
     root: Path,
     base_revision: str,
     target_version: str,
+    *,
+    require_record: bool = True,
 ) -> None:
     try:
         completed = subprocess.run(
@@ -131,11 +133,17 @@ def validate_catalog_change_scope(
         for line in completed.stdout.splitlines()
         if line.strip().endswith(".json")
     }
-    expected = f"internal/release/catalogs/{target_version}.json"
-    if changed_json != {expected}:
+    expected_path = f"internal/release/catalogs/{target_version}.json"
+    expected = {expected_path} if require_record else set()
+    if changed_json != expected:
+        if require_record:
+            raise ReleasePrValidationError(
+                "a release PR may add only its own release-local catalog record; "
+                f"expected {expected_path}, changed {sorted(changed_json)}"
+            )
         raise ReleasePrValidationError(
-            "a release PR may add only its own release-local catalog record; "
-            f"expected {expected}, changed {sorted(changed_json)}"
+            "the first stable release must not add an upgrade-edge catalog; "
+            f"changed {sorted(changed_json)}"
         )
 
 
@@ -169,7 +177,8 @@ def validate_release_pr(
         target_version,
     )
     policy = _read_upgrade_policy(root)
-    if previous_version == "0.0.0" and target_version != policy["initial_release_version"]:
+    first_release = previous_version == "0.0.0"
+    if first_release and target_version != policy["initial_release_version"]:
         raise ReleasePrValidationError(
             f"first release target must be {policy['initial_release_version']}, "
             f"got {target_version}"
@@ -180,6 +189,24 @@ def validate_release_pr(
         raise ReleasePrValidationError(
             "upgrade-impact.json is archival compatibility data and is not a valid "
             "authoring input. Author one release-local adjacent edge record."
+        )
+
+    if first_release:
+        record_path = root / f"internal/release/catalogs/{target_version}.json"
+        if record_path.exists():
+            raise ReleasePrValidationError(
+                "the first stable release is a root release and must not define an upgrade edge"
+            )
+        if base_revision:
+            validate_catalog_change_scope(
+                root,
+                base_revision,
+                target_version,
+                require_record=False,
+            )
+        return (
+            f"first stable release identity valid for {target_version}; "
+            "no previous published release or upgrade edge; channel: stable"
         )
 
     try:
