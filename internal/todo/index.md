@@ -6,21 +6,23 @@ The integration is pinned and validated against Backlog.md `1.50.1`. The reposit
 
 ## Native layout
 
-- `tasks/` contains every task record, regardless of lifecycle state.
-- `tasks/index.md` explains the directory but is not a task record.
-- `milestones/` contains native Backlog.md milestone records. Update next-up roadmap tasks toward the active milestone by assigning the milestone through Backlog.md commands.
-- `validate.py` enforces Ava-specific inventory, dependency, status, milestone, and release-tracking invariants.
+- `tasks/` contains unfinished task records in `To Do`, `In Progress`, or `Parked` state.
+- `tasks/index.md` explains the active-task directory but is not a task record.
+- `completed/` is the canonical location for task records with status `Done`.
+- `milestones/` contains active native Backlog.md milestone records.
+- `archive/milestones/` contains milestones archived through Backlog.md's native milestone workflow.
+- `validate.py` enforces Ava-specific inventory, dependency, status, milestone, and release-tracking invariants across active and completed task history.
 
-Ava intentionally does not use Backlog.md's optional `completed/` cleanup directory. `Done` tasks remain in `tasks/` with their history and completion evidence intact.
+Moving a `Done` task into `completed/` is Backlog.md cleanup, not a second status system. The task body, dependencies, labels, milestone references, and completion evidence remain durable history.
 
-The former numbered phase directories and `/internal/todo.md` were removed after their task specifications, roadmap context, and completion evidence were migrated into the native task records. Do not recreate a second phase, queue, or status hierarchy.
+The former numbered phase directories and `/internal/todo.md` were removed after their task specifications, roadmap context, and completion evidence were migrated into native task records. Do not recreate a second phase, queue, or status hierarchy.
 
 ## Status model
 
 - `To Do`: executable work when its dependencies are satisfied.
 - `In Progress`: currently being implemented.
 - `Parked`: valid work intentionally excluded from execution until explicitly resumed.
-- `Done`: work is closed and Backlog.md should treat it as completed.
+- `Done`: closed work stored canonically under `completed/` after cleanup.
 
 Tasks intentionally closed without implementation use `Done` plus the `Won't Fix` label. This preserves the disposition while ensuring Backlog.md counts the task as complete.
 
@@ -59,7 +61,8 @@ When selecting, planning, executing, or completing an internal roadmap task, use
 - Put new scope, acceptance criteria, implementation notes, and completion evidence directly in the native task rather than creating a parallel planning document.
 - Prefer Backlog.md commands for lifecycle and task metadata changes. Direct Markdown edits are allowed when required by repository work but must preserve Backlog.md's native task shape.
 - Complete, reopen, or reprioritize through native task state and commit the resulting Markdown normally.
-- Leave `Done` tasks in `tasks/`. Do not run `backlog cleanup` for the Ava internal roadmap.
+- After a task reaches `Done`, run Backlog.md's native cleanup workflow so the task resides under `completed/`. Do not move unfinished work.
+- Archive a completed milestone with `backlog milestone archive` so its record moves from `milestones/` to `archive/milestones/`.
 
 After roadmap changes, run:
 
