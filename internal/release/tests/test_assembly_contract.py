@@ -101,7 +101,7 @@ class AssemblyContractTests(unittest.TestCase):
             encoding="utf-8",
         )
 
-        result = self._build("1.0.0-alpha.1", self.root / "broken-links", check=False)
+        result = self._build("1.0.0", self.root / "broken-links", check=False)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("unresolved installed Markdown links", result.stderr)
         self.assertIn("/.ava/base/inbox/index.md", result.stderr)
@@ -112,7 +112,7 @@ class AssemblyContractTests(unittest.TestCase):
             ),
             encoding="utf-8",
         )
-        self._build("1.0.0-alpha.1", self.root / "resolved-links")
+        self._build("1.0.0", self.root / "resolved-links")
 
     def test_installed_link_rejects_root_escape(self) -> None:
         base = self.repo / "templates/base"
@@ -129,14 +129,14 @@ class AssemblyContractTests(unittest.TestCase):
                     f"# Test role\n\n[Router]({target})\n", encoding="utf-8"
                 )
                 result = self._build(
-                    "1.0.0-alpha.1", self.root / output, check=False
+                    "1.0.0", self.root / output, check=False
                 )
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn("<outside installed project>", result.stderr)
 
     def test_non_first_release_requires_upgrade_edges(self) -> None:
         output = self.root / "no-edges"
-        self._build("1.0.0-alpha.2", output)
+        self._build("1.0.1", output)
         result = validate_release(output)
         self.assertIn(
             "AVA-RELEASE-UPGRADE-EDGES",

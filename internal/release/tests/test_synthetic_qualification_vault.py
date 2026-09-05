@@ -383,7 +383,7 @@ class SyntheticQualificationVaultTests(unittest.TestCase):
 
         assets = self.root / "assets"
         assembly = subprocess.run(
-            ["python3", str(ASSEMBLER), "--root", str(SOURCE_ROOT), "--output", str(assets), "--version", "1.0.0-alpha.11", "--source-revision", REVISION, "--source-date-epoch", "1700000000"],
+            ["python3", str(ASSEMBLER), "--root", str(SOURCE_ROOT), "--output", str(assets), "--version", "1.0.0", "--source-revision", REVISION, "--source-date-epoch", "1700000000"],
             cwd=SOURCE_ROOT,
             text=True,
             stdout=subprocess.PIPE,
@@ -419,7 +419,7 @@ class SyntheticQualificationVaultTests(unittest.TestCase):
                 "--output",
                 str(output),
                 "--version",
-                "1.0.0-alpha.11",
+                "1.0.0",
                 "--source-revision",
                 REVISION,
                 "--source-date-epoch",

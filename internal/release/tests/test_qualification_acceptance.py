@@ -63,28 +63,28 @@ class QualificationAcceptanceTests(unittest.TestCase):
 
     def test_historical_release_ledger_must_cover_catalog_history(self) -> None:
         self.write_json(
-            self.root / "internal/release/catalogs/1.0.0-alpha.1.json",
-            self.record("0.0.0", "1.0.0-alpha.1"),
+            self.root / "internal/release/catalogs/1.0.1.json",
+            self.record("1.0.0", "1.0.1"),
         )
         self.write_json(
-            self.root / "internal/release/catalogs/1.0.0-alpha.2.json",
-            self.record("1.0.0-alpha.1", "1.0.0-alpha.2"),
+            self.root / "internal/release/catalogs/1.0.2.json",
+            self.record("1.0.1", "1.0.2"),
         )
         self.write_state(
             {
-                "1.0.0-alpha.1": self.accepted("0.0.0"),
-                "1.0.0-alpha.2": self.accepted("1.0.0-alpha.1"),
+                "1.0.1": self.accepted("1.0.0"),
+                "1.0.2": self.accepted("1.0.1"),
             }
         )
-        acceptance.validate_acceptance_ledger(self.root, through_version="1.0.0-alpha.2")
+        acceptance.validate_acceptance_ledger(self.root, through_version="1.0.2")
 
         state = json.loads(
             (self.root / "internal/release/qualification/current-state.json").read_text()
         )
-        del state["release_acceptance"]["1.0.0-alpha.2"]
+        del state["release_acceptance"]["1.0.2"]
         self.write_json(self.root / "internal/release/qualification/current-state.json", state)
         with self.assertRaisesRegex(acceptance.QualificationAcceptanceError, "no accepted"):
-            acceptance.validate_acceptance_ledger(self.root, through_version="1.0.0-alpha.2")
+            acceptance.validate_acceptance_ledger(self.root, through_version="1.0.2")
 
     def test_user_signoff_promotes_clean_run_to_release_acceptance(self) -> None:
         revision = "1" * 40
@@ -97,9 +97,9 @@ class QualificationAcceptanceTests(unittest.TestCase):
                 "automated_state": "awaiting-user-signoff",
                 "mechanical_error": None,
                 "user_signoff": None,
-                "source": {"version": "1.0.0-alpha.14"},
+                "source": {"version": "1.0.0"},
                 "target": {
-                    "version": "1.0.0-alpha.15",
+                    "version": "1.0.1",
                     "kind": "local",
                     "source_revision": revision,
                 },
@@ -117,7 +117,7 @@ class QualificationAcceptanceTests(unittest.TestCase):
             (self.root / "internal/release/qualification/current-state.json").read_text()
         )
         self.assertEqual(state["pairs"]["pair"]["status"], "accepted")
-        accepted = state["release_acceptance"]["1.0.0-alpha.15"]
+        accepted = state["release_acceptance"]["1.0.1"]
         self.assertEqual(accepted["basis"], "qualified-run")
         self.assertEqual(accepted["qualified_revision"], revision)
         run = json.loads(
@@ -144,19 +144,15 @@ class QualificationAcceptanceTests(unittest.TestCase):
         self.git("init")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
-        self.write_json(
-            self.root / "internal/release/catalogs/1.0.0-alpha.1.json",
-            self.record("0.0.0", "1.0.0-alpha.1"),
-        )
-        (self.root / "version.txt").write_text("1.0.0-alpha.1\n")
-        self.write_state({"1.0.0-alpha.1": self.accepted("0.0.0")})
+        (self.root / "version.txt").write_text("1.0.0\n")
+        self.write_state({})
         base = self.commit("base")
 
         self.write_json(
-            self.root / "internal/release/catalogs/1.0.0-alpha.2.json",
-            self.record("1.0.0-alpha.1", "1.0.0-alpha.2"),
+            self.root / "internal/release/catalogs/1.0.1.json",
+            self.record("1.0.0", "1.0.1"),
         )
-        (self.root / "version.txt").write_text("1.0.0-alpha.2\n")
+        (self.root / "version.txt").write_text("1.0.1\n")
         qualified_revision = self.commit("release candidate")
 
         run_id = "run-2"
@@ -168,9 +164,9 @@ class QualificationAcceptanceTests(unittest.TestCase):
                 "automated_state": "awaiting-user-signoff",
                 "mechanical_error": None,
                 "user_signoff": signoff,
-                "source": {"version": "1.0.0-alpha.1"},
+                "source": {"version": "1.0.0"},
                 "target": {
-                    "version": "1.0.0-alpha.2",
+                    "version": "1.0.1",
                     "kind": "local",
                     "source_revision": qualified_revision,
                 },
@@ -179,9 +175,8 @@ class QualificationAcceptanceTests(unittest.TestCase):
         )
         self.write_state(
             {
-                "1.0.0-alpha.1": self.accepted("0.0.0"),
-                "1.0.0-alpha.2": self.accepted(
-                    "1.0.0-alpha.1",
+                "1.0.1": self.accepted(
+                    "1.0.0",
                     basis="qualified-run",
                     run_id=run_id,
                     revision=qualified_revision,
@@ -199,7 +194,7 @@ class QualificationAcceptanceTests(unittest.TestCase):
 
         message = acceptance.validate_release_pr_acceptance(
             self.root,
-            "1.0.0-alpha.1",
+            "1.0.0",
             base_revision=base,
         )
         self.assertIn(run_id, message)
@@ -212,7 +207,7 @@ class QualificationAcceptanceTests(unittest.TestCase):
         ):
             acceptance.validate_release_pr_acceptance(
                 self.root,
-                "1.0.0-alpha.1",
+                "1.0.0",
                 base_revision=base,
             )
 

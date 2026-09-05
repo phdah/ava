@@ -101,23 +101,23 @@ class QualificationRunnerTests(unittest.TestCase):
     def test_asset_validation_requires_pinned_checksummed_identity(self) -> None:
         source = self.make_assets(
             self.source_assets,
-            version="1.0.0-alpha.14",
+            version="1.0.0",
             revision=REVISION_A,
             semantic_review_required=False,
         )
         edge = {
             "from": source.version,
-            "to": "1.0.0-alpha.15",
+            "to": "1.0.1",
             "mode": "direct",
             "intermediates": [],
             "carry_unresolved_semantic_state": False,
             "migration_ids": [],
-            "guidance_paths": ["guidance/alpha-14-to-alpha-15.json"],
+            "guidance_paths": ["guidance/1.0.0-to-1.0.1.json"],
             "semantic_review_required": True,
         }
         target = self.make_assets(
             self.target_assets,
-            version="1.0.0-alpha.15",
+            version="1.0.1",
             revision=REVISION_B,
             semantic_review_required=True,
             edges=[edge],

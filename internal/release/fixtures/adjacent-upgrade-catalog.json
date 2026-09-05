@@ -1,40 +1,40 @@
 {
   "catalog_schema": 1,
-  "target_version": "1.0.0-alpha.3",
-  "supported_sources": [
-    "1.0.0-alpha.1",
-    "1.0.0-alpha.2"
-  ],
   "edges": [
     {
-      "from": "1.0.0-alpha.1",
-      "to": "1.0.0-alpha.2",
       "carry_unresolved_semantic_state": true,
-      "migration_ids": [],
+      "edge_sha256": "8be31e5ce03ad981093569964c4635ac5e1629363d7c06c5000191201aea8123",
+      "from": "1.0.0",
       "guidance_paths": [
-        "1.0.0-alpha.1-to-1.0.0-alpha.2/UPGRADE.md"
+        "1.0.0-to-1.0.1/UPGRADE.md"
       ],
+      "migration_ids": [],
       "semantic_review_required": true,
-      "edge_sha256": "7e8b80fa6c76787e750e75edbb9fffe3e6f9593769bca8b8db8344310c019339"
+      "to": "1.0.1"
     },
     {
-      "from": "1.0.0-alpha.2",
-      "to": "1.0.0-alpha.3",
       "carry_unresolved_semantic_state": true,
-      "migration_ids": [],
+      "edge_sha256": "42b5c7bac7582ac88a198b309a854f2de530b2498c99a371045c182212af1cf2",
+      "from": "1.0.1",
       "guidance_paths": [],
+      "migration_ids": [],
       "semantic_review_required": false,
-      "edge_sha256": "6f6db34349f0854b8a4ab6afb942b82337ae19d6a52f75e54a0339aa3d6e989e"
+      "to": "1.0.2"
     }
   ],
   "guidance": [
     {
-      "guidance_id": "alpha-2-project-contract",
-      "path": "1.0.0-alpha.1-to-1.0.0-alpha.2/UPGRADE.md",
-      "from_version": "1.0.0-alpha.1",
-      "to_version": "1.0.0-alpha.2",
+      "from_version": "1.0.0",
+      "guidance_id": "stable-1-project-contract",
+      "path": "1.0.0-to-1.0.1/UPGRADE.md",
+      "sha256": "f1fc0f7b215cf7acb9f7e48e5e9479f95b536b0d9de8c1ebdc10b6eaa0544ecb",
       "supersedes": [],
-      "sha256": "812b00ff9e60682a555baba48f782c6019fb244f293314daef449f5e9dbd2dc8"
+      "to_version": "1.0.1"
     }
-  ]
+  ],
+  "supported_sources": [
+    "1.0.0",
+    "1.0.1"
+  ],
+  "target_version": "1.0.2"
 }

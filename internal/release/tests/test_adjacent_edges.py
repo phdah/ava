@@ -29,24 +29,24 @@ def guidance(guidance_id: str, path: str, source: str, target: str, supersedes=(
 
 class AdjacentEdgeTests(unittest.TestCase):
     def catalog(self):
-        g1 = guidance("g-1", "edges/a1-a2.md", "1.0.0-alpha.1", "1.0.0-alpha.2")
+        g1 = guidance("g-1", "edges/a1-a2.md", "1.0.0", "1.0.1")
         e1 = make_edge(
-            "1.0.0-alpha.1",
-            "1.0.0-alpha.2",
+            "1.0.0",
+            "1.0.1",
             guidance_paths=[g1["path"]],
             semantic_review_required=True,
             carry_unresolved_semantic_state=True,
         )
         e2 = make_edge(
-            "1.0.0-alpha.2",
-            "1.0.0-alpha.3",
+            "1.0.1",
+            "1.0.2",
             carry_unresolved_semantic_state=True,
         )
         return validate_catalog(
             {
                 "catalog_schema": 1,
-                "target_version": "1.0.0-alpha.3",
-                "supported_sources": ["1.0.0-alpha.1", "1.0.0-alpha.2"],
+                "target_version": "1.0.2",
+                "supported_sources": ["1.0.0", "1.0.1"],
                 "edges": [e1, e2],
                 "guidance": [g1],
             }
@@ -58,7 +58,7 @@ class AdjacentEdgeTests(unittest.TestCase):
             (root / "internal/release/fixtures/adjacent-upgrade-catalog.json").read_text()
         )
         validated = validate_catalog(fixture)
-        self.assertEqual("1.0.0-alpha.3", validated["target_version"])
+        self.assertEqual("1.0.2", validated["target_version"])
         self.assertEqual(2, len(validated["edges"]))
 
     def test_resolves_direct_and_multi_edge_paths(self):
@@ -67,7 +67,7 @@ class AdjacentEdgeTests(unittest.TestCase):
             1,
             len(
                 resolve_unique_path(
-                    catalog["edges"], "1.0.0-alpha.2", "1.0.0-alpha.3"
+                    catalog["edges"], "1.0.1", "1.0.2"
                 )
             ),
         )
@@ -75,7 +75,7 @@ class AdjacentEdgeTests(unittest.TestCase):
             2,
             len(
                 resolve_unique_path(
-                    catalog["edges"], "1.0.0-alpha.1", "1.0.0-alpha.3"
+                    catalog["edges"], "1.0.0", "1.0.2"
                 )
             ),
         )
@@ -85,32 +85,32 @@ class AdjacentEdgeTests(unittest.TestCase):
             validate_catalog(
                 {
                     "catalog_schema": 1,
-                    "target_version": "1.0.0-alpha.3",
-                    "supported_sources": ["1.0.0-alpha.1"],
-                    "edges": [make_edge("1.0.0-alpha.2", "1.0.0-alpha.3")],
+                    "target_version": "1.0.2",
+                    "supported_sources": ["1.0.0"],
+                    "edges": [make_edge("1.0.1", "1.0.2")],
                     "guidance": [],
                 }
             )
 
     def test_rejects_ambiguous_paths(self):
         edges = [
-            make_edge("1.0.0-alpha.1", "1.0.0-alpha.2"),
-            make_edge("1.0.0-alpha.1", "1.0.0-beta.1"),
-            make_edge("1.0.0-alpha.2", "1.0.0-rc.1"),
-            make_edge("1.0.0-beta.1", "1.0.0-rc.1"),
+            make_edge("1.0.0", "1.0.1"),
+            make_edge("1.0.0", "1.1.0"),
+            make_edge("1.0.1", "2.0.0"),
+            make_edge("1.1.0", "2.0.0"),
         ]
         with self.assertRaisesRegex(AdjacentEdgeError, "ambiguous"):
-            resolve_unique_path(edges, "1.0.0-alpha.1", "1.0.0-rc.1")
+            resolve_unique_path(edges, "1.0.0", "2.0.0")
 
     def test_rejects_tampered_edge_digest(self):
-        edge = make_edge("1.0.0-alpha.1", "1.0.0-alpha.2")
+        edge = make_edge("1.0.0", "1.0.1")
         edge["carry_unresolved_semantic_state"] = True
         with self.assertRaisesRegex(AdjacentEdgeError, "does not match"):
             validate_catalog(
                 {
                     "catalog_schema": 1,
-                    "target_version": "1.0.0-alpha.2",
-                    "supported_sources": ["1.0.0-alpha.1"],
+                    "target_version": "1.0.1",
+                    "supported_sources": ["1.0.0"],
                     "edges": [edge],
                     "guidance": [],
                 }
@@ -121,8 +121,8 @@ class AdjacentEdgeTests(unittest.TestCase):
         extended = inherit_catalog(
             prior,
             make_edge(
-                "1.0.0-alpha.3",
-                "1.0.0-alpha.4",
+                "1.0.2",
+                "1.0.3",
                 carry_unresolved_semantic_state=True,
             ),
         )
@@ -130,29 +130,29 @@ class AdjacentEdgeTests(unittest.TestCase):
             [edge["edge_sha256"] for edge in prior["edges"]],
             [edge["edge_sha256"] for edge in extended["edges"][:2]],
         )
-        self.assertIn("1.0.0-alpha.3", extended["supported_sources"])
+        self.assertIn("1.0.2", extended["supported_sources"])
 
     def test_requires_explicit_retirement_for_inherited_source(self):
         prior = self.catalog()
         with self.assertRaisesRegex(AdjacentEdgeError, "omitted"):
             inherit_catalog(
                 prior,
-                make_edge("1.0.0-alpha.3", "1.0.0-alpha.4"),
-                supported_sources=["1.0.0-alpha.2", "1.0.0-alpha.3"],
+                make_edge("1.0.2", "1.0.3"),
+                supported_sources=["1.0.1", "1.0.2"],
             )
         extended = inherit_catalog(
             prior,
-            make_edge("1.0.0-alpha.3", "1.0.0-alpha.4"),
-            retired_sources=["1.0.0-alpha.1"],
+            make_edge("1.0.2", "1.0.3"),
+            retired_sources=["1.0.0"],
         )
-        self.assertNotIn("1.0.0-alpha.1", extended["supported_sources"])
+        self.assertNotIn("1.0.0", extended["supported_sources"])
 
     def test_resolves_managed_and_semantic_paths_separately(self):
         catalog = self.catalog()
         resolved = resolve_upgrade(
             catalog,
-            installed_version="1.0.0-alpha.2",
-            compatible_through="1.0.0-alpha.1",
+            installed_version="1.0.1",
+            compatible_through="1.0.0",
             semantic_status="complete",
         )
         self.assertEqual(1, len(resolved.managed_path))
@@ -211,26 +211,26 @@ class AdjacentEdgeTests(unittest.TestCase):
         g1 = guidance(
             "old-rule",
             "g/old.md",
-            "1.0.0-alpha.1",
-            "1.0.0-alpha.2",
+            "1.0.0",
+            "1.0.1",
         )
         g2 = guidance(
             "new-rule",
             "g/new.md",
-            "1.0.0-alpha.2",
-            "1.0.0-alpha.3",
+            "1.0.1",
+            "1.0.2",
             supersedes=["old-rule"],
         )
         path = [
             make_edge(
-                "1.0.0-alpha.1",
-                "1.0.0-alpha.2",
+                "1.0.0",
+                "1.0.1",
                 guidance_paths=[g1["path"]],
                 semantic_review_required=True,
             ),
             make_edge(
-                "1.0.0-alpha.2",
-                "1.0.0-alpha.3",
+                "1.0.1",
+                "1.0.2",
                 guidance_paths=[g2["path"]],
                 semantic_review_required=True,
             ),
@@ -245,12 +245,12 @@ class AdjacentEdgeTests(unittest.TestCase):
         g1 = guidance(
             "rule",
             "g/rule.md",
-            "1.0.0-alpha.1",
-            "1.0.0-alpha.2",
+            "1.0.0",
+            "1.0.1",
         )
         edge = make_edge(
-            "1.0.0-alpha.1",
-            "1.0.0-alpha.2",
+            "1.0.0",
+            "1.0.1",
             guidance_paths=[g1["path"]],
             semantic_review_required=True,
         )
@@ -261,16 +261,16 @@ class AdjacentEdgeTests(unittest.TestCase):
         catalog = validate_catalog(
             {
                 "catalog_schema": 1,
-                "target_version": "1.0.0",
+                "target_version": "2.0.0",
                 "supported_sources": [
-                    "1.0.0-alpha.9",
-                    "1.0.0-beta.1",
-                    "1.0.0-rc.1",
+                    "2.0.0-alpha.9",
+                    "2.0.0-beta.1",
+                    "2.0.0-rc.1",
                 ],
                 "edges": [
-                    make_edge("1.0.0-alpha.9", "1.0.0-beta.1"),
-                    make_edge("1.0.0-beta.1", "1.0.0-rc.1"),
-                    make_edge("1.0.0-rc.1", "1.0.0"),
+                    make_edge("2.0.0-alpha.9", "2.0.0-beta.1"),
+                    make_edge("2.0.0-beta.1", "2.0.0-rc.1"),
+                    make_edge("2.0.0-rc.1", "2.0.0"),
                 ],
                 "guidance": [],
             }
@@ -279,7 +279,7 @@ class AdjacentEdgeTests(unittest.TestCase):
             3,
             len(
                 resolve_unique_path(
-                    catalog["edges"], "1.0.0-alpha.9", "1.0.0"
+                    catalog["edges"], "2.0.0-alpha.9", "2.0.0"
                 )
             ),
         )

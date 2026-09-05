@@ -356,15 +356,15 @@ A candidate qualifies as MINOR only when:
 
 If the repository cannot produce sufficient evidence, classify the release as MAJOR or expand the fixtures before release. Absence of a failing test is not by itself proof of compatibility.
 
-# Pre-1.0 and prerelease policy
+# Prerelease policy
 
-The current repository source is unversioned development material and has no supported release-to-release upgrade guarantee.
+Ava's supported public lineage begins at stable `1.0.0`. No prerelease is a predecessor of that root release.
 
-Ava's first supported stable distribution is `1.0.0`. Pre-stable testing uses SemVer prereleases of that target, for example:
+SemVer prerelease identifiers remain valid syntax for future release channels when Ava intentionally uses them. Neutral examples are:
 
-- `1.0.0-alpha.1`
-- `1.0.0-beta.1`
-- `1.0.0-rc.1`
+- `2.0.0-alpha.1`
+- `2.0.0-beta.1`
+- `2.0.0-rc.1`
 
 Prereleases may change incompatibly between identifiers. A target prerelease must explicitly declare whether direct upgrade from an earlier prerelease is supported.
 
