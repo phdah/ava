@@ -1,21 +1,21 @@
 ---
 type: Internal Release Procedure
 title: Ava Release Automation
-description: Defines stable Release Please proposals, first-release qualification, adjacent stable upgrades, and immutable publication.
+description: Defines stable Release Please proposals, root-release semantics, adjacent stable upgrades, and immutable publication.
 tags: [internal, releases, automation, release-please, conventional-commits]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-04T14:40:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-05T13:20:00+02:00
+  at: 2026-09-05T17:19:00+02:00
 ---
 
 # Ava Release Automation
 
 Ava uses Release Please as a single-package coordinator. Stable semantic versions are the maintained release channel. Release Please proposes versions, updates `CHANGELOG.md`, `version.txt`, and the release manifest, creates immutable tags and draft releases, and publishes only after every maintained gate succeeds.
 
-Stable `1.0.0` is the root release. No supported release precedes it. The repository uses `0.0.0` only as an internal pre-release sentinel so Release Please can propose the first `1.0.0`; that sentinel is never published or installed.
+Stable `1.0.0` is the root release. No supported release precedes it. The one-time first-release seeding configuration has been removed now that `v1.0.0` is published. Current and future Release Please proposals are derived from the stable manifest, the previous stable release identity, and Conventional Commit impact. No `bootstrap-sha`, `initial-version`, or package `release-as` override is retained.
 
 ## Merge-boundary contract
 
@@ -48,25 +48,25 @@ Maintained examples:
 
 The public [Ava Versioning and Compatibility](../../distribution/versioning.md) contract is authoritative for PATCH, MINOR, and MAJOR compatibility meaning.
 
-## First Release Please PR: `1.0.0`
+## Stable root release: `1.0.0`
 
-The first stable Release Please PR is a root-release bootstrap, not an upgrade.
+`1.0.0` is a root release, not an upgrade. Its permanent release contract is:
 
-It must satisfy all of these conditions:
-
-- base repository version is the internal `0.0.0` sentinel,
-- target version is exactly `1.0.0`,
-- stable Release Please configuration is active,
 - no `internal/release/catalogs/1.0.0.json` exists,
 - no previous-release source is supplied to qualification,
 - assembled `ava-release.json` contains an empty `upgrade_paths.edges` array,
-- final qualification is target-only and reaches explicit user acceptance.
+- qualification is target-only,
+- publication is bound to explicit user acceptance of the exact qualified revision.
 
 There is no semantic transition review and no upgrade guidance for `1.0.0` because no supported source release exists.
 
+The temporary first-release coordination state used to create the initial Release Please PR is not part of this permanent root-release contract and is not retained after publication.
+
 ## Later Release Please PRs
 
-Starting with `1.0.1`, a newly created release PR is intentionally incomplete until the maintainer adds exactly one release-local record:
+Starting with `1.0.1`, Release Please uses ordinary stable semantic versioning. There is no fixed `release-as` target. The manifest records the currently published stable version, and releasable Conventional Commits after that release determine the next proposed version.
+
+A newly created later release PR is intentionally incomplete until the maintainer adds exactly one release-local record:
 
 ```text
 internal/release/catalogs/<target>.json
@@ -111,4 +111,6 @@ For every later release, the workflow supplies the target release-local catalog 
 
 After a Release Please PR is merge-committed, automation verifies the exact tag and source SHA, revalidates accepted qualification, runs the maintained suite, assembles twice, compares digests, validates conformance, attests assets, uploads without clobbering, publishes the exact draft, and verifies immutability.
 
-The supported release history therefore begins at `v1.0.0`. All future immutable compatibility history is derived from stable adjacent records beginning with `1.0.0 -> 1.0.1`.
+Because Ava intentionally creates draft GitHub Releases before final publication, `force-tag-creation` remains enabled so the durable tag exists immediately and Release Please can reliably identify the previous release on subsequent runs.
+
+The supported release history begins at `v1.0.0`. All future immutable compatibility history is derived from stable adjacent records beginning with `1.0.0 -> 1.0.1`.
