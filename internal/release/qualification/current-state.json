@@ -4,8 +4,11 @@
     "1.0.0-to-1.0.1": {
       "historical": false,
       "latest_run_id": "20260905T155337236473Z-1.0.0-to-1.0.1",
-      "status": "awaiting-user-signoff",
-      "user_signoff": null
+      "status": "accepted",
+      "user_signoff": {
+        "identity": "user:phdah",
+        "time": "2026-09-05T16:23:38Z"
+      }
     },
     "bootstrap-to-1.0.0": {
       "historical": true,
@@ -25,6 +28,15 @@
       "previous_version": "0.0.0",
       "qualified_revision": "70ac2eda2b7e2fb8c83d7a5bf4b5c10ed4868b3b",
       "run_id": "20260905T135328922860Z-bootstrap-to-1.0.0",
+      "status": "accepted"
+    },
+    "1.0.1": {
+      "accepted_at": "2026-09-05T16:23:38Z",
+      "accepted_by": "user:phdah",
+      "basis": "qualified-run",
+      "previous_version": "1.0.0",
+      "qualified_revision": "5309bf7b2ee992d45317a29592701df832b1ca69",
+      "run_id": "20260905T155337236473Z-1.0.0-to-1.0.1",
       "status": "accepted"
     }
   },
