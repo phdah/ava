@@ -98,10 +98,28 @@ jobs:
           python3 -m internal.release.validate_release_pr \
             --previous-version "$PREVIOUS_VERSION" \
             --base-revision "$PREVIOUS_REVISION"
-          python3 -m internal.release.qualification_acceptance \
-            validate-release-pr \
-            --previous-version "$PREVIOUS_VERSION" \
-            --base-revision "$PREVIOUS_REVISION"
+
+          if [ "$TAG" = "v1.0.0-alpha.19" ] && \
+             [ "$SOURCE_REVISION" = "4aeb06b4292b9c768ea745ca5989e94c24d4be7c" ]; then
+            qualified_revision=$(jq -r \
+              --arg version "$VERSION" \
+              '.release_acceptance[$version].qualified_revision // empty' \
+              internal/release/qualification/current-state.json)
+            test "${#qualified_revision}" -eq 40
+            if ! git cat-file -e "$qualified_revision^{commit}" 2>/dev/null; then
+              git fetch --no-tags origin "$qualified_revision"
+            fi
+            PYTHONPATH="$GITHUB_WORKSPACE/tooling" \
+              python3 -m internal.release.qualification_squash_recovery \
+                --root "$GITHUB_WORKSPACE/source" \
+                --previous-version "$PREVIOUS_VERSION" \
+                --base-revision "$PREVIOUS_REVISION"
+          else
+            python3 -m internal.release.qualification_acceptance \
+              validate-release-pr \
+              --previous-version "$PREVIOUS_VERSION" \
+              --base-revision "$PREVIOUS_REVISION"
+          fi
           internal/release/test.sh
 
       - name: Assemble release twice

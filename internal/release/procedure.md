@@ -74,7 +74,11 @@ Do not synthesize acceptance, reuse acceptance for another revision, or merge be
 
 ## 8. Merge the release PR
 
-Once required CI checks pass and the final qualification is accepted, merge the current release-please PR. Do not manually create, move, or recreate release tags.
+Once required CI checks pass and the final qualification is accepted, merge the current release-please PR using **Create a merge commit**. Do not squash or rebase the release PR. The accepted qualification is bound to a commit on the release-PR branch, and the merge commit must preserve that qualified revision in the published revision's ancestry.
+
+This is intentionally different from ordinary implementation PRs, which may be squash merged so their Conventional Commit title becomes one canonical release-classified commit on `main`.
+
+Do not manually create, move, or recreate release tags.
 
 ## 9. Publish from durable release state
 
@@ -99,11 +103,26 @@ A fully published matching release is an already-complete result.
 
 ## Recovery after partial publication
 
-Use the `workflow_dispatch` entry point in `.github/workflows/release-please.yml` with the known release tag. The same durable-state planner and publication sequence are used for recovery; there is no separate recovery implementation.
+Use the `workflow_dispatch` entry point in `.github/workflows/release-please.yml` with the known release tag. The same durable-state planner and publication sequence are used for recovery; there is no separate publication implementation.
 
 Recovery may reuse a compatible draft and matching uploaded assets. It may delete only redundant compatible drafts after validating all same-tag candidates. It must never move a correct tag, overwrite mismatched assets, reuse an incompatible draft, or publish when release identity is ambiguous.
 
-See [publication recovery](publication-recovery.md) for diagnosis and operator commands.
+### Temporary alpha.19 squash recovery
+
+`v1.0.0-alpha.19` was accidentally squash merged after its exact final qualification had been accepted. Release Please created the tag and draft before the permanent ancestry validator correctly stopped publication. The tag must not be moved or recreated.
+
+Manual recovery of that exact tag may use `internal.release.qualification_squash_recovery` from maintained `main` tooling. This exception is deliberately bounded to:
+
+- target `1.0.0-alpha.19` from `1.0.0-alpha.18`,
+- tagged revision `4aeb06b4292b9c768ea745ca5989e94c24d4be7c`,
+- release PR base `3d45f49ade63604cadeff89d376f3fa36b8f007d`,
+- the recorded accepted final tree,
+- a clean explicitly accepted qualification run,
+- and a direct tree comparison proving that the tagged revision differs from the qualified revision only under `internal/release/qualification/`.
+
+The workflow fetches the qualified revision recorded in the acceptance ledger only for this exact recovery. Every other release continues through the normal ancestry-based `qualification_acceptance` validator. Remove this temporary alpha.19 recovery module and workflow branch after the final alpha has been published and its stable-bootstrap evidence has been captured.
+
+See [publication recovery](publication-recovery.md) for the general recovery contract.
 
 ## Retry boundary
 
