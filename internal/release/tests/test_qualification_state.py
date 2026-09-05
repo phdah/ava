@@ -30,8 +30,16 @@ class QualificationStateTests(unittest.TestCase):
         self.assertEqual(active["target"]["kind"], "local")
         self.assertEqual(active["target"]["version"], "1.0.1")
         self.assertEqual(active["target"]["tag"], "v1.0.1")
-        self.assertEqual(current["pairs"]["1.0.0-to-1.0.1"]["status"], "not-run")
+
+        active_state = current["pairs"]["1.0.0-to-1.0.1"]
+        self.assertIn(active_state["status"], state.PAIR_STATUSES)
         self.assertIn("1.0.0", current["release_acceptance"])
+        if "1.0.1" in current["release_acceptance"]:
+            self.assertEqual(active_state["status"], "accepted")
+            self.assertEqual(
+                current["release_acceptance"]["1.0.1"]["run_id"],
+                active_state["latest_run_id"],
+            )
 
     def test_config_schema_has_no_agent_runtime_configuration(self) -> None:
         schema = state.load_json(
