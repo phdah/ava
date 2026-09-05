@@ -107,6 +107,12 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertFalse(self.config["include-component-in-tag"])
         self.assertNotIn("skip-github-release", self.config)
 
+    def test_release_pr_footer_requires_merge_commit(self) -> None:
+        footer = self.config["pull-request-footer"]
+        self.assertIn("merge commit", footer)
+        self.assertIn("Do not squash or rebase", footer)
+        self.assertIn("accepted qualification is bound", footer)
+
     def test_current_channel_and_planned_transitions(self) -> None:
         channels = {item["name"]: item for item in self.fixture["channels"]}
         self.assertRegex(
@@ -199,6 +205,22 @@ class ReleasePleasePolicyTests(unittest.TestCase):
             self.release_workflow.index("Upload only missing draft assets"),
             self.release_workflow.index("Publish qualified release"),
         )
+
+    def test_release_workflow_bounds_alpha19_squash_recovery(self) -> None:
+        self.assertIn("v1.0.0-alpha.19", self.release_workflow)
+        self.assertIn(
+            "4aeb06b4292b9c768ea745ca5989e94c24d4be7c",
+            self.release_workflow,
+        )
+        self.assertIn(
+            "internal.release.qualification_squash_recovery",
+            self.release_workflow,
+        )
+        self.assertIn(
+            ".release_acceptance[$version].qualified_revision",
+            self.release_workflow,
+        )
+        self.assertIn("git fetch --no-tags origin", self.release_workflow)
 
     def test_release_workflow_uses_reviewed_adjacent_catalog(self) -> None:
         self.assertIn(
