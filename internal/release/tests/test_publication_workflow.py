@@ -5,6 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 WORKFLOW = (ROOT / ".github/workflows/release-please.yml").read_text()
+TOOLING_PUBLICATION = 'python3 "$GITHUB_WORKSPACE/tooling/internal/release/publication.py"'
 
 
 class PublicationWorkflowTests(unittest.TestCase):
@@ -20,7 +21,7 @@ class PublicationWorkflowTests(unittest.TestCase):
 
     def test_publication_uses_durable_identity_and_acceptance(self) -> None:
         self.assertIn("Resolve durable publication identity", WORKFLOW)
-        self.assertIn("python3 -m internal.release.publication", WORKFLOW)
+        self.assertIn(TOOLING_PUBLICATION, WORKFLOW)
         self.assertIn("internal.release.qualification_acceptance", WORKFLOW)
         self.assertIn("validate-release-pr", WORKFLOW)
         self.assertIn("git rev-list -n 1", WORKFLOW)
@@ -29,7 +30,9 @@ class PublicationWorkflowTests(unittest.TestCase):
         self.assertIn("workflow_dispatch:", WORKFLOW)
         self.assertIn("release_tag:", WORKFLOW)
         self.assertIn("Plan idempotent asset recovery", WORKFLOW)
-        self.assertIn("python3 -m internal.release.publication", WORKFLOW)
+        self.assertIn(TOOLING_PUBLICATION, WORKFLOW)
+        self.assertEqual(WORKFLOW.count(TOOLING_PUBLICATION), 5)
+        self.assertNotIn("python3 -m internal.release.publication", WORKFLOW)
         self.assertIn("gh release verify", WORKFLOW)
         self.assertIn("--json isDraft", WORKFLOW)
         self.assertNotIn("--clobber", WORKFLOW)
