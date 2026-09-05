@@ -14,11 +14,6 @@ case "$stage" in
     ;;
 esac
 
-command -v gh >/dev/null 2>&1 || {
-  printf 'GitHub CLI is required to acquire immutable source assets\n' >&2
-  exit 2
-}
-
 run_parent=${AVA_QUALIFICATION_RUN_PARENT:-${RUNNER_TEMP:-${TMPDIR:-/tmp}}/ava-release-qualification}
 mkdir -p "$run_parent"
 run_root=$(mktemp -d "$run_parent/run.XXXXXX")
@@ -33,22 +28,26 @@ print(json.dumps({"repository": config["repository"], "pair": pair}, sort_keys=T
 PY
 )
 repository=$(printf '%s' "$pair_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["repository"])')
-source_tag=$(printf '%s' "$pair_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["pair"]["source"]["tag"])')
+source_kind=$(printf '%s' "$pair_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["pair"]["source"]["kind"])')
+source_version=$(printf '%s' "$pair_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["pair"]["source"]["version"])')
 target_version=$(printf '%s' "$pair_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["pair"]["target"]["version"])')
 
 printf 'qualification stage: %s\n' "$stage"
 printf 'qualification executor: %s\n' "${AVA_QUALIFICATION_EXECUTOR:-direct-shell}"
-printf 'source release: %s\n' "$source_tag"
 
-if [ "$source_tag" = "v1.0.0-alpha.19" ] && [ "$target_version" = "1.0.0" ] && \
-   [ -f internal/release/stable-bootstrap.json ] && \
-   [ "$(python3 -c 'import json; print(str(json.load(open("internal/release/stable-bootstrap.json"))["enabled"]).lower())')" = "true" ]; then
-  printf 'source acquisition: bounded stable-bootstrap reconstruction\n'
-  python3 -m internal.release.stable_bootstrap \
-    --root "$ROOT" \
-    source-assets \
-    --output "$run_root/assets/source"
+if [ "$source_kind" = "bootstrap" ]; then
+  [ "$source_version" = "0.0.0" ] && [ "$target_version" = "1.0.0" ] || {
+    printf 'invalid first-release bootstrap pair: %s -> %s\n' "$source_version" "$target_version" >&2
+    exit 2
+  }
+  printf 'source release: none (first stable release bootstrap)\n'
 else
+  command -v gh >/dev/null 2>&1 || {
+    printf 'GitHub CLI is required to acquire immutable source assets\n' >&2
+    exit 2
+  }
+  source_tag=$(printf '%s' "$pair_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["pair"]["source"]["tag"])')
+  printf 'source release: %s\n' "$source_tag"
   gh release download "$source_tag" -R "$repository" --dir "$run_root/assets/source"
   gh release verify "$source_tag" -R "$repository" --format json >/dev/null
   for asset in ava-install.sh ava-base.tar.gz ava-guidance.tar.gz ava-migrations.tar.gz ava-release.json ava-release-notes.md SHA256SUMS
