@@ -56,10 +56,14 @@ class ProjectTaskBoardTests(unittest.TestCase):
     def test_internal_maintainer_uses_same_canonical_next_task_query(self) -> None:
         instructions = (SOURCE_ROOT / "internal/roles/ava-internal/instructions.md").read_text()
         roadmap = (SOURCE_ROOT / "internal/todo/index.md").read_text()
+        task_index = (SOURCE_ROOT / "internal/todo/tasks/index.md").read_text()
         query = 'backlog task list --status "To Do" --ready --sort ordinal --limit 1 --json'
         self.assertIn(query, instructions)
         self.assertIn(query, roadmap)
-        self.assertNotIn("/internal/todo/completed/", instructions)
+        self.assertIn("/internal/todo/completed/", instructions)
+        self.assertIn("`completed/` is the canonical location", roadmap)
+        self.assertIn("canonical finished-task location", task_index)
+        self.assertNotIn("leave the task in `/internal/todo/tasks/`", instructions)
 
 
 if __name__ == "__main__":
