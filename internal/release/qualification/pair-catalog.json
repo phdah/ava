@@ -1,7 +1,7 @@
 {
   "pairs": [
     {
-      "historical": false,
+      "historical": true,
       "id": "bootstrap-to-1.0.0",
       "source": {
         "kind": "bootstrap",
@@ -11,6 +11,31 @@
         "kind": "local",
         "tag": "v1.0.0",
         "version": "1.0.0"
+      }
+    },
+    {
+      "historical": false,
+      "id": "1.0.0-to-1.0.1",
+      "source": {
+        "asset_sha256": {
+          "SHA256SUMS": "5b8bba032801927cd9425bb674b12edabe4bfe4b9b8eb51b5d6ed94952486623",
+          "ava-base.tar.gz": "68767f8d9171f1837be9c75ad25c4db38933596b4114e0054378f76244b17503",
+          "ava-guidance.tar.gz": "bd9935d81f16eb3b601a9206bbad0367292b4085e7f7a2e3598dfa820afa8ab8",
+          "ava-install.sh": "302c473624995049a54b17451e7917cd96414b486afdb9989bb2dbdab3e8de5d",
+          "ava-migrations.tar.gz": "310bb23c7b93d446e9432f36c2b59bbf51378a0f03e5f87ec1feee2a57202cb8",
+          "ava-release-notes.md": "80cdc4f9415c402ea331c4a53e531161c226251d0d2b38c252d6fa61faadcd31",
+          "ava-release.json": "dca7abfda7afeb9a17bd271be3fe60b941aaab0e5476ed3933cf0bd78f0c8329"
+        },
+        "kind": "published",
+        "release_manifest_sha256": "dca7abfda7afeb9a17bd271be3fe60b941aaab0e5476ed3933cf0bd78f0c8329",
+        "source_revision": "88ee933c8e008b464562b07ffbf04a18e59c4d32",
+        "tag": "v1.0.0",
+        "version": "1.0.0"
+      },
+      "target": {
+        "kind": "local",
+        "tag": "v1.0.1",
+        "version": "1.0.1"
       }
     }
   ],
