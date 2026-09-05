@@ -17,6 +17,7 @@ LEGACY_PATTERNS = (
 )
 ALLOWED_HISTORY_ROOTS = (
     Path("internal/todo/tasks"),
+    Path("internal/todo/completed"),
     Path("internal/todo/archive/tasks"),
 )
 
