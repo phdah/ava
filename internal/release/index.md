@@ -1,6 +1,6 @@
 # Ava internal release
 
-[Release procedure](procedure.md) is the authoritative operator flow. The files below are the maintained implementation and support surface for that procedure.
+[Release procedure](procedure.md) is the authoritative operator flow. Stable `1.0.0` is the root of the maintained release lineage. There is no supported release before it and no upgrade edge into it. Adjacent immutable upgrade history begins with `1.0.0 -> 1.0.1`.
 
 ## Release identity and policy
 
@@ -24,6 +24,8 @@
 - [immutable release catalogs](catalogs/)
 - [release guidance](guidance/)
 
+`1.0.0` has no release-local catalog record. Every later supported release adds exactly one record for the immediately previous stable release.
+
 ## Qualification
 
 - [qualification contract](qualification-automation.md)
@@ -40,18 +42,15 @@
 - [qualification state and evidence](qualification/)
 - [synthetic qualification fixture](fixtures/synthetic-qualification-vault/)
 
-`qualification.py` is the stable CLI facade. `qualification_engine.py` owns deterministic execution. `qualification_state.py` owns only current configuration, schema, digest, and repository-state helpers. `run-release-qualification.sh` prepares verified source assets and repository-external fixture state before invoking the CLI; `qualification_ci.py` owns GitHub Actions orchestration and artifact handoff. These responsibilities are intentionally separate.
+The first-release qualification for `1.0.0` is target-only because no source release exists. It proves the candidate can be installed and validated as a root release. Starting with `1.0.1`, qualification binds the exact previous published release and exercises the complete adjacent upgrade lifecycle.
 
 ## Publication and recovery
 
 - [publication state planner](publication.py)
 - [publication recovery procedure](publication-recovery.md)
 - [release workflow](../../.github/workflows/release-please.yml)
-- [one-time stable bootstrap state](stable-bootstrap.json)
-- [one-time stable bootstrap tooling](stable_bootstrap.py)
-- [one-time alpha reset workflow](../../.github/workflows/stable-alpha-reset.yml)
 
-The stable-bootstrap state, helper, and alpha-reset workflow exist only for the bounded `1.0.0-alpha.19 -> 1.0.0` cutover and must be removed or disabled after verified `v1.0.0` publication.
+Publication is always derived from the exact tagged source revision and durable GitHub Release state. Recovery never moves or recreates an existing correct release tag.
 
 ## Validation
 
@@ -61,9 +60,4 @@ The stable-bootstrap state, helper, and alpha-reset workflow exist only for the 
 - [maintained release suite](test.sh)
 - [release tests](tests/)
 
-## Historical records
-
-- [final alpha stable-bootstrap evidence](history/final-alpha-1.0.0-alpha.19.json)
-- [alpha public-reset deletion inventory](history/alpha-reset-inventory.json)
-
-`log.md`, committed records under `qualification/runs/`, the final-alpha stable-bootstrap evidence, the alpha public-reset deletion inventory, the repository changelog, completed roadmap task evidence, and published GitHub Release metadata are historical records. They may contain terminology from the process that produced them. They are evidence only and are not release instructions or executable alternatives.
+Checked-in release state describes only the supported stable lineage. Historical development details remain in task records and Git history, not in the operational release ledger.
