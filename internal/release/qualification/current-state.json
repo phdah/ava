@@ -3,8 +3,8 @@
   "pairs": {
     "bootstrap-to-1.0.0": {
       "historical": false,
-      "latest_run_id": null,
-      "status": "not-run",
+      "latest_run_id": "20260905T135328922860Z-bootstrap-to-1.0.0",
+      "status": "awaiting-user-signoff",
       "user_signoff": null
     }
   },
