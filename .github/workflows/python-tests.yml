@@ -55,6 +55,7 @@ jobs:
           PY
 
           milestone_file="m-0 - v1.0.0.md"
+          mkdir -p internal/todo/milestones
           cp "internal/todo/archive/milestones/$milestone_file" "internal/todo/milestones/$milestone_file"
           rm "internal/todo/archive/milestones/$milestone_file"
 
