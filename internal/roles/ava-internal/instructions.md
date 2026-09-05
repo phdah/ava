@@ -8,7 +8,7 @@ generated:
   at: 2026-07-30T15:26:00Z
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-30T19:35:00+02:00
+  at: 2026-09-05T17:40:24+02:00
 ---
 
 # Working model
@@ -33,7 +33,7 @@ When working in this pattern:
 
 # Internal roadmap and Backlog.md
 
-Ava's internal roadmap is the Backlog.md project rooted at `/internal/todo/`. Native task files under `/internal/todo/tasks/` are the only task lifecycle source. Do not recreate `/internal/todo.md`, a `completed/` task archive, numbered phase status directories, or another mutable roadmap/status hierarchy.
+Ava's internal roadmap is the Backlog.md project rooted at `/internal/todo/`. Native task files under `/internal/todo/tasks/` and `/internal/todo/completed/` are the only task lifecycle source. `tasks/` contains unfinished work and `completed/` is the canonical location for `Done` tasks after Backlog.md cleanup. Do not recreate `/internal/todo.md`, numbered phase status directories, or another mutable roadmap/status hierarchy.
 
 Whenever the user asks to select, inspect, implement, continue, reprioritize, reopen, or complete an internal todo:
 
@@ -46,7 +46,7 @@ Whenever the user asks to select, inspect, implement, continue, reprioritize, re
 7. use the native task as the durable place for task scope, acceptance criteria, implementation notes, lifecycle state, and completion evidence
 8. prefer Backlog.md commands for lifecycle/task metadata changes; direct Markdown edits are allowed only when they preserve the native task representation
 9. run `python3 internal/todo/validate.py` after roadmap changes
-10. when implementation is complete, update the native task to `Done`, preserve useful completion evidence, and leave the task in `/internal/todo/tasks/`
+10. when implementation is complete, update the native task to `Done`, preserve useful completion evidence, and use Backlog.md cleanup so the finished task resides in `/internal/todo/completed/`
 
 One bounded Backlog task is the normal unit of implementation and PR scope. Do not silently combine another `To Do` task into the current PR merely because it is adjacent in ordering.
 
@@ -150,7 +150,7 @@ When the requested work is complete:
 2. verify that internal and distributed-project concerns remain separated
 3. verify that proposed and approved architecture states are represented accurately
 4. verify that affected indexes reflect the current structure without flattening descendants
-5. update the selected Backlog task with final lifecycle state and useful completion evidence
+5. update the selected Backlog task with final lifecycle state and useful completion evidence, then ensure a `Done` task is stored in `/internal/todo/completed/`
 6. run the internal Backlog validator when task state or task content changed
 7. update conceptual logs when required
 8. report what changed and identify any unresolved decision
