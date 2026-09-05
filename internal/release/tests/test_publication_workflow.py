@@ -40,7 +40,7 @@ class PublicationWorkflowTests(unittest.TestCase):
     def test_draft_discovery_and_mutation_use_release_ids(self) -> None:
         self.assertIn("releases?per_page=100", WORKFLOW)
         self.assertIn("--paginate --slurp", WORKFLOW)
-        self.assertIn("              select", WORKFLOW)
+        self.assertIn("select \\\n            --release-dir release-a", WORKFLOW)
         self.assertIn("redundant-release-ids.txt", WORKFLOW)
         self.assertIn("--method DELETE", WORKFLOW)
         self.assertIn("releases/$RELEASE_ID/assets", WORKFLOW)
