@@ -32,6 +32,7 @@ python3 -m py_compile \
   "$ROOT/internal/release/qualification_ci.py" \
   "$ROOT/internal/release/qualification_acceptance.py" \
   "$ROOT/internal/release/publication.py" \
+  "$ROOT/internal/release/stable_bootstrap.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/checkpoint.py" \
   "$ROOT/internal/release/fixtures/synthetic-qualification-vault/fixture.py" \
   "$ROOT/internal/release/validate-installed-paths.py" \
@@ -74,6 +75,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v \
   internal.release.tests.test_qualification_acceptance \
   internal.release.tests.test_publication \
   internal.release.tests.test_publication_workflow \
+  internal.release.tests.test_stable_bootstrap \
   internal.release.tests.test_adjacent_edges \
   internal.release.tests.test_release_catalog \
   internal.release.tests.test_release_catalog_history \

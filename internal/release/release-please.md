@@ -1,19 +1,21 @@
 ---
 type: Internal Release Procedure
 title: Ava Release Automation
-description: Defines release-please version proposals, release-local edge completion, semantic-impact assessment, recursive qualification, and immutable publication.
+description: Defines stable release-please version proposals, release-local edge completion, semantic-impact assessment, recursive qualification, and immutable publication.
 tags: [internal, releases, automation, release-please, conventional-commits]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-04T14:40:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-05T09:30:00+02:00
+  at: 2026-09-05T11:05:00+02:00
 ---
 
 # Ava Release Automation
 
-Ava uses release-please as a single-package coordinator. It proposes versions, updates `CHANGELOG.md`, `version.txt`, and the release manifest, creates immutable tags and draft releases, and publishes only after every maintained gate succeeds.
+Ava uses release-please as a single-package coordinator. Stable semantic versions are the maintained current channel. Release Please proposes versions, updates `CHANGELOG.md`, `version.txt`, and the release manifest, creates immutable tags and draft releases, and publishes only after every maintained gate succeeds.
+
+The one-time transition from the historical alpha line to stable `1.0.0` is bounded by `internal/release/stable-bootstrap.json` and historical evidence under `internal/release/history/`. The bootstrap exists only to acquire the already-captured final-alpha source after the alpha GitHub Releases and tags are intentionally removed. It does not bypass qualification, adjacent-edge review, explicit acceptance, reproducible assembly, attestation, or immutable publication.
 
 ## Merge-boundary contract
 
@@ -74,14 +76,13 @@ internal/release/catalogs/<target>.json
 
 That file contains exactly one `<previous> -> <target>` edge, only guidance and migrations introduced by that edge, and any source-retirement decisions made by the target release. Earlier release records remain untouched.
 
-This also applies to the first published release. `1.0.0-alpha.1.json` owns `0.0.0 -> 1.0.0-alpha.1`; there is no release-without-an-edge bootstrap exception.
+The historical alpha line used the same adjacent-edge model. The stable `1.0.0` cutover still authors a normal `1.0.0-alpha.19 -> 1.0.0` adjacent edge; only source-asset acquisition is temporarily reconstructed from the captured immutable final-alpha evidence after public alpha deletion. There is no release-without-an-edge or qualification-bypass bootstrap.
 
 The gate validates:
 
 - target and channel identity
 - exactly one target release record changed relative to the release PR base
 - the edge starts at the immediately previous release
-- the first release starts at the `0.0.0` bootstrap sentinel
 - the record contains only transition-local guidance and migration references
 - guidance metadata, digest, and artifact integrity
 - explicit, valid source-retirement decisions
@@ -124,6 +125,6 @@ AVA_UPGRADE_CATALOG=internal/release/catalogs/<target>.json
 
 The reviewed assembler follows `edge.from` recursively through earlier release records, stages the guidance referenced by those edges, and derives installer-compatible projections for each retained source. The cumulative graph exists only during validation and assembly.
 
-After merge, automation verifies the exact tag and source SHA, proves that only the target record was added, reruns the complete `0.0.0`-to-target chain validation and repository suite, assembles twice, compares digests, validates conformance, attests assets, uploads without clobbering, and publishes the existing draft.
+After merge, automation verifies the exact tag and source SHA, proves that only the target record was added, reruns the complete maintained release validation and repository suite, assembles twice, compares digests, validates conformance, attests assets, uploads without clobbering, and publishes the existing draft.
 
-The same release-local record rule applies to alpha, beta, release candidate, stable, patch, minor, and major releases.
+Stable `1.0.x` releases are the canonical current behavior. Historical prerelease catalogs and evidence remain only as immutable history or as the bounded source record required to establish `1.0.0`; they are not an alternate operational release channel.

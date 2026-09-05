@@ -34,17 +34,28 @@ PY
 )
 repository=$(printf '%s' "$pair_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["repository"])')
 source_tag=$(printf '%s' "$pair_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["pair"]["source"]["tag"])')
+target_version=$(printf '%s' "$pair_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["pair"]["target"]["version"])')
 
 printf 'qualification stage: %s\n' "$stage"
 printf 'qualification executor: %s\n' "${AVA_QUALIFICATION_EXECUTOR:-direct-shell}"
 printf 'source release: %s\n' "$source_tag"
 
-gh release download "$source_tag" -R "$repository" --dir "$run_root/assets/source"
-gh release verify "$source_tag" -R "$repository" --format json >/dev/null
-for asset in ava-install.sh ava-base.tar.gz ava-guidance.tar.gz ava-migrations.tar.gz ava-release.json ava-release-notes.md SHA256SUMS
-do
-  gh release verify-asset "$source_tag" "$run_root/assets/source/$asset" -R "$repository" --format json >/dev/null
-done
+if [ "$source_tag" = "v1.0.0-alpha.19" ] && [ "$target_version" = "1.0.0" ] && \
+   [ -f internal/release/stable-bootstrap.json ] && \
+   [ "$(python3 -c 'import json; print(str(json.load(open("internal/release/stable-bootstrap.json"))["enabled"]).lower())')" = "true" ]; then
+  printf 'source acquisition: bounded stable-bootstrap reconstruction\n'
+  python3 -m internal.release.stable_bootstrap \
+    --root "$ROOT" \
+    source-assets \
+    --output "$run_root/assets/source"
+else
+  gh release download "$source_tag" -R "$repository" --dir "$run_root/assets/source"
+  gh release verify "$source_tag" -R "$repository" --format json >/dev/null
+  for asset in ava-install.sh ava-base.tar.gz ava-guidance.tar.gz ava-migrations.tar.gz ava-release.json ava-release-notes.md SHA256SUMS
+  do
+    gh release verify-asset "$source_tag" "$run_root/assets/source/$asset" -R "$repository" --format json >/dev/null
+  done
+fi
 
 fixture_log=$(TMPDIR="$run_root/fixture" internal/release/generate-synthetic-qualification-vault.sh)
 printf '%s\n' "$fixture_log"

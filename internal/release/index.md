@@ -40,13 +40,18 @@
 - [qualification state and evidence](qualification/)
 - [synthetic qualification fixture](fixtures/synthetic-qualification-vault/)
 
-`qualification.py` is the stable CLI facade. `qualification_engine.py` owns deterministic execution. `qualification_state.py` owns only current configuration, schema, digest, and repository-state helpers. `run-release-qualification.sh` prepares immutable source assets and repository-external fixture state before invoking the CLI; `qualification_ci.py` owns GitHub Actions orchestration and artifact handoff. These responsibilities are intentionally separate.
+`qualification.py` is the stable CLI facade. `qualification_engine.py` owns deterministic execution. `qualification_state.py` owns only current configuration, schema, digest, and repository-state helpers. `run-release-qualification.sh` prepares verified source assets and repository-external fixture state before invoking the CLI; `qualification_ci.py` owns GitHub Actions orchestration and artifact handoff. These responsibilities are intentionally separate.
 
 ## Publication and recovery
 
 - [publication state planner](publication.py)
 - [publication recovery procedure](publication-recovery.md)
 - [release workflow](../../.github/workflows/release-please.yml)
+- [one-time stable bootstrap state](stable-bootstrap.json)
+- [one-time stable bootstrap tooling](stable_bootstrap.py)
+- [one-time alpha reset workflow](../../.github/workflows/stable-alpha-reset.yml)
+
+The stable-bootstrap state, helper, and alpha-reset workflow exist only for the bounded `1.0.0-alpha.19 -> 1.0.0` cutover and must be removed or disabled after verified `v1.0.0` publication.
 
 ## Validation
 
