@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Deterministic Ava release qualification engine.
 
-The engine runs the mechanical release gate against pinned source and target
-assets. GitHub Actions is the normal executor; the CLI facade in
-`qualification.py` may also invoke it directly for diagnostics.
+The engine runs the mechanical release gate against one exact target release.
+Normal releases also bind the immediately previous published release. The first
+stable 1.0.0 release is a bounded target-only bootstrap and has no source
+release or upgrade edge.
 """
 
 from __future__ import annotations
@@ -33,6 +34,8 @@ BEHAVIORAL_KINDS = {
     "semantic-reconciliation",
     "lifecycle",
 }
+BOOTSTRAP_VERSION = "0.0.0"
+FIRST_RELEASE_VERSION = "1.0.0"
 
 
 class QualificationExecutionError(RuntimeError):
@@ -86,6 +89,36 @@ def bind_release(
     return identity, compact
 
 
+def is_bootstrap_pair(pair: dict[str, Any]) -> bool:
+    return (
+        pair.get("source") == {"kind": "bootstrap", "version": BOOTSTRAP_VERSION}
+        and isinstance(pair.get("target"), dict)
+        and pair["target"].get("kind") == "local"
+        and pair["target"].get("version") == FIRST_RELEASE_VERSION
+    )
+
+
+def bind_bootstrap_source(
+    selection: dict[str, Any],
+    directory: Path,
+) -> tuple[qualification_runner.ReleaseIdentity, dict[str, Any]]:
+    if selection != {"kind": "bootstrap", "version": BOOTSTRAP_VERSION}:
+        raise QualificationExecutionError("invalid first-release bootstrap source")
+    identity = qualification_runner.ReleaseIdentity(
+        directory=directory,
+        version=BOOTSTRAP_VERSION,
+        tag="bootstrap",
+        revision="0" * 40,
+        semantic_review_required=False,
+        manifest={"upgrade_paths": {"edges": []}},
+    )
+    return identity, {
+        "kind": "bootstrap",
+        "version": BOOTSTRAP_VERSION,
+        "attested": False,
+    }
+
+
 def validate_fixture(repository_root: Path, qualification_root: Path) -> None:
     result = state.run_command(
         [
@@ -108,9 +141,15 @@ def validate_fixture(repository_root: Path, qualification_root: Path) -> None:
 
 
 def deterministic_scenarios(
-    matrix: dict[str, Any], stage: str
+    matrix: dict[str, Any],
+    stage: str,
+    *,
+    bootstrap: bool = False,
 ) -> list[dict[str, Any]]:
-    allowed = PRE_EDGE_KINDS if stage == "pre-edge" else FINAL_KINDS
+    # A first release has no upgrade lifecycle. Both stages therefore qualify
+    # the target installation boundary only. Normal releases add the
+    # edge-dependent resume/abort/rollback families in final qualification.
+    allowed = PRE_EDGE_KINDS if bootstrap or stage == "pre-edge" else FINAL_KINDS
     selected = [scenario for scenario in matrix["scenarios"] if scenario.get("kind") in allowed]
     if not selected:
         raise QualificationExecutionError(f"no deterministic scenarios selected for {stage}")
@@ -143,6 +182,22 @@ def validate_final_edge(
         raise QualificationExecutionError(
             f"final target must declare exactly one {source.version} -> {target.version} edge; "
             f"found {len(matching)}"
+        )
+
+
+def validate_bootstrap_target(target: qualification_runner.ReleaseIdentity) -> None:
+    if target.version != FIRST_RELEASE_VERSION:
+        raise QualificationExecutionError(
+            f"first-release bootstrap target must be {FIRST_RELEASE_VERSION}"
+        )
+    edges = target.manifest.get("upgrade_paths", {}).get("edges")
+    if edges != []:
+        raise QualificationExecutionError(
+            "first stable release must have an empty upgrade edge inventory"
+        )
+    if target.semantic_review_required:
+        raise QualificationExecutionError(
+            "first stable release cannot require source-to-target semantic reconciliation"
         )
 
 
@@ -240,8 +295,9 @@ def run_selected_scenarios(
     target_identity: qualification_runner.ReleaseIdentity,
     full_matrix: dict[str, Any],
     stage: str,
+    bootstrap: bool,
 ) -> tuple[int, dict[str, Any]]:
-    selected = deterministic_scenarios(full_matrix, stage)
+    selected = deterministic_scenarios(full_matrix, stage, bootstrap=bootstrap)
     stage_matrix = dict(full_matrix)
     stage_matrix["scenarios"] = selected
     qualification_runner.initialize_execution_root(execution_root, qualification_root)
@@ -262,7 +318,7 @@ def run_selected_scenarios(
     summary = state.load_json(summary_path)
     outcomes = list(summary.get("outcomes", []))
 
-    if stage == "final" and result == 0:
+    if stage == "final" and result == 0 and not bootstrap:
         upgrade = run_deterministic_upgrade(
             engine,
             execution_root=execution_root,
@@ -277,6 +333,7 @@ def run_selected_scenarios(
             "qualification_stage": stage,
             "qualification_mode": QUALIFICATION_MODE,
             "qualification_executor": QUALIFICATION_EXECUTOR,
+            "bootstrap": bootstrap,
             "outcomes": outcomes,
             "exit_status": result,
         }
@@ -368,6 +425,7 @@ def execute(args: argparse.Namespace) -> int:
     state.require_clean_repository(repository_root)
     config, catalog, _ = state.load_configuration(repository_root)
     pair = state.active_pair(config, catalog)
+    bootstrap = is_bootstrap_pair(pair)
     full_matrix = qualification_runner.load_matrix(
         repository_root
         / "internal/release/fixtures/synthetic-qualification-vault/qualification-matrix.json"
@@ -388,16 +446,23 @@ def execute(args: argparse.Namespace) -> int:
         qualification_root, full_matrix
     )
     validate_fixture(repository_root, qualification_root)
-    source_identity, source = bind_release(
-        pair["source"], source_assets, label="source assets"
-    )
+    if bootstrap:
+        source_identity, source = bind_bootstrap_source(pair["source"], source_assets)
+    else:
+        source_identity, source = bind_release(
+            pair["source"], source_assets, label="source assets"
+        )
     target_identity, target = bind_release(
         pair["target"], target_assets, label="target assets"
     )
-    if source_identity.version == target_identity.version:
-        raise QualificationExecutionError("qualification source and target versions must differ")
-    if args.stage == "final":
-        validate_final_edge(source_identity, target_identity)
+    if bootstrap:
+        if args.stage == "final":
+            validate_bootstrap_target(target_identity)
+    else:
+        if source_identity.version == target_identity.version:
+            raise QualificationExecutionError("qualification source and target versions must differ")
+        if args.stage == "final":
+            validate_final_edge(source_identity, target_identity)
 
     revision = state.repository_revision(repository_root)
     if target.get("kind") != "local" or target.get("source_revision") != revision:
@@ -422,6 +487,7 @@ def execute(args: argparse.Namespace) -> int:
         target_identity=target_identity,
         full_matrix=full_matrix,
         stage=args.stage,
+        bootstrap=bootstrap,
     )
     if result != 0:
         print(f"deterministic {args.stage} qualification failed")
