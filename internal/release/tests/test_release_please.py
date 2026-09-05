@@ -106,6 +106,7 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertTrue(self.config["include-v-in-tag"])
         self.assertFalse(self.config["include-component-in-tag"])
         self.assertNotIn("skip-github-release", self.config)
+        self.assertEqual(self.config["packages"]["."]["release-as"], "1.0.0")
 
     def test_release_pr_footer_requires_merge_commit(self) -> None:
         footer = self.config["pull-request-footer"]
@@ -124,10 +125,14 @@ class ReleasePleasePolicyTests(unittest.TestCase):
             r"^1\.0\.0-rc\.[1-9][0-9]*$",
         )
         self.assertEqual(channels["stable"]["example"], "1.0.0")
-        for key, value in channels["alpha"]["settings"].items():
-            self.assertEqual(self.config[key], value)
-        self.assertFalse(channels["stable"]["settings"]["prerelease"])
-        self.assertEqual(channels["stable"]["settings"]["versioning"], "default")
+        for key, value in channels["stable"]["settings"].items():
+            if value is None:
+                self.assertNotIn(key, self.config)
+            else:
+                self.assertEqual(self.config[key], value)
+        self.assertFalse(self.config["prerelease"])
+        self.assertEqual(self.config["versioning"], "default")
+        self.assertNotIn("prerelease-type", self.config)
 
     def test_changelog_sections_match_title_policy(self) -> None:
         sections = {
@@ -206,21 +211,13 @@ class ReleasePleasePolicyTests(unittest.TestCase):
             self.release_workflow.index("Publish qualified release"),
         )
 
-    def test_release_workflow_bounds_alpha19_squash_recovery(self) -> None:
-        self.assertIn("v1.0.0-alpha.19", self.release_workflow)
-        self.assertIn(
-            "4aeb06b4292b9c768ea745ca5989e94c24d4be7c",
-            self.release_workflow,
-        )
-        self.assertIn(
+    def test_release_workflow_has_no_alpha19_recovery_path(self) -> None:
+        self.assertNotIn("v1.0.0-alpha.19", self.release_workflow)
+        self.assertNotIn(
             "internal.release.qualification_squash_recovery",
             self.release_workflow,
         )
-        self.assertIn(
-            ".release_acceptance[$version].qualified_revision",
-            self.release_workflow,
-        )
-        self.assertIn("git fetch --no-tags origin", self.release_workflow)
+        self.assertNotIn("git fetch --no-tags origin", self.release_workflow)
 
     def test_release_workflow_uses_reviewed_adjacent_catalog(self) -> None:
         self.assertIn(
@@ -259,14 +256,9 @@ class ReleasePleasePolicyTests(unittest.TestCase):
             self.upgrade_policy["initial_release_version"],
             semver_re,
         )
+        self.assertEqual(self.upgrade_policy["initial_release_version"], "1.0.0")
         protected = self.upgrade_policy["protected_direct_sources"]
-        self.assertEqual(len(protected), len(set(protected)))
-        for version in protected:
-            self.assertRegex(
-                version,
-                semver_re,
-                f"invalid protected source: {version}",
-            )
+        self.assertEqual(protected, [])
 
 
 if __name__ == "__main__":
