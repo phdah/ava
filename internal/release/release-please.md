@@ -8,7 +8,7 @@ generated:
   at: 2026-08-04T14:40:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-08-10T13:34:00+02:00
+  at: 2026-09-05T09:30:00+02:00
 ---
 
 # Ava Release Automation
@@ -25,7 +25,9 @@ Ordinary pull request titles use:
 
 Releasable types are `feat`, `fix`, `perf`, and `revert`. Other supported types are internal-only unless marked breaking.
 
-Ordinary implementation PRs do not predeclare a release version or upgrade edge.
+Ordinary implementation PRs do not predeclare a release version or upgrade edge. They may be squash merged so the reviewed Conventional Commit PR title becomes one canonical release-classified commit on `main`.
+
+Release Please PRs are the exception. After final qualification and explicit acceptance, merge the Release Please PR with **Create a merge commit**. Do not squash or rebase it. Qualification is bound to an exact commit on the release-PR branch, and the merge commit must retain that qualified commit in the published revision's ancestry. The generated release PR footer repeats this requirement at the merge boundary.
 
 ## Select change types from supported distribution impact
 
