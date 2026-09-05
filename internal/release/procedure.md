@@ -1,6 +1,21 @@
 # Ava release procedure
 
-This is the authoritative release operator flow. The release PR defines the candidate version. GitHub Actions performs mandatory deterministic qualification. The maintainer owns semantic review and explicit user acceptance. Post-merge publication is derived from durable tag and release state and is safely resumable.
+This is the authoritative release operator flow. Stable semantic versions are the maintained release channel. The release PR defines the candidate version. GitHub Actions performs mandatory deterministic qualification. The maintainer owns semantic review and explicit user acceptance. Post-merge publication is derived from durable tag and release state and is safely resumable.
+
+## One-time stable 1.0.0 cutover
+
+The transition from the historical alpha line to stable `1.0.0` has one bounded bootstrap exception, represented by `internal/release/stable-bootstrap.json` and the immutable evidence under `internal/release/history/`.
+
+Before creating stable `1.0.0`:
+
+1. the exact final-alpha published revision, asset digests, qualification evidence, and transition state must already be captured,
+2. the exact destructive alpha Release/tag inventory must be frozen and validated,
+3. Release Please must already be configured for stable semantics,
+4. `.github/workflows/stable-alpha-reset.yml` must compare live GitHub state to that frozen inventory before deleting anything, delete the recorded Release objects before their immutable tags, and verify that no alpha Release or tag remains.
+
+The public alpha line is intentionally removed before stable publication. Therefore only while qualifying `1.0.0`, `internal/release/run-release-qualification.sh` may reconstruct the final-alpha source assets from the exact recorded source revision and must prove every reconstructed digest equals the previously captured immutable published asset digest before qualification continues. This is source acquisition only; it does not bypass the normal qualification scenarios, adjacent-edge review, explicit acceptance, reproducible target assembly, attestation, publication, or immutable verification.
+
+After stable `1.0.0` is fully published and verified, remove or disable this bootstrap source-acquisition path and the alpha-reset mechanism. Subsequent releases, beginning with `1.0.1`, use only the ordinary stable release flow below.
 
 ## 1. Identify the release candidate
 
@@ -12,7 +27,8 @@ The candidate must be an exact repository revision. Do not qualify or publish mu
 
 `internal/release/qualification/config.json` selects one active adjacent source-to-target pair from `pair-catalog.json`.
 
-- Source is the exact previous published release and its verified asset digests.
+- Normally, source is the exact previous published release and its verified asset digests.
+- During the one-time `1.0.0` cutover only, source is the captured immutable final-alpha identity and the source assets are reconstructed and digest-verified as described above after the public alpha objects have been removed.
 - Target is the exact local candidate revision.
 - Only the immediately previous supported release is authored as the new edge. Earlier support is composed from immutable adjacent catalogs.
 
@@ -20,7 +36,7 @@ The pair, target revision, release manifest, and qualification matrix are part o
 
 ## 3. Run pre-edge qualification
 
-The release PR triggers `.github/workflows/release-qualification.yml`, which executes `python3 -m internal.release.qualification_ci` against the exact PR head. The CI driver prepares immutable source assets and a repository-external synthetic fixture, then runs the deterministic `pre-edge` stage.
+The release PR triggers `.github/workflows/release-qualification.yml`, which executes `python3 -m internal.release.qualification_ci` against the exact PR head. The CI driver prepares verified source assets and a repository-external synthetic fixture, then runs the deterministic `pre-edge` stage.
 
 Pre-edge qualification covers target installation and managed-damage behavior that does not depend on the new adjacent upgrade edge. It fails before edge authoring when the candidate is mechanically invalid. Pre-edge output is transient CI evidence and does not create release acceptance state.
 
@@ -106,21 +122,6 @@ A fully published matching release is an already-complete result.
 Use the `workflow_dispatch` entry point in `.github/workflows/release-please.yml` with the known release tag. The same durable-state planner and publication sequence are used for recovery; there is no separate publication implementation.
 
 Recovery may reuse a compatible draft and matching uploaded assets. It may delete only redundant compatible drafts after validating all same-tag candidates. It must never move a correct tag, overwrite mismatched assets, reuse an incompatible draft, or publish when release identity is ambiguous.
-
-### Temporary alpha.19 squash recovery
-
-`v1.0.0-alpha.19` was accidentally squash merged after its exact final qualification had been accepted. Release Please created the tag and draft before the permanent ancestry validator correctly stopped publication. The tag must not be moved or recreated.
-
-Manual recovery of that exact tag may use `internal.release.qualification_squash_recovery` from maintained `main` tooling. This exception is deliberately bounded to:
-
-- target `1.0.0-alpha.19` from `1.0.0-alpha.18`,
-- tagged revision `4aeb06b4292b9c768ea745ca5989e94c24d4be7c`,
-- release PR base `3d45f49ade63604cadeff89d376f3fa36b8f007d`,
-- the recorded accepted final tree,
-- a clean explicitly accepted qualification run,
-- and a direct tree comparison proving that the tagged revision differs from the qualified revision only under `internal/release/qualification/`.
-
-The workflow fetches the qualified revision recorded in the acceptance ledger only for this exact recovery. Every other release continues through the normal ancestry-based `qualification_acceptance` validator. Remove this temporary alpha.19 recovery module and workflow branch after the final alpha has been published and its stable-bootstrap evidence has been captured.
 
 See [publication recovery](publication-recovery.md) for the general recovery contract.
 
