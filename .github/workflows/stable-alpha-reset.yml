@@ -1,0 +1,121 @@
+name: Stable alpha history reset
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - internal/release/stable-bootstrap.json
+      - .github/workflows/stable-alpha-reset.yml
+
+concurrency:
+  group: stable-alpha-history-reset
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out exact cutover state
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Require explicit one-time reset request
+        run: |
+          set -eu
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          config = json.loads(Path("internal/release/stable-bootstrap.json").read_text())
+          assert config == {
+              "alpha_reset_requested": True,
+              "enabled": True,
+              "schema_version": 1,
+              "source_evidence_path": "internal/release/history/final-alpha-1.0.0-alpha.19.json",
+              "source_revision": "4aeb06b4292b9c768ea745ca5989e94c24d4be7c",
+              "source_tag": "v1.0.0-alpha.19",
+              "source_version": "1.0.0-alpha.19",
+              "target_version": "1.0.0",
+          }
+          PY
+
+      - name: Capture and verify exact live alpha inventory
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: |
+          set -eu
+          gh api --paginate --slurp \
+            "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            > before-releases.json
+          gh api --paginate --slurp \
+            "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/v1.0.0-alpha." \
+            > before-refs.json
+          python3 -m internal.release.stable_bootstrap \
+            --root . \
+            verify-alpha-reset \
+            --releases-json before-releases.json \
+            --refs-json before-refs.json
+
+      - name: Delete exactly the frozen alpha Release objects
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: |
+          set -eu
+          jq -r '.release_objects[].release_id' \
+            internal/release/history/alpha-reset-inventory.json |
+          while IFS= read -r release_id; do
+            test -n "$release_id"
+            gh api --method DELETE \
+              "repos/$GITHUB_REPOSITORY/releases/$release_id"
+          done
+
+      - name: Delete exactly the frozen alpha tag refs
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: |
+          set -eu
+          jq -r '.tag_refs[].ref' \
+            internal/release/history/alpha-reset-inventory.json |
+          while IFS= read -r ref; do
+            test -n "$ref"
+            ref_path=${ref#refs/}
+            gh api --method DELETE \
+              "repos/$GITHUB_REPOSITORY/git/refs/$ref_path"
+          done
+
+      - name: Verify zero alpha Releases and tags remain
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: |
+          set -eu
+          gh api --paginate --slurp \
+            "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            > after-releases.json
+          gh api --paginate --slurp \
+            "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/v1.0.0-alpha." \
+            > after-refs.json
+          python3 -m internal.release.stable_bootstrap \
+            --root . \
+            verify-alpha-empty \
+            --releases-json after-releases.json \
+            --refs-json after-refs.json
+
+      - name: Retain destructive reset evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: stable-alpha-reset-evidence-${{ github.sha }}
+          path: |
+            before-releases.json
+            before-refs.json
+            after-releases.json
+            after-refs.json
+          if-no-files-found: error
+          retention-days: 30
