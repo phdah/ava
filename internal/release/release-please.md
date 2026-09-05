@@ -1,21 +1,21 @@
 ---
 type: Internal Release Procedure
 title: Ava Release Automation
-description: Defines stable release-please version proposals, release-local edge completion, semantic-impact assessment, recursive qualification, and immutable publication.
+description: Defines stable Release Please proposals, first-release qualification, adjacent stable upgrades, and immutable publication.
 tags: [internal, releases, automation, release-please, conventional-commits]
 generated:
   by: agent:openai-chatgpt
   at: 2026-08-04T14:40:00+02:00
 updated:
   by: agent:openai-chatgpt
-  at: 2026-09-05T11:05:00+02:00
+  at: 2026-09-05T13:20:00+02:00
 ---
 
 # Ava Release Automation
 
-Ava uses release-please as a single-package coordinator. Stable semantic versions are the maintained current channel. Release Please proposes versions, updates `CHANGELOG.md`, `version.txt`, and the release manifest, creates immutable tags and draft releases, and publishes only after every maintained gate succeeds.
+Ava uses Release Please as a single-package coordinator. Stable semantic versions are the maintained release channel. Release Please proposes versions, updates `CHANGELOG.md`, `version.txt`, and the release manifest, creates immutable tags and draft releases, and publishes only after every maintained gate succeeds.
 
-The one-time transition from the historical alpha line to stable `1.0.0` is bounded by `internal/release/stable-bootstrap.json` and historical evidence under `internal/release/history/`. The bootstrap exists only to acquire the already-captured final-alpha source after the alpha GitHub Releases and tags are intentionally removed. It does not bypass qualification, adjacent-edge review, explicit acceptance, reproducible assembly, attestation, or immutable publication.
+Stable `1.0.0` is the root release. No supported release precedes it. The repository uses `0.0.0` only as an internal pre-release sentinel so Release Please can propose the first `1.0.0`; that sentinel is never published or installed.
 
 ## Merge-boundary contract
 
@@ -27,104 +27,71 @@ Ordinary pull request titles use:
 
 Releasable types are `feat`, `fix`, `perf`, and `revert`. Other supported types are internal-only unless marked breaking.
 
-Ordinary implementation PRs do not predeclare a release version or upgrade edge. They may be squash merged so the reviewed Conventional Commit PR title becomes one canonical release-classified commit on `main`.
+Ordinary implementation PRs may be squash merged so the reviewed Conventional Commit PR title becomes one canonical release-classified commit on `main`.
 
-Release Please PRs are the exception. After final qualification and explicit acceptance, merge the Release Please PR with **Create a merge commit**. Do not squash or rebase it. Qualification is bound to an exact commit on the release-PR branch, and the merge commit must retain that qualified commit in the published revision's ancestry. The generated release PR footer repeats this requirement at the merge boundary.
+Release Please PRs are the exception. After final qualification and explicit acceptance, merge the Release Please PR with **Create a merge commit**. Do not squash or rebase it. Qualification is bound to an exact commit on the release branch and the merge commit must preserve that commit in the published revision's ancestry.
 
 ## Select change types from supported distribution impact
 
-A pull request title is a release-impact claim. Select the Conventional Commit type from what merging the pull request changes in the supported Ava distribution, not from how new, substantial, or technically interesting the repository implementation is.
+A pull request title is a release-impact claim. Select the Conventional Commit type from what merging the pull request changes in the supported Ava distribution, not from implementation novelty or repository location.
 
-Assess observable impact on:
+Use `feat`, `fix`, `perf`, or `revert` for supported distribution impact. Use non-releasable types such as `test`, `docs`, `ci`, `build`, `refactor`, or `chore` when the change remains repository-only. Mark incompatible supported distribution changes as breaking.
 
-- installed Ava-managed content
-- public distribution, versioning, ownership, routing, workflow, role, guidance, or state contracts
-- release assets and the information they expose
-- installer or updater behavior and guarantees
-- supported agent routing, authority, validation, migration, or other intended behavior
+The public [Ava Versioning and Compatibility](../../distribution/versioning.md) contract is authoritative for PATCH, MINOR, and MAJOR compatibility meaning.
 
-Repository location is not the classification boundary. A change under `internal/` is non-releasable only when its effect remains repository-only. An internal assembler, validator, or release-tooling change still uses `feat`, `fix`, `perf`, or a breaking marker when it changes the resulting distribution, accepted behavior, or supported guarantee.
+## First Release Please PR: `1.0.0`
 
-Implementation novelty alone never justifies `feat`. Use `feat` only for backward-compatible capability exposed through the Ava distribution or its supported behavior. Use `fix` when the supported distribution previously behaved incorrectly, `perf` when a supported behavior becomes materially more efficient without changing its contract, and `revert` when reverting a releasable change restores supported distribution behavior.
+The first stable Release Please PR is a root-release bootstrap, not an upgrade.
 
-Use non-releasable types such as `test`, `docs`, `ci`, `build`, `refactor`, or `chore` when the change only affects repository maintenance, qualification, fixtures, CI, internal documentation, or development structure and does not alter produced release assets or supported Ava behavior. Mark any incompatible supported distribution change as breaking regardless of source location or ordinary type.
+It must satisfy all of these conditions:
 
-The public [Ava Versioning and Compatibility](../../distribution/versioning.md) contract remains authoritative for whether an observable distribution change is PATCH, MINOR, or MAJOR. This release procedure maps Conventional Commit claims to release-please; it does not redefine compatibility.
+- base repository version is the internal `0.0.0` sentinel,
+- target version is exactly `1.0.0`,
+- stable Release Please configuration is active,
+- no `internal/release/catalogs/1.0.0.json` exists,
+- no previous-release source is supplied to qualification,
+- assembled `ava-release.json` contains an empty `upgrade_paths.edges` array,
+- final qualification is target-only and reaches explicit user acceptance.
 
-Representative classifications:
+There is no semantic transition review and no upgrade guidance for `1.0.0` because no supported source release exists.
 
-| Pull request title | Resulting impact | Release level |
-|---|---|---|
-| `feat(host): add opt-in managed host support` | Backward-compatible capability exposed by the distribution | minor |
-| `fix(installer): preserve project-owned host configuration` | Corrects supported installer behavior, even though the implementation is internal | patch |
-| `test(release): add synthetic qualification vault` | Adds repository-only qualification fixtures and tests | none |
-| `docs(release): clarify internal qualification procedure` | Changes maintainer-only documentation without changing supported behavior | none |
-| `chore(internal): reorganize roadmap bookkeeping` | Changes repository maintenance state only | none |
-| `feat!: replace the public manifest contract` | Changes a supported public contract incompatibly | major |
+## Later Release Please PRs
 
-The synthetic qualification vault case is intentionally `test(release)`, not `feat`, even though the fixture is a substantial new repository capability. Conversely, an implementation under `internal/release/` is not automatically internal-only when it changes the release users install or the guarantees Ava makes about it.
-
-## Release PR contract
-
-A newly created release PR is intentionally incomplete. Its policy check remains red until one target release record exists and passes recursive chain validation.
-
-The maintainer completes it by creating only:
+Starting with `1.0.1`, a newly created release PR is intentionally incomplete until the maintainer adds exactly one release-local record:
 
 ```text
 internal/release/catalogs/<target>.json
 ```
 
-That file contains exactly one `<previous> -> <target>` edge, only guidance and migrations introduced by that edge, and any source-retirement decisions made by the target release. Earlier release records remain untouched.
+That record contains exactly one `<previous> -> <target>` edge and only the guidance, migrations, and source-retirement decisions introduced by that transition. Earlier stable release records remain immutable.
 
-The historical alpha line used the same adjacent-edge model. The stable `1.0.0` cutover still authors a normal `1.0.0-alpha.19 -> 1.0.0` adjacent edge; only source-asset acquisition is temporarily reconstructed from the captured immutable final-alpha evidence after public alpha deletion. There is no release-without-an-edge or qualification-bypass bootstrap.
+The release gate validates:
 
-The gate validates:
-
-- target and channel identity
-- exactly one target release record changed relative to the release PR base
-- the edge starts at the immediately previous release
-- the record contains only transition-local guidance and migration references
-- guidance metadata, digest, and artifact integrity
-- explicit, valid source-retirement decisions
-- recursive continuity through every intermediate release record
-- unique composed paths for every retained source
-
-`upgrade-impact.json`, `upgrade-sources.txt`, cumulative catalog snapshots, and published direct edges are not current authoring inputs.
+- target and stable channel identity,
+- the edge starts at the immediately previous supported release,
+- exactly the target release record changes relative to the Release Please PR base,
+- transition-local guidance and migration references,
+- recursive stable-line continuity,
+- unique composed paths for every retained supported source.
 
 ## Semantic-impact assessment
 
-Before authoring the adjacent edge, the release author reviews the exact previous-to-target managed delta and answers three separate questions:
+Semantic-impact assessment applies only when a source release exists.
 
-1. **Managed delta:** What Ava-managed contracts, behavior, authority, routing, validation, metadata, paths, or lifecycle rules changed?
-2. **Project-owned compatibility:** Could valid active project-owned context remain structurally unchanged yet become conflicting, misleading, semantically invalid, or behaviorally incompatible because of that managed delta?
-3. **Required reconciliation:** If project-owned compatibility can be affected, what bounded project-owned concepts must the Upgrade Role inspect or reconcile before semantic compatibility may advance?
+Before authoring a later adjacent edge, the maintainer reviews the exact previous-to-target managed delta and determines whether supported project-owned context can require semantic reconciliation. The decision and rationale are maintainer-owned.
 
-Set `semantic_review_required: true` when project-owned context may require semantic inspection or reconciliation because of the managed delta. The absence of a deterministic project-file migration does not justify `false`. Project-owned roles, workflows, shared instructions, indexes, host entrypoints, metadata, links, and other active instruction relationships can encode assumptions that remain structurally valid while becoming incompatible.
+For a semantic transition, transition-local guidance identifies the affected project-owned concepts, bounded discovery conditions, and completion criteria. For a mechanical transition, no semantic guidance is authored.
 
-Set `semantic_review_required: false` when the reviewed managed delta cannot make supported project-owned context require semantic reconciliation. A managed behavior change alone does not automatically require semantic review. The author must be able to explain why existing valid project-owned context remains compatible and, when the previous semantic state is complete, why compatibility may advance mechanically.
+`1.0.0` has no source release, so this transition-specific assessment is not applicable to the root release.
 
-Assessment starts from the changed managed contracts and follows only plausible active project-owned dependencies. Do not replace bounded discovery with a blanket scan of unrelated project content.
+## Assembly
 
-The release PR body or review record must contain an explicit semantic-impact rationale for both `true` and `false` decisions. The release author owns the initial classification and evidence. The reviewer or approver confirms that the rationale follows the project-owned compatibility test before accepting the edge.
+For `1.0.0`, assembly runs without an upgrade catalog and emits zero supported upgrade edges.
 
-For `true`, transition-local upgrade guidance must identify:
+For every later release, the workflow supplies the target release-local catalog record. The reviewed assembler follows stable adjacent records recursively and generates installer-compatible direct projections for retained supported sources.
 
-- the affected project-owned concepts
-- bounded discovery conditions for finding potentially incompatible active context
-- completion criteria that prove reconciliation is complete
+## Publication
 
-For `false`, no semantic guidance is authored for that edge. Existing deterministic validation enforces representation consistency between the boolean and guidance references. It does not infer whether semantic review is needed and must not replace maintainer judgment.
+After a Release Please PR is merge-committed, automation verifies the exact tag and source SHA, revalidates accepted qualification, runs the maintained suite, assembles twice, compares digests, validates conformance, attests assets, uploads without clobbering, publishes the exact draft, and verifies immutability.
 
-## Assembly and publication
-
-The release workflow sets:
-
-```text
-AVA_UPGRADE_CATALOG=internal/release/catalogs/<target>.json
-```
-
-The reviewed assembler follows `edge.from` recursively through earlier release records, stages the guidance referenced by those edges, and derives installer-compatible projections for each retained source. The cumulative graph exists only during validation and assembly.
-
-After merge, automation verifies the exact tag and source SHA, proves that only the target record was added, reruns the complete maintained release validation and repository suite, assembles twice, compares digests, validates conformance, attests assets, uploads without clobbering, and publishes the existing draft.
-
-Stable `1.0.x` releases are the canonical current behavior. Historical prerelease catalogs and evidence remain only as immutable history or as the bounded source record required to establish `1.0.0`; they are not an alternate operational release channel.
+The supported release history therefore begins at `v1.0.0`. All future immutable compatibility history is derived from stable adjacent records beginning with `1.0.0 -> 1.0.1`.
