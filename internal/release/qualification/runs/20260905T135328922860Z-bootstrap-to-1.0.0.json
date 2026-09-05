@@ -1,0 +1,68 @@
+{
+  "automated_state": "awaiting-user-signoff",
+  "execution_identity": {
+    "driver_sha256": "ff5e771a8dcc57d13d202ad0413f2ae75d434fd21be36b96ad4d8d1c372a9697",
+    "matrix_sha256": "6d01748c839c72cded8126f54fff9f37d60ed01f39ac0f6857b53c6a498b8506",
+    "qualification_executor": "github-actions",
+    "qualification_mode": "deterministic",
+    "qualification_stage": "final",
+    "repository_revision": "70ac2eda2b7e2fb8c83d7a5bf4b5c10ed4868b3b",
+    "schema_version": 1,
+    "source": {
+      "attested": false,
+      "kind": "bootstrap",
+      "version": "0.0.0"
+    },
+    "target": {
+      "asset_sha256": {
+        "SHA256SUMS": "3c0843a6ddd868b6deb18b8f251b6fdffd9bd43c386431a359437bf4585578fc",
+        "ava-base.tar.gz": "51bb4efc64020da1f3b15b2a0d16b8480b834ffe4924ad0532933236e9021445",
+        "ava-guidance.tar.gz": "17d1397471dd782bbce35788cf299a7dc3dfc2383ba9cb379827063c84d3ab77",
+        "ava-install.sh": "8c8640ae3ea79aef02f7662a524762c4f42bce3030123c60e3053bba491fc5c1",
+        "ava-migrations.tar.gz": "986ee6b0e0faa7f4cbb7f5c15ef95e1ab4a1dcd152dc2d01201b801fb0d06fda",
+        "ava-release-notes.md": "3b59351293da3cbd56562ecd0b41aea5c6174a1477cc8f294fb1793d55dfeaf3",
+        "ava-release.json": "f6e8b7bccfeaa7f0a8d3652cf1097a1465a25be6f40302b88b984b4c4f4046c7"
+      },
+      "attested": false,
+      "kind": "local",
+      "release_manifest_sha256": "f6e8b7bccfeaa7f0a8d3652cf1097a1465a25be6f40302b88b984b4c4f4046c7",
+      "source_revision": "70ac2eda2b7e2fb8c83d7a5bf4b5c10ed4868b3b",
+      "tag": "v1.0.0",
+      "version": "1.0.0"
+    }
+  },
+  "execution_identity_sha256": "3cd44ded558f47cb1851457cae436cc3511cdc2c5ca05b5e94b94a2283bb82cc",
+  "mechanical_error": null,
+  "pair_id": "bootstrap-to-1.0.0",
+  "qualification_executor": "github-actions",
+  "qualification_mode": "deterministic",
+  "run_id": "20260905T135328922860Z-bootstrap-to-1.0.0",
+  "runner_summary_file": "20260905T135328922860Z-bootstrap-to-1.0.0.summary.json",
+  "schema_version": 1,
+  "source": {
+    "attested": false,
+    "kind": "bootstrap",
+    "version": "0.0.0"
+  },
+  "target": {
+    "asset_sha256": {
+      "SHA256SUMS": "3c0843a6ddd868b6deb18b8f251b6fdffd9bd43c386431a359437bf4585578fc",
+      "ava-base.tar.gz": "51bb4efc64020da1f3b15b2a0d16b8480b834ffe4924ad0532933236e9021445",
+      "ava-guidance.tar.gz": "17d1397471dd782bbce35788cf299a7dc3dfc2383ba9cb379827063c84d3ab77",
+      "ava-install.sh": "8c8640ae3ea79aef02f7662a524762c4f42bce3030123c60e3053bba491fc5c1",
+      "ava-migrations.tar.gz": "986ee6b0e0faa7f4cbb7f5c15ef95e1ab4a1dcd152dc2d01201b801fb0d06fda",
+      "ava-release-notes.md": "3b59351293da3cbd56562ecd0b41aea5c6174a1477cc8f294fb1793d55dfeaf3",
+      "ava-release.json": "f6e8b7bccfeaa7f0a8d3652cf1097a1465a25be6f40302b88b984b4c4f4046c7"
+    },
+    "attested": false,
+    "kind": "local",
+    "release_manifest_sha256": "f6e8b7bccfeaa7f0a8d3652cf1097a1465a25be6f40302b88b984b4c4f4046c7",
+    "source_revision": "70ac2eda2b7e2fb8c83d7a5bf4b5c10ed4868b3b",
+    "tag": "v1.0.0",
+    "version": "1.0.0"
+  },
+  "user_signoff": {
+    "identity": "user:phdah",
+    "time": "2026-09-05T14:05:54Z"
+  }
+}
