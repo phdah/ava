@@ -73,6 +73,7 @@ The migration is not complete when `1.0.0` exists. It must also switch Ava's mai
 - Published final-alpha identity: tag `v1.0.0-alpha.19`, revision `4aeb06b4292b9c768ea745ca5989e94c24d4be7c`, tree `4a881af3836573a6557615e68b9f895c4fd0ef08`, GitHub Release ID `383159767`, published `2026-09-05T08:03:32Z`.
 - Explicit qualification acceptance remains bound to run `20260905T062356253224Z-alpha18-to-alpha19-local` and qualified revision `464f1470b691b2e43e43cf8010e9bcd8de5e3491`.
 - Stable-bootstrap source evidence is captured in `internal/release/history/final-alpha-1.0.0-alpha.19.json`. It deliberately records the immutable published asset digests separately from the pre-merge qualification target digests; the published tag and published asset set are the stable-bootstrap source of truth.
+- The destructive public-alpha target set is frozen in `internal/release/history/alpha-reset-inventory.json` against repository revision `164f486aefc62896ec1175fdcdeed8fc4ed07dcb`: exactly 19 alpha Release objects and 19 alpha tag refs. The Release objects are 17 published immutable releases for `alpha.3` through `alpha.19` plus two stale drafts for `alpha.1` and `alpha.2`; those draft targets differ from the actual alpha.1/alpha.2 tag revisions. Deletion must use the recorded exact Release IDs and tag refs and must fail closed if any ref moves or any new `v1.0.0-alpha.*` object appears before execution.
 - No destructive alpha cleanup, stable configuration switch, or completed-task migration has occurred yet.
 
 ## Acceptance Criteria
