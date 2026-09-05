@@ -66,20 +66,15 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertIn("Repository location is not the classification boundary", self.policy_doc)
         self.assertIn("Ava Versioning and Compatibility", self.policy_doc)
 
-    def test_first_release_sentinel_and_managed_version_states(self) -> None:
-        bootstrap = self.fixture["bootstrap"]
-        self.assertRegex(bootstrap["baseline_sha"], r"^[0-9a-f]{40}$")
-        self.assertEqual(self.config["bootstrap-sha"], bootstrap["baseline_sha"])
-        self.assertEqual(self.config["initial-version"], bootstrap["initial_version"])
-
+    def test_post_bootstrap_managed_version_state(self) -> None:
         version = (ROOT / "version.txt").read_text().strip()
         self.assertEqual(set(self.manifest), {"."})
         self.assertEqual(version, self.manifest["."])
-        if version == bootstrap["version_file_sentinel"]:
-            self.assertEqual(version, "0.0.0")
-            self.assertEqual(self.config["packages"]["."]["release-as"], "1.0.0")
-        else:
-            self.assertNotEqual(version, bootstrap["version_file_sentinel"])
+        self.assertRegex(version, r"^[1-9][0-9]*\.[0-9]+\.[0-9]+$")
+        self.assertNotEqual(version, "0.0.0")
+        self.assertNotIn("bootstrap-sha", self.config)
+        self.assertNotIn("initial-version", self.config)
+        self.assertNotIn("release-as", self.config["packages"]["."])
 
     def test_single_package_draft_release_configuration(self) -> None:
         self.assertEqual(set(self.config["packages"]), {"."})
@@ -89,7 +84,7 @@ class ReleasePleasePolicyTests(unittest.TestCase):
         self.assertTrue(self.config["include-v-in-tag"])
         self.assertFalse(self.config["include-component-in-tag"])
         self.assertNotIn("skip-github-release", self.config)
-        self.assertEqual(self.config["packages"]["."]["release-as"], "1.0.0")
+        self.assertNotIn("release-as", self.config["packages"]["."])
 
     def test_release_pr_footer_requires_merge_commit(self) -> None:
         footer = self.config["pull-request-footer"]
