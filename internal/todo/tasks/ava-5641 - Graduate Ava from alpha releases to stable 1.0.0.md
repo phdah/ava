@@ -4,7 +4,7 @@ title: Graduate Ava from alpha releases to stable 1.0.0
 status: In Progress
 assignee: []
 created_date: '2026-09-05 00:23'
-updated_date: '2026-09-05 13:20'
+updated_date: '2026-09-05 17:19'
 labels:
   - internal
   - roadmap
@@ -73,7 +73,10 @@ The migration remains active through the `1.0.1` proof. AVA-5641 is not complete
 - PR #133 switched Release Please to stable semantics and installed a fail-closed deletion workflow.
 - The destructive reset deleted all 19 recorded prerelease GitHub Release objects and all 19 recorded prerelease tag refs. Independent checks then showed zero public Releases and zero matching prerelease refs.
 - The original transition design reconstructed the final prerelease as a source for `1.0.0`. That design was rejected in favor of a clean stable root.
-- Branch `ava-5641-clean-stable-baseline` now removes the old operational lineage, resets checked-in qualification state to `bootstrap-to-1.0.0`, makes root qualification target-only, refreshes the README and changelog, and adds regression coverage preventing old release-line identifiers outside task history.
+- PR #134 removed the old operational lineage, reset checked-in qualification state to `bootstrap-to-1.0.0`, made root qualification target-only, refreshed the README and changelog, and added regression coverage preventing old release-line identifiers outside task history.
+- `v1.0.0` was finally qualified, explicitly accepted, merge-committed at `88ee933c8e008b464562b07ffbf04a18e59c4d32`, published on 2026-09-05, verified immutable, and populated with all seven expected assets.
+- A stale post-publication Release Please PR #140 proposed `1.0.0` again because the one-time package `release-as` override remained configured. PR #140 was closed without merge.
+- The post-bootstrap cleanup removes `bootstrap-sha`, `initial-version`, and package `release-as`. `force-tag-creation` remains because Ava intentionally uses draft Releases and needs the durable tag to exist immediately for subsequent Release Please discovery.
 - AVA-5641 remains `In Progress` until `v1.0.1` proves the ordinary stable workflow.
 
 ## Acceptance Criteria
@@ -84,8 +87,8 @@ The migration remains active through the `1.0.1` proof. AVA-5641 is not complete
 - [x] #4 Every inventoried prerelease GitHub Release object is deleted and independent verification finds no public prerelease Release remaining
 - [x] #5 Every inventoried prerelease Git tag/ref is deleted and independent verification finds no matching prerelease tag remaining
 - [ ] #6 No prerelease operational lineage remains in live release configuration, catalogs, guidance, qualification state/history, documentation, tests, runtime state, or changelog outside task history
-- [ ] #7 A clean source-less stable `v1.0.0` root release passes applicable qualification, reproducible assembly, conformance, attestation, publication, and immutable verification
-- [ ] #8 Any first-release-only seeding mechanism is removed or reduced to a justified permanent root-release contract after `v1.0.0` exists
+- [x] #7 A clean source-less stable `v1.0.0` root release passes applicable qualification, reproducible assembly, conformance, attestation, publication, and immutable verification
+- [x] #8 Any first-release-only seeding mechanism is removed or reduced to a justified permanent root-release contract after `v1.0.0` exists
 - [ ] #9 After verified `v1.0.0` publication, every roadmap task already in `Done` state is moved to `internal/todo/completed/` with complete history preserved
 - [ ] #10 Roadmap documentation, validator, and tests recognize `completed/` as canonical finished work and leave unfinished statuses active
 - [ ] #11 Release Please subsequently proposes `1.0.1` using ordinary stable version semantics
