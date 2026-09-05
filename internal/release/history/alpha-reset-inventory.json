@@ -1,0 +1,235 @@
+{
+  "capture_repository_revision": "164f486aefc62896ec1175fdcdeed8fc4ed07dcb",
+  "final_alpha_evidence_path": "internal/release/history/final-alpha-1.0.0-alpha.19.json",
+  "kind": "alpha-public-reset-inventory",
+  "reconciliation": {
+    "alpha_release_object_count": 19,
+    "alpha_tag_ref_count": 19,
+    "all_release_objects_are_alpha": true,
+    "all_tag_refs_are_alpha": true,
+    "published_release_versions": {
+      "first": "1.0.0-alpha.3",
+      "last": "1.0.0-alpha.19"
+    },
+    "published_release_count": 17,
+    "release_collection_exhausted_after_object_count": 19,
+    "stale_draft_release_count": 2,
+    "tag_versions": {
+      "first": "1.0.0-alpha.1",
+      "last": "1.0.0-alpha.19"
+    }
+  },
+  "release_objects": [
+    {
+      "draft": true,
+      "immutable": false,
+      "prerelease": true,
+      "release_id": 364982673,
+      "state": "stale-draft",
+      "tag_name": "v1.0.0-alpha.1",
+      "target_commitish": "aa6cfafd6aaaba614acd6ca58a5ab8084078d1da"
+    },
+    {
+      "draft": true,
+      "immutable": false,
+      "prerelease": true,
+      "release_id": 365167802,
+      "state": "stale-draft",
+      "tag_name": "v1.0.0-alpha.2",
+      "target_commitish": "af9f2291906268a7a098c918019c360d0f4202a4"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 365178275,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.3",
+      "target_commitish": "843185f433fd94ef6d6196e7ffb36da14116dee4"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 365360071,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.4",
+      "target_commitish": "9ded08bdb5dca3dd9d111b81241482fe8915e6ff"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 365419996,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.5",
+      "target_commitish": "7f6abf3acf190cdb668f7f3b3ea0d6b8cd3ae179"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 365585184,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.6",
+      "target_commitish": "d5118d128f51f79847005f2e324d72651c184f7e"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 366007128,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.7",
+      "target_commitish": "8a23c44233572585b93ee56ac408fdc5c7227d0c"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 366222386,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.8",
+      "target_commitish": "81abb2943a95f71e41d12dbfa785ca5e22bcb66a"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 366318567,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.9",
+      "target_commitish": "340c8d70076a26ec4464cfc6e587e5c5ff9c22a0"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 366648394,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.10",
+      "target_commitish": "1c5368b04211d6061945e1e65398e6b9f1222808"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 367287067,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.11",
+      "target_commitish": "ef5c0c44dbc870476389bc9d702a139a18b0da1e"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 367495402,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.12",
+      "target_commitish": "a4b5d12cab688012d938c41fdf8f463d0ee416b7"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 367533877,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.13",
+      "target_commitish": "d2f5902c65d0029811f8ac490f3917d8b11861fa"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 367843465,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.14",
+      "target_commitish": "66947acb5ee6fc75746cabf88899aad25a3c5be4"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 379280457,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.15",
+      "target_commitish": "751b273b761b3714920bac68c53cd63134ef0fe9"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 381040357,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.16",
+      "target_commitish": "9e19c16f41f3ce1c873b5a130dfb903eadc4a48e"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 381561119,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.17",
+      "target_commitish": "fa51a2b1578443115e076bfb54edd66eec4dbc1e"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 382731531,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.18",
+      "target_commitish": "5dc3b38f90cbc7c51b2f27f9ba4f4c12a1b080c7"
+    },
+    {
+      "draft": false,
+      "immutable": true,
+      "prerelease": true,
+      "release_id": 383159767,
+      "state": "published",
+      "tag_name": "v1.0.0-alpha.19",
+      "target_commitish": "4aeb06b4292b9c768ea745ca5989e94c24d4be7c"
+    }
+  ],
+  "schema_version": 1,
+  "selection_policy": {
+    "release_objects": "Delete only the exact GitHub Release IDs listed in release_objects. Do not select Releases by broad pattern at deletion time.",
+    "tag_refs": "Delete only the exact refs listed in tag_refs. Fail closed if any listed ref has moved or if any additional v1.0.0-alpha.* ref appears before deletion."
+  },
+  "stale_draft_mismatches": [
+    {
+      "release_id": 364982673,
+      "release_target_commitish": "aa6cfafd6aaaba614acd6ca58a5ab8084078d1da",
+      "tag_name": "v1.0.0-alpha.1",
+      "tag_revision": "0faf766a808753e9e00d008d7f8e558573a26c02"
+    },
+    {
+      "release_id": 365167802,
+      "release_target_commitish": "af9f2291906268a7a098c918019c360d0f4202a4",
+      "tag_name": "v1.0.0-alpha.2",
+      "tag_revision": "a880c770435495c9a35a66676fad55e771f25643"
+    }
+  ],
+  "tag_refs": [
+    {"ref": "refs/tags/v1.0.0-alpha.1", "revision": "0faf766a808753e9e00d008d7f8e558573a26c02"},
+    {"ref": "refs/tags/v1.0.0-alpha.2", "revision": "a880c770435495c9a35a66676fad55e771f25643"},
+    {"ref": "refs/tags/v1.0.0-alpha.3", "revision": "843185f433fd94ef6d6196e7ffb36da14116dee4"},
+    {"ref": "refs/tags/v1.0.0-alpha.4", "revision": "9ded08bdb5dca3dd9d111b81241482fe8915e6ff"},
+    {"ref": "refs/tags/v1.0.0-alpha.5", "revision": "7f6abf3acf190cdb668f7f3b3ea0d6b8cd3ae179"},
+    {"ref": "refs/tags/v1.0.0-alpha.6", "revision": "d5118d128f51f79847005f2e324d72651c184f7e"},
+    {"ref": "refs/tags/v1.0.0-alpha.7", "revision": "8a23c44233572585b93ee56ac408fdc5c7227d0c"},
+    {"ref": "refs/tags/v1.0.0-alpha.8", "revision": "81abb2943a95f71e41d12dbfa785ca5e22bcb66a"},
+    {"ref": "refs/tags/v1.0.0-alpha.9", "revision": "340c8d70076a26ec4464cfc6e587e5c5ff9c22a0"},
+    {"ref": "refs/tags/v1.0.0-alpha.10", "revision": "1c5368b04211d6061945e1e65398e6b9f1222808"},
+    {"ref": "refs/tags/v1.0.0-alpha.11", "revision": "ef5c0c44dbc870476389bc9d702a139a18b0da1e"},
+    {"ref": "refs/tags/v1.0.0-alpha.12", "revision": "a4b5d12cab688012d938c41fdf8f463d0ee416b7"},
+    {"ref": "refs/tags/v1.0.0-alpha.13", "revision": "d2f5902c65d0029811f8ac490f3917d8b11861fa"},
+    {"ref": "refs/tags/v1.0.0-alpha.14", "revision": "66947acb5ee6fc75746cabf88899aad25a3c5be4"},
+    {"ref": "refs/tags/v1.0.0-alpha.15", "revision": "751b273b761b3714920bac68c53cd63134ef0fe9"},
+    {"ref": "refs/tags/v1.0.0-alpha.16", "revision": "9e19c16f41f3ce1c873b5a130dfb903eadc4a48e"},
+    {"ref": "refs/tags/v1.0.0-alpha.17", "revision": "fa51a2b1578443115e076bfb54edd66eec4dbc1e"},
+    {"ref": "refs/tags/v1.0.0-alpha.18", "revision": "5dc3b38f90cbc7c51b2f27f9ba4f4c12a1b080c7"},
+    {"ref": "refs/tags/v1.0.0-alpha.19", "revision": "4aeb06b4292b9c768ea745ca5989e94c24d4be7c"}
+  ]
+}
