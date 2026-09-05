@@ -82,7 +82,7 @@ class ReleaseCatalogTests(unittest.TestCase):
         return item, records
 
     def test_root_release_has_empty_catalog_without_record(self):
-        self.assertEqual([], read_release_chain(self.root, "1.0.0"))
+        self.assertEqual((), read_release_chain(self.root, "1.0.0"))
         catalog = read_catalog(self.root, "1.0.0")
         self.assertEqual("1.0.0", catalog["target_version"])
         self.assertEqual([], catalog["supported_sources"])
