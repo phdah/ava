@@ -27,6 +27,8 @@ PAIR_STATUSES = {
     "accepted",
     "rejected",
 }
+BOOTSTRAP_VERSION = "0.0.0"
+FIRST_RELEASE_VERSION = "1.0.0"
 
 
 class QualificationStateError(RuntimeError):
@@ -216,9 +218,18 @@ def reject_mutable_tag(tag: str) -> None:
 def validate_catalog_selection(selection: dict[str, Any], *, label: str) -> None:
     kind = selection.get("kind")
     version = selection.get("version")
+    if kind == "bootstrap":
+        if selection != {"kind": "bootstrap", "version": BOOTSTRAP_VERSION}:
+            raise QualificationStateError(
+                f"{label} bootstrap selection must be exactly the internal {BOOTSTRAP_VERSION} sentinel"
+            )
+        return
+
     tag = selection.get("tag")
     if kind not in {"published", "local"}:
-        raise QualificationStateError(f"{label} kind must be published or local")
+        raise QualificationStateError(
+            f"{label} kind must be bootstrap, published, or local"
+        )
     if not isinstance(version, str) or not version:
         raise QualificationStateError(f"{label} version is required")
     if tag != f"v{version}":
@@ -290,6 +301,11 @@ def load_configuration(
     for pair in catalog["pairs"]:
         validate_catalog_selection(pair["source"], label=f"{pair['id']} source")
         validate_catalog_selection(pair["target"], label=f"{pair['id']} target")
+        if pair["source"].get("kind") == "bootstrap":
+            if pair["target"].get("kind") != "local" or pair["target"].get("version") != FIRST_RELEASE_VERSION:
+                raise QualificationStateError(
+                    "bootstrap qualification may target only the local first stable 1.0.0 release"
+                )
     return config, catalog, current
 
 
