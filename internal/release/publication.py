@@ -134,11 +134,15 @@ def resolve_identity(
 
 
 def extract_release_notes(changelog: str, version: str) -> str:
-    marker = re.compile(rf"^## \[{re.escape(version)}\].*$", re.MULTILINE)
+    escaped_version = re.escape(version)
+    marker = re.compile(
+        rf"^## (?:\[{escaped_version}\](?:\([^\n)]+\))?|{escaped_version})(?:\s.*)?$",
+        re.MULTILINE,
+    )
     match = marker.search(changelog)
     if match is None:
         raise PublicationError(f"CHANGELOG.md has no release section for {version}")
-    next_match = re.search(r"^## \[", changelog[match.end():], re.MULTILINE)
+    next_match = re.search(r"^## ", changelog[match.end():], re.MULTILINE)
     end = match.end() + next_match.start() if next_match else len(changelog)
     return changelog[match.start():end].rstrip() + "\n"
 
