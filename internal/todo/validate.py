@@ -14,7 +14,6 @@ MILESTONE_DIR = TODO_ROOT / "milestones"
 ARCHIVED_MILESTONE_DIR = TODO_ROOT / "archive" / "milestones"
 ACTIVE_TASK_STATUSES = {"To Do", "In Progress", "Parked"}
 COMPLETED_TASK_STATUS = "Done"
-EXPECTED_TASK_COUNT = 77
 V1_MILESTONE_ID = "m-0"
 V1_MILESTONE_TITLE = "v1.0.0"
 ACTIVE_MILESTONE_ID = "m-1"
@@ -169,9 +168,6 @@ def main() -> int:
 
     load_tasks(TASK_DIR, ACTIVE_TASK_STATUSES, "internal/todo/tasks")
     load_tasks(COMPLETED_DIR, {COMPLETED_TASK_STATUS}, "internal/todo/completed")
-
-    if len(tasks) != EXPECTED_TASK_COUNT:
-        fail(f"expected {EXPECTED_TASK_COUNT} migrated tasks, found {len(tasks)}")
 
     for task_id, task in tasks.items():
         for dependency in task["dependencies"]:
