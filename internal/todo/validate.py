@@ -14,9 +14,11 @@ MILESTONE_DIR = TODO_ROOT / "milestones"
 ARCHIVED_MILESTONE_DIR = TODO_ROOT / "archive" / "milestones"
 ACTIVE_TASK_STATUSES = {"To Do", "In Progress", "Parked"}
 COMPLETED_TASK_STATUS = "Done"
-EXPECTED_TASK_COUNT = 76
+EXPECTED_TASK_COUNT = 77
 V1_MILESTONE_ID = "m-0"
 V1_MILESTONE_TITLE = "v1.0.0"
+ACTIVE_MILESTONE_ID = "m-1"
+ACTIVE_MILESTONE_TITLE = "v1.1.0"
 LEGACY_PHASE_PATTERN = re.compile(r"[0-9][0-9]-.*")
 TASK_FILENAME_PATTERN = re.compile(r"ava-(\d+(?:\.\d+)?) - .+\.md")
 MILESTONE_FILENAME_PATTERN = re.compile(r"(m-\d+) - .+\.md")
@@ -229,10 +231,35 @@ def main() -> int:
             f"v1.0.0 milestone {V1_MILESTONE_ID} must be titled {V1_MILESTONE_TITLE!r}"
         )
 
+    if ACTIVE_MILESTONE_ID not in milestones:
+        fail(f"missing active v1.1.0 milestone {ACTIVE_MILESTONE_ID}")
+    if milestones[ACTIVE_MILESTONE_ID]["title"] != ACTIVE_MILESTONE_TITLE:
+        fail(
+            f"active milestone {ACTIVE_MILESTONE_ID} must be titled {ACTIVE_MILESTONE_TITLE!r}"
+        )
+    if milestones[ACTIVE_MILESTONE_ID]["location"] != "active":
+        fail(f"v1.1.0 milestone {ACTIVE_MILESTONE_ID} must remain active")
+
+    active_milestones = {
+        milestone_id
+        for milestone_id, milestone in milestones.items()
+        if milestone["location"] == "active"
+    }
+    if active_milestones != {ACTIVE_MILESTONE_ID}:
+        fail(
+            f"{ACTIVE_MILESTONE_ID} must be the sole active milestone; "
+            f"found {sorted(active_milestones)}"
+        )
+
     for task_id, task in sorted(tasks.items()):
         milestone = task["milestone"]
         if milestone and milestone not in milestones:
             fail(f"{task_id}: references unknown milestone {milestone!r}")
+        if task["path"].parent == TASK_DIR and milestone != ACTIVE_MILESTONE_ID:
+            fail(
+                f"{task_id}: unfinished roadmap tasks must target active milestone "
+                f"{ACTIVE_MILESTONE_ID}, found {milestone!r}"
+            )
 
     active_count = sum(1 for task in tasks.values() if task["path"].parent == TASK_DIR)
     completed_count = len(tasks) - active_count
