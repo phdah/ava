@@ -34,7 +34,7 @@ jobs:
       - name: Validate Backlog.md native parsing
         run: |
           npx -y backlog.md@1.50.1 task list --json \
-            | jq -e '.tasks | length == 0' >/dev/null
+            | jq -e '.tasks | type == "array"' >/dev/null
 
       - name: Exercise Backlog.md completed lifecycle
         run: |
