@@ -74,4 +74,10 @@ python3 internal/todo/validate.py
 
 New internal roadmap work must be a native Backlog.md task under `internal/todo/tasks/`. Use Backlog.md's task creation and editing workflow and preserve dependencies, labels, acceptance criteria, and task history in the card itself.
 
+### Current milestone admission
+
+`v1.1.0` (`m-1`) is the sole active roadmap milestone. Every newly created unfinished task must target `m-1`; do not create or assign new roadmap work to another milestone implicitly.
+
+Before creating a task, assess whether the requested outcome can remain backward-compatible with Ava 1.x. If the work would require a breaking public-format, routing, ownership, authority, compatibility, or other change that genuinely warrants `2.0.0`, do not create the task under another milestone and do not force the breaking scope into `v1.1.0`. Defer task creation and inform the requester that the scope needs an explicit decision: either narrow or change it so it fits `v1.1.0`, or explicitly establish a new major-version milestone and update this admission policy.
+
 Keep this project repository-internal. Nothing under `internal/` belongs in distributed Ava templates or installed user projects.
