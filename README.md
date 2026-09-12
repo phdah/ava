@@ -22,6 +22,15 @@ Ava makes it explicit:
 - whether the installed managed base is healthy
 - how later stable releases are upgraded safely
 
+## Industry alignment
+
+Ava is intentionally model- and host-neutral, but its architecture aligns with current guidance and open formats published by major AI platform providers.
+
+- **Google Open Knowledge Format (OKF) v0.2:** Ava uses [Open Knowledge Format v0.2](https://github.com/GoogleCloudPlatform/open-knowledge-format/blob/main/SPEC.md) as its underlying knowledge-format compatibility level. OKF defines portable Markdown-plus-YAML knowledge bundles, hierarchical `index.md` discovery, extensible metadata, version-control-friendly distribution, and first-class provenance, trust, freshness, and lifecycle signals. Google's [OKF v0.2 announcement](https://cloud.google.com/blog/products/data-analytics/okf-v0-2-adds-trust-signals) describes the same goal of keeping agent-maintained context portable and trustworthy without requiring a proprietary runtime.
+- **OpenAI agent-context guidance:** OpenAI's [Rethinking skills and prompts for GPT-6 Astra](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra) recommends precise routing descriptions, progressive disclosure, minimal routing entry points, and loading task-relevant context instead of unrelated material. Ava applies the same principle between concerns through scoped indexes, semantic role and workflow routing, and task-specific context loading. Once a role is activated, Ava deliberately loads that role's complete required contract, including its instructions, capabilities, and constraints, so authority and safety boundaries are never deferred or guessed.
+
+These references are design signals rather than runtime dependencies. Ava remains independent of any specific model or provider, and its own distribution versioning remains separate from the OKF compatibility version.
+
 ## Install
 
 The convenience installation path resolves the latest stable GitHub Release:
